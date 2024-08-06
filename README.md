@@ -1,6 +1,6 @@
-# dangooddd linux dotfiles
-Set of cli tools, terminal and shell configs for personal usage.
-Also contains install script for fast install and setup 
+# `dangooddd`'s linux dotfiles
+> Set of cli tools, terminal and shell configs for personal usage.
+> Also contains install script for fast install and setup 
 of required packages. 
 
 ## Configurations 
@@ -14,12 +14,14 @@ of required packages.
 ### Fedora
 Enable some copr repos:
 ```bash 
-sudo dnf copr enable che/nerd-fonts
-sudo dnf copr enable wezfurlong/wezterm-nightly
+sudo dnf copr enable -y che/nerd-fonts
+sudo dnf copr enable -y wezfurlong/wezterm-nightly
 ```
 Then install packages:
 ```bash
-sudo dnf install cmake zsh cascadia-code-fonts cascadia-code-pl-fonts rsms-inter-fonts nerd-fonts p7zip jq ImageMagick fd-find ripgrep fzf poppler wezterm qt6ct zoxide cargo helix just
+sudo dnf install -y cmake zsh cascadia-code-fonts cascadia-code-pl-fonts  \
+    rsms-inter-fonts nerd-fonts p7zip ImageMagick jq wl-clipboard fd-find \
+    ripgrep fzf poppler wezterm qt6ct zoxide cargo helix just
 ```
 Then install language-dependent packages:
 ```bash
