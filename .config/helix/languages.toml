@@ -1,0 +1,45 @@
+[[language]]
+name = "bash"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "hyprlang"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "zig"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "lua"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "javascript"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "c"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "cpp"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "toml"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "yaml"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "latex"
+indent = { tab-width = 4, unit = "    " }
+
+[language.auto-pairs]
+'$' = '$'
+'(' = ')'
+'{' = '}'
+'[' = ']'
