@@ -7,5 +7,5 @@ if command -vq hx
 end
 
 set -x PAGER less
-set -x LESS "--tilde -RXS"
+set -x LESS "--tilde -RFXS"
 set -x RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/config"
