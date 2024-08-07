@@ -1,0 +1,12 @@
+[credential]
+    helper = store
+
+[user]
+    email = dangoodds@gmail.com
+    name = dangooddd
+
+[credentials]
+    username = dangooddd
+
+[alias]
+	uncommit = reset HEAD^
