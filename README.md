@@ -6,6 +6,7 @@ of required packages.
 ## Configurations 
 * **Terminal:** [WezTerm](https://github.com/wez/wezterm)
 * **Prompt:** [Starship](https://github.com/starship/starship)
+* **Shell:** [Fish](https://github.com/fish-shell/fish-shell)
 * **TUI file manager:** [Yazi](https://github.com/sxyazi/yazi)
 * **Code Editor:** [Helix](https://github.com/helix-editor/helix)
 * **Font:** [Inter](https://github.com/rsms/inter) as UI font and [Cascadia Code](https://github.com/microsoft/cascadia-code) as monospace font
@@ -19,7 +20,7 @@ sudo dnf copr enable -y wezfurlong/wezterm-nightly
 ```
 Then install packages:
 ```bash
-sudo dnf install -y cmake zsh cascadia-code-fonts cascadia-code-pl-fonts  \
+sudo dnf install -y cmake fish cascadia-code-fonts cascadia-code-pl-fonts \
     rsms-inter-fonts nerd-fonts p7zip ImageMagick jq wl-clipboard fd-find \
     ripgrep fzf poppler wezterm qt6ct zoxide cargo helix just
 ```
@@ -34,6 +35,7 @@ ya pack -a yazi-rs/plugins#full-border
 ```
 Change shell to zsh:
 ```bash
+fish -c "fish_config theme save Kanagawa"
 chsh -s $(which zsh)
 ```
 
@@ -51,16 +53,14 @@ Copy or symlink all directories you want
 > [!Warning]
 > Method below may be dangerous! Some files from your filesystem can be deleted, so read code and make your decision!
 
-Script will symlink dotfiles to your filesystem (existing directories will be moved in /path/to/dotfiles/.backup)
+Script will link dotfiles to your filesystem 
+(existing directories will be moved in /path/to/dotfiles/.backup)
+and install all required packages (Fedora only!):
 ```bash
 cd .dotfiles
 ./install.sh
 ```
-Install only configs (before packages!):
+To only link all configurations (without installing of packages):
 ```bash
-./install.sh configs
-```
-Install only packages:
-```bash
-./install.sh packages
+./install.sh link
 ```

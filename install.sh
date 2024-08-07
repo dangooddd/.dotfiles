@@ -135,15 +135,16 @@ function installPackages {
     sudo dnf copr enable -y che/nerd-fonts
     sudo dnf copr enable -y wezfurlong/wezterm-nightly
     
-    sudo dnf install -y cmake zsh cascadia-code-fonts cascadia-code-pl-fonts  \
+    sudo dnf install -y cmake fish cascadia-code-fonts cascadia-code-pl-fonts \
         rsms-inter-fonts nerd-fonts p7zip ImageMagick jq wl-clipboard fd-find \
         ripgrep fzf poppler wezterm qt6ct zoxide cargo helix just
 
     cargo install --locked starship
     cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
-
     "$HOME"/.cargo/bin/ya pack -a yazi-rs/plugins#full-border
-    chsh -s $(which zsh)
+
+    fish -c "fish_config theme save Kanagawa"
+    chsh -s $(which fish)
 
     colored "magenta" "\n[ "
     colored "red" "Packages installed!"
@@ -152,12 +153,8 @@ function installPackages {
 
 # install
 case "$1" in
-    # install only packages
-    "packages")
-        installPackages
-        ;;
-    # install only configs
-    "configs")
+    # only link
+    "link")
         installConfigs
         ;;
     # full installation
