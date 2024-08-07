@@ -7,6 +7,7 @@ $directory$git_branch$cmd_duration
 $character
 """
 
+# dollar sign prompt
 [character]
 format = '$symbol '
 success_symbol = '[\$](bold purple)'

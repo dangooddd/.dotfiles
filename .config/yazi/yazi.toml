@@ -1,3 +1,4 @@
+# general yazi configuration
 [manager]
 linemode = "size"
 show_hidden = true

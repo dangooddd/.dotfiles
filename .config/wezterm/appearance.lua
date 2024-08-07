@@ -1,5 +1,6 @@
 local wezterm = require "wezterm"
 
+-- appearance options
 local appearance = {
     use_fancy_tab_bar = true,
     hide_tab_bar_if_only_one_tab = true,
@@ -11,6 +12,7 @@ local appearance = {
     custom_block_glyphs = false,
 } 
 
+-- colors for tab bar theming
 local colors = {
     bg = "#1F1F28",
     fg = "#DCD7BA",
@@ -18,6 +20,7 @@ local colors = {
     fg_bright = "#E6C384",
 }
 
+-- tab bat theming
 appearance.colors = {
     tab_bar = {
         active_tab = {
