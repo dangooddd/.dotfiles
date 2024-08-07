@@ -16,5 +16,6 @@ eval "$(zoxide init zsh)"
 
 export EDITOR="hx"
 export LESS="--tilde -RXS"
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/ripgrep.conf"
 
 fast-theme -q XDG:kanagawa
