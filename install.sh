@@ -117,10 +117,6 @@ function installConfigs {
              "$HOME"/.wallpapers \
              "$dotfiles"/.backup/.wallpapers
 
-    dinstall "$dotfiles"/.zsh \
-             "$HOME"/.zsh \
-             "$dotfiles"/.backup/.zsh
-
     colored "magenta" "[ "
     colored "red" "Dotfiles installed!"
     colored "magenta" " ]\n"
