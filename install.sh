@@ -137,7 +137,7 @@ function installPackages {
     
     sudo dnf install -y cmake fish cascadia-code-fonts cascadia-code-pl-fonts \
         rsms-inter-fonts nerd-fonts p7zip ImageMagick jq wl-clipboard fd-find \
-        ripgrep fzf poppler wezterm qt6ct zoxide cargo helix just
+        ripgrep fzf poppler wezterm zoxide cargo helix just
 
     cargo install --locked starship
     cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
