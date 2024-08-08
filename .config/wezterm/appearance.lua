@@ -9,7 +9,6 @@ local appearance = {
     font_size = 16,
     default_cursor_style = "SteadyBlock",
     animation_fps = 60,
-    custom_block_glyphs = false,
 } 
 
 -- colors for tab bar theming
