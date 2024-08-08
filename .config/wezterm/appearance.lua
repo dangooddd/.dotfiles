@@ -8,7 +8,7 @@ local colors = {
     fg_bright = "#E6C384",
     blue = "#7E9CD8",
     dark = "#16161D",
-    red = "#C34043",
+    cyan = "#7AA89F",
     yellow = "#E6C384",
     magenta = "#957FB8",
     green = "#76946A",
@@ -28,7 +28,7 @@ function status(window, pane)
     elseif (name == "TAB") then
         color = colors.yellow
     elseif (name == "RES") then
-        color = colors.red
+        color = colors.cyan
     elseif (name == "FON") then
         color = colors.green
     else
