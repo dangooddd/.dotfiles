@@ -72,11 +72,13 @@ function installConfigs {
     colored "red" "Installing dangooddd dotfiles"
     colored "magenta" " ]\n\n"
 
+    # setup
     local dotfiles
     dotfiles="$(dirname "$(readlink -f "$0")")"
     mkdir -p "$dotfiles"/.backup/.config
     shopt -s dotglob
-
+    
+    # .config
     for src in "$dotfiles"/.config/*
     do
         local name
@@ -95,24 +97,7 @@ function installConfigs {
         fi
     done
 
-    for src in "$dotfiles"/.home/*
-    do
-        local name
-        name="$(basename "$src")"
-
-        if [ -d "$src" ]; then
-            dinstall "$src" \
-                     "$HOME"/"$name" \
-                     "$dotfiles"/.backup/"$name"
-        fi
-
-        if [ -f "$src" ] || [ -L "$src" ]; then
-            finstall "$src" \
-                     "$HOME"/"$name" \
-                     "$dotfiles"/.backup/"$name"
-        fi
-    done
-
+    # .wallpapers
     dinstall "$dotfiles"/.wallpapers \
              "$HOME"/.wallpapers \
              "$dotfiles"/.backup/.wallpapers
@@ -128,17 +113,24 @@ function installPackages {
     colored "red" "Installing packages for dangooddd dotfiles"
     colored "magenta" " ]\n\n"
 
+    # coprs
     sudo dnf copr enable -y che/nerd-fonts
     sudo dnf copr enable -y wezfurlong/wezterm-nightly
     
+    # packages
     sudo dnf install -y cmake fish cascadia-code-fonts cascadia-code-pl-fonts \
         rsms-inter-fonts nerd-fonts p7zip ImageMagick jq wl-clipboard fd-find \
         ripgrep fzf poppler wezterm zoxide cargo helix just
 
+    # cargo
     cargo install --locked starship
     cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
-    "$HOME"/.cargo/bin/ya pack -a yazi-rs/plugins#full-border
 
+    # yazi
+    "$HOME"/.cargo/bin/ya pack -a yazi-rs/plugins#full-border
+    "$HOME"/.cargo/bin/ya pack -a dangooddd/kanagawa
+
+    #shell
     fish -c "fish_config theme save Kanagawa"
     chsh -s $(which fish)
 
