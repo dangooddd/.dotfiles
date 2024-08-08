@@ -29,6 +29,7 @@ function M.merge(config)
             { key = "l", action = act.Multiple { act.SplitPane { direction = "Right" }, act.PopKeyTable } },
             { key = "q", action = act.Multiple { act.CloseCurrentPane { confirm = false }, act.PopKeyTable } },
             -- exit
+            { key = "e", mods = paneMod, action = act.PopKeyTable },
             { key = "Escape", action = act.PopKeyTable },
         },
         TAB = {
@@ -38,6 +39,7 @@ function M.merge(config)
             { key = "h", action = act.Multiple { act.ActivateTabRelative(-1), act.PopKeyTable } },
             { key = "l", action = act.Multiple { act.ActivateTabRelative(1), act.PopKeyTable } },
             -- exit
+            { key = "t", mods = mainMod, action = act.PopKeyTable },
             { key = "Escape", action = act.PopKeyTable },
         },
         RES = {
@@ -47,6 +49,7 @@ function M.merge(config)
             { key = "k", action = act.AdjustPaneSize { "Up", 5 } },
             { key = "l", action = act.AdjustPaneSize { "Right", 5 } },
             -- exit
+            { key = "r", mods = paneMod, action = act.PopKeyTable },
             { key = "Escape", action = act.PopKeyTable },
         },
         FON = {
@@ -55,6 +58,7 @@ function M.merge(config)
             { key = "-", action = act.DecreaseFontSize },
             { key = "0", action = act.Multiple { act.ResetFontSize, act.PopKeyTable } },
             -- exit
+            { key = "f", mods = mainMod, action = act.PopKeyTable },
             { key = "Escape", action = act.PopKeyTable },
         },
     }

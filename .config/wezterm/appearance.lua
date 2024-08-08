@@ -40,7 +40,7 @@ function status(window, pane)
         { Background = { Color = colors.bg_dark } },
         { Text = " -- " .. name .. " -- "},
         { Background = { Color = colors.bg_dark } },
-        { Text = "    "}
+        { Text = " " },
     })
 end
 
@@ -96,6 +96,7 @@ function M.merge(config)
         font_size = 13,
     }
 
+    -- window theming
     config.window_padding = {
         left = "1cell",
         right = "0.5cell",
