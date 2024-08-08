@@ -1,9 +1,14 @@
 # fish env variables
 
-# to avoid some shit
+# helix
 if command -vq hx
     set -x VISUAL hx
     set -x EDITOR hx
+end
+
+# cargo
+if test -z $CARGO_HOME
+    set -x CARGO_HOME "$HOME/.cargo"
 end
 
 set -x PAGER less

@@ -127,8 +127,9 @@ function installPackages {
     cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
 
     # yazi
-    "$HOME"/.cargo/bin/ya pack -a yazi-rs/plugins#full-border
-    "$HOME"/.cargo/bin/ya pack -a dangooddd/kanagawa
+    CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
+    "$CARGO_HOME"/bin/ya pack -a yazi-rs/plugins#full-border
+    "$CARGO_HOME"/bin/ya pack -a dangooddd/kanagawa
 
     #shell
     fish -c "fish_config theme save Kanagawa"
