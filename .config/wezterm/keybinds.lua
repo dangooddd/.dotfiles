@@ -1,23 +1,18 @@
 local wezterm = require "wezterm"
 local act = wezterm.action
-local paneMod = "ALT"          -- fast pane moves
-local tabMod = "CTRL|ALT"      -- compatible tabs moves
-local mainMod = "CTRL|SHIFT"   -- general mod
+local paneMod = "ALT"      -- fast pane moves
+local mainMod = "CTRL|ALT" -- general mod
 
 local keybinds = {
     keys = {
         -- general
-        { key = "f", mods = mainMod, action = act.ActivateKeyTable { name = "font_mode", one_shot = false} },
+        { key = "f", mods = mainMod, action = act.ActivateKeyTable { name = "FON", one_shot = false} },
+        { key = "t", mods = mainMod, action = act.ActivateKeyTable { name = "TAB", one_shot = false} },
         { key = "v", mods = mainMod, action = act.PasteFrom "Clipboard" },
         { key = "c", mods = mainMod, action = act.CopyTo "ClipboardAndPrimarySelection" },
-        -- general move
-        { key = "q", mods = tabMod, action = act.CloseCurrentTab { confirm = false } },
-        { key = "n", mods = tabMod, action = act.SpawnTab "CurrentPaneDomain" },
-        { key = "h", mods = tabMod, action = act.ActivateTabRelative(-1) },
-        { key = "l", mods = tabMod, action = act.ActivateTabRelative(1) },
         -- panes
-        { key = "e", mods = paneMod, action = act.ActivateKeyTable { name = "pane_mode", one_shot = false } },
-        { key = "r", mods = paneMod, action = act.ActivateKeyTable { name = "resize_mode", one_shot = false } },
+        { key = "e", mods = paneMod, action = act.ActivateKeyTable { name = "PAN", one_shot = false } },
+        { key = "r", mods = paneMod, action = act.ActivateKeyTable { name = "RES", one_shot = false } },
         { key = "q", mods = paneMod, action = act.CloseCurrentPane { confirm = false } },
         { key = "h", mods = paneMod, action = act.ActivatePaneDirection "Left" },
         { key = "j", mods = paneMod, action = act.ActivatePaneDirection "Down" },
@@ -25,33 +20,40 @@ local keybinds = {
         { key = "l", mods = paneMod, action = act.ActivatePaneDirection "Right" },
     },
     key_tables = {
-        pane_mode = {
+        PAN = {
             -- open/close panes
             { key = "h", action = act.Multiple { act.SplitPane { direction = "Left" }, act.PopKeyTable } },
             { key = "j", action = act.Multiple { act.SplitPane { direction = "Down" }, act.PopKeyTable } },
             { key = "k", action = act.Multiple { act.SplitPane { direction = "Up" }, act.PopKeyTable } },
             { key = "l", action = act.Multiple { act.SplitPane { direction = "Right" }, act.PopKeyTable } },
+            { key = "q", action = act.Multiple { act.CloseCurrentPane { confirm = false }, act.PopKeyTable } },
             -- exit
-            { key = "q", action = act.PopKeyTable },
             { key = "Escape", action = act.PopKeyTable },
         },
-        resize_mode = {
+        TAB = {
+            -- open/close tabs
+            { key = "q", action = act.Multiple { act.CloseCurrentTab { confirm = false }, act.PopKeyTable } },
+            { key = "n", action = act.Multiple { act.SpawnTab "CurrentPaneDomain", act.PopKeyTable } },
+            { key = "h", action = act.Multiple { act.ActivateTabRelative(-1), act.PopKeyTable } },
+            { key = "l", action = act.Multiple { act.ActivateTabRelative(1), act.PopKeyTable } },
+            -- exit
+            { key = "Escape", action = act.PopKeyTable },
+        },
+        RES = {
             -- resize panes
             { key = "h", action = act.AdjustPaneSize { "Left", 5 } },
             { key = "j", action = act.AdjustPaneSize { "Down", 5 } },
             { key = "k", action = act.AdjustPaneSize { "Up", 5 } },
             { key = "l", action = act.AdjustPaneSize { "Right", 5 } },
             -- exit
-            { key = "q", action = act.PopKeyTable },
             { key = "Escape", action = act.PopKeyTable },
         },
-        font_mode = {
+        FON = {
             -- resize font
             { key = "=", action = act.IncreaseFontSize },
             { key = "-", action = act.DecreaseFontSize },
             { key = "0", action = act.Multiple { act.ResetFontSize, act.PopKeyTable } },
             -- exit
-            { key = "q", action = act.PopKeyTable },
             { key = "Escape", action = act.PopKeyTable },
         },
     },
@@ -59,10 +61,9 @@ local keybinds = {
 
 -- tab movement
 for i = 1, 10 do 
-    table.insert(keybinds.keys, {
+    table.insert(keybinds.key_tables.TAB, {
         key = tostring(i%10),
-        mods = tabMod,
-        action = act.ActivateTab(i-1)
+        action = act.Multiple { act.ActivateTab(i-1), act.PopKeyTable }
     })
 end
 

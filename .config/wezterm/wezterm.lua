@@ -1,7 +1,6 @@
 local wezterm = require "wezterm"
 local keybinds = require "keybinds"
 local appearance = require "appearance"
-local general = require "general"
 
 -- merge two tables in one
 function merge(t1, t2)
@@ -14,6 +13,10 @@ end
 local config = wezterm.config_builder()
 merge(config, keybinds)
 merge(config, appearance)
-merge(config, general)
+
+-- configuration
+config.disable_default_key_bindings = true
+config.window_close_confirmation = "NeverPrompt"
+config.tab_bar_at_bottom = false
 
 return config

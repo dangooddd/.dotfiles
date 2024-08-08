@@ -3,7 +3,6 @@ local wezterm = require "wezterm"
 -- appearance options
 local appearance = {
     use_fancy_tab_bar = true,
-    hide_tab_bar_if_only_one_tab = true,
     color_scheme = "Kanagawa (Gogh)",
     font = wezterm.font "Cascadia Code",
     font_size = 16,
@@ -17,9 +16,15 @@ local colors = {
     fg = "#DCD7BA",
     bg_dark = "#131319",
     fg_bright = "#E6C384",
+    blue = "#7E9CD8",
+    dark = "#16161D",
+    red = "#C34043",
+    yellow = "#E6C384",
+    magenta = "#957FB8",
+    green = "#76946A",
 }
 
--- tab bat theming
+-- tab bar theming
 appearance.colors = {
     tab_bar = {
         active_tab = {
@@ -68,5 +73,32 @@ appearance.inactive_pane_hsb = {
     saturation = 1.0,
     brightness = 0.8,
 }
+
+wezterm.on('update-status', function(window, pane)
+    local name = window:active_key_table() or "NOR"
+
+    local color
+    if (name == "NOR") then
+        color = colors.blue
+    elseif (name == "PAN") then
+        color = colors.magenta
+    elseif (name == "TAB") then
+        color = colors.yellow
+    elseif (name == "RES") then
+        color = colors.red
+    elseif (name == "FON") then
+        color = colors.green
+    else
+        color = colors.blue
+    end
+
+    window:set_right_status(wezterm.format {
+        { Foreground = { Color = color } },
+        { Background = { Color = colors.bg_dark } },
+        { Text = " -- " .. name .. " -- "},
+        { Background = { Color = colors.bg_dark } },
+        { Text = "    "}
+    })
+end)
 
 return appearance
