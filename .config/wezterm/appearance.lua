@@ -38,9 +38,7 @@ function status(window, pane)
     window:set_right_status(wezterm.format {
         { Foreground = { Color = color } },
         { Background = { Color = colors.bg_dark } },
-        { Text = " -- " .. name .. " -- "},
-        { Background = { Color = colors.bg_dark } },
-        { Text = " " },
+        { Text = "  -- " .. name .. " --  "},
     })
 end
 
