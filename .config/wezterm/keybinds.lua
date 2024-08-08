@@ -3,8 +3,9 @@ local act = wezterm.action
 local paneMod = "ALT"      -- fast pane moves
 local mainMod = "CTRL|ALT" -- general mod
 
-local keybinds = {
-    keys = {
+local M = {}
+function M.merge(config)
+    config.keys = {
         -- general
         { key = "f", mods = mainMod, action = act.ActivateKeyTable { name = "FON", one_shot = false} },
         { key = "t", mods = mainMod, action = act.ActivateKeyTable { name = "TAB", one_shot = false} },
@@ -18,8 +19,8 @@ local keybinds = {
         { key = "j", mods = paneMod, action = act.ActivatePaneDirection "Down" },
         { key = "k", mods = paneMod, action = act.ActivatePaneDirection "Up" },
         { key = "l", mods = paneMod, action = act.ActivatePaneDirection "Right" },
-    },
-    key_tables = {
+    }
+    config.key_tables = {
         PAN = {
             -- open/close panes
             { key = "h", action = act.Multiple { act.SplitPane { direction = "Left" }, act.PopKeyTable } },
@@ -56,15 +57,15 @@ local keybinds = {
             -- exit
             { key = "Escape", action = act.PopKeyTable },
         },
-    },
-}
+    }
 
--- tab movement
-for i = 1, 10 do 
-    table.insert(keybinds.key_tables.TAB, {
-        key = tostring(i%10),
-        action = act.Multiple { act.ActivateTab(i-1), act.PopKeyTable }
-    })
+    -- tab movement
+    for i = 1, 10 do 
+        table.insert(config.key_tables.TAB, {
+            key = tostring(i%10),
+            action = act.Multiple { act.ActivateTab(i-1), act.PopKeyTable }
+        })
+    end
 end
 
-return keybinds
+return M
