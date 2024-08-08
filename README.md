@@ -32,6 +32,7 @@ cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
 Then install yazi plugins:
 ```bash
 ya pack -a yazi-rs/plugins#full-border
+ya pack -a dangooddd/kanagawa
 ```
 Change shell to zsh:
 ```bash
