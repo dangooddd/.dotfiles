@@ -9,4 +9,4 @@
     username = dangooddd
 
 [alias]
-	uncommit = reset HEAD^
+    uncommit = reset HEAD^
