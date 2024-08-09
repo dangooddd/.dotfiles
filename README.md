@@ -1,7 +1,5 @@
 # `dangooddd`'s linux dotfiles
-> Set of cli tools, terminal and shell configs for personal usage.
-> Also contains install script for fast install and setup 
-of required packages. 
+> Set of configs for cli tools, terminal, shell and other stuff.
 
 ## Configurations 
 * **Terminal:** [WezTerm](https://github.com/wez/wezterm)
