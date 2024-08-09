@@ -1,1 +1,7 @@
 .backup
+
+.config/fish/fish_variables
+
+.config/yazi/flavors
+.config/yazi/plugins
+.config/yazi/package.toml
