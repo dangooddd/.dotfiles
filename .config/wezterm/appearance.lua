@@ -1,17 +1,18 @@
 local wezterm = require "wezterm"
 
 -- colors for tab bar theming
+-- in accordance with helix kanagawa theme
 local colors = {
-    bg = "#1F1F28",
-    fg = "#DCD7BA",
-    bg_dark = "#131319",
-    fg_bright = "#E6C384",
-    blue = "#7E9CD8",
-    dark = "#16161D",
-    cyan = "#7AA89F",
-    yellow = "#E6C384",
-    magenta = "#957FB8",
-    green = "#76946A",
+    oniViolet = "#957FB8",
+    carpYellow = "#E6C384",
+    springGreen = "#98BB6C",
+    crystalBlue = "#7E9CD8",
+    waveAqua2 = "#7AA89F",
+    springGreen = "#98BB6C",
+    oldWhite = "#C8C093",
+    sumiInk0 = "#16161D",
+    sumiInk1 = "#1F1F28",
+    sumiInk2 = "#2A2A37",
 }
 
 -- status line main function
@@ -22,22 +23,22 @@ function status(window, pane)
     -- fg color
     local color
     if (name == "NOR") then
-        color = colors.blue
+        color = colors.crystalBlue
     elseif (name == "PAN") then
-        color = colors.magenta
+        color = colors.oniViolet
     elseif (name == "TAB") then
-        color = colors.yellow
+        color = colors.carpYellow
     elseif (name == "RES") then
-        color = colors.cyan
+        color = colors.waveAqua2
     elseif (name == "FON") then
-        color = colors.green
+        color = colors.springGreen
     else
-        color = colors.blue
+        color = colors.crystalBlue
     end
 
     window:set_right_status(wezterm.format {
         { Foreground = { Color = color } },
-        { Background = { Color = colors.bg_dark } },
+        { Background = { Color = colors.sumiInk0 } },
         { Text = "  -- " .. name .. " --  "},
     })
 end
@@ -51,44 +52,45 @@ function M.merge(config)
     config.font_size = 16
     config.default_cursor_style = "SteadyBlock"
     config.animation_fps = 60
+    config.show_tab_index_in_tab_bar = false
 
 
     -- tab bar theming
     config.colors = {
         tab_bar = {
             active_tab = {
-                bg_color = colors.bg,
-                fg_color = colors.fg_bright,
+                fg_color = colors.waveAqua2,
+                bg_color = colors.sumiInk2,
             },
         
             inactive_tab = {
-                bg_color = colors.bg_dark,
-                fg_color = colors.fg,
+                bg_color = colors.sumiInk0,
+                fg_color = colors.oldWhite,
             },
 
             inactive_tab_hover = {
-                bg_color = colors.bg,
-                fg_color = colors.fg,
+                bg_color = colors.sumiInk1,
+                fg_color = colors.oldWhite,
             },
 
             new_tab = {
-                bg_color = colors.bg_dark,
-                fg_color = colors.fg,
+                bg_color = colors.sumiInk0,
+                fg_color = colors.oldWhite,
             },
 
             new_tab_hover = {
-                bg_color = colors.bg,
-                fg_color = colors.fg_bright,
+                bg_color = colors.sumiInk2,
+                fg_color = colors.waveAqua2,
             },
         }
     }
 
     config.window_frame = {
-        active_titlebar_bg = colors.bg_dark,
-        inactive_titlebar_bg = colors.bg_dark,
+        active_titlebar_bg = colors.sumiInk0,
+        inactive_titlebar_bg = colors.sumiInk0,
 
-        active_titlebar_fg = colors.fg,
-        inactive_titlebar_fg = colors.fg,
+        active_titlebar_fg = colors.oldWhite,
+        inactive_titlebar_fg = colors.oldWhite,
 
         font = wezterm.font { family = "Inter", weight = "Medium" },
         font_size = 13,
