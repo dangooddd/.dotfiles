@@ -18,19 +18,19 @@ local colors = {
 -- status line main function
 function status(window, pane)
     -- mode name
-    local name = window:active_key_table() or "NOR"
+    local name = window:active_key_table() or "NORMAL"
 
     -- fg color
     local color
-    if (name == "NOR") then
+    if (name == "NORMAL") then
         color = colors.crystalBlue
-    elseif (name == "PAN") then
+    elseif (name == "PANE") then
         color = colors.oniViolet
     elseif (name == "TAB") then
         color = colors.carpYellow
-    elseif (name == "RES") then
+    elseif (name == "RESIZE") then
         color = colors.waveAqua2
-    elseif (name == "FON") then
+    elseif (name == "FONT") then
         color = colors.springGreen
     else
         color = colors.crystalBlue

@@ -7,12 +7,12 @@ local M = {}
 function M.merge(config)
     config.keys = {
         -- hard
-        { key = "f", mods = hardMod, action = act.ActivateKeyTable { name = "FON", one_shot = false} },
+        { key = "f", mods = hardMod, action = act.ActivateKeyTable { name = "FONT", one_shot = false} },
         { key = "v", mods = hardMod, action = act.PasteFrom "Clipboard" },
         { key = "c", mods = hardMod, action = act.CopyTo "ClipboardAndPrimarySelection" },
         -- main
-        { key = "e", mods = mainMod, action = act.ActivateKeyTable { name = "PAN", one_shot = false } },
-        { key = "r", mods = mainMod, action = act.ActivateKeyTable { name = "RES", one_shot = false } },
+        { key = "e", mods = mainMod, action = act.ActivateKeyTable { name = "PANE", one_shot = false } },
+        { key = "r", mods = mainMod, action = act.ActivateKeyTable { name = "RESIZE", one_shot = false } },
         { key = "t", mods = mainMod, action = act.ActivateKeyTable { name = "TAB", one_shot = false} },
         { key = "q", mods = mainMod, action = act.CloseCurrentPane { confirm = false } },
         { key = "h", mods = mainMod, action = act.ActivatePaneDirection "Left" },
@@ -21,7 +21,7 @@ function M.merge(config)
         { key = "l", mods = mainMod, action = act.ActivatePaneDirection "Right" },
     }
     config.key_tables = {
-        PAN = {
+        PANE = {
             -- open/close panes
             { key = "h", action = act.Multiple { act.SplitPane { direction = "Left" }, act.PopKeyTable } },
             { key = "j", action = act.Multiple { act.SplitPane { direction = "Down" }, act.PopKeyTable } },
@@ -42,7 +42,7 @@ function M.merge(config)
             { key = "t", mods = mainMod, action = act.PopKeyTable },
             { key = "Escape", action = act.PopKeyTable },
         },
-        RES = {
+        RESIZE = {
             -- resize panes
             { key = "h", action = act.AdjustPaneSize { "Left", 5 } },
             { key = "j", action = act.AdjustPaneSize { "Down", 5 } },
@@ -52,7 +52,7 @@ function M.merge(config)
             { key = "r", mods = paneMod, action = act.PopKeyTable },
             { key = "Escape", action = act.PopKeyTable },
         },
-        FON = {
+        FONT = {
             -- resize font
             { key = "=", action = act.IncreaseFontSize },
             { key = "-", action = act.DecreaseFontSize },
