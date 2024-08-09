@@ -43,6 +43,25 @@ function status(window, pane)
     })
 end
 
+-- get title from tab
+function tab_title(tab)
+    local title = tab.tab_title
+    if title and #title > 0 then
+        return title
+    end
+    return tab.active_pane.title
+end
+
+-- truncate long tab names
+function tab_style(tab, tabs, panes, config, hover, max_width) 
+    local title = tab_title(tab)
+    local lenght = 20
+    if (string.len(title) > lenght) then
+        title = wezterm.truncate_right(title, lenght - 3) .. "..."
+    end
+    return title
+end
+
 local M = {}
 function M.merge(config)
     -- appearance options
@@ -92,7 +111,7 @@ function M.merge(config)
         active_titlebar_fg = colors.oldWhite,
         inactive_titlebar_fg = colors.oldWhite,
 
-        font = wezterm.font { family = "Inter", weight = "Medium" },
+        font = wezterm.font { family = "Roboto", weight = "Bold" },
         font_size = 13,
     }
 
@@ -110,6 +129,7 @@ function M.merge(config)
     }
 
     wezterm.on('update-status', status)
+    wezterm.on('format-tab-title', tab_style)
 end
 
 return M
