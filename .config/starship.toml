@@ -24,3 +24,7 @@ style = "bold yellow"
 truncation_symbol = "../"
 truncation_length = 4
 truncate_to_repo = false
+
+[cmd_duration]
+min_time = 3_000
+style = "bold cyan"
