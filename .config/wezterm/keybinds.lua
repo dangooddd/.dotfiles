@@ -1,24 +1,24 @@
 local wezterm = require "wezterm"
 local act = wezterm.action
-local paneMod = "ALT"      -- fast pane moves
-local mainMod = "CTRL|ALT" -- general mod
+local mainMod = "ALT"      -- fast pane moves
+local hardMod = "CTRL|ALT" -- general mod
 
 local M = {}
 function M.merge(config)
     config.keys = {
-        -- general
-        { key = "f", mods = mainMod, action = act.ActivateKeyTable { name = "FON", one_shot = false} },
+        -- hard
+        { key = "f", mods = hardMod, action = act.ActivateKeyTable { name = "FON", one_shot = false} },
+        { key = "v", mods = hardMod, action = act.PasteFrom "Clipboard" },
+        { key = "c", mods = hardMod, action = act.CopyTo "ClipboardAndPrimarySelection" },
+        -- main
+        { key = "e", mods = mainMod, action = act.ActivateKeyTable { name = "PAN", one_shot = false } },
+        { key = "r", mods = mainMod, action = act.ActivateKeyTable { name = "RES", one_shot = false } },
         { key = "t", mods = mainMod, action = act.ActivateKeyTable { name = "TAB", one_shot = false} },
-        { key = "v", mods = mainMod, action = act.PasteFrom "Clipboard" },
-        { key = "c", mods = mainMod, action = act.CopyTo "ClipboardAndPrimarySelection" },
-        -- panes
-        { key = "e", mods = paneMod, action = act.ActivateKeyTable { name = "PAN", one_shot = false } },
-        { key = "r", mods = paneMod, action = act.ActivateKeyTable { name = "RES", one_shot = false } },
-        { key = "q", mods = paneMod, action = act.CloseCurrentPane { confirm = false } },
-        { key = "h", mods = paneMod, action = act.ActivatePaneDirection "Left" },
-        { key = "j", mods = paneMod, action = act.ActivatePaneDirection "Down" },
-        { key = "k", mods = paneMod, action = act.ActivatePaneDirection "Up" },
-        { key = "l", mods = paneMod, action = act.ActivatePaneDirection "Right" },
+        { key = "q", mods = mainMod, action = act.CloseCurrentPane { confirm = false } },
+        { key = "h", mods = mainMod, action = act.ActivatePaneDirection "Left" },
+        { key = "j", mods = mainMod, action = act.ActivatePaneDirection "Down" },
+        { key = "k", mods = mainMod, action = act.ActivatePaneDirection "Up" },
+        { key = "l", mods = mainMod, action = act.ActivatePaneDirection "Right" },
     }
     config.key_tables = {
         PAN = {
