@@ -21,7 +21,7 @@ sudo dnf install -y cascadia-code-pl-fonts google-roboto-fonts \
     cmake fish p7zip ImageMagick jq wl-clipboard fd-find \
     ripgrep fzf poppler wezterm zoxide rustup helix just
 ```
-Setup of rust toolchain and installation of cargo packages:
+Setup rust toolchain and install cargo packages:
 ```bash
 export CARGO_HOME="$HOME"/.cargo
 export RUSTUP_HOME="$HOME"/.rustup
