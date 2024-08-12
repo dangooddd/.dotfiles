@@ -66,8 +66,8 @@ function finstall {
     ln -s "$1" "$2"
 }
 
-# installation of config files
-function installConfigs {
+# link configuration files
+function linkFiles {
     colored "magenta" "\n[ "
     colored "red" "Installing dangooddd dotfiles"
     colored "magenta" " ]\n\n"
@@ -107,48 +107,7 @@ function installConfigs {
     colored "magenta" " ]\n"
 }
 
-# installation of required packages
-function installPackages {
-    colored "magenta" "\n[ "
-    colored "red" "Installing packages for dangooddd dotfiles"
-    colored "magenta" " ]\n\n"
-
-    # coprs
-    sudo dnf copr enable -y che/nerd-fonts
-    sudo dnf copr enable -y wezfurlong/wezterm-nightly
-    
-    # packages
-    sudo dnf install -y cmake fish cascadia-code-fonts cascadia-code-pl-fonts \
-        rsms-inter-fonts nerd-fonts p7zip ImageMagick jq wl-clipboard fd-find \
-        ripgrep fzf poppler wezterm zoxide cargo helix just
-
-    # cargo
-    cargo install --locked starship
-    cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
-
-    # yazi
-    CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
-    "$CARGO_HOME"/bin/ya pack -a yazi-rs/plugins#full-border
-    "$CARGO_HOME"/bin/ya pack -a dangooddd/kanagawa
-
-    #shell
-    fish -c "fish_config theme save Kanagawa"
-    chsh -s $(which fish)
-
-    colored "magenta" "\n[ "
-    colored "red" "Packages installed!"
-    colored "magenta" " ]\n"
-}
-
 # install
 case "$1" in
-    # only link
-    "link")
-        installConfigs
-        ;;
-    # full installation
-    *)
-        installConfigs
-        installPackages
-        ;;
+    *) linkFiles ;;
 esac
