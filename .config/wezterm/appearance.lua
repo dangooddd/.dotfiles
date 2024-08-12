@@ -67,12 +67,12 @@ function M.merge(config)
     -- appearance options
     config.use_fancy_tab_bar = true
     config.color_scheme = "Kanagawa (Gogh)"
-    config.font = wezterm.font "Cascadia Code"
+    config.font = wezterm.font { family = "Cascadia Code PL", }
     config.font_size = 16
     config.default_cursor_style = "SteadyBlock"
     config.animation_fps = 60
     config.show_tab_index_in_tab_bar = false
-
+    config.custom_block_glyphs = false
 
     -- tab bar theming
     config.colors = {
