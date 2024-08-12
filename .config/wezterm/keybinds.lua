@@ -1,7 +1,7 @@
 local wezterm = require "wezterm"
 local act = wezterm.action
-local mainMod = "ALT"      -- fast pane moves
-local hardMod = "CTRL|ALT" -- general mod
+local mainMod = "ALT"        -- main key mod
+local hardMod = "CTRL|SHIFT" -- secondary key mod
 
 local M = {}
 function M.merge(config)
