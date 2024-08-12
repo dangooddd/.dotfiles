@@ -7,23 +7,25 @@
 * **Shell:** [Fish](https://github.com/fish-shell/fish-shell)
 * **TUI file manager:** [Yazi](https://github.com/sxyazi/yazi)
 * **Code Editor:** [Helix](https://github.com/helix-editor/helix)
-* **Font:** [Inter](https://github.com/rsms/inter) as UI font and [Cascadia Code](https://github.com/microsoft/cascadia-code) as monospace font
+* **Font:** [Cascadia Code](https://github.com/microsoft/cascadia-code)
 
 ## Packages
 ### Fedora
-Enable some copr repos:
+Enable required copr repositories:
 ```bash 
-sudo dnf copr enable -y che/nerd-fonts
 sudo dnf copr enable -y wezfurlong/wezterm-nightly
 ```
 Then install packages:
 ```bash
-sudo dnf install -y cmake fish cascadia-code-fonts cascadia-code-pl-fonts \
-    rsms-inter-fonts nerd-fonts p7zip ImageMagick jq wl-clipboard fd-find \
-    ripgrep fzf poppler wezterm zoxide cargo helix just
+sudo dnf install -y cascadia-code-pl-fonts google-roboto-fonts \
+    cmake fish p7zip ImageMagick jq wl-clipboard fd-find \
+    ripgrep fzf poppler wezterm zoxide rustup helix just
 ```
-Then install language-dependent packages:
+Setup of rust toolchain and cargo packages:
 ```bash
+export CARGO_HOME="$HOME"/.cargo
+export RUSTUP_HOME="$HOME"/.rustup
+rustup-init
 cargo install --locked starship
 cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
 ```
@@ -32,7 +34,7 @@ Then install yazi plugins:
 ya pack -a yazi-rs/plugins#full-border
 ya pack -a dangooddd/kanagawa
 ```
-Change shell to zsh:
+Change shell to fish:
 ```bash
 fish -c "fish_config theme save Kanagawa"
 chsh -s $(which zsh)
@@ -46,20 +48,15 @@ git clone https://github.com/dangooddd/.dotfiles.git
 ```
 
 ### Manual
-Copy or symlink all directories you want
+Copy or symlink all directories manually.
 
 ### Via script
 > [!Warning]
 > Method below may be dangerous! Some files from your filesystem can be deleted, so read code and make your decision!
 
-Script will link dotfiles to your filesystem 
-(existing directories will be moved in /path/to/dotfiles/.backup)
-and install all required packages (Fedora only!):
+Script will install dotfiles for current user: 
+(existing directories will be moved in /path/to/dotfiles/.backup):
 ```bash
 cd .dotfiles
 ./install.sh
-```
-To only link all configurations (without installing of packages):
-```bash
-./install.sh link
 ```
