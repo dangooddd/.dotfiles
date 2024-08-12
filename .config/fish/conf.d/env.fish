@@ -6,6 +6,11 @@ if command -vq hx
     set -x EDITOR hx
 end
 
+# rustup
+if test -z $RUSTUP_HOME
+    set -x RUSTUP_HOME "$HOME/.rustup"
+end
+
 # cargo
 if test -z $CARGO_HOME
     set -x CARGO_HOME "$HOME/.cargo"
