@@ -21,7 +21,7 @@ git clone https://github.com/dangooddd/.dotfiles.git
 > [!Warning]
 > Method below may be dangerous! Some files from your filesystem can be deleted, so read code and make your decision!
 
-Script will install dotfiles for current user: 
+Script will install dotfiles for current user 
 (existing directories will be moved in /path/to/dotfiles/.backup):
 ```bash
 cd .dotfiles
