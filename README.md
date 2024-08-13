@@ -34,38 +34,38 @@ cd .dotfiles
 ### Fedora Linux
 
 Enable required copr repositories:
-```bash 
+```sh 
 sudo dnf copr enable -y wezfurlong/wezterm-nightly
 ```
 
 Then install packages:
-```bash
+```sh
 sudo dnf install -y cascadia-code-pl-fonts google-roboto-fonts \
     cmake fish p7zip ImageMagick jq wl-clipboard fd-find \
     ripgrep fzf poppler wezterm zoxide rustup helix just
 ```
 
 Setup rust toolchain:
-```bash
+```sh
 export CARGO_HOME="$HOME"/.cargo
 export RUSTUP_HOME="$HOME"/.rustup
 rustup-init
 ```
 
+Change shell to fish:
+```sh
+fish -c "fish_config theme save Kanagawa"
+chsh -s $(which fish); fish
+```
+
 After that, install cargo packages:
-```bash
+```sh
 cargo install --locked starship
 cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
 ```
 
 Then install yazi plugins:
-```bash
+```sh
 ya pack -a yazi-rs/plugins#full-border
 ya pack -a dangooddd/kanagawa
-```
-
-Change shell to fish:
-```bash
-fish -c "fish_config theme save Kanagawa"
-chsh -s $(which zsh)
 ```
