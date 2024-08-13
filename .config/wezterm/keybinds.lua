@@ -6,6 +6,9 @@ local hardMod = "CTRL|SHIFT" -- secondary key mod
 local M = {}
 function M.merge(config)
     config.keys = {
+        -- regular
+        { key = "j", mods = "SHIFT", action = act.ScrollByLine(1) },
+        { key = "k", mods = "SHIFT", action = act.ScrollByLine(-1) },
         -- hard
         { key = "f", mods = hardMod, action = act.ActivateKeyTable { name = "FONT", one_shot = false} },
         { key = "v", mods = hardMod, action = act.PasteFrom "Clipboard" },
