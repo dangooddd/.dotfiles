@@ -20,6 +20,7 @@ function M.merge(config)
         { key = "k", mods = mainMod, action = act.ActivatePaneDirection "Up" },
         { key = "l", mods = mainMod, action = act.ActivatePaneDirection "Right" },
     }
+
     config.key_tables = {
         PANE = {
             -- open/close panes
@@ -70,6 +71,20 @@ function M.merge(config)
             action = act.Multiple { act.ActivateTab(i-1), act.PopKeyTable }
         })
     end
+
+    config.mouse_bindings = {
+        -- wheel
+        {
+            event = { Down = { streak = 1, button = { WheelUp = 1 } } },
+            mods = 'NONE',
+            action = act.ScrollByLine(-2),
+        },
+        {
+            event = { Down = { streak = 1, button = { WheelDown = 1 } } },
+            mods = 'NONE',
+            action = act.ScrollByLine(2),
+        },
+    }
 end
 
 return M
