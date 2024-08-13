@@ -35,12 +35,12 @@ cd .dotfiles
 
 Enable required copr repositories:
 ```sh 
-sudo dnf copr enable -y wezfurlong/wezterm-nightly
+sudo dnf copr enable wezfurlong/wezterm-nightly
 ```
 
 Then install packages:
 ```sh
-sudo dnf install -y cascadia-code-pl-fonts google-roboto-fonts \
+sudo dnf install cascadia-code-pl-fonts google-roboto-fonts \
     cmake fish p7zip ImageMagick jq wl-clipboard fd-find \
     ripgrep fzf poppler wezterm zoxide rustup helix just
 ```
