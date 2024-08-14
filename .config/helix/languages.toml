@@ -23,8 +23,6 @@ mccabe = { enabled = false }
 pyflakes = { enabled = false }
 
 # yapf as formatter
-black = { enabled = false }
-autopep8 = { enabled = false }
 yapf = { enabled = true }
 
 [[language]]
