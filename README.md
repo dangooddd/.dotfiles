@@ -69,3 +69,7 @@ Then install yazi plugins:
 ya pack -a yazi-rs/plugins#full-border
 ya pack -a dangooddd/kanagawa
 ```
+
+
+## Helix lsp
+Check setup [guide](LSP.md) for my helix lsp config
