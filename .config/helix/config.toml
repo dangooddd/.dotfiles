@@ -44,6 +44,7 @@ C-k = [ "extend_to_line_bounds", "delete_selection", "move_line_up", "paste_befo
 # Toggle some options
 [keys.normal."+"]
 h = ":toggle lsp.display-inlay-hints"
+s = ":toggle lsp.auto-signature-help"
 g = ":toggle indent-guides.render"
 p = ":toggle auto-pairs"
 w = ":toggle soft-wrap.enable"
