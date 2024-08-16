@@ -40,9 +40,10 @@ sudo dnf copr enable wezfurlong/wezterm-nightly
 
 Then install packages:
 ```sh
-sudo dnf install cascadia-code-pl-fonts google-roboto-fonts \
-    cmake fish p7zip ImageMagick jq wl-clipboard fd-find \
-    ripgrep fzf poppler wezterm zoxide rustup helix just
+sudo dnf install cmake just python pip rustup  \
+    cascadia-code-pl-fonst google-roboto-fonts \
+    p7zip ImageMagick jq wl-clipboard fd-find  \
+    ripgrep fzf poppler zoxide fish helix wezterm
 ```
 
 Setup rust toolchain:
