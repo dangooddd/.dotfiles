@@ -12,7 +12,7 @@ indent = { tab-width = 4, unit = "    " }
 
 [[language]]
 name = "python"
-language-servers = ["pylsp"]
+language-servers = [ "pylsp" ]
 auto-format = true
 
 [language-server.pylsp.config.pylsp.plugins]
@@ -52,9 +52,3 @@ indent = { tab-width = 4, unit = "    " }
 [[language]]
 name = "latex"
 indent = { tab-width = 4, unit = "    " }
-
-[language.auto-pairs]
-'$' = '$'
-'(' = ')'
-'{' = '}'
-'[' = ']'
