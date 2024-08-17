@@ -120,11 +120,11 @@ function M.merge(config)
 
         -- tab bar font
         font = wezterm.font_with_fallback {
-            { family = "Roboto", weight = "Medium" },
+            { family = "Noto Sans", weight = "Medium" },
             "Noto Color Emoji",
             "Symbols Nerd Font Mono",
         },
-        font_size = 13,
+        font_size = 12,
     }
 
     -- window theming
