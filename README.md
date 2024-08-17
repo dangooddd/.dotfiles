@@ -8,7 +8,7 @@
 * **Shell:** [Fish](https://github.com/fish-shell/fish-shell)
 * **TUI file manager:** [Yazi](https://github.com/sxyazi/yazi)
 * **Code Editor:** [Helix](https://github.com/helix-editor/helix)
-* **Font:** [Cascadia Code](https://github.com/microsoft/cascadia-code)
+* **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
 
 
 ## Installation
@@ -40,10 +40,10 @@ sudo dnf copr enable wezfurlong/wezterm-nightly
 
 Then install packages:
 ```sh
-sudo dnf install cmake just python pip rustup  \
-    cascadia-code-nf-fonts google-roboto-fonts \
-    p7zip ImageMagick jq wl-clipboard fd-find  \
-    ripgrep fzf poppler zoxide fish helix wezterm
+sudo dnf install cmake just python pip rustup \
+    p7zip ImageMagick jq wl-clipboard fd-find \
+    ripgrep poppler zoxide fish helix wezterm \
+    fzf jetbrains-mono-fonts-all 
 ```
 
 Setup rust toolchain:
