@@ -67,12 +67,19 @@ function M.merge(config)
     -- appearance options
     config.use_fancy_tab_bar = true
     config.color_scheme = "Kanagawa (Gogh)"
-    config.font = wezterm.font { family = "Cascadia Code NF", }
-    config.font_size = 16
     config.default_cursor_style = "SteadyBlock"
     config.animation_fps = 60
     config.show_tab_index_in_tab_bar = false
     config.custom_block_glyphs = false
+
+    -- font settings
+    config.font = wezterm.font_with_fallback {
+        "JetBrains Mono",
+        "Noto Color Emoji",
+        "Symbols Nerd Font Mono",
+    }
+    config.cell_width = 0.95
+    config.font_size = 15
 
     -- tab bar theming
     config.colors = {
@@ -111,7 +118,12 @@ function M.merge(config)
         active_titlebar_fg = colors.oldWhite,
         inactive_titlebar_fg = colors.oldWhite,
 
-        font = wezterm.font { family = "Roboto", weight = "Bold" },
+        -- tab bar font
+        font = wezterm.font_with_fallback {
+            { family = "Roboto", weight = "Medium" },
+            "Noto Color Emoji",
+            "Symbols Nerd Font Mono",
+        },
         font_size = 13,
     }
 
