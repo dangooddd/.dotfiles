@@ -68,8 +68,9 @@ function M.merge(config)
 
     -- tab movement
     for i = 1, 10 do 
-        table.insert(config.key_tables.TAB, {
+        table.insert(config.keys, {
             key = tostring(i%10),
+            mods = mainMod,
             action = act.Multiple { act.ActivateTab(i-1), act.PopKeyTable }
         })
     end
