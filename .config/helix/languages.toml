@@ -5,6 +5,7 @@ indent = { tab-width = 4, unit = "    " }
 [[language]]
 name = "fish"
 indent = { tab-width = 4, unit = "    "}
+auto-format = false
 
 [[language]]
 name = "zig"
