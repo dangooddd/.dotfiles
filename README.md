@@ -28,7 +28,7 @@ Clone repository:
 git clone https://github.com/dangooddd/.dotfiles.git
 ```
 
-Script will install dotfiles for current user:
+Link configuration files via script:
 ```sh
 cd .dotfiles
 ./install.sh
