@@ -1,11 +1,11 @@
 # `dangooddd`'s linux dotfiles
-> Set of configs for cli tools, terminal, shell and other stuff.
+> Set of configs for cli tools, terminal, shell and other stuff (Fedora).
 
 
 ## Configurations 
 * **Terminal:** [WezTerm](https://github.com/wez/wezterm)
 * **Prompt:** [Starship](https://github.com/starship/starship)
-* **Shell:** [Fish](https://github.com/fish-shell/fish-shell)
+* **Shell:** [Bash](https://www.gnu.org/software/bash/)
 * **TUI file manager:** [Yazi](https://github.com/sxyazi/yazi)
 * **Code Editor:** [Helix](https://github.com/helix-editor/helix)
 * **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
@@ -13,25 +13,29 @@
 
 ## Installation
 
-```bash
+> [!Warning]
+> Method below may be dangerous! 
+> Existed configurations will be moved to $HOME/.local/share/Trash
+> via trash-cli package
+
+Installation script dependencies:
+```sh
+sudo dnf install bash trash-cli git
+```
+
+Clone repository:
+```sh
 git clone https://github.com/dangooddd/.dotfiles.git
 ```
 
-### Via script
-> [!Warning]
-> Method below may be dangerous! Some files from your filesystem can be deleted, so read code and make your decision!
-
-Script will install dotfiles for current user 
-(existing directories will be moved in /path/to/dotfiles/.backup):
-```bash
+Script will install dotfiles for current user:
+```sh
 cd .dotfiles
 ./install.sh
 ```
 
 
 ## Packages
-
-### Fedora Linux
 
 Enable required copr repositories:
 ```sh 
@@ -42,21 +46,13 @@ Then install packages:
 ```sh
 sudo dnf install cmake just python pip rustup \
     p7zip ImageMagick jq wl-clipboard fd-find \
-    ripgrep poppler zoxide fish helix wezterm \
-    fzf jetbrains-mono-fonts-all 
+    ripgrep poppler zoxide helix wezterm fzf  \
+    jetbrains-mono-fonts-all 
 ```
 
 Setup rust toolchain:
 ```sh
-export CARGO_HOME="$HOME"/.cargo
-export RUSTUP_HOME="$HOME"/.rustup
 rustup-init
-```
-
-Change shell to fish:
-```sh
-fish -c "fish_config theme save Kanagawa"
-chsh -s $(which fish); fish
 ```
 
 After that, install cargo packages:
