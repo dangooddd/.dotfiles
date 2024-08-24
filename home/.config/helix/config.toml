@@ -1,0 +1,54 @@
+theme = "kanagawa"
+
+# general
+[editor]
+scrolloff = 4
+popup-border = "all"
+line-number = "relative"
+color-modes = true
+auto-save = true
+auto-completion = true
+preview-completion-insert = false
+auto-pairs = true
+
+[editor.file-picker]
+hidden = false
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "block"
+
+[editor.statusline]
+left   = ["mode", "spacer", "version-control", "diagnostics"]
+center = ["file-name", "file-modification-indicator"]
+right  = ["primary-selection-length", "selections", "position"]
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+
+[editor.lsp]
+display-signature-help-docs = false
+display-inlay-hints = false
+
+[editor.indent-guides]
+render = false
+
+# move line up and down
+[keys.normal]
+A-a = "append_mode"
+a   = [ "move_char_right", "insert_mode" ]
+C-j = [ "extend_to_line_bounds", "delete_selection", "paste_after" ]
+C-k = [ "extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before" ]
+
+# Toggle some options
+[keys.normal."+"]
+h = ":toggle lsp.display-inlay-hints"
+s = ":toggle lsp.auto-signature-help"
+g = ":toggle indent-guides.render"
+p = ":toggle auto-pairs"
+w = ":toggle soft-wrap.enable"
+
+# Better normal mode keybind
+[keys.insert]
+A-ret = "normal_mode"
