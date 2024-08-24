@@ -1,9 +1,0 @@
-# general yazi configuration
-[manager]
-linemode = "size"
-show_hidden = true
-show_symlink = false
-
-[preview]
-max_width = 1920
-max_height = 1080
