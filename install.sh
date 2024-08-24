@@ -14,51 +14,13 @@ function colored {
     printf "$color$2$end"
 }
 
-# directory remove
-# if directory is link, delete link file
-# (linked directory will be fine)
-function ddir {
-    if [ -d "$1" ]; then
-        if [ -L "$1" ]; then
-            rm "$1"
-        else
-            rm -rf "$1"
-        fi
-        colored "red" "# "
-        printf "Remove %s\n" "$1"
-    fi
-}
-
-# directory installation with backup if already exist
-function dinstall {
-    # $1 - src, $2 - dst, $3 - back
-
-    if [ -d "$2" ]; then
-        if [ -d "$3" ]; then
-            ddir "$3"
-        fi
-        mv "$2" "$3"
+# link file or directory
+# $1 - src, $2 - dst
+function link {
+    if [ -e "$2" ]; then
+        trash-put "$2"
         colored "yellow" "* "
-        printf "Move %s to %s\n" "$2" "$3"
-    fi
-
-    colored "green" "+ "
-    printf "Link %s to %s\n\n" "$1" "$2"
-    ln -s "$1" "$2"
-}
-
-# file installation with backup if already exist
-function finstall {
-    # $1 - src, $2 - dst, $3 - back
-    if [ -f "$2" ] || [ -L "$2" ]; then
-        if [ -f "$3" ] || [ -L "$3" ]; then
-            rm "$3"
-            colored "red" "# "
-            printf "Remove %s\n" "$3"
-        fi
-        mv "$2" "$3"
-        colored "yellow" "* "
-        printf "Move %s to %s\n" "$2" "$3"
+        printf "Move %s to trash\n" "$2"
     fi
 
     colored "green" "+ "
@@ -75,32 +37,18 @@ function linkFiles {
     # setup
     local dotfiles
     dotfiles="$(dirname "$(readlink -f "$0")")"
-    mkdir -p "$dotfiles"/.backup/.config
     shopt -s dotglob
     
     # .config
-    for src in "$dotfiles"/.config/*
+    for src in "$dotfiles"/home/.config/*
     do
-        local name
-        name="$(basename "$src")"
-
-        if [ -d "$src" ]; then
-            dinstall "$src" \
-                     "$HOME"/.config/"$name" \
-                     "$dotfiles"/.backup/.config/"$name"
-        fi
-
-        if [ -f "$src" ] || [ -L "$src" ]; then
-            finstall "$src" \
-                     "$HOME"/.config/"$name" \
-                     "$dotfiles"/.backup/.config/"$name"
-        fi
+        link "$src" \
+             "$HOME"/.config/"$(basename "$src")"
     done
 
-    # .wallpapers
-    dinstall "$dotfiles"/.wallpapers \
-             "$HOME"/.wallpapers \
-             "$dotfiles"/.backup/.wallpapers
+    # single files
+    link "$dotfiles"/home/.bashrc \
+         "$HOME"/.bashrc
 
     colored "magenta" "[ "
     colored "red" "Dotfiles installed!"
