@@ -79,6 +79,18 @@ function venv-deactivate {
     fi
 }
 
+function yy() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+        if command -v zoxide &> /dev/null; then
+            zoxide add "$cwd"
+        fi
+        builtin cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+}
+
 if command -v trash &> /dev/null; then
     alias rm="trash"
 fi
