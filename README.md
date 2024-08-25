@@ -47,7 +47,7 @@ Then install packages:
 sudo dnf install cmake just python pip rustup \
     p7zip ImageMagick jq wl-clipboard fd-find \
     ripgrep poppler zoxide helix wezterm fzf  \
-    jetbrains-mono-fonts-all 
+    eza jetbrains-mono-fonts-all 
 ```
 
 Setup rust toolchain:
