@@ -17,7 +17,13 @@ function colored {
 # link file or directory
 # $1 - src, $2 - dst
 function link {
-    if [ -e "$2" ]; then
+    if [[ -L "$2" ]]; then
+        rm "$2"
+        colored "red" "* "
+        printf "Remove %s (link)\n" "$2"
+    fi
+
+    if [[ -e "$2" ]]; then
         trash-put "$2"
         colored "yellow" "* "
         printf "Move %s to trash\n" "$2"
