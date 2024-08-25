@@ -52,6 +52,8 @@ sudo dnf install cmake just python pip rustup \
 
 Setup rust toolchain:
 ```sh
+export RUSTUP_HOME="$HOME"/.rustup
+export CARGO_HOME="$HOME"/.cargo
 rustup-init
 ```
 
