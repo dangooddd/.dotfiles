@@ -8,7 +8,6 @@ local colors = {
     springGreen = "#98BB6C",
     crystalBlue = "#7E9CD8",
     waveAqua2 = "#7AA89F",
-    springGreen = "#98BB6C",
     oldWhite = "#C8C093",
     sumiInk0 = "#16161D",
     sumiInk1 = "#1F1F28",

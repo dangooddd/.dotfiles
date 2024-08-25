@@ -12,6 +12,7 @@ function M.merge(config)
         { key = "f", mods = hardMod, action = act.ActivateKeyTable { name = "FONT", one_shot = false} },
         { key = "v", mods = hardMod, action = act.PasteFrom "Clipboard" },
         { key = "c", mods = hardMod, action = act.CopyTo "ClipboardAndPrimarySelection" },
+        { key = "l", mods = hardMod, action = act.ShowLauncherArgs { flags = "WORKSPACES" } },
         -- main
         { key = "e", mods = mainMod, action = act.ActivateKeyTable { name = "PANE", one_shot = false } },
         { key = "r", mods = mainMod, action = act.ActivateKeyTable { name = "RESIZE", one_shot = false } },
