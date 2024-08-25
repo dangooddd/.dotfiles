@@ -56,7 +56,7 @@ shopt -s checkwinsize
 # == Aliases and functions ==
 function auto-venv-toggle {
     if [[ -z "$__auto_venv_stop" ]]; then
-        __auto_venv_stop="1"
+        __auto_venv_stop="Y"
     else
         __auto_venv_stop=""
     fi
@@ -104,6 +104,10 @@ function venv-deactivate {
         deactivate
     fi
 }
+
+if command -v trash &> /dev/null; then
+    alias rm="trash"
+fi
 
 if command -v rg &> /dev/null; then
     alias grep="rg"
