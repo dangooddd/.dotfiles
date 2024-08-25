@@ -17,33 +17,6 @@ addPath "$HOME/.local/bin"
 addPath "$HOME/.cargo/bin"
 
 
-# == Init and env ==
-if command -v zoxide &> /dev/null; then
-    eval "$(zoxide init bash)"
-fi
-
-if command -v starship &> /dev/null; then
-    eval "$(starship init bash)"
-fi
-
-if command -v fzf &> /dev/null; then
-    eval "$(fzf --bash)"
-fi
-
-if command -v hx &> /dev/null; then
-    export VISUAL="hx"
-    export EDITOR="hx"
-fi
-
-export FZF_DEFAULT_OPTS="--ansi --layout=reverse --height 10 \
-                         --border=sharp"
-export RUSTUP_HOME="$HOME"/.rustup
-export CARGO_HOME="$HOME"/.cargo
-export PAGER="less"
-export LESS="--tilde -RFXS"
-export RIPGREP_CONFIG_PATH="$HOME"/.config/ripgrep/config
-
-
 # == Bash options ==
 export HISTSIZE=500
 export HISTFILESIZE=10000
@@ -51,6 +24,7 @@ export HISTTIMEFORMAT="%F %T "
 export HISTCONTROL="erasedups:ignoreboth"
 shopt -s histappend
 shopt -s checkwinsize
+shopt -s expand_aliases
 
 
 # == Aliases and functions ==
@@ -113,6 +87,22 @@ if command -v rg &> /dev/null; then
     alias grep="rg"
 fi
 
+if command -v exa &> /dev/null; then
+    alias ls="exa --classify \
+                  --group-directories-first"
+
+    alias ll="exa --classify \
+                  --group-directories-first \
+                  --almost-all \
+                  --long \
+                  --git \
+                  --header \
+                  --no-filesize \
+                  --no-permissions \
+                  --time-style='+%y-%m-%d %H:%M' \
+                  --no-user" 
+fi
+
 alias clear="clear; __bash_empty_prompt="""
 alias avt="auto-venv-toggle"
 alias vu="venv-update"
@@ -139,3 +129,39 @@ function __precmd_func {
 }
 
 starship_precmd_user_func="__precmd_func"
+
+
+# == Init and env ==
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init bash)"
+    function cd {
+        __zoxide_z "$@"
+        ls -A
+    }
+else 
+    function cd {
+        command cd "$@"
+        ls -A
+    }
+fi
+
+if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
+fi
+
+if command -v fzf &> /dev/null; then
+    eval "$(fzf --bash)"
+fi
+
+if command -v hx &> /dev/null; then
+    export VISUAL="hx"
+    export EDITOR="hx"
+fi
+
+export FZF_DEFAULT_OPTS="--ansi --layout=reverse --height 10 \
+                         --border=sharp"
+export RUSTUP_HOME="$HOME"/.rustup
+export CARGO_HOME="$HOME"/.cargo
+export PAGER="less"
+export LESS="--tilde -RFXS"
+export RIPGREP_CONFIG_PATH="$HOME"/.config/ripgrep/config
