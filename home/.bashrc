@@ -1,5 +1,26 @@
 # .bashrc
 
+# == Prompt ==
+function __custom_precmd_func {
+    # empty line between prompts
+    if [[ -z "$__bash_empty_prompt" ]]; then
+        __bash_empty_prompt="1"
+    else
+        echo ""
+    fi
+
+    # window title
+    echo -ne "\e]0;${PWD/#$HOME/\~}\a"
+
+    # auto-venv
+    if [[ -z "$__auto_venv_stop" ]]; then
+        venv-update
+    fi
+}
+
+PROMPT_COMMAND=("__custom_precmd_func" "${PROMPT_COMMAND[@]}")
+
+
 # == Global definitions ==
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
@@ -24,7 +45,6 @@ export HISTTIMEFORMAT="%F %T "
 export HISTCONTROL="erasedups:ignoreboth"
 shopt -s histappend
 shopt -s checkwinsize
-shopt -s expand_aliases
 
 
 # == Aliases and functions ==
@@ -79,41 +99,19 @@ function venv-deactivate {
     fi
 }
 
-function yy() {
-    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-    yazi "$@" --cwd-file="$tmp"
-    if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-        if command -v zoxide &> /dev/null; then
-            zoxide add "$cwd"
-        fi
-        builtin cd -- "$cwd"
-    fi
-    rm -f -- "$tmp"
-}
+alias la="exa --classify \
+              --group-directories-first \
+              --almost-all"
 
-if command -v trash &> /dev/null; then
-    alias rm="trash"
-fi
-
-if command -v rg &> /dev/null; then
-    alias grep="rg"
-fi
-
-if command -v exa &> /dev/null; then
-    alias ls="exa --classify \
-                  --group-directories-first"
-
-    alias ll="exa --classify \
-                  --group-directories-first \
-                  --almost-all \
-                  --long \
-                  --git \
-                  --header \
-                  --no-filesize \
-                  --no-permissions \
-                  --time-style='+%y-%m-%d %H:%M' \
-                  --no-user" 
-fi
+alias l="exa --classify \
+             --group-directories-first \
+             --almost-all \
+             --long \
+             --git \
+             --header \
+             --no-time \
+             --no-filesize \
+             --no-user" 
 
 alias clear="clear; __bash_empty_prompt="""
 alias avt="auto-venv-toggle"
@@ -122,49 +120,7 @@ alias va="venv-activate"
 alias vd="venv-deactivate"
 
 
-# == Prompt ==
-function __precmd_func {
-    # empty line between prompts
-    if [[ -z "$__bash_empty_prompt" ]]; then
-        __bash_empty_prompt="1"
-    else
-        echo ""
-    fi
-
-    # window title
-    echo -ne "\e]0;${PWD/$HOME/\~}\a"
-
-    # auto-venv
-    if [[ -z "$__auto_venv_stop" ]]; then
-        venv-update
-    fi
-}
-
-starship_precmd_user_func="__precmd_func"
-
-
 # == Init and env ==
-if command -v zoxide &> /dev/null; then
-    eval "$(zoxide init bash)"
-    function cd {
-        __zoxide_z "$@"
-        ls -A
-    }
-else 
-    function cd {
-        command cd "$@"
-        ls -A
-    }
-fi
-
-if command -v starship &> /dev/null; then
-    eval "$(starship init bash)"
-fi
-
-if command -v fzf &> /dev/null; then
-    eval "$(fzf --bash)"
-fi
-
 if command -v hx &> /dev/null; then
     export VISUAL="hx"
     export EDITOR="hx"
@@ -177,3 +133,15 @@ export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
 export LESS="--tilde -RFXS"
 export RIPGREP_CONFIG_PATH="$HOME"/.config/ripgrep/config
+
+if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
+fi
+
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init bash)"
+fi
+
+if command -v fzf &> /dev/null; then
+    eval "$(fzf --bash)"
+fi
