@@ -4,7 +4,7 @@
 
 ## Configurations 
 * **Terminal:** [WezTerm](https://github.com/wez/wezterm)
-* **Prompt:** [Starship](https://github.com/starship/starship)
+* **Prompt:** Custom bash prompt
 * **Shell:** [Bash](https://www.gnu.org/software/bash/)
 * **TUI file manager:** [Yazi](https://github.com/sxyazi/yazi)
 * **Code Editor:** [Helix](https://github.com/helix-editor/helix)
