@@ -59,7 +59,6 @@ rustup-init
 
 After that, install cargo packages:
 ```sh
-cargo install --locked starship
 cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
 ```
 
