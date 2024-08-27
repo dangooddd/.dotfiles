@@ -1,10 +1,13 @@
 # .bashrc
 
 # == Prompt ==
-function __custom_precmd_func {
+function __precmd_hook {
+    # exit code
+    __exit_code=$?
+
     # empty line between prompts
     if [[ -z "$__bash_empty_prompt" ]]; then
-        __bash_empty_prompt="1"
+        __bash_empty_prompt="Y"
     else
         echo ""
     fi
@@ -18,7 +21,39 @@ function __custom_precmd_func {
     fi
 }
 
-PROMPT_COMMAND=("__custom_precmd_func" "${PROMPT_COMMAND[@]}")
+function __status_prompt_module {
+    local status=""
+    if ! [[ -z "$VIRTUAL_ENV" ]]; then
+        status+=" v"
+    fi
+
+    if command git rev-parse &> /dev/null; then
+        status+=" g"
+    fi
+
+    if ! [[ -z "$status" ]]; then
+        status+=" "
+    fi
+
+    echo "$status"
+}
+
+function __char_prompt_module {
+    if [[ $__exit_code -eq 0 ]]; then
+        echo ' $ '
+    else
+        echo ' # '
+    fi
+}
+
+VIRTUAL_ENV_DISABLE_PROMPT="Y"
+PROMPT_COMMAND=("__precmd_hook" "${PROMPT_COMMAND[@]}")
+PS1='\[\e[48;2;192;163;110m\]\[\e[38;2;31;31;40m\] \W \[\e[0m\]\
+\[\e[48;2;54;54;70m\]\[\e[38;2;192;163;110m\]\[\e[0m\]\
+\[\e[48;2;54;54;70m\]\[\e[38;2;184;180;208m\]$(__status_prompt_module)\[\e[0m\]\
+\[\e[48;2;149;127;184m\]\[\e[38;2;54;54;70m\]\[\e[0m\]\
+\[\e[48;2;149;127;184m\]\[\e[38;2;31;31;40m\]$(__char_prompt_module)\[\e[0m\]\
+\[\e[38;2;149;127;184m\]\[\e[0m\] '
 
 
 # == Global definitions ==
@@ -113,6 +148,11 @@ alias l="exa --classify \
              --no-filesize \
              --no-user" 
 
+alias rg="rg --smart-case \
+             --hidden \
+             --glob=!./git \
+             --pretty"
+
 alias clear="clear; __bash_empty_prompt="""
 alias avt="auto-venv-toggle"
 alias vu="venv-update"
@@ -132,11 +172,6 @@ export RUSTUP_HOME="$HOME"/.rustup
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
 export LESS="--tilde -RFXS"
-export RIPGREP_CONFIG_PATH="$HOME"/.config/ripgrep/config
-
-if command -v starship &> /dev/null; then
-    eval "$(starship init bash)"
-fi
 
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init bash)"
