@@ -7,6 +7,7 @@ theme = "kanagawa"
 scrolloff = 4
 popup-border = "all"
 line-number = "relative"
+undercurl = true
 color-modes = true
 auto-save = true
 auto-completion = true
