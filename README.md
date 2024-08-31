@@ -3,9 +3,9 @@
 
 
 ## Configurations 
-* **Terminal:** [WezTerm](https://github.com/wez/wezterm)
+* **Terminal:** [foot](https://codeberg.org/dnkl/foot)
 * **Prompt:** Custom bash prompt
-* **Shell:** [Bash](https://www.gnu.org/software/bash/)
+* **Shell:** [bash](https://www.gnu.org/software/bash/)
 * **TUI file manager:** [Yazi](https://github.com/sxyazi/yazi)
 * **Code Editor:** [Helix](https://github.com/helix-editor/helix)
 * **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
@@ -37,16 +37,11 @@ cd .dotfiles
 
 ## Packages
 
-Enable required copr repositories:
-```sh 
-sudo dnf copr enable wezfurlong/wezterm-nightly
-```
-
-Then install packages:
+Install packages via dnf:
 ```sh
-sudo dnf install cmake just python pip rustup \
-    p7zip ImageMagick jq wl-clipboard fd-find \
-    ripgrep poppler zoxide helix wezterm fzf  \
+sudo dnf install cmake just python pip rustup  \
+    p7zip ImageMagick jq wl-clipboard fd-find  \
+    ripgrep poppler zoxide helix foot tmux fzf \
     eza jetbrains-mono-fonts-all 
 ```
 
