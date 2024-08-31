@@ -113,37 +113,18 @@ function venv-update {
     fi
 
     if ! [[ -z "$VIRTUAL_ENV" ]] &&
+        ! [[ "$(type -t deactivate)" == "function" ]]; then
+        . "$VIRTUAL_ENV"/bin/activate
+    fi
+
+    if ! [[ -z "$VIRTUAL_ENV" ]] &&
         [[ "$(dirname "$VIRTUAL_ENV")" != "$PWD" ]] &&
         [[ -e "$venv" ]]; then
-        deactivate
         . "$venv"
     fi
 
     if ! [[ -z "$VIRTUAL_ENV" ]] &&
         ! [[ "$PWD" =~ "$(dirname "$VIRTUAL_ENV")" ]]; then
-        deactivate
-    fi
-}
-
-function venv-activate {
-    local venv="./.venv/bin/activate"
-    if ! [[ -e "$venv" ]]; then
-        echo "venv-activate: can not find venv"
-        return 1
-    fi
-
-    if [[ -z "$VIRTUAL_ENV" ]]; then
-        . "$venv"
-    else
-        deactivate
-        . "$venv"
-    fi
-
-    return 0
-}
-
-function venv-deactivate {
-    if ! [[ -z "$VIRTUAL_ENV" ]]; then
         deactivate
     fi
 }
@@ -168,10 +149,6 @@ alias rg="rg --smart-case \
              --pretty"
 
 alias clear="clear; __bash_empty_prompt="""
-alias avt="auto-venv-toggle"
-alias vu="venv-update"
-alias va="venv-activate"
-alias vd="venv-deactivate"
 
 
 #======================================
