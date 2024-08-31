@@ -54,7 +54,8 @@ function __char_prompt_module {
 
 VIRTUAL_ENV_DISABLE_PROMPT="Y"
 PROMPT_COMMAND=("__precmd_hook" "${PROMPT_COMMAND[@]}")
-PS1='\[\e[48;2;230;195;132m\]\[\e[38;2;31;31;40m\]$(__pwd_prompt_module)\[\e[0m\]\
+PS1='\[\e[0m\]\
+\[\e[48;2;230;195;132m\]\[\e[38;2;31;31;40m\]$(__pwd_prompt_module)\[\e[0m\]\
 \[\e[48;2;54;54;70m\]\[\e[38;2;230;195;132m\]\[\e[0m\]\
 \[\e[48;2;54;54;70m\]\[\e[38;2;184;180;208m\]$(__status_prompt_module)\[\e[0m\]\
 \[\e[48;2;184;180;208m\]\[\e[38;2;54;54;70m\]\[\e[0m\]\
@@ -138,10 +139,10 @@ alias l="exa --classify \
              --almost-all \
              --long \
              --git \
-             --header \
              --no-time \
              --no-filesize \
-             --no-user" 
+             --no-user \
+             --no-permissions" 
 
 alias rg="rg --smart-case \
              --hidden \
