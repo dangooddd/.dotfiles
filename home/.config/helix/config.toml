@@ -1,6 +1,8 @@
 theme = "kanagawa"
 
-# general
+#======================================
+# General
+#======================================
 [editor]
 scrolloff = 4
 popup-border = "all"
@@ -34,7 +36,9 @@ display-inlay-hints = false
 [editor.indent-guides]
 render = false
 
-# move line up and down
+#======================================
+# Keybinds
+#======================================
 [keys.normal]
 A-a = "append_mode"
 a   = [ "move_char_right", "insert_mode" ]
