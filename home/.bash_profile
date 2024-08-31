@@ -1,6 +1,8 @@
 # .bash_profile
 
-# == Source .bashrc ==
+#======================================
+# Source .bashrc
+#======================================
 if [ -f ~/.bashrc ]; then
     . ~/.bashrc
 fi
