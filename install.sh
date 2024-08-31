@@ -53,8 +53,13 @@ function linkFiles {
     done
 
     # single files
-    link "$dotfiles"/home/.bashrc \
-         "$HOME"/.bashrc
+    for src in "$dotfiles"/home/*
+    do 
+        if [[ -f "$src" ]]; then
+            link "$src" \
+                 "$HOME"/"$(basename "$src")"
+        fi
+    done
 
     colored "magenta" "[ "
     colored "red" "Dotfiles installed!"
