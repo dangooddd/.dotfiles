@@ -6,7 +6,6 @@
 * **Terminal:** [foot](https://codeberg.org/dnkl/foot)
 * **Prompt:** Custom bash prompt
 * **Shell:** [bash](https://www.gnu.org/software/bash/)
-* **TUI file manager:** [Yazi](https://github.com/sxyazi/yazi)
 * **Code Editor:** [Helix](https://github.com/helix-editor/helix)
 * **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
 
@@ -14,14 +13,7 @@
 ## Installation
 
 > [!Warning]
-> Method below may be dangerous! 
-> Existed configurations will be moved to $HOME/.local/share/Trash
-> via trash-cli package
-
-Installation script dependencies:
-```sh
-sudo dnf install bash trash-cli git
-```
+> Move existing file manually, script will not touch them.
 
 Clone repository:
 ```sh
@@ -39,28 +31,10 @@ cd .dotfiles
 
 Install packages via dnf:
 ```sh
-sudo dnf install cmake just python pip rustup  \
-    p7zip ImageMagick jq wl-clipboard fd-find  \
-    ripgrep poppler zoxide helix foot tmux fzf \
-    eza jetbrains-mono-fonts-all 
-```
-
-Setup rust toolchain:
-```sh
-export RUSTUP_HOME="$HOME"/.rustup
-export CARGO_HOME="$HOME"/.cargo
-rustup-init
-```
-
-After that, install cargo packages:
-```sh
-cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
-```
-
-Then install yazi plugins:
-```sh
-ya pack -a yazi-rs/plugins#full-border
-ya pack -a dangooddd/kanagawa
+sudo dnf install cmake just python pip \
+    p7zip wl-clipboard fd-find fzf jq \
+    helix foot tmux zoxide ripgrep \
+    jetbrains-mono-fonts-all 
 ```
 
 
