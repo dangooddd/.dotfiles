@@ -13,7 +13,7 @@
 ## Installation
 
 > [!Warning]
-> Move existing file manually, script will not touch them.
+> Move existing files and directories manually, script will not touch them.
 
 Clone repository:
 ```sh
