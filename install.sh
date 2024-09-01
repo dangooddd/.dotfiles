@@ -1,72 +1,44 @@
 #!/usr/bin/env bash
 
-# colored output
-function colored {
-    local color
-    local end
-    case "$1" in
-        "red") color="\e[0;31m";;
-        "green") color="\e[0;32m";;
-        "magenta") color="\e[0;35m";;
-        "yellow") color="\e[1;33m";;
-    esac
-    end="\e[0m"
-    printf "$color$2$end"
-}
-
-# link file or directory
-# $1 - src, $2 - dst
+# $1 - source
+# $2 - destination
 function link {
-    if [[ -L "$2" ]]; then
-        rm "$2"
-        colored "red" "* "
-        printf "Remove %s (link)\n" "$2"
-    fi
-
-    if [[ -e "$2" ]]; then
-        trash-put "$2"
-        colored "yellow" "* "
-        printf "Move %s to trash\n" "$2"
-    fi
-
-    colored "green" "+ "
-    printf "Link %s to %s\n\n" "$1" "$2"
-    ln -s "$1" "$2"
-}
-
-# link configuration files
-function linkFiles {
-    colored "magenta" "\n[ "
-    colored "red" "Installing dangooddd dotfiles"
-    colored "magenta" " ]\n\n"
-
-    # setup
-    local dotfiles
-    dotfiles="$(dirname "$(readlink -f "$0")")"
-    shopt -s dotglob
+    local src="${1/#$HOME/\~}"
+    local dst="${2/#$HOME/\~}"
     
-    # .config
-    for src in "$dotfiles"/home/.config/*
-    do
-        link "$src" \
-             "$HOME"/.config/"$(basename "$src")"
-    done
+    if [[ -L "$2" ]] && 
+        [[ "$(readlink -f "$2")" == "$1" ]]; then
+        echo "CHECK: $dst linked correctly"
+        return
+    fi
+    
+    if [[ -e "$2" ]]; then
+        echo "WARNING: $dst exist (skip)"
+        return
+    fi
 
-    # single files
-    for src in "$dotfiles"/home/*
-    do 
-        if [[ -f "$src" ]]; then
-            link "$src" \
-                 "$HOME"/"$(basename "$src")"
-        fi
-    done
-
-    colored "magenta" "[ "
-    colored "red" "Dotfiles installed!"
-    colored "magenta" " ]\n"
+    ln -s "$1" "$2"
+    echo "LINK: $dst -> $src"
 }
 
-# install
-case "$1" in
-    *) linkFiles ;;
-esac
+
+# create directories that should not be links
+mkdir -p "$HOME"/.config
+
+# linking
+DOTFILES="$(dirname "$(realpath "$0")")"
+shopt -s dotglob
+
+# $HOME/.config/*
+for src in "$DOTFILES"/home/.config/*
+do
+    link "$src" "$HOME"/.config/"$(basename "$src")" 
+done
+
+# $HOME/*
+for src in "$DOTFILES"/home/*
+do
+    if [[ -f "$src" ]]; then
+        link "$src" "$HOME"/"$(basename "$src")"
+    fi
+done
