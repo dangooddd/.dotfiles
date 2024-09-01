@@ -130,26 +130,76 @@ function venv-update {
     fi
 }
 
-alias la="exa --classify \
-              --group-directories-first \
-              --almost-all"
+function ls {
+    command ls --group-directories-first \
+               --color=auto "$@"
+}
 
-alias l="exa --classify \
-             --group-directories-first \
-             --almost-all \
-             --long \
-             --git \
-             --no-time \
-             --no-filesize \
-             --no-user \
-             --no-permissions" 
+function clear {
+    command clear
+    __bash_empty_prompt=""
+}
+
+function yank {
+    for val in "$@"
+    do 
+        if [[ "$val" == "-c" ]]; then
+            __yank_source=()
+            return 0
+        fi
+
+        if [[ "$val" == "-l" ]]; then
+            for each in "${__yank_source[@]}"
+            do
+                echo "$each"
+            done
+            return 0
+        fi
+
+        local realval="$(readlink -f "$val")"
+        if [[ -e "$realval" ]]; then
+            __yank_source+=("$realval")
+        fi
+    done
+}
+
+function paste {
+    for opt in "$@"
+    do
+        if [[ "$opt" == "-q" ]]; then
+            local quiet="Y"
+        fi
+
+        if [[ "$opt" == "-x" ]]; then
+            local insert="Y"
+        fi
+    done
+
+    for src in "${__yank_source[@]}"
+    do
+        if ! [[ -z "$insert" ]]; then
+            mv -i "$src" ./
+        else
+            cp -ir "$src" ./
+        fi
+    done
+    __yank_source=()
+
+    if [[ -z "$quiet" ]]; then
+        ls -Av
+    fi
+}
+
+alias la="ls -Av"
+
+alias ll="ls -Alv"
 
 alias rg="rg --smart-case \
              --hidden \
              --glob=!./git \
              --pretty"
 
-alias clear="clear; __bash_empty_prompt="""
+alias c="clear"
 
 
 #======================================
@@ -169,6 +219,9 @@ export LESS="--tilde -RFXS"
 
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init bash)"
+    function zd {
+        __zoxide_z "$@" && ls -Av
+    }
 fi
 
 if command -v fzf &> /dev/null; then
