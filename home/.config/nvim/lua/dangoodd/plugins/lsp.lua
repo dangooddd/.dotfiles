@@ -1,23 +1,24 @@
 return {
-    "neovim/nvim-lspconfig",
-    dependencies = {
+    {
         "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-        "hrsh7th/cmp-cmdline",
-        "hrsh7th/nvim-cmp",
+        dependencies = {
+            "williamboman/mason-lspconfig.nvim",
+            "neovim/nvim-lspconfig",
+        },
+        lazy = false,
+        config = function()
+            require("mason").setup()
+            require("mason-lspconfig").setup({
+                ensure_installed = {
+                    "pylsp",
+                },
+                handlers = {
+                    -- default handler
+                    function(server_name)
+                        require("lspconfig")[server_name].setup({})
+                    end,
+                },
+            })
+        end,
     },
-    lazy = false,
-    config = function()
-        require("mason").setup()
-        require("mason").setup({
-            ensure_installed = {
-                "pylsp",
-            }
-        })
-        local cmp = require("cmp")
-        cmp.setup({})
-    end,
 }

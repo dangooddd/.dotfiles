@@ -8,8 +8,8 @@ return {
                 layout_config = { 
                     prompt_position = "top",
                 },
-                sorting_strategy = "ascending"
-            }
+                sorting_strategy = "ascending",
+            },
         })
         local builtin = require("telescope.builtin")
         vim.keymap.set("n", "<leader>ff", builtin.find_files, {})

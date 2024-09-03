@@ -23,4 +23,8 @@ require("lazy").setup({
         missing = true,
         colorscheme = { "kanagawa" },
     },
+    change_detection = {
+        enable = true,
+        notify = false,
+    },
 })
