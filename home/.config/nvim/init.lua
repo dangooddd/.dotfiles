@@ -1,0 +1,2 @@
+-- load config
+require("dangoodd")
