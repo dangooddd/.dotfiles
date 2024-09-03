@@ -210,8 +210,11 @@ if command -v hx &> /dev/null; then
     export EDITOR="hx"
 fi
 
-export FZF_DEFAULT_OPTS="--ansi --layout=reverse --height 10 \
+export FZF_DEFAULT_OPTS="--layout=reverse \
+                         --height 10 \
+                         --ansi \
                          --border=sharp"
+
 export RUSTUP_HOME="$HOME"/.rustup
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
