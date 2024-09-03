@@ -8,7 +8,7 @@ function link {
     
     if [[ -L "$2" ]] && 
         [[ "$(readlink -f "$2")" == "$1" ]]; then
-        echo "CHECK: $dst linked correctly"
+        echo "CHECK: $dst installed"
         return
     fi
     
@@ -21,21 +21,18 @@ function link {
     echo "LINK: $dst -> $src"
 }
 
-
-# create directories that should not be links
+# setup
 mkdir -p "$HOME"/.config
-
-# linking
 DOTFILES="$(dirname "$(realpath "$0")")"
 shopt -s dotglob
 
-# $HOME/.config/*
+# ~/.config/*
 for src in "$DOTFILES"/home/.config/*
 do
     link "$src" "$HOME"/.config/"$(basename "$src")" 
 done
 
-# $HOME/*
+# ~/*
 for src in "$DOTFILES"/home/*
 do
     if [[ -f "$src" ]]; then
