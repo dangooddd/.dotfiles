@@ -16,9 +16,10 @@ return {
                     return name == ".."
                 end,
             },
+            float = {
+                preview_split = "right",
+            }
         })
-
-        vim.keymap.set("n", "<leader>oo", require("oil").open)
-        vim.keymap.set("n", "<leader>oc", require("oil").close)
+        vim.keymap.set("n", "<leader>o", require("oil").toggle_float)
     end,
 }

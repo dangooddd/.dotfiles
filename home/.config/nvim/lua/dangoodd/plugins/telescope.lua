@@ -7,6 +7,9 @@ return {
                 layout_strategy = "horizontal",
                 layout_config = { 
                     prompt_position = "top",
+                    horizontal = {
+                        preview_cutoff = 40
+                    }
                 },
                 sorting_strategy = "ascending",
             },

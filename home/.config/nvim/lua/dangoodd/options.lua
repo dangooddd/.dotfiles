@@ -13,6 +13,8 @@ opt.undofile = true
 opt.signcolumn = "yes"
 opt.cursorline = true
 opt.cursorlineopt = "number"
+opt.wrap = false
+opt.pumheight = 10
 
 -- tabs
 opt.tabstop = 4        -- 1 tab represented as 4 spaces
@@ -21,6 +23,6 @@ opt.shiftwidth = 4     -- indent change after backspace and >> <<
 opt.softtabstop = 4    -- number of spaces instead of tab 
 opt.smartindent = true -- auto indent
 
--- leader
+-- global
 vim.g.mapleader = " "
 vim.g.maplocal = "\\"
