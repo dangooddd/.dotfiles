@@ -18,6 +18,6 @@ return {
             },
             float = { preview_split = "right" },
         })
-        vim.keymap.set("n", "<leader>o", require("oil").toggle_float)
+        vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
     end,
 }

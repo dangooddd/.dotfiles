@@ -1,3 +1,4 @@
 require("dangoodd.options")
-require("dangoodd.keybinds")
+require("dangoodd.remap")
+require("dangoodd.status")
 require("dangoodd.lazy")

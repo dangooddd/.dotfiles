@@ -18,7 +18,6 @@ require("lazy").setup({
     spec = { 
         { import = "dangoodd.plugins" } 
     },
-    lockfile = vim.fn.stdpath("config") .. "/lua/dangoodd/lazy-lock.json",
     install = {
         missing = true,
         colorscheme = { "kanagawa" },

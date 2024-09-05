@@ -16,10 +16,6 @@ return {
             local cmp = require("cmp")
             -- extend capabilities of nvim in lsp completion
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
-            local handlers =  {
-                ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
-                ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
-            }
 
             require("mason").setup({
                 ui = { border = "rounded" },
@@ -36,7 +32,21 @@ return {
                     function(server_name)
                         require("lspconfig")[server_name].setup({
                             capabilities = capabilities, 
+                        })
+                    end,
+
+                    ["pylsp"] = function()
+                        require("lspconfig")["pylsp"].setup({
+                            capabilities = capabilities,
                             handlers = handlers,
+                            settings = {
+                                pylsp = {
+                                    plugins = {
+                                        yapf = { enabled = true },
+                                        autopep8 = { enabled = false },
+                                    }
+                                },
+                            },
                         })
                     end,
                 },
@@ -58,10 +68,6 @@ return {
 
                         return item
                     end,
-                },
-                window = {
-                    completion = cmp.config.window.bordered(),
-                    documentation = cmp.config.window.bordered(),
                 },
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },
@@ -90,9 +96,6 @@ return {
         "stevearc/conform.nvim",
         config = function()
             require("conform").setup({
-                formatters_by_ft = {
-                    python = { "yapf" },
-                },
                 format_on_save = {
                     timeout_ms = 500,
                     lsp_format = "fallback",
