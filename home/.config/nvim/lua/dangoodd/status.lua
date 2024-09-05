@@ -43,6 +43,9 @@ end
 local function filename()
     local path = vim.fn.expand("%:t")
     if path == "" then
+        path = vim.fn.fnamemodify(vim.fn.expand("%"), ":~:.:h")
+    end
+    if path == "" then
         return " %m%r "
     end
     return string.format(" %%.30{'%s'} %%m%%r ", path)
