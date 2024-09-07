@@ -53,11 +53,34 @@ return {
             })
 
             -- init completion system
+            cmp_select = { behavior = cmp.SelectBehavior.Insert } 
+            cmp_confirm = { behavior = cmp.ConfirmBehavior.Replace }
             cmp.setup({
-                mapping = cmp.mapping.preset.insert({
-                    ["<C-y>"] = cmp.mapping.confirm({ select = true })
-                }),
+                mapping = {
+                    ["<C-n>"] = cmp.mapping({
+                        i = cmp.mapping.select_next_item(cmp_select)
+                    }),
+                    ["<C-p>"] = cmp.mapping({
+                        i = cmp.mapping.select_prev_item(cmp_select)
+                    }),
+                    ["<C-e>"] = cmp.mapping({
+                        i = cmp.mapping.abort(),
+                    }),
+                    ["<C-CR>"] = cmp.mapping({
+                        i = cmp.mapping.complete(),
+                    }),
+                    ["<CR>"] = cmp.mapping({
+                        i = function(fallback)
+                            if cmp.visible() and cmp.get_active_entry() then
+                                cmp.confirm(cmp_confirm)
+                            else
+                                fallback()
+                            end
+                        end,
+                    }),
+                },
                 formatting = {
+                    -- truncate long lsp items
                     format = function(_, item)
                         local content = item.abbr
                         local max_lenght = 25
@@ -71,19 +94,63 @@ return {
                 },
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },
-                    { nama = "buffer" },
+                    { name = "buffer" },
                 }),
             })
 
             cmp.setup.cmdline({ "/", "?" }, {
-                mapping = cmp.mapping.preset.cmdline(),
+                mapping = {
+                    ["<C-n>"] = cmp.mapping({
+                        c = cmp.mapping.select_next_item(cmp_select)
+                    }),
+                    ["<C-p>"] = cmp.mapping({
+                        c = cmp.mapping.select_prev_item(cmp_select)
+                    }),
+                    ["<C-e>"] = cmp.mapping({
+                        c = cmp.mapping.abort(),
+                    }),
+                    ["<C-CR>"] = cmp.mapping({
+                        c = cmp.mapping.complete(),
+                    }),
+                    ["<CR>"] = cmp.mapping({
+                        c = function(fallback)
+                            if cmp.visible() and cmp.get_active_entry() then
+                                cmp.confirm(cmp_confirm)
+                            else
+                                fallback()
+                            end
+                        end,
+                    }),
+                },
                 sources = cmp.config.sources({
                     { name = "buffer" },
                 }),
             })
 
             cmp.setup.cmdline(":", {
-                mapping = cmp.mapping.preset.cmdline(),
+                mapping = {
+                    ["<C-n>"] = cmp.mapping({
+                        c = cmp.mapping.select_next_item(cmp_select)
+                    }),
+                    ["<C-p>"] = cmp.mapping({
+                        c = cmp.mapping.select_prev_item(cmp_select)
+                    }),
+                    ["<C-e>"] = cmp.mapping({
+                        c = cmp.mapping.abort(),
+                    }),
+                    ["<C-CR>"] = cmp.mapping({
+                        c = cmp.mapping.complete(),
+                    }),
+                    ["<CR>"] = cmp.mapping({
+                        c = function(fallback)
+                            if cmp.visible() and cmp.get_active_entry() then
+                                cmp.confirm(cmp_confirm)
+                            else
+                                fallback()
+                            end
+                        end,
+                    }),
+                },
                 sources = cmp.config.sources({
                     { name = "path" },
                     { name = "cmdline" },

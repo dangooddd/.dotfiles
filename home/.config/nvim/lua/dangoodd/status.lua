@@ -37,79 +37,67 @@ local function mode()
         ["!"] = "SHELL",
         ["t"] = "TERMINAL",
     }
-    return string.format(" %s ", map[vim.api.nvim_get_mode().mode] or "IDK")
+    local mode_name = map[vim.api.nvim_get_mode().mode] or "IDK" 
+    return  " "..mode_name.." "
+end
+
+local function diagnostic()
+      local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+      if errors > 0 then
+        return string.format(" [E:%s] ", errors)
+      end
+
+      local warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+      if warnings > 0 then
+        return string.format(" [W:%s] ", warnings)
+      end
+
+      return ""
 end
 
 local function filename()
-    local path = vim.fn.expand("%:t")
-    if path == "" then
-        path = vim.fn.fnamemodify(vim.fn.expand("%"), ":~:.:h")
-    end
-    if path == "" then
-        return " %m%r "
-    end
-    return string.format(" %%.30{'%s'} %%m%%r ", path)
+    return " %.60F %m%r "
 end
 
 local function position()
     return " %l:%c "
 end
 
-local function align()
-    return "%="
-end
-
 local function filetype()
     local type = vim.bo.filetype
     if type == "" then
         return ""
-    end
+    end 
+
     return string.format(" %s ", type)
 end
 
 local function location()
-    return " %p%% "
+    return " %P "
 end
 
-local function fullpath()
-    return " %.60F "
-end
-
-function status_normal()
+function statusline()
     return table.concat({
+        "%#StatusLine#",
         mode(),
         filename(),
-        align(),
+        "%=",
+        diagnostic(),
+        position(),
         filetype(),
         location(),
-        position(),
     })
 end
 
-function status_short()
-    return table.concat({
-        align(),
-        fullpath(),
-        align(),
-    })
-end
+vim.opt.laststatus = 3
+vim.opt.statusline = "%!v:lua.statusline()"
 
-local augroup = vim.api.nvim_create_augroup 
-local autocmd = vim.api.nvim_create_autocmd
-local status_group = augroup("StatusLine", {})
-
-autocmd({ "WinEnter", "BufEnter" }, {
-    group = status_group,
+-- auto update diagnostic
+vim.api.nvim_create_augroup("StatusLine", {})
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
+    group = "StatusLine",
     pattern = "*",
     callback = function()
-        vim.opt_local.statusline = "%!v:lua.status_normal()" 
-    end,
-})
-
-autocmd({ "WinLeave", "BufLeave" }, {
-    group = status_group,
-    pattern = "*",
-    callback = function()
-        vim.opt_local.statusline = "%!v:lua.status_short()" 
+        vim.opt.statusline = "%!v:lua.statusline()"
     end,
 })
