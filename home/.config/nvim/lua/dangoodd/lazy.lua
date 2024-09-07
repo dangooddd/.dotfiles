@@ -1,7 +1,7 @@
 ---------------------------------------
 -- Bootstrap lazy plugin manager
 ---------------------------------------
-local lazy_path = vim.fn.stdpath("data").."/lazy/lazy.nvim"
+local lazy_path = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazy_path) then
     vim.fn.system({
         "git",
@@ -15,8 +15,8 @@ end
 vim.opt.rtp:prepend(lazy_path)
 
 require("lazy").setup({
-    spec = { 
-        { import = "dangoodd.plugins" } 
+    spec = {
+        { import = "dangoodd.plugins" }
     },
     install = {
         missing = true,
@@ -26,7 +26,7 @@ require("lazy").setup({
         enable = true,
         notify = false,
     },
-    ui = { 
+    ui = {
         border = "rounded",
         backdrop = 100,
     },

@@ -11,11 +11,14 @@ return {
             "hrsh7th/cmp-path",
             "hrsh7th/cmp-cmdline",
         },
-        lazy = false,
         config = function()
             local cmp = require("cmp")
             -- extend capabilities of nvim in lsp completion
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            local capabilities = vim.tbl_deep_extend(
+                "force",
+                vim.lsp.protocol.make_client_capabilities(),
+                require("cmp_nvim_lsp").default_capabilities()
+            )
 
             require("mason").setup({
                 ui = { border = "rounded" },
@@ -31,14 +34,13 @@ return {
                     -- default handler
                     function(server_name)
                         require("lspconfig")[server_name].setup({
-                            capabilities = capabilities, 
+                            capabilities = capabilities,
                         })
                     end,
 
                     ["pylsp"] = function()
                         require("lspconfig")["pylsp"].setup({
                             capabilities = capabilities,
-                            handlers = handlers,
                             settings = {
                                 pylsp = {
                                     plugins = {
@@ -53,8 +55,8 @@ return {
             })
 
             -- init completion system
-            cmp_select = { behavior = cmp.SelectBehavior.Insert } 
-            cmp_confirm = { behavior = cmp.ConfirmBehavior.Replace }
+            local cmp_select = { behavior = cmp.SelectBehavior.Select }
+            local cmp_confirm = { behavior = cmp.ConfirmBehavior.Replace }
             cmp.setup({
                 mapping = {
                     ["<C-n>"] = cmp.mapping({
@@ -161,6 +163,7 @@ return {
     -- formatter
     {
         "stevearc/conform.nvim",
+        event = "BufWritePre",
         config = function()
             require("conform").setup({
                 format_on_save = {

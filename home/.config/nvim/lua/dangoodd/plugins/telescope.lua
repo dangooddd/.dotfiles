@@ -5,7 +5,7 @@ return {
         require("telescope").setup({
             defaults = {
                 layout_strategy = "horizontal",
-                layout_config = { 
+                layout_config = {
                     prompt_position = "top",
                     horizontal = {
                         preview_cutoff = 40

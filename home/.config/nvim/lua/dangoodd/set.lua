@@ -16,7 +16,7 @@ vim.opt.pumheight = 10
 vim.opt.tabstop = 4        -- 1 tab represented as 4 spaces
 vim.opt.expandtab = true   -- <tab> key will create " " insead of "\t"
 vim.opt.shiftwidth = 4     -- indent change after backspace and >> <<
-vim.opt.softtabstop = 4    -- number of spaces instead of tab 
+vim.opt.softtabstop = 4    -- number of spaces instead of tab
 vim.opt.smartindent = true -- auto indent
 
 -- global

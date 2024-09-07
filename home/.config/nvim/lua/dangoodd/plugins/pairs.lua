@@ -3,6 +3,7 @@ return {
     dependencies = {
         "hrsh7th/nvim-cmp",
     },
+    event = "VeryLazy",
     config = function()
         local pairs = require("nvim-autopairs")
         local cmp_pairs = require("nvim-autopairs.completion.cmp")
