@@ -6,7 +6,7 @@
 * **Terminal:** [foot](https://codeberg.org/dnkl/foot)
 * **Prompt:** Custom bash prompt
 * **Shell:** [bash](https://www.gnu.org/software/bash/)
-* **Code Editor:** [Helix](https://github.com/helix-editor/helix)
+* **Code Editor:** [neovim](https://github.com/neovim/neovim)
 * **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
 
 
@@ -32,11 +32,7 @@ cd .dotfiles
 Install packages via dnf:
 ```sh
 sudo dnf install cmake just python pip \
-    p7zip wl-clipboard fd-find fzf jq \
-    helix foot tmux zoxide ripgrep \
+    wl-clipboard fd-find fzf jq ripgrep \
+    neovim foot tmux zoxide \
     jetbrains-mono-fonts-all 
 ```
-
-
-## Helix lsp
-Check setup [guide](LSP.md) for my helix lsp config
