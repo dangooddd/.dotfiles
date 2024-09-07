@@ -18,6 +18,7 @@ return {
                 return {
                     -- other
                     CursorLineNr = { bold = false },
+                    ModeMsg = { bold = false },
                     ["@variable.builtin"] = { italic = false },
                     -- menu
                     Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
