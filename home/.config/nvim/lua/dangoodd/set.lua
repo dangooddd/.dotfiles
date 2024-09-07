@@ -2,7 +2,6 @@
 -- Options
 ---------------------------------------
 vim.opt.clipboard = "unnamedplus"
-vim.opt.showmode = false
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.undofile = true
