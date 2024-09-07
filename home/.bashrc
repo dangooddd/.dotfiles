@@ -149,10 +149,7 @@ function yank {
         fi
 
         if [[ "$val" == "-l" ]]; then
-            for each in "${__yank_source[@]}"
-            do
-                echo "$each"
-            done
+            printf "%s\n" "${__yank_source[@]}"
             return 0
         fi
 
@@ -199,15 +196,13 @@ alias rg="rg --smart-case \
              --glob=!./git \
              --pretty"
 
-alias c="clear"
-
 
 #======================================
 # Init and env
 #======================================
-if command -v hx &> /dev/null; then
-    export VISUAL="hx"
-    export EDITOR="hx"
+if command -v nvim &> /dev/null; then
+    export VISUAL="nvim"
+    export EDITOR="nvim"
 fi
 
 export FZF_DEFAULT_OPTS="--layout=reverse \
