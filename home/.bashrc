@@ -24,21 +24,17 @@ function __precmd_hook {
 }
 
 function __pwd_prompt_module {
-    echo " $(basename ${PWD/#$HOME/\~}) "
+    echo " $(basename ${PWD/#$HOME/\~})"
 }
 
 function __status_prompt_module {
     local status=""
     if ! [[ -z "$VIRTUAL_ENV" ]]; then
-        status+=" v"
+        status+=" [v]"
     fi
 
     if command git rev-parse &> /dev/null; then
-        status+=" g"
-    fi
-
-    if ! [[ -z "$status" ]]; then
-        status+=" "
+        status+=" [g]"
     fi
 
     echo "$status"
@@ -54,13 +50,11 @@ function __char_prompt_module {
 
 VIRTUAL_ENV_DISABLE_PROMPT="Y"
 PROMPT_COMMAND=("__precmd_hook" "${PROMPT_COMMAND[@]}")
-PS1='\[\e[0m\]\
-\[\e[48;2;230;195;132m\]\[\e[38;2;31;31;40m\]$(__pwd_prompt_module)\[\e[0m\]\
-\[\e[48;2;54;54;70m\]\[\e[38;2;230;195;132m\]\[\e[0m\]\
-\[\e[48;2;54;54;70m\]\[\e[38;2;184;180;208m\]$(__status_prompt_module)\[\e[0m\]\
-\[\e[48;2;184;180;208m\]\[\e[38;2;54;54;70m\]\[\e[0m\]\
-\[\e[48;2;184;180;208m\]\[\e[38;2;31;31;40m\]$(__char_prompt_module)\[\e[0m\]\
-\[\e[38;2;184;180;208m\]\[\e[0m\] '
+PS1='\[\e[0m\e[30m\e[103m\]\
+$(__pwd_prompt_module)\
+$(__status_prompt_module)\
+$(__char_prompt_module)\
+\[\e[0m\e[93m\]\[\e[0m\] '
 
 
 #======================================
