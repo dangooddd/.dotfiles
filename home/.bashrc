@@ -30,11 +30,15 @@ function __pwd_prompt_module {
 function __status_prompt_module {
     local status=""
     if ! [[ -z "$VIRTUAL_ENV" ]]; then
-        status+=" [v]"
+        status+="v,"
     fi
 
     if command git rev-parse &> /dev/null; then
-        status+=" [g]"
+        status+="g,"
+    fi
+
+    if ! [[ -z "$status" ]]; then
+        status=" [${status::-1}]"
     fi
 
     echo "$status"
