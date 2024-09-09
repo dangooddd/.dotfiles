@@ -20,5 +20,6 @@ return {
         vim.keymap.set("n", "<leader>fb", builtin.buffers)
         vim.keymap.set("n", "<leader>fg", builtin.git_files)
         vim.keymap.set("n", "<leader>fd", builtin.diagnostics)
+        vim.keymap.set("n", "<leader>fl", builtin.live_grep)
     end,
 }
