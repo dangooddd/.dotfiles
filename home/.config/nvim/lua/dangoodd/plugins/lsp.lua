@@ -85,7 +85,7 @@ return {
                     -- truncate long lsp items
                     format = function(_, item)
                         local content = item.abbr
-                        local max_lenght = 25
+                        local max_lenght = 40
 
                         if #content > max_lenght then
                             item.abbr = vim.fn.strcharpart(content, 0, max_lenght) .. ".."
