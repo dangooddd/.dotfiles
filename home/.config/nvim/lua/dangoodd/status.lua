@@ -1,9 +1,5 @@
 local function filepath()
-    local path = vim.api.nvim_eval_statusline("%F", {}).str
-    if path == "" then
-        path = "[No Name]"
-    end
-    return string.format(" %%.60{'%s'} ", path)
+    return " %.60F "
 end
 
 local function errors()
