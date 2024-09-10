@@ -20,5 +20,6 @@ vim.opt.softtabstop = 4    -- number of spaces instead of tab
 vim.opt.smartindent = true -- auto indent
 
 -- global
+vim.g.netrw_banner = 0
 vim.g.mapleader = " "
-vim.g.maplocal = "\\"
+vim.g.maplocal = [[\]]
