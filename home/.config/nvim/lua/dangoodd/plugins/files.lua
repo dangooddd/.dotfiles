@@ -6,7 +6,9 @@ return {
         require("mini.files").setup({
             mappings = {
                 go_out_plus = "-",
+                go_out = "H",
                 go_in_plus = "<CR>",
+                go_in = "L",
             }
         })
 
