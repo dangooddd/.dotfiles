@@ -163,7 +163,7 @@ return {
     -- formatter
     {
         "stevearc/conform.nvim",
-        event = "BufWritePre",
+        event = "BufWritePre",  -- load before writing
         config = function()
             require("conform").setup({
                 format_on_save = {

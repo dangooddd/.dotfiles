@@ -12,6 +12,8 @@ return {
             }
         })
 
+        -- change working directory to mini.files
+        -- current path
         local function files_cwd()
             local entry_path = MiniFiles.get_fs_entry().path
             local entry_dir = vim.fs.dirname(entry_path)
@@ -19,12 +21,15 @@ return {
             print("cd " .. vim.fn.fnamemodify(entry_dir, ":~"))
         end
 
+        -- toggle mini.files
         local function files_toggle()
             if not MiniFiles.close() then 
                 MiniFiles.open()
             end
         end
 
+        -- split view and make new window
+        -- be target of mini.files
         local function files_split(direction)
             return function()
                 local cur_target = MiniFiles.get_explorer_state().target_window

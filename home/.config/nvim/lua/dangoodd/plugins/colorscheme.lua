@@ -1,6 +1,6 @@
 return {
     "rebelot/kanagawa.nvim",
-    priority = 1000,
+    priority = 1000,  -- load first
     config = function()
         require("kanagawa").setup({
             commentStyle = { italic = false },

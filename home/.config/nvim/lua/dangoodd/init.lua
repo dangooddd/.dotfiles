@@ -1,3 +1,6 @@
+---------------------------------------
+-- Import configs
+---------------------------------------
 require("dangoodd.set")
 require("dangoodd.remap")
 require("dangoodd.status")

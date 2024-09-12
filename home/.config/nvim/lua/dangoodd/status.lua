@@ -1,3 +1,6 @@
+---------------------------------------
+-- StatusLine modules
+---------------------------------------
 local function filepath()
     return " %.60F "
 end
@@ -51,6 +54,10 @@ local function location()
     return " %P "
 end
 
+
+---------------------------------------
+-- StatusLine initialization
+---------------------------------------
 function StatusLine()
     return table.concat({
         "%#StatusLine#",
@@ -66,8 +73,8 @@ function StatusLine()
     })
 end
 
-vim.opt.laststatus = 3
-vim.opt.showmode = true
+vim.opt.laststatus = 3  -- global statusline
+vim.opt.showmode = true  -- show mode under statusline
 vim.opt.statusline = "%!v:lua.StatusLine()"
 vim.api.nvim_create_augroup("StatusLine", {})
 
