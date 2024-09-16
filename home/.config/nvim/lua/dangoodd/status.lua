@@ -76,9 +76,9 @@ end
 vim.opt.laststatus = 3  -- global statusline
 vim.opt.showmode = true  -- show mode under statusline
 vim.opt.statusline = "%!v:lua.StatusLine()"
-vim.api.nvim_create_augroup("StatusLine", {})
 
 -- auto update diagnostic
+vim.api.nvim_create_augroup("StatusLine", {})
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
     group = "StatusLine",
     pattern = "*",
