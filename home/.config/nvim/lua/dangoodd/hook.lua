@@ -1,12 +1,12 @@
 ---------------------------------------
 -- Hook functions
 ---------------------------------------
-local hooks = {
-    ["q"] = -1,
-    ["w"] = -1,
-    ["e"] = -1,
-    ["r"] = -1,
-}
+local hook_keys = { "q", "w", "e", "r" }
+local hooks = {}
+-- initialize hooks
+for _, key in ipairs(hook_keys) do
+    hooks[key] = "-"
+end
 
 local function save_hook(key, file)
     return function()
@@ -24,8 +24,8 @@ end
 
 local function list_hooks()
     local out_table = {}
-    for key, value in pairs(hooks) do
-        local path = string.gsub(value, vim.env.HOME, "~")
+    for _, key in ipairs(hook_keys) do
+        local path = string.gsub(hooks[key], vim.env.HOME, "~", 1)
         local line = string.format("%s = %s", key, path)
         table.insert(out_table, line)
     end
@@ -35,7 +35,7 @@ end
 ---------------------------------------
 -- Keybinds
 ---------------------------------------
-for key, _ in pairs(hooks) do
+for _, key in ipairs(hook_keys) do
     vim.keymap.set("n", "<leader>"..key, edit_hook(key))
 end
 vim.keymap.set("n", "<leader>hh", list_hooks)
@@ -49,7 +49,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
         local buf = args.buf
         local file = args.file
         if (vim.bo.buflisted) then
-            for key, _ in pairs(hooks) do
+            for _, key in ipairs(hook_keys) do
                 vim.keymap.set("n", "<leader>h"..key, save_hook(key, file), { buffer = buf })
             end
         end
