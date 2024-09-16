@@ -37,6 +37,10 @@ function __status_prompt_module {
         status+="g,"
     fi
 
+    if [[ -f "/run/.containerenv" ]]; then
+        status+="c,"
+    fi
+
     if ! [[ -z "$status" ]]; then
         status=" [${status::-1}]"
     fi
