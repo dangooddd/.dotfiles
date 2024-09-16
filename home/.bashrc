@@ -141,16 +141,6 @@ function clear {
 function yank {
     for val in "$@"
     do 
-        if [[ "$val" == "-c" ]]; then
-            __yank_source=()
-            return 0
-        fi
-
-        if [[ "$val" == "-l" ]]; then
-            printf "%s\n" "${__yank_source[@]}"
-            return 0
-        fi
-
         local realval="$(readlink -f "$val")"
         if [[ -e "$realval" ]]; then
             __yank_source+=("$realval")
@@ -158,31 +148,33 @@ function yank {
     done
 }
 
-function paste {
-    for opt in "$@"
+function yank-clear {
+    __yank_source=()
+}
+
+function yank-list {
+    for path in "${__yank_source[@]}"
     do
-        if [[ "$opt" == "-q" ]]; then
-            local quiet="Y"
-        fi
-
-        if [[ "$opt" == "-x" ]]; then
-            local insert="Y"
-        fi
+        echo "${path/#$HOME/\~}"
     done
+}
 
+function paste {
     for src in "${__yank_source[@]}"
     do
-        if ! [[ -z "$insert" ]]; then
-            mv -i "$src" ./
-        else
-            cp -ir "$src" ./
-        fi
+        cp -ir "$src" ./
     done
     __yank_source=()
+    ls -Av
+}
 
-    if [[ -z "$quiet" ]]; then
-        ls -Av
-    fi
+function paste-cut {
+    for src in "${__yank_source[@]}"
+    do
+        mv -i "$src" ./
+    done
+    __yank_source=()
+    ls -Av
 }
 
 alias la="ls -Av"
