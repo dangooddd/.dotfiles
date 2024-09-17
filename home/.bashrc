@@ -29,16 +29,16 @@ function __pwd_prompt_module {
 
 function __status_prompt_module {
     local status=""
+    if [[ -f "/run/.containerenv" ]]; then
+        status+="c,"
+    fi
+
     if ! [[ -z "$VIRTUAL_ENV" ]]; then
         status+="v,"
     fi
 
     if command git rev-parse &> /dev/null; then
         status+="g,"
-    fi
-
-    if [[ -f "/run/.containerenv" ]]; then
-        status+="c,"
     fi
 
     if ! [[ -z "$status" ]]; then
