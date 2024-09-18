@@ -38,11 +38,31 @@ return {
                         settings = {
                             pylsp = {
                                 plugins = {
+                                    -- use yapf as default formatter
                                     yapf = { enabled = true },
                                     autopep8 = { enabled = false },
                                 }
                             },
                         },
+                    })
+                end,
+
+                ["texlab"] = function()
+                    require("lspconfig")["texlab"].setup({
+                        capabilities = capabilities,
+                        settings = {
+                            texlab = {
+                                build = {
+                                    executable = "latexmk",
+                                    args = {
+                                        "-pdf",
+                                        "-interaction=nonstopmode",
+                                        "-outdir=build",
+                                    },
+                                    onSave = true,
+                                },
+                            }
+                        }
                     })
                 end,
             },
