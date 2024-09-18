@@ -9,7 +9,7 @@ return {
             colors = {
                 theme = {
                     all = {
-                        ui = { bg_gutter = 'none' },
+                        ui = { bg_gutter = "NONE" },
                     },
                 },
             },
@@ -19,6 +19,7 @@ return {
                     -- other
                     CursorLineNr = { bold = false },
                     ModeMsg = { bold = false },
+                    WinSeparator = { fg = theme.ui.bg_p1 },
                     ["@variable.builtin"] = { italic = false },
                     -- menu
                     Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
