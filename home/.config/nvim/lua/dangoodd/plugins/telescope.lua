@@ -15,6 +15,7 @@ return {
                     }
                 },
                 sorting_strategy = "ascending",
+                borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
             },
         })
         local builtin = require("telescope.builtin")

@@ -8,13 +8,13 @@ for _, key in ipairs(hook_keys) do
     hooks[key] = "-"
 end
 
-local function save_hook(key, file)
+local function hook_throw(key, file)
     return function()
         hooks[key] = file 
     end
 end
 
-local function edit_hook(key)
+local function hook_pull(key)
     return function()
         if (vim.fn.filereadable(hooks[key]) == 1) then
             vim.cmd.edit(hooks[key])
@@ -22,7 +22,7 @@ local function edit_hook(key)
     end
 end
 
-local function list_hooks()
+local function hook_show()
     local out_table = {}
     for _, key in ipairs(hook_keys) do
         local path = string.gsub(hooks[key], vim.env.HOME, "~", 1)
@@ -36,9 +36,9 @@ end
 -- Keybinds
 ---------------------------------------
 for _, key in ipairs(hook_keys) do
-    vim.keymap.set("n", "<leader>"..key, edit_hook(key))
+    vim.keymap.set("n", "<leader>h"..key, hook_pull(key))
 end
-vim.keymap.set("n", "<leader>hh", list_hooks)
+vim.keymap.set("n", "<leader>hh", hook_show)
 
 -- save only on buflisted buffers
 vim.api.nvim_create_augroup("Hook", {})
@@ -50,7 +50,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
         local file = args.file
         if (vim.bo.buflisted) then
             for _, key in ipairs(hook_keys) do
-                vim.keymap.set("n", "<leader>h"..key, save_hook(key, file), { buffer = buf })
+                vim.keymap.set("n", "<leader>hl"..key, hook_throw(key, file), { buffer = buf })
             end
         end
     end,
