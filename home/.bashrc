@@ -182,13 +182,17 @@ function paste-cut {
 }
 
 alias la="ls -Av"
-
 alias ll="ls -Alv"
-
 alias rg="rg --smart-case \
              --hidden \
              --glob=!./git \
              --pretty"
+alias gg="git status -s"
+alias gb="git branch"
+alias gl="git log"
+alias ga="git add"
+alias gc="git commit"
+alias gp="git push"
 
 
 #======================================
