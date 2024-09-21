@@ -21,6 +21,7 @@ return {
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "pylsp",
+                "texlab",
             },
             -- functions to call on start of lsp
             -- basically auto setup of lsp
@@ -55,7 +56,7 @@ return {
                                 build = {
                                     executable = "latexmk",
                                     args = {
-                                        "-pdf",
+                                        "-lualatex",
                                         "-interaction=nonstopmode",
                                         "-outdir=build",
                                     },
