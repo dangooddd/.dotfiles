@@ -23,7 +23,7 @@ local function hook_pull(key)
 end
 
 local function hook_show()
-    local out_table = {}
+    local out_table = { "-- HOOK --" }
     for _, key in ipairs(hook_keys) do
         local path = string.gsub(hooks[key], vim.env.HOME, "~", 1)
         local line = string.format("%s = %s", key, path)

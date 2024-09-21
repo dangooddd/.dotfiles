@@ -24,7 +24,7 @@ local function javelin_pull(key)
 end
 
 local function javelin_show()
-    local out_table = {}
+    local out_table = { "-- JAVELIN --" }
     for _, key in ipairs(javelin_keys) do
         local javelin = javelins[key]
         local line = string.format("%s = %s", key, javelin)
