@@ -10,7 +10,9 @@ end
 
 local function javelin_throw(key)
     return function()
+        local message = string.format("javelin: throw [%s]", key)
         javelins[key] = vim.fn.histget("", -1)
+        vim.notify(message, vim.log.levels.INFO)
     end
 end
 

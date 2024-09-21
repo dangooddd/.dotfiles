@@ -10,7 +10,9 @@ end
 
 local function hook_throw(key, file)
     return function()
+        local message = string.format("hook: throw [%s]", key)
         hooks[key] = file 
+        vim.notify(message, vim.log.levels.INFO)
     end
 end
 

@@ -17,8 +17,9 @@ return {
         local function files_cwd()
             local entry_path = MiniFiles.get_fs_entry().path
             local entry_dir = vim.fs.dirname(entry_path)
+            local message = "files: cd "..vim.fn.fnamemodify(entry_dir, ":~")
             vim.fn.chdir(entry_dir)
-            print("cd " .. vim.fn.fnamemodify(entry_dir, ":~"))
+            vim.notify(message, vim.log.levels.INFO)
         end
 
         -- toggle mini.files
