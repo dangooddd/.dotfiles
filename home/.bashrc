@@ -33,7 +33,7 @@ function __status_prompt_module {
         status+="c,"
     fi
 
-    if ! [[ -z "$VIRTUAL_ENV" ]]; then
+    if [[ -n "$VIRTUAL_ENV" ]]; then
         status+="v,"
     fi
 
@@ -41,7 +41,7 @@ function __status_prompt_module {
         status+="g,"
     fi
 
-    if ! [[ -z "$status" ]]; then
+    if [[ -n "$status" ]]; then
         status=" [${status::-1}]"
     fi
 
@@ -76,14 +76,14 @@ fi
 #======================================
 # Path 
 #======================================
-function addPath {
+function add-path {
     if ! [[ "$PATH" =~ "$1:" ]]; then
         PATH="$1:$PATH"
         export PATH
     fi
 }
-addPath "$HOME/.local/bin"
-addPath "$HOME/.cargo/bin"
+add-path "$HOME/.local/bin"
+add-path "$HOME/.cargo/bin"
 
 
 #======================================
@@ -109,24 +109,33 @@ function auto-venv-toggle {
 }
 
 function venv-update {
-    local venv="./.venv/bin/activate"
+    local path=".venv/bin/activate"
+    local venv=""
+    # depth = 2
+    [[ -e "../$path" ]] && venv="../$path"
+    [[ -e "$path" ]] && venv="$path"
+
+    # not active
     if [[ -z "$VIRTUAL_ENV" ]] &&
-        [[ -e "$venv" ]]; then
+        [[ -n "$venv" ]]; then
         . "$venv"
     fi
 
-    if ! [[ -z "$VIRTUAL_ENV" ]] &&
+    # nested interactive shells (for example, tmux)
+    if [[ -n "$VIRTUAL_ENV" ]] &&
         ! [[ "$(type -t deactivate)" == "function" ]]; then
         . "$VIRTUAL_ENV"/bin/activate
     fi
 
-    if ! [[ -z "$VIRTUAL_ENV" ]] &&
+    # update venv
+    if [[ -n "$VIRTUAL_ENV" ]] &&
         [[ "$(dirname "$VIRTUAL_ENV")" != "$PWD" ]] &&
-        [[ -e "$venv" ]]; then
+        [[ -n "$venv" ]]; then
         . "$venv"
     fi
 
-    if ! [[ -z "$VIRTUAL_ENV" ]] &&
+    # exit of venv
+    if [[ -n "$VIRTUAL_ENV" ]] &&
         ! [[ "$PWD" =~ "$(dirname "$VIRTUAL_ENV")" ]]; then
         deactivate
     fi
