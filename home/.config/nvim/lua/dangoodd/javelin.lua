@@ -11,7 +11,8 @@ end
 local function javelin_throw(key)
     return function()
         local message = string.format("javelin: throw [%s]", key)
-        javelins[key] = vim.fn.histget("", -1)
+        local count = vim.v.count1 * (-1)
+        javelins[key] = vim.fn.histget("", count)
         vim.notify(message, vim.log.levels.INFO)
     end
 end
