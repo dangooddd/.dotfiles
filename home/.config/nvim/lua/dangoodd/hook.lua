@@ -43,9 +43,9 @@ end
 vim.keymap.set("n", "<leader>hh", hook_show)
 
 -- save only on buflisted buffers
-vim.api.nvim_create_augroup("Hook", {})
+local group = vim.api.nvim_create_augroup("Hook", {})
 vim.api.nvim_create_autocmd("BufEnter", {
-    group = "Hook",
+    group = group,
     pattern = "*",
     callback = function(args)
         local buf = args.buf
