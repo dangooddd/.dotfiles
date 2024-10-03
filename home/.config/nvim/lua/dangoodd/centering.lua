@@ -2,13 +2,16 @@ local group = vim.api.nvim_create_augroup("AutoCentering", {})
 
 local function center(mode) 
     mode = mode or nil
-    vim.cmd("norm! zz") -- centering command
+    local curwants = vim.fn.getcurpos()[5]  -- save curwants
+    vim.cmd("norm! zz")  -- centering command
     if mode == "insert" then
         local pos = vim.fn.getcurpos()
-        -- col should be curwants for proper work of last col
+        -- col should be curwants (for current line) 
+        -- for proper work of last col
         local col = pos[5]
+        local off = pos[4]
         local row = pos[1]
-        vim.fn.cursor({ row, col })
+        vim.fn.cursor({ row, col, off, curwants })
     end
 end
 
