@@ -10,7 +10,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 vim.opt.cursorlineopt = "number"
 vim.opt.wrap = false
-vim.opt.scrolloff = 5
+vim.opt.scrolloff = 3
 vim.opt.hlsearch = false  -- remove highlight on search 
 vim.opt.pumheight = 10  -- size of completion window
 
