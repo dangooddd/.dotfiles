@@ -1,10 +1,6 @@
 ---------------------------------------
--- Import configs
+-- init.lua
 ---------------------------------------
-require("dangoodd.set")
-require("dangoodd.remap")
-require("dangoodd.status")
-require("dangoodd.hook")
-require("dangoodd.javelin")
-require("dangoodd.centering")
+require("dangoodd.config")
+require("dangoodd.editor")
 require("dangoodd.lazy")

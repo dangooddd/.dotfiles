@@ -14,6 +14,7 @@ if not (vim.uv or vim.loop).fs_stat(lazy_path) then
 end
 vim.opt.rtp:prepend(lazy_path)
 
+-- lazy config
 require("lazy").setup({
     spec = {
         { import = "dangoodd.plugins" }
