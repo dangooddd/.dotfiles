@@ -102,3 +102,21 @@ end
 
 -- keybinds
 vim.keymap.set("n", "<leader>c", Centering.toggle)
+
+
+---------------------------------------
+-- Background
+---------------------------------------
+local Background = {}
+
+function Background.toggle()
+    local background = vim.api.nvim_get_option_value("background", { scope = "global" })
+    if background== "dark" then
+        vim.opt.background = "light"
+    else
+        vim.opt.background = "dark"
+    end
+end
+
+-- keybinds
+vim.keymap.set("n", "<leader>l", Background.toggle)
