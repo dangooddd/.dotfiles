@@ -43,7 +43,7 @@ end
 
 function HJ.run_command()
     local count = vim.v.count1
-    return string.format("<cmd>%s<CR>", HJ.J[count])
+    return string.format("<cmd>%s<CR>", HJ.J[count] or "")
 end
 
 vim.keymap.set("n", "<leader>hs", HJ.show_file)
