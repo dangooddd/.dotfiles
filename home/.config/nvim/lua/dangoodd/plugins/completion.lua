@@ -15,27 +15,22 @@ return {
         -- init completion system
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
         local cmp_confirm = { behavior = cmp.ConfirmBehavior.Replace }
-        cmp.setup({
-            snippet = {
-                expand = function(args)
-                    require("luasnip").lsp_expand(args.body)
-                end
-            },
-            mapping = {
+        local function cmp_mapping_pattern(mode)
+            return {
                 ["<C-n>"] = cmp.mapping({
-                    i = cmp.mapping.select_next_item(cmp_select)
+                    [mode] = cmp.mapping.select_next_item(cmp_select)
                 }),
                 ["<C-p>"] = cmp.mapping({
-                    i = cmp.mapping.select_prev_item(cmp_select)
+                    [mode] = cmp.mapping.select_prev_item(cmp_select)
                 }),
                 ["<C-e>"] = cmp.mapping({
-                    i = cmp.mapping.abort(),
+                    [mode] = cmp.mapping.abort(),
                 }),
                 ["<C-CR>"] = cmp.mapping({
-                    i = cmp.mapping.complete(),
+                    [mode] = cmp.mapping.complete(),
                 }),
                 ["<CR>"] = cmp.mapping({
-                    i = function(fallback)
+                    [mode] = function(fallback)
                         if cmp.visible() and cmp.get_active_entry() then
                             cmp.confirm(cmp_confirm)
                         else
@@ -43,6 +38,14 @@ return {
                         end
                     end,
                 }),
+            }
+        end
+
+        cmp.setup({
+            snippet = {
+                expand = function(args)
+                    require("luasnip").lsp_expand(args.body)
+                end
             },
             formatting = {
                 -- truncate long lsp items
@@ -57,6 +60,7 @@ return {
                     return item
                 end,
             },
+            mapping = cmp_mapping_pattern("i"),
             sources = cmp.config.sources({
                 { name = "nvim_lsp" },
                 { name = "luasnip" },
@@ -65,58 +69,22 @@ return {
         })
 
         cmp.setup.cmdline({ "/", "?" }, {
-            mapping = {
-                ["<C-n>"] = cmp.mapping({
-                    c = cmp.mapping.select_next_item(cmp_select)
-                }),
-                ["<C-p>"] = cmp.mapping({
-                    c = cmp.mapping.select_prev_item(cmp_select)
-                }),
-                ["<C-e>"] = cmp.mapping({
-                    c = cmp.mapping.abort(),
-                }),
-                ["<C-CR>"] = cmp.mapping({
-                    c = cmp.mapping.complete(),
-                }),
-                ["<CR>"] = cmp.mapping({
-                    c = function(fallback)
-                        if cmp.visible() and cmp.get_active_entry() then
-                            cmp.confirm(cmp_confirm)
-                        else
-                            fallback()
-                        end
-                    end,
-                }),
-            },
+            mapping = cmp_mapping_pattern("c"),
             sources = cmp.config.sources({
                 { name = "buffer" },
             }),
         })
 
         cmp.setup.cmdline(":", {
-            mapping = {
-                ["<C-n>"] = cmp.mapping({
-                    c = cmp.mapping.select_next_item(cmp_select)
-                }),
-                ["<C-p>"] = cmp.mapping({
-                    c = cmp.mapping.select_prev_item(cmp_select)
-                }),
-                ["<C-e>"] = cmp.mapping({
-                    c = cmp.mapping.abort(),
-                }),
-                ["<C-CR>"] = cmp.mapping({
-                    c = cmp.mapping.complete(),
-                }),
-                ["<CR>"] = cmp.mapping({
-                    c = function(fallback)
-                        if cmp.visible() and cmp.get_active_entry() then
-                            cmp.confirm(cmp_confirm)
-                        else
-                            fallback()
-                        end
-                    end,
-                }),
-            },
+            mapping = cmp_mapping_pattern("c"),
+            sources = cmp.config.sources({
+                { name = "path" },
+                { name = "cmdline" },
+            }),
+        })
+        
+        cmp.setup.cmdline("@", {
+            mapping = cmp_mapping_pattern("c"),
             sources = cmp.config.sources({
                 { name = "path" },
                 { name = "cmdline" },
