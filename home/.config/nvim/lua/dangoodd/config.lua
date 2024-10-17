@@ -32,8 +32,8 @@ vim.g.maplocal = [[\]]
 ---------------------------------------
 vim.keymap.set("n", "<C-j>", vim.cmd.bnext)
 vim.keymap.set("n", "<C-k>", vim.cmd.bprev)
-vim.keymap.set("i", "<C-a>", "<Left>")
-vim.keymap.set("i", "<C-s>", "<Right>")
+vim.keymap.set("i", "<C-b>", "<Left>")
+vim.keymap.set("i", "<C-f>", "<Right>")
 
 
 ---------------------------------------

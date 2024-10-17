@@ -39,9 +39,15 @@ return {
                         settings = {
                             pylsp = {
                                 plugins = {
-                                    -- use yapf as default formatter
-                                    yapf = { enabled = true },
+                                    -- use black as default formatter
+                                    yapf = { enabled = false },
                                     autopep8 = { enabled = false },
+                                    black = { enabled = true },
+                                    pycodestyle = {
+                                        enabled = true,
+                                        ignore = { "E203", "E701" },
+                                        maxLineLength = 88
+                                    }
                                 }
                             },
                         },
