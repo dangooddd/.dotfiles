@@ -66,12 +66,11 @@ function __char_prompt_module {
 
 VIRTUAL_ENV_DISABLE_PROMPT="Y"
 PROMPT_COMMAND=("__precmd_hook" "${PROMPT_COMMAND[@]}")
-PS1='\[\e[0m\e[30m\e[103m\]\
-$(__pwd_prompt_module)\
-$(__status_prompt_module)\
-$(__char_prompt_module)\
-\[\e[0m\e[93m\]\[\e[0m\] '
-
+PS1='\[\e[0m\e[30m\e[103m\]'
+PS1+='$(__pwd_prompt_module)'
+PS1+='$(__status_prompt_module)'
+PS1+='$(__char_prompt_module)'
+PS1+='\[\e[0m\e[93m\]\[\e[0m\] '
 
 #=====================================
 # Path 
