@@ -25,6 +25,9 @@ function __precmd_hook {
     # window title
     echo -ne "\e]0;${PWD/#$HOME/\~}\a"
 
+    # beam cursor
+    echo -ne "\e[6 q"
+
     # auto-venv
     if [[ -z "$__auto_venv_stop" ]]; then
         venv-update
