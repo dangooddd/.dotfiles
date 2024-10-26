@@ -5,7 +5,6 @@ function colored {
 }
 
 function title {
-    local sep="============================"
     colored "TASK: " "\e[91m"
     colored "$@\n" "\e[93m"
 }
