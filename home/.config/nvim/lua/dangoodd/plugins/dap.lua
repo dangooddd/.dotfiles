@@ -7,6 +7,7 @@ return {
         },
         "mfussenegger/nvim-dap-python",
     },
+    event = "VeryLazy",
     config = function()
         local dap = require("dap")
         local ui = require("dapui")

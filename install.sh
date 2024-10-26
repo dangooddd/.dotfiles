@@ -26,13 +26,25 @@ mkdir -p "$HOME"/.config
 DOTFILES="$(dirname "$(realpath "$0")")"
 shopt -s dotglob
 
+#======================================
 # ~/.config/*
+#======================================
 for src in "$DOTFILES"/home/.config/*
 do
     link "$src" "$HOME"/.config/"$(basename "$src")" 
 done
 
+#======================================
+# ~/.local/bin
+#======================================
+for src in "$DOTFILES"/home/.local/bin/*
+do
+    link "$src" "$HOME"/.local/bin/"$(basename "$src")"
+done
+
+#======================================
 # ~/*
+#======================================
 for src in "$DOTFILES"/home/*
 do
     if [[ -f "$src" ]]; then

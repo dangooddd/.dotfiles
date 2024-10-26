@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+function colored {
+    echo -ne "$2$1\e[0m"
+}
+
+function title {
+    local sep="============================"
+    colored "TASK: " "\e[91m"
+    colored "$@\n" "\e[93m"
+}
+
+if [[ -d "$DOTFILES" ]]; then
+    cd "$DOTFILES"
+    title "update dotfiles" && git pull origin main; echo ""
+fi
+
+title "flatpak update" && flatpak update; echo ""
+title "sudo dnf update" && sudo dnf update

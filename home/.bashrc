@@ -219,6 +219,7 @@ export FZF_DEFAULT_OPTS="--layout=reverse \
                          --ansi \
                          --border=sharp"
 
+export DOTFILES="$HOME"/.dotfiles
 export RUSTUP_HOME="$HOME"/.rustup
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
