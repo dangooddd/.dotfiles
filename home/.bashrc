@@ -65,7 +65,7 @@ function __char_prompt_module {
 }
 
 VIRTUAL_ENV_DISABLE_PROMPT="Y"
-PROMPT_COMMAND=("__precmd_hook" "${PROMPT_COMMAND[@]}")
+PROMPT_COMMAND="__precmd_hook"
 PS1='\[\e[0m\e[30m\e[103m\]'
 PS1+='$(__pwd_prompt_module)'
 PS1+='$(__status_prompt_module)'
