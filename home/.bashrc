@@ -220,6 +220,7 @@ export FZF_DEFAULT_OPTS="--layout=reverse \
                          --border=sharp"
 
 export DOTFILES="$HOME"/.dotfiles
+export PYTHONSTARTUP="$HOME"/.pythonstartup.py
 export RUSTUP_HOME="$HOME"/.rustup
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
