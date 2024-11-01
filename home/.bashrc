@@ -191,6 +191,23 @@ function paste-cut {
     ls -Av
 }
 
+declare -A __marks_array
+function mark {
+    __marks_array+=(["$1"]="$(readlink -f .)")
+}
+
+function mark-list {
+    for key in "${!__marks_array[@]}"
+    do
+        echo "[$key] = ${__marks_array["$key"]/#$HOME/\~}"
+    done
+}
+
+function g {
+    cd ${__marks_array["$1"]}
+    ls -Av
+}
+
 alias open="xdg-open"
 alias la="ls -Av"
 alias ll="ls -Alv"
