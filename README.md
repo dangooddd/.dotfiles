@@ -1,9 +1,11 @@
 # `dangooddd`'s linux dotfiles
+
 > Set of configs for cli tools, terminal, shell and other stuff (Fedora).
 
 
 ## Configurations 
-* **Terminal:** [foot](https://codeberg.org/dnkl/foot)
+
+* **Terminal:** [alacritty](https://github.com/alacritty/alacritty)
 * **Prompt:** Custom bash prompt
 * **Shell:** [bash](https://www.gnu.org/software/bash/)
 * **Code Editor:** [neovim](https://github.com/neovim/neovim)
@@ -31,8 +33,5 @@ cd .dotfiles
 
 Install packages via dnf:
 ```sh
-sudo dnf install cmake just python pip \
-    wl-clipboard fd-find fzf jq ripgrep \
-    neovim foot tmux zoxide \
-    jetbrains-mono-fonts-all 
+sudo dnf install $(cat packages.txt)
 ```

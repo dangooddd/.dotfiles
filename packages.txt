@@ -1,0 +1,14 @@
+cmake 
+just 
+python 
+pip
+wl-clipboard
+fd-find
+fzf
+jq
+ripgrep
+neovim
+alacritty
+tmux
+zoxide
+jetbrains-mono-fonts-all

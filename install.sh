@@ -23,6 +23,7 @@ function link {
 
 # setup
 mkdir -p "$HOME"/.config
+mkdir -p "$HOME"/.local/bin
 DOTFILES="$(dirname "$(realpath "$0")")"
 shopt -s dotglob
 
