@@ -36,7 +36,7 @@ do
 done
 
 #======================================
-# ~/.local/bin
+# ~/.local/bin/*
 #======================================
 for src in "$DOTFILES"/home/.local/bin/*
 do
