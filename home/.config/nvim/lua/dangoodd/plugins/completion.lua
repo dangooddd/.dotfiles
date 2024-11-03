@@ -26,7 +26,7 @@ return {
                 ["<C-e>"] = cmp.mapping({
                     [mode] = cmp.mapping.abort(),
                 }),
-                ["<C-CR>"] = cmp.mapping({
+                ["<C-y>"] = cmp.mapping({
                     [mode] = cmp.mapping.complete(),
                 }),
                 ["<CR>"] = cmp.mapping({
