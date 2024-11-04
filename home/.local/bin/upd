@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
 # update dotfiles
-cd "$DOTFILES" && git pull origin main
+DOTFILES="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+cd "$DOTFILES" || exit
+git pull origin main
