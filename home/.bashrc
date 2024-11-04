@@ -32,7 +32,7 @@ function __precmd_hook {
 }
 
 function __pwd_prompt_module {
-    echo " $(basename ${PWD/#$HOME/\~})"
+    echo " $(basename "${PWD/#$HOME/\~}")"
 }
 
 function __status_prompt_module {
@@ -64,8 +64,8 @@ function __char_prompt_module {
     fi
 }
 
-VIRTUAL_ENV_DISABLE_PROMPT="Y"
-PROMPT_COMMAND="__precmd_hook"
+export VIRTUAL_ENV_DISABLE_PROMPT="Y"
+PROMPT_COMMAND=("__precmd_hook")
 PS1='\[\e[0m\e[30m\e[103m\]'
 PS1+='$(__pwd_prompt_module)'
 PS1+='$(__status_prompt_module)'
@@ -155,7 +155,8 @@ function clear {
 function yank {
     for val in "$@"
     do 
-        local realval="$(readlink -f "$val")"
+        local realval
+        realval="$(readlink -f "$val")"
         if [[ -e "$realval" ]]; then
             __yank_source+=("$realval")
         fi
@@ -204,8 +205,7 @@ function mark-list {
 }
 
 function g {
-    cd ${__marks_array["$1"]}
-    ls -Av
+    cd "${__marks_array["$1"]}" && ls -Av
 }
 
 alias open="xdg-open"

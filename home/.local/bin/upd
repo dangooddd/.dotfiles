@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# update dotfiles
+cd "$DOTFILES" && git pull origin main
