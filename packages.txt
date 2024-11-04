@@ -12,3 +12,4 @@ alacritty
 tmux
 zoxide
 jetbrains-mono-fonts-all
+ShellCheck

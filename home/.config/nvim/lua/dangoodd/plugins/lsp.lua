@@ -21,7 +21,7 @@ return {
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "pylsp",
-                "texlab",
+                "bashls",
             },
             -- functions to call on start of lsp
             -- basically auto setup of lsp
@@ -67,6 +67,19 @@ return {
                                         "-outdir=build",
                                     },
                                     onSave = true,
+                                },
+                            }
+                        }
+                    })
+                end,
+
+                ["bashls"] = function()
+                    require("lspconfig")["bashls"].setup({
+                        capabilities = capabilities,
+                        settings = {
+                            bashIde = {
+                                shellcheckArguments = {
+                                    "--exclude=SC1090,SC1091,SC2076"
                                 },
                             }
                         }
