@@ -11,5 +11,6 @@ neovim
 alacritty
 tmux
 zoxide
+fastfetch
 jetbrains-mono-fonts-all
 ShellCheck
