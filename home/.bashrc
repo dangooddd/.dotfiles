@@ -37,6 +37,11 @@ function __pwd_prompt_module {
 
 function __status_prompt_module {
     local status=""
+
+    if [[ -n "$SSH_CONNECTION" ]]; then
+        status+="s,"
+    fi
+
     if [[ -f "/run/.containerenv" ]]; then
         status+="c,"
     fi
