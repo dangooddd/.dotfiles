@@ -21,6 +21,7 @@ return {
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "pylsp",
+                "clangd",
                 "bashls",
             },
             -- functions to call on start of lsp
@@ -82,6 +83,17 @@ return {
                                     "--exclude=SC1090,SC1091,SC2076"
                                 },
                             }
+                        }
+                    })
+                end,
+
+                ["clangd"] = function()
+                    local style = "llvm"
+                    require("lspconfig")["clangd"].setup({
+                        capabilities = capabilities,
+                        cmd = {
+                            "clangd",
+                            "--fallback-style="..style,
                         }
                     })
                 end,
