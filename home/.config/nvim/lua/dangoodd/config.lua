@@ -19,10 +19,8 @@ vim.opt.tabstop = 4 -- 1 tab represented as 4 spaces
 vim.opt.expandtab = true  -- <tab> key will create " " insead of "\t"
 vim.opt.shiftwidth = 4  -- indent change after backspace and >> <<
 vim.opt.softtabstop = 4  -- number of spaces instead of tab
-vim.opt.smartindent = true  -- auto indent
-vim.opt.cindent = false
-vim.opt.indentkeys = ""
-vim.opt.cinkeys = ""
+vim.opt.autoindent = true  -- auto indent
+vim.opt.cinkeys = string.gsub(vim.o.cinkeys, ":,", "")  -- shit.
 
 -- global
 vim.g.netrw_banner = 0
@@ -35,6 +33,7 @@ vim.g.maplocal = [[\]]
 ---------------------------------------
 vim.keymap.set("n", "<C-j>", vim.cmd.bnext)
 vim.keymap.set("n", "<C-k>", vim.cmd.bprev)
+vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 vim.keymap.set("i", "<C-b>", "<Left>")
 vim.keymap.set("i", "<C-f>", "<Right>")
 
