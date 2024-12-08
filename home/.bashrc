@@ -257,3 +257,8 @@ fi
 if command -v fzf &> /dev/null; then
     eval "$(fzf --bash)"
 fi
+
+# source rustup env
+if [[ -f "$CARGO_HOME"/env ]]; then
+    . "$CARGO_HOME"/env
+fi
