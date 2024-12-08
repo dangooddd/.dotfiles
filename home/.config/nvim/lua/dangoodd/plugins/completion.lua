@@ -14,7 +14,7 @@ return {
 
         -- init completion system
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
-        local cmp_confirm = { behavior = cmp.ConfirmBehavior.Replace }
+        local cmp_confirm = { select = false, behavior = cmp.ConfirmBehavior.Insert }
         local function cmp_mapping_pattern(mode)
             return {
                 ["<C-n>"] = cmp.mapping({
@@ -60,6 +60,7 @@ return {
                     return item
                 end,
             },
+            preselect = cmp.PreselectMode.None,
             mapping = cmp_mapping_pattern("i"),
             sources = cmp.config.sources({
                 { name = "nvim_lsp" },
