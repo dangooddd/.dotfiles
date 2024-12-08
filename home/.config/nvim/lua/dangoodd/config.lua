@@ -47,36 +47,27 @@ function Status.filepath()
     return " %.60F "
 end
 
-function Status.errors()
-    local count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-    if count == 0 then
-        return ""
-    end
-    return string.format(" [E:%s] ", count)
-end
+function Status.diagnostic()
+    local diagnostic = {
+        E = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }),
+        W = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN }),
+        H = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT }),
+        I = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
+    }
 
-function Status.warnings()
-    local count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-    if count == 0 then
-        return ""
+    local line = ""
+    for k, v in pairs(diagnostic) do
+        if v > 0 then
+            line = line..string.format("%s:%s,", k, v)
+        end
     end
-    return string.format(" [W:%s] ", count)
-end
 
-function Status.hints()
-    local count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
-    if count == 0 then
+    if #line == 0 then
         return ""
     end
-    return string.format(" [H:%s] ", count)
-end
 
-function Status.info()
-    local count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
-    if count == 0 then
-        return ""
-    end
-    return string.format(" [I:%s] ", count)
+    line = string.sub(line, 0, -2)
+    return string.format(" [%s] ", line)
 end
 
 function Status.position()
@@ -102,10 +93,7 @@ function StatusLine()
         "%#StatusLine#",
         Status.filepath(),
         "%=",
-        Status.errors(),
-        Status.warnings(),
-        Status.hints(),
-        Status.info(),
+        Status.diagnostic(),
         Status.position(),
         Status.filetype(),
         Status.location(),
