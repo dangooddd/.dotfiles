@@ -46,7 +46,7 @@ return {
                                     black = { enabled = true },
                                     pycodestyle = {
                                         enabled = true,
-                                        ignore = { "E203", "E701" },
+                                        ignore = { "E203", "E701", "W503" },
                                         maxLineLength = 88
                                     }
                                 }
