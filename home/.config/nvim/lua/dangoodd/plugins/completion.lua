@@ -28,6 +28,10 @@ return {
             completion = {
                 list = {
                     selection = "manual",
+                    cycle = {
+                        from_bottom = false,
+                        from_top = false,
+                    },
                 },
                 documentation = {
                     auto_show = true,
@@ -37,13 +41,19 @@ return {
                     draw = {
                         columns = { 
                             { "label", "label_description", gap = 1 }, 
-                            { "kind_icon", "kind", gap = 1 } 
+                            { "kind_icon", "kind", gap = 1 },
                         },
                     },
                 },
             },
             sources = {
                 default = { "lsp", "path", "luasnip", "buffer" },
+                cmdline = function()
+                    local type = vim.fn.getcmdtype()
+                    if type == "/" or type == "?" then return { "buffer" } end
+                    if type == ":" then return { "cmdline" } end
+                    return {}
+                end,
             },
         })
     end
