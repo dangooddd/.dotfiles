@@ -8,7 +8,7 @@ return {
                 border = "single",
                 backdrop = 100,
                 preview = {
-                    horizontal = "right:50%",
+                    horizontal = "right:40%",
                     layout = "horizontal",
                 }
             },
