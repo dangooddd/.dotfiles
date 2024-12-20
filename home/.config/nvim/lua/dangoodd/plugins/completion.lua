@@ -22,7 +22,8 @@ return {
                 ["<C-u>"] = { "scroll_documentation_up", "fallback" },
                 ["<C-d>"] = { "scroll_documentation_down", "fallback" },
                 ["<CR>"] = { "accept", "fallback" },
-                ["<Tab>"] = { "snippet_forward", "snippet_backward" },
+                ["<Tab>"] = { "snippet_forward", "fallback" },
+                ["<S-Tab>"] = { "snippet_backward", "fallback" }
             },
             completion = {
                 list = {
@@ -31,6 +32,14 @@ return {
                 documentation = {
                     auto_show = true,
                     auto_show_delay_ms = 100,
+                },
+                menu = {
+                    draw = {
+                        columns = { 
+                            { "label", "label_description", gap = 1 }, 
+                            { "kind_icon", "kind", gap = 1 } 
+                        },
+                    },
                 },
             },
             sources = {
