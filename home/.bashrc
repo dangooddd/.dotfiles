@@ -114,8 +114,20 @@ function auto-venv-toggle {
     fi
 }
 
+function auto-venv {
+    __auto_venv_name="$1"
+    if [[ -z "$__auto_venv_name" ]]; then
+        __auto_venv_name=".venv"
+    fi
+
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        deactivate
+    fi
+}
+
+__auto_venv_name=.venv
 function venv-update {
-    local path=".venv/bin/activate"
+    local path="$__auto_venv_name/bin/activate"
     local venv=""
     # depth = 2
     [[ -e "../$path" ]] && venv="../$path"
