@@ -4,6 +4,9 @@ return {
     config = function()
         local fzf = require("fzf-lua")
         fzf.setup({
+            fzf_opts = {
+                ["--no-bold"] = true,
+            },
             winopts = {
                 border = "single",
                 backdrop = 100,
