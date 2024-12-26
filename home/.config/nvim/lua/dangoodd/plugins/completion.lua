@@ -34,10 +34,12 @@ return {
                     },
                 },
                 documentation = {
+                    window = { border = "single" },
                     auto_show = true,
                     auto_show_delay_ms = 50,
                 },
                 menu = {
+                    border = "single",
                     draw = {
                         columns = { 
                             { "label", "label_description", gap = 1 }, 
@@ -45,6 +47,10 @@ return {
                         },
                     },
                 },
+            },
+            signature = { 
+                enabled = true,
+                window = { border = "single" },
             },
             sources = {
                 default = { "lsp", "path", "luasnip", "buffer" },

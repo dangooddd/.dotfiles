@@ -44,7 +44,7 @@ vim.keymap.set("i", "<C-f>", "<Right>")
 local Status = {}
 
 function Status.filepath()
-    return " %.60F "
+    return " %t %m "
 end
 
 function Status.diagnostic()
@@ -62,10 +62,7 @@ function Status.diagnostic()
         end
     end
 
-    if #line == 0 then
-        return ""
-    end
-
+    if #line == 0 then return "" end
     line = string.sub(line, 0, -2)
     return string.format(" [%s] ", line)
 end
@@ -76,23 +73,35 @@ end
 
 function Status.filetype()
     local type = vim.bo.filetype
-    if type == "" then
-        return ""
-    end
-
+    if type == "" then return "" end
     return string.format(" %s ", type)
+end
+
+function Status.branch()
+    local branch = vim.b.git_branch
+    if branch == nil then return "" end
+    return string.format("  %s ", branch)
 end
 
 function Status.location()
     return " %P "
 end
 
+function Status.default_style()
+    return "%#StatusLine#"
+end
+
+function Status.separator()
+    return "%="
+end
+
 -- Status Line function
 function StatusLine()
     return table.concat({
-        "%#StatusLine#",
+        Status.default_style(),
+        Status.branch(),
         Status.filepath(),
-        "%=",
+        Status.separator(),
         Status.diagnostic(),
         Status.position(),
         Status.filetype(),
@@ -105,11 +114,29 @@ vim.opt.showmode = true  -- show mode under statusline
 vim.opt.statusline = "%!v:lua.StatusLine()"
 
 -- auto update diagnostic
-local group = vim.api.nvim_create_augroup("StatusLine", {})
+local status_group = vim.api.nvim_create_augroup("StatusLine", {})
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
-    group = group,
+    group = status_group,
     pattern = "*",
     callback = function()
         vim.opt.statusline = "%!v:lua.StatusLine()"
     end,
+})
+
+-- display git branch in statusline
+vim.api.nvim_create_autocmd("BufEnter", {
+    group = status_group,
+    pattern = "*",
+    callback = function()
+        local obj = vim.system(
+            { "git", "branch", "--show-current" }, 
+            { cwd = vim.fn.expand("%:p:h"), text = true } 
+        ):wait()
+
+        if obj.code == 0 then
+            vim.b.git_branch = vim.trim(obj.stdout)
+        end
+
+        vim.opt.statusline = "%!v:lua.StatusLine()"
+    end
 })
