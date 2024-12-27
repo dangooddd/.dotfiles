@@ -5,6 +5,6 @@ import = [ "kanagawa.toml" ]
 padding = { x = 10, y = 10 }
 
 [font]
-normal = { family = "JetBrains Mono NL" }
+normal = { family = "JetBrains Mono NL NerdFont" }
 size = 16
 offset = { x = -1 }
