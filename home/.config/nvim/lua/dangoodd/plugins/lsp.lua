@@ -29,6 +29,8 @@ return {
                 "pylsp",
                 "clangd",
                 "bashls",
+                "taplo",
+                "jsonls",
             },
             -- functions to call on start of lsp
             -- basically auto setup of lsp

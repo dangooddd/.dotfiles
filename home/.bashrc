@@ -31,52 +31,8 @@ function __precmd_hook {
     fi
 }
 
-function __pwd_prompt_module {
-    echo " $(basename "${PWD/#$HOME/\~}")"
-}
-
-function __status_prompt_module {
-    local status=""
-
-    if [[ -n "$SSH_CONNECTION" ]]; then
-        status+="s,"
-    fi
-
-    if [[ -f "/run/.containerenv" ]]; then
-        status+="c,"
-    fi
-
-    if [[ -n "$VIRTUAL_ENV" ]]; then
-        status+="v,"
-    fi
-
-    if command git rev-parse &> /dev/null; then
-        status+="g,"
-    fi
-
-    if [[ -n "$status" ]]; then
-        status=" [${status::-1}]"
-    fi
-
-    echo "$status"
-}
-
-function __char_prompt_module {
-    if [[ $__exit_code -eq 0 ]]; then
-        echo ' $ '
-    else
-        echo ' # '
-    fi
-}
-
 export VIRTUAL_ENV_DISABLE_PROMPT="Y"
 PROMPT_COMMAND=("__precmd_hook")
-PS1='\[\e[0m\e[30m\e[103m\]'
-PS1+='$(__pwd_prompt_module)'
-PS1+='$(__status_prompt_module)'
-PS1+=' \[\e[0m\e[30m\e[101m\]'
-PS1+='$(__char_prompt_module)'
-PS1+='\[\e[0m\] '
 
 
 #=====================================
@@ -259,6 +215,12 @@ export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
 export LESS="--tilde -RFXS"
 
+# source rustup env
+if [[ -f "$CARGO_HOME"/env ]]; then
+    . "$CARGO_HOME"/env
+fi
+
+# setup cli programs
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init bash)"
     function zd {
@@ -266,11 +228,10 @@ if command -v zoxide &> /dev/null; then
     }
 fi
 
-if command -v fzf &> /dev/null; then
-    eval "$(fzf --bash)"
+if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
 fi
 
-# source rustup env
-if [[ -f "$CARGO_HOME"/env ]]; then
-    . "$CARGO_HOME"/env
+if command -v fzf &> /dev/null; then
+    eval "$(fzf --bash)"
 fi
