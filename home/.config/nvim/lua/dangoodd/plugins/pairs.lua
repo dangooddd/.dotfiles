@@ -1,22 +1,13 @@
 return {
     "windwp/nvim-autopairs",
-    dependencies = {
-        "hrsh7th/nvim-cmp",
-    },
-    event = "VeryLazy",
+    event = "InsertEnter",
     config = function()
+        require("nvim-autopairs").setup()
+
+        -- add new rules
         local pairs = require("nvim-autopairs")
         local rule = require('nvim-autopairs.rule')
         local cond = require('nvim-autopairs.conds')
-        local cmp_pairs = require("nvim-autopairs.completion.cmp")
-
-        pairs.setup()
-        -- enable () after function complete
-        require("cmp").event:on(
-            "confirm_done",
-            cmp_pairs.on_confirm_done()
-        )
-
         pairs.add_rules({
             rule("$", "$",{ "tex", "latex", "plaintex" })
                 -- do not move right when repeat character

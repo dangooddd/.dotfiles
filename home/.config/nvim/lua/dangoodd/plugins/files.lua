@@ -35,7 +35,7 @@ return {
             return function()
                 local cur_target = MiniFiles.get_explorer_state().target_window
                 local new_target = vim.api.nvim_win_call(cur_target, function()
-                    vim.cmd(direction .. ' split')
+                    vim.cmd(direction .. " split")
                     return vim.api.nvim_get_current_win()
                 end)
                 MiniFiles.set_target_window(new_target)

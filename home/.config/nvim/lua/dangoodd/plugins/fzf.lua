@@ -27,5 +27,5 @@ return {
         vim.keymap.set("n", "<leader>fl", fzf.live_grep)
         vim.keymap.set("n", "<leader>fz", fzf.builtin)
         vim.keymap.set("n", "<leader>fr", fzf.resume)
-    end
+    end,
 }
