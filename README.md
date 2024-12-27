@@ -5,8 +5,8 @@
 
 ## Configurations 
 
-* **Terminal:** [alacritty](https://github.com/alacritty/alacritty)
-* **Prompt:** Custom bash prompt
+* **Terminal:** [kitty](https://github.com/kovidgoyal/kitty)
+* **Prompt:** [starship](https://github.com/starship/starship)
 * **Shell:** [bash](https://www.gnu.org/software/bash/)
 * **Code Editor:** [neovim](https://github.com/neovim/neovim)
 * **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
@@ -34,4 +34,14 @@ cd .dotfiles
 Install packages via dnf:
 ```sh
 sudo dnf install $(cat packages.txt)
+```
+
+Install rust programming language:
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Install rust packages:
+```sh
+cargo install starship --locked
 ```
