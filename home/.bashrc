@@ -177,8 +177,21 @@ function mark-list {
     done
 }
 
-function g {
+function gg {
     cd "${__marks_array["$1"]}" && ls -Av
+}
+
+function yy {
+	local tmp
+    tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" ]] && [[ "$cwd" != "$PWD" ]]; then
+        if command -v zoxide &> /dev/null; then
+            zoxide add "$cwd"
+        fi
+		builtin cd -- "$cwd" 
+	fi
+	rm -f -- "$tmp"
 }
 
 alias open="xdg-open"

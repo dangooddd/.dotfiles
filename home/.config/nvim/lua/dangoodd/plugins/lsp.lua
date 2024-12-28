@@ -88,7 +88,7 @@ return {
                         settings = {
                             bashIde = {
                                 shellcheckArguments = {
-                                    "--exclude=SC1090,SC1091,SC2076"
+                                    "--exclude=SC1090,SC1091,SC2076,SC2164"
                                 },
                             }
                         }
