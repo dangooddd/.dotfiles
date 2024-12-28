@@ -207,7 +207,8 @@ fi
 export FZF_DEFAULT_OPTS="--layout=reverse \
                          --height 10 \
                          --ansi \
-                         --border=sharp"
+                         --border=rounded \
+                         --no-bold"
 
 export PYTHONSTARTUP="$HOME"/.pythonstartup.py
 export RUSTUP_HOME="$HOME"/.rustup

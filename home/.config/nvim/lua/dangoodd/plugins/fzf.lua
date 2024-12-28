@@ -8,7 +8,7 @@ return {
                 ["--no-bold"] = true,
             },
             winopts = {
-                border = "single",
+                border = "rounded",
                 backdrop = 100,
                 preview = {
                     horizontal = "right:40%",

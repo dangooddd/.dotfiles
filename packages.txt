@@ -7,6 +7,7 @@ wl-clipboard
 fd-find
 fzf
 jq
+p7zip
 ripgrep
 neovim
 alacritty

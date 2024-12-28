@@ -10,6 +10,8 @@
 * **Shell:** [bash](https://www.gnu.org/software/bash/)
 * **Code Editor:** [neovim](https://github.com/neovim/neovim)
 * **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
+* **File manager:** [yazi](https://github.com/sxyazi/yazi)
+* **Fetch:** [fastfetch](https://github.com/fastfetch-cli/fastfetch)
 
 
 ## Installation
@@ -44,4 +46,10 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 Install rust packages:
 ```sh
 cargo install starship --locked
+cargo install --locked yazi-fm yazi-cli
+```
+
+Install yazi plugins:
+```sh
+ya pack -u
 ```
