@@ -31,6 +31,7 @@ return {
                 "bashls",
                 "taplo",
                 "jsonls",
+                "yamlls",
             },
             -- functions to call on start of lsp
             -- basically auto setup of lsp

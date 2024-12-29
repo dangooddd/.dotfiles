@@ -3,6 +3,7 @@ clang
 bear
 python 
 pip
+npm
 wl-clipboard
 fd-find
 fzf

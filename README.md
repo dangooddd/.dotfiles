@@ -45,7 +45,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 Install rust packages:
 ```sh
-cargo install starship --locked
+cargo install --locked starship
 cargo install --locked yazi-fm yazi-cli
 ```
 
