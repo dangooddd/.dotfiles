@@ -12,8 +12,10 @@ p7zip
 ripgrep
 neovim
 alacritty
+kitty
 tmux
 zoxide
 fastfetch
 jetbrains-mono-fonts-all
 ShellCheck
+lazygit

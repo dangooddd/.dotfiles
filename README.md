@@ -33,6 +33,11 @@ cd .dotfiles
 
 ## Packages
 
+Enable copr repositories:
+```sh
+sudo dnf copr enable -y atim/lazygit
+```
+
 Install packages via dnf:
 ```sh
 sudo dnf install $(cat packages.txt)
