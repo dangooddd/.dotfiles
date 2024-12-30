@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+
+gui:
+  mouseEvents: true
+  windowSize: normal
+  border: rounded
+  animateExplosion: true
+  theme:
+    ## Palette
+    ## Kanagawa
+    # sumiInk3      "#1f1f28" bg
+    # sumiInk4      "#2a2a37"
+    # sumiInk6      "#54546d"
+    # peachRed      "#ff5d62"
+    # carpYellow    "#e6c384"
+    # fujiWhite     "#dcd7ba" fg
+    # surimiOrange  "#ffa066"
+    # oniViolet     "#957fb8"
+
+    activeBorderColor:
+      - "#957fb8"
+      - bold
+
+    inactiveBorderColor:
+      - "#54546d"
+
+    searchingActiveBorderColor:
+      - "#ffa066"
+      - bold
+
+    optionsTextColor:
+      - "#e6c384"
+
+    selectedLineBgColor:
+      - "#2a2a37"
+
+    inactiveViewSelectedLineBgColor:
+      - bold
+
+    cherryPickedCommitFgColor:
+      - "#1f1f28"
+
+    cherryPickedCommitBgColor:
+      - "#957fb8"
+
+    markedBaseCommitFgColor:
+      - "#1f1f28"
+
+    markedBaseCommitBgColor:
+      - "#ffa066"
+
+    unstagedChangesColor:
+      - "#ff5d62"
+
+    defaultFgColor:
+      - "#dcd7ba"
+
+  authorColors:
+    "*": "#e6c384"
