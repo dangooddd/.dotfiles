@@ -177,7 +177,7 @@ function mark-list {
     done
 }
 
-function gg {
+function mark-go {
     cd "${__marks_array["$1"]}" && ls -Av
 }
 
