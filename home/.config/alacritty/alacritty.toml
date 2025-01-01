@@ -1,10 +1,10 @@
 [general]
-import = [ "kanagawa.toml" ]
+import = ["kanagawa.toml"]
 
 [window]
 padding = { x = 10, y = 10 }
 
 [font]
-normal = { family = "JetBrains Mono NL NerdFont" }
+normal = { family = "JetBrainsMonoNL Nerd Font" }
 size = 16
 offset = { x = -1 }
