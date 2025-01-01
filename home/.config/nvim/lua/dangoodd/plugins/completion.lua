@@ -42,7 +42,7 @@ return {
                     border = "rounded",
                     draw = {
                         columns = { 
-                            { "label", "label_description", gap = 1 }, 
+                            { "label" }, 
                             { "kind_icon", "kind", gap = 1 },
                         },
                     },
@@ -54,12 +54,6 @@ return {
             },
             sources = {
                 default = { "lsp", "path", "luasnip", "buffer" },
-                cmdline = function()
-                    local type = vim.fn.getcmdtype()
-                    if type == "/" or type == "?" then return { "buffer" } end
-                    if type == ":" then return { "cmdline" } end
-                    return {}
-                end,
             },
         })
     end
