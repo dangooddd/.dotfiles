@@ -6,18 +6,19 @@
 add_newline = false
 palette = "kanagawa"
 format = """
-[$directory](inverted fg:carp-yellow)\
+[$directory](fg:sumi-ink-3 bg:carp-yellow)\
 [](fg:carp-yellow bg:surimi-orange)\
-[$container$rust$python$git_branch$hostname](inverted fg:surimi-orange)\
+[$container$rust$python$git_branch$hostname](fg:sumi-ink-3 bg:surimi-orange)\
 [](fg:surimi-orange bg:peach-red)\
-[$character](inverted fg:peach-red)\
-[](fg:peach-red) 
-"""
+[$character](fg:sumi-ink-3 bg:peach-red)\
+[](fg:peach-red)\
+[ ](none)"""
 
 [palettes.kanagawa]
 peach-red = "#ff5d62"
 carp-yellow = "#e6c384"
 surimi-orange = "#ffa066"
+sumi-ink-3 = "#1f1f28"
 
 [character]
 format = "$symbol"
