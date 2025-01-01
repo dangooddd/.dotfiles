@@ -1,10 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
 
 gui:
-  mouseEvents: true
-  windowSize: normal
-  border: rounded
-  animateExplosion: true
   theme:
     ## Palette
     ## Kanagawa
@@ -57,3 +53,6 @@ gui:
 
   authorColors:
     "*": "#e6c384"
+
+disableStartupPopups: true
+promptToReturnFromSubprocess: false
