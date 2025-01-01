@@ -1,9 +1,13 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
 
+disableStartupPopups: true
+promptToReturnFromSubprocess: false
+notARepository: skip
+
 gui:
+  ## Kanagawa
   theme:
     ## Palette
-    ## Kanagawa
     # sumiInk3      "#1f1f28" bg
     # sumiInk4      "#2a2a37"
     # sumiInk6      "#54546d"
@@ -53,6 +57,3 @@ gui:
 
   authorColors:
     "*": "#e6c384"
-
-disableStartupPopups: true
-promptToReturnFromSubprocess: false
