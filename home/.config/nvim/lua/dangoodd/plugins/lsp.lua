@@ -11,7 +11,7 @@ return {
         local capabilities = require("blink.cmp").get_lsp_capabilities()
 
         -- mason
-        require("mason").setup()
+        require("mason").setup({ ui = { border = "rounded" } })
 
         -- setup lsp
         require("mason-lspconfig").setup({
