@@ -2,13 +2,11 @@ return {
     "ibhagwan/fzf-lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-        local fzf = require("fzf-lua")
-        fzf.setup({
+        require("fzf-lua").setup({
             fzf_opts = {
                 ["--no-bold"] = true,
             },
             winopts = {
-                border = "rounded",
                 backdrop = 100,
                 preview = {
                     horizontal = "right:40%",
@@ -19,6 +17,8 @@ return {
                 cmd = "rg --hidden",
             },
         })
+
+        local fzf = require("fzf-lua")
         vim.keymap.set("n", "<leader>ff", fzf.files)
         vim.keymap.set("n", "<leader>fh", fzf.helptags)
         vim.keymap.set("n", "<leader>fb", fzf.buffers)

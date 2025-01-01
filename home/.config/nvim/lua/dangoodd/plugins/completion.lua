@@ -3,7 +3,6 @@ return {
     version = "*",
     dependencies = { "L3MON4D3/LuaSnip" },
     config = function()
-        local border = "rounded"
         require("blink.cmp").setup({
             snippets = {
                 expand = function(snippet) require("luasnip").lsp_expand(snippet) end,
@@ -35,12 +34,12 @@ return {
                     },
                 },
                 documentation = {
-                    window = { border = border },
+                    window = { border = "rounded" },
                     auto_show = true,
                     auto_show_delay_ms = 50,
                 },
                 menu = {
-                    border = border,
+                    border = "rounded",
                     draw = {
                         columns = { 
                             { "label", "label_description", gap = 1 }, 
@@ -51,7 +50,7 @@ return {
             },
             signature = { 
                 enabled = true,
-                window = { border = border },
+                window = { border = "rounded" },
             },
             sources = {
                 default = { "lsp", "path", "luasnip", "buffer" },
