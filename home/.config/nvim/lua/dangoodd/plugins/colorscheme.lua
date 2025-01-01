@@ -16,11 +16,6 @@ return {
             overrides = function(colors)
                 local theme = colors.theme
                 local palette = colors.palette
-                -- completion menu
-                local CPmenu = { fg = theme.ui.shade0, bg = theme.ui.bg }
-                local CPmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 }
-                local CPmenuSbar = { bg = theme.ui.bg_m1 }
-                local CPmenuThumb = { bg = palette.waveAqua2 }
                 return {
                     -- other
                     CursorLineNr = { bold = false },
@@ -28,21 +23,21 @@ return {
                     WinSeparator = { fg = theme.ui.bg_p1 },
                     ["@variable.builtin"] = { italic = false },
                     -- menu
-                    Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
+                    Pmenu = { fg = theme.ui.fg , bg = theme.ui.bg_p1 },
                     PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
                     PmenuSbar = { bg = theme.ui.bg_m1 },
                     PmenuThumb = { bg = theme.ui.bg_p2 },
                     -- blink menu
-                    BlinkCmpMenu = CPmenu,
-                    BlinkCmpMenuBorder = CPmenu,
-                    BlinkCmpMenuSelection = CPmenuSel,
-                    BlinkCmpScrollBarThumb = CPmenuThumb,
-                    BlinkCmpScrollBarGutter = CPmenuSbar,
-                    BlinkCmpDoc = CPmenu,
-                    BlinkCmpDocBorder = CPmenu,
-                    BlinkCmpDocSeparator = CPmenu,
-                    BlinkCmpSignatureHelp = CPmenu,
-                    BlinkCmpSignatureHelpBorder = CPmenu,
+                    BlinkCmpMenu = { fg = theme.ui.fg, bg = theme.ui.bg },
+                    BlinkCmpMenuBorder = { link = "BlinkCmpMenu" },
+                    BlinkCmpMenuSelection = { fg = "NONE", bg = theme.ui.bg_p2 },
+                    BlinkCmpScrollBarGutter = { bg = theme.ui.bg_m1 },
+                    BlinkCmpScrollBarThumb = { bg = palette.waveAqua2 },
+                    BlinkCmpDoc = { link = "BlinkCmpMenu" },
+                    BlinkCmpDocBorder = { link = "BlinkCmpMenu" },
+                    BlinkCmpDocSeparator = { link = "BlinkCmpMenu" },
+                    BlinkCmpSignatureHelp = { link = "BlinkCmpMenu" },
+                    BlinkCmpSignatureHelpBorder = { link = "BlinkCmpMenu" },
                 }
             end
         })
