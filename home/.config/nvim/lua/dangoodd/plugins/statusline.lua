@@ -5,32 +5,37 @@ return {
         "rebelot/kanagawa.nvim",
     },
     config = function()
-        local kanagawa = require("lualine.themes.kanagawa")
-        local theme = require("kanagawa.colors").setup().theme
-        local palette = require("kanagawa.colors").setup().palette
+        -- custom lualine theme with kanagawa colors
+        local function kanagawa_custom()
+            local kanagawa = require("lualine.themes.kanagawa")
+            local theme = require("kanagawa.colors").setup().theme
+            local palette = require("kanagawa.colors").setup().palette
 
-        local function accent_status(accent)
-            return {
-                a = { bg = accent, fg = theme.ui.bg },
-                b = { bg = theme.ui.bg_p1, fg = accent },
-                c = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+            local function accent_status(accent)
+                return {
+                    a = { bg = accent, fg = theme.ui.bg },
+                    b = { bg = theme.ui.bg_p1, fg = accent },
+                    c = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+                }
+            end
+
+            kanagawa.normal = accent_status(palette.springGreen)
+            kanagawa.insert = accent_status(palette.carpYellow)
+            kanagawa.visual = accent_status(palette.oniViolet)
+            kanagawa.replace = accent_status(palette.surimiOrange)
+            kanagawa.command = accent_status(palette.peachRed)
+            kanagawa.inactive = {
+                a = { bg = theme.ui.bg_m3, fg = theme.ui.nontext },
+                b = { bg = theme.ui.bg_m3, fg = theme.ui.nontext },
+                c = { bg = theme.ui.bg_m3, fg = theme.ui.nontext },
             }
-        end
 
-        kanagawa.normal = accent_status(palette.springGreen)
-        kanagawa.insert = accent_status(palette.carpYellow)
-        kanagawa.visual = accent_status(palette.oniViolet)
-        kanagawa.replace = accent_status(palette.surimiOrange)
-        kanagawa.command = accent_status(palette.peachRed)
-        kanagawa.inactive = {
-            a = { bg = theme.ui.bg_m3, fg = theme.ui.nontext },
-            b = { bg = theme.ui.bg_m3, fg = theme.ui.nontext },
-            c = { bg = theme.ui.bg_m3, fg = theme.ui.nontext },
-        }
+            return kanagawa
+        end
 
         require("lualine").setup({
             options = {
-                theme = kanagawa,
+                theme = kanagawa_custom(),
                 component_separators = { left = "", right = "" },
                 section_separators = { left = "", right = "" },
                 globalstatus = true,
@@ -56,6 +61,16 @@ return {
                 lualine_y = {},
                 lualine_z = {}
             }
+        })
+
+        -- update colorscheme when it changes to light/dark
+        vim.api.nvim_create_autocmd("ColorScheme", {
+            pattern = "kanagawa",
+            callback = function()
+                require("lualine").setup({
+                    options = { theme = kanagawa_custom() },
+                })
+            end,
         })
     end,
 }

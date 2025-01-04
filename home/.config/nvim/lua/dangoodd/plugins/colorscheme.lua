@@ -30,9 +30,9 @@ return {
                     -- blink menu
                     BlinkCmpMenu = { fg = theme.ui.fg, bg = theme.ui.bg },
                     BlinkCmpMenuBorder = { link = "BlinkCmpMenu" },
-                    BlinkCmpMenuSelection = { fg = "NONE", bg = theme.ui.bg_p2 },
-                    BlinkCmpScrollBarGutter = { bg = theme.ui.bg_m1 },
-                    BlinkCmpScrollBarThumb = { bg = palette.waveAqua2 },
+                    BlinkCmpMenuSelection = { fg = theme.ui.bg, bg = palette.springGreen },
+                    BlinkCmpScrollBarGutter = { bg = theme.ui.bg_p2 },
+                    BlinkCmpScrollBarThumb = { bg = palette.surimiOrange },
                     BlinkCmpDoc = { link = "BlinkCmpMenu" },
                     BlinkCmpDocBorder = { link = "BlinkCmpMenu" },
                     BlinkCmpDocSeparator = { link = "BlinkCmpMenu" },
