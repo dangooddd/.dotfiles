@@ -6,16 +6,26 @@ return {
             commentStyle = { italic = false },
             keywordStyle = { italic = false },
             undercurl = true,
+            background = {
+                dark = "wave",
+                light = "lotus"
+            },
             colors = {
                 theme = {
                     all = {
                         ui = { bg_gutter = "NONE" },
                     },
+                    wave = {
+                        term = (function()
+                            local wave = require("kanagawa.colors").setup({ theme = "wave" })
+                            wave.theme.term[10] = wave.palette.peachRed
+                            return wave.theme.term
+                        end)(),
+                    },
                 },
             },
             overrides = function(colors)
                 local theme = colors.theme
-                local palette = colors.palette
                 return {
                     -- other
                     CursorLineNr = { bold = false },
@@ -29,10 +39,11 @@ return {
                     PmenuThumb = { bg = theme.ui.bg_p2 },
                     -- blink menu
                     BlinkCmpMenu = { fg = theme.ui.fg, bg = theme.ui.bg },
+                    BlinkCmpLabelMatch = { fg = theme.ui.special },
                     BlinkCmpMenuBorder = { link = "BlinkCmpMenu" },
-                    BlinkCmpMenuSelection = { fg = theme.ui.bg, bg = palette.springGreen },
-                    BlinkCmpScrollBarGutter = { bg = theme.ui.bg_p2 },
-                    BlinkCmpScrollBarThumb = { bg = palette.surimiOrange },
+                    BlinkCmpMenuSelection = { fg = "NONE", bg = theme.ui.bg_p2 },
+                    BlinkCmpScrollBarGutter = { bg = theme.ui.bg_p1 },
+                    BlinkCmpScrollBarThumb = { bg = theme.ui.fg },
                     BlinkCmpDoc = { link = "BlinkCmpMenu" },
                     BlinkCmpDocBorder = { link = "BlinkCmpMenu" },
                     BlinkCmpDocSeparator = { link = "BlinkCmpMenu" },
@@ -41,6 +52,6 @@ return {
                 }
             end
         })
-        vim.cmd("colorscheme kanagawa")
+        vim.cmd.colorscheme("kanagawa")
     end,
 }

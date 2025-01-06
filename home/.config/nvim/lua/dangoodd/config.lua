@@ -52,25 +52,23 @@ vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 vim.keymap.set("i", "<C-b>", "<Left>")
 vim.keymap.set("i", "<C-f>", "<Right>")
 
-local function centering_toggle()
-    local goff = vim.api.nvim_get_option_value("scrolloff", { scope = "global" }) 
-    local loff = vim.api.nvim_get_option_value("scrolloff", { scope = "local" }) 
-    if loff ~= 999 then
+-- center editor view
+vim.keymap.set("n", "<leader>c", function()
+    local gso = vim.api.nvim_get_option_value("so", { scope = "global" }) 
+    local lso = vim.api.nvim_get_option_value("so", { scope = "local" }) 
+    if lso ~= 999 then
         vim.opt_local.scrolloff = 999
     else
-        vim.opt_local.scrolloff = goff
+        vim.opt_local.scrolloff = gso
     end
-end
--- center editor view
-vim.keymap.set("n", "<leader>c", centering_toggle)
+end)
 
-function background_toggle()
-    local background = vim.api.nvim_get_option_value("background", { scope = "global" })
-    if background== "dark" then
+-- toggle dark/light background
+vim.keymap.set("n", "<leader>l", function() 
+    local bg = vim.api.nvim_get_option_value("bg", { scope = "global" })
+    if bg == "dark" then
         vim.opt.background = "light"
     else
         vim.opt.background = "dark"
     end
-end
--- toggle dark/light background
-vim.keymap.set("n", "<leader>l", background_toggle)
+end)

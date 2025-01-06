@@ -11,7 +11,6 @@ return {
     config = function()
         local dap = require("dap")
         local ui = require("dapui")
-
         ui.setup()
 
         vim.keymap.set("n", "<space>db", dap.toggle_breakpoint)
