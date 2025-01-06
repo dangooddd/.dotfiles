@@ -1,17 +1,18 @@
 return {
-    "mfussenegger/nvim-dap",
+    "rcarriga/nvim-dap-ui",
     dependencies = {
-        { 
-            "rcarriga/nvim-dap-ui",
-            dependencies = { "nvim-neotest/nvim-nio" },
-        },
+        "nvim-neotest/nvim-nio",
+        "mfussenegger/nvim-dap",
         "mfussenegger/nvim-dap-python",
     },
     event = "VeryLazy",
     config = function()
+        require("dap-python").setup("python")
+        require("dapui").setup({ expand_lines = false })
+
+        -- dap keybinds
         local dap = require("dap")
         local ui = require("dapui")
-        ui.setup()
 
         vim.keymap.set("n", "<space>db", dap.toggle_breakpoint)
         vim.keymap.set("n", "<space>dr", dap.run_to_cursor)
@@ -39,7 +40,5 @@ return {
         dap.listeners.before.event_exited.dapui_config = function()
             ui.close()
         end
-
-        require("dap-python").setup("python")
     end,
 }

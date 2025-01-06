@@ -22,6 +22,7 @@ return {
                 "taplo",
                 "jsonls",
                 "yamlls",
+                "texlab",
             },
             -- functions to call on start of lsp
             -- basically auto setup of lsp
