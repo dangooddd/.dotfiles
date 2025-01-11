@@ -7,8 +7,8 @@ return {
     },
     event = "VeryLazy",
     config = function()
-        require("dap-python").setup("python")
         require("dapui").setup({ expand_lines = false })
+        require("dap-python").setup("python")
 
         -- dap keybinds
         local dap = require("dap")
@@ -25,20 +25,9 @@ return {
         vim.keymap.set("n", "<F7>", dap.disconnect)
         vim.keymap.set("n", "<F12>", dap.restart)
 
-        dap.listeners.before.attach.dapui_config = function()
-            ui.open()
-        end
-
-        dap.listeners.before.launch.dapui_config = function()
-            ui.open()
-        end
-
-        dap.listeners.before.event_terminated.dapui_config = function()
-            ui.close()
-        end
-
-        dap.listeners.before.event_exited.dapui_config = function()
-            ui.close()
-        end
+        dap.listeners.before.attach.dapui_config = ui.open
+        dap.listeners.before.launch.dapui_config = ui.open
+        dap.listeners.before.event_terminated.dapui_config = ui.close
+        dap.listeners.before.event_exited.dapui_config = ui.close
     end,
 }

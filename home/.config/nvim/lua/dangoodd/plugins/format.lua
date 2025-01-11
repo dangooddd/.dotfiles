@@ -1,6 +1,7 @@
 return {
     "stevearc/conform.nvim",
     event = "BufWritePre",  -- load before writing
+    cmd = "ConformInfo",
     config = function()
         require("conform").setup({
             format_on_save = function(bufnr)
