@@ -3,6 +3,7 @@ clang
 bear
 python 
 pip
+pipx
 npm
 wl-clipboard
 fd-find

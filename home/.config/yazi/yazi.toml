@@ -1,4 +1,6 @@
-# general yazi configuration
+# yazi.toml
+"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+
 [manager]
 linemode = "size"
 show_hidden = true
@@ -7,3 +9,12 @@ show_symlink = false
 [preview]
 max_width = 1920
 max_height = 1080
+
+[open]
+prepend_rules = [
+    { name = "*.rnote", use = "open" },
+    { name = "*/", use = [
+        "open",
+        "edit",
+    ] },
+]
