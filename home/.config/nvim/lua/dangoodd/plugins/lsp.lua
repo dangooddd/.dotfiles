@@ -9,10 +9,12 @@ return {
     config = function()
         -- extend capabilities of nvim in lsp completion
         local capabilities = require("blink.cmp").get_lsp_capabilities()
+        -- TODO: add on_attach function for inlay hints
+        -- https://github.com/gennaro-tedesco/dotfiles/blob/7385fa7f2d28b9b3ac5f18f52894127e433ab81c/nvim/lua/plugins/lsp.lua#L46-L59
 
         -- mason
         require("mason").setup({ ui = { border = "rounded" } })
-
+        
         -- setup lsp
         require("mason-lspconfig").setup({
             ensure_installed = {
