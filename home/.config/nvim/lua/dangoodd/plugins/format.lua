@@ -4,6 +4,9 @@ return {
     cmd = "ConformInfo",
     config = function()
         require("conform").setup({
+            formatters_by_ft = {
+                python = { "black" },
+            },
             format_on_save = function(bufnr)
                 if vim.b[bufnr].disable_autoformat then
                     return
@@ -16,13 +19,13 @@ return {
             end,
         })
 
-        vim.keymap.set("n", "<leader>at", function()
+        vim.keymap.set("n", "<leader>tf", function()
             vim.b.disable_autoformat = not vim.b.disable_autoformat
-            local message = "autoformat: "
+            local message = "Autoformat"
             if vim.b.disable_autoformat then 
-                message = message.."disabled"
+                message = message.." disabled"
             else
-                message = message.."enabled"
+                message = message.." enabled"
             end
             vim.notify(message, vim.log.levels.INFO)
         end)

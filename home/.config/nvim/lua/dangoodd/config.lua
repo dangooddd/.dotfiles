@@ -11,9 +11,11 @@ vim.opt.cursorline = true
 vim.opt.cursorlineopt = "number"
 vim.opt.wrap = false
 vim.opt.scrolloff = 3
+vim.opt.ruler = false  -- removes cursor position from lastline
 vim.opt.hlsearch = false  -- remove highlight on search 
 vim.opt.pumheight = 10  -- size of completion window
 vim.opt.showmode = false -- do not show mode under statusline
+vim.opt.shortmess = vim.o.shortmess.."I"  -- disable greeting
 
 -- tabs
 vim.opt.tabstop = 4 -- 1 tab represented as 4 spaces
@@ -22,6 +24,8 @@ vim.opt.shiftwidth = 4  -- indent change after backspace and >> <<
 vim.opt.softtabstop = 4  -- number of spaces instead of tab
 vim.opt.autoindent = true  -- auto indent
 vim.opt.cinkeys = string.gsub(vim.o.cinkeys, ":,", "")  -- shit.
+vim.opt.listchars = { lead = "·" }
+vim.opt.list = true
 
 -- global
 vim.g.netrw_banner = 0
@@ -49,11 +53,11 @@ vim.diagnostic.config({ float = { border = "rounded" } })
 vim.keymap.set("n", "<C-j>", vim.cmd.bnext)
 vim.keymap.set("n", "<C-k>", vim.cmd.bprev)
 vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
-vim.keymap.set("i", "<C-b>", "<Left>")
-vim.keymap.set("i", "<C-f>", "<Right>")
+vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
+vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
 
 -- center editor view
-vim.keymap.set("n", "<leader>c", function()
+vim.keymap.set("n", "<leader>tc", function()
     local gso = vim.api.nvim_get_option_value("so", { scope = "global" }) 
     local lso = vim.api.nvim_get_option_value("so", { scope = "local" }) 
     if lso ~= 999 then
@@ -64,11 +68,16 @@ vim.keymap.set("n", "<leader>c", function()
 end)
 
 -- toggle dark/light background
-vim.keymap.set("n", "<leader>l", function() 
+vim.keymap.set("n", "<leader>tl", function() 
     local bg = vim.api.nvim_get_option_value("bg", { scope = "global" })
     if bg == "dark" then
         vim.opt.background = "light"
     else
         vim.opt.background = "dark"
     end
+end)
+
+-- toggle wrap
+vim.keymap.set("n", "<leader>tw", function()
+    vim.opt.wrap = not vim.o.wrap
 end)

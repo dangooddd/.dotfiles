@@ -9,8 +9,12 @@ return {
     config = function()
         -- extend capabilities of nvim in lsp completion
         local capabilities = require("blink.cmp").get_lsp_capabilities()
-        -- TODO: add on_attach function for inlay hints
-        -- https://github.com/gennaro-tedesco/dotfiles/blob/7385fa7f2d28b9b3ac5f18f52894127e433ab81c/nvim/lua/plugins/lsp.lua#L46-L59
+        -- executed on attach of lsp server
+        local on_attach = function(client, bufnr)
+            if client.server_capabilities.inlayHintProvider then
+                vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+            end
+        end
 
         -- mason
         require("mason").setup({ ui = { border = "rounded" } })
@@ -18,7 +22,7 @@ return {
         -- setup lsp
         require("mason-lspconfig").setup({
             ensure_installed = {
-                "pylsp",
+                "basedpyright",
                 "clangd",
                 "bashls",
                 "taplo",
@@ -33,12 +37,28 @@ return {
                 function(server_name)
                     require("lspconfig")[server_name].setup({
                         capabilities = capabilities,
+                        on_attach = on_attach,
+                    })
+                end,
+
+                ["basedpyright"] = function()
+                    require("lspconfig")["basedpyright"].setup({
+                        capabilities = capabilities,
+                        on_attach = on_attach,
+                        settings = {
+                            basedpyright = {
+                                analysis = {
+                                    typeCheckingMode = "standard",
+                                },
+                            },
+                        },
                     })
                 end,
 
                 ["pylsp"] = function()
                     require("lspconfig")["pylsp"].setup({
                         capabilities = capabilities,
+                        on_attach = on_attach,
                         settings = {
                             pylsp = {
                                 plugins = {
@@ -60,6 +80,7 @@ return {
                 ["texlab"] = function()
                     require("lspconfig")["texlab"].setup({
                         capabilities = capabilities,
+                        on_attach = on_attach,
                         settings = {
                             texlab = {
                                 build = {
@@ -79,6 +100,7 @@ return {
                 ["bashls"] = function()
                     require("lspconfig")["bashls"].setup({
                         capabilities = capabilities,
+                        on_attach = on_attach,
                         settings = {
                             bashIde = {
                                 shellcheckArguments = {
@@ -93,6 +115,7 @@ return {
                     local style = "llvm"
                     require("lspconfig")["clangd"].setup({
                         capabilities = capabilities,
+                        on_attach = on_attach,
                         cmd = {
                             "clangd",
                             "--fallback-style="..style,
