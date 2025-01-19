@@ -4,9 +4,7 @@ return {
     event = "VeryLazy",
     config = function()
         require("fzf-lua").setup({
-            fzf_opts = {
-                ["--no-bold"] = true,
-            },
+            fzf_colors = true,
             winopts = {
                 backdrop = 100,
                 preview = {

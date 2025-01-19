@@ -217,11 +217,30 @@ if command -v nvim &> /dev/null; then
     export EDITOR="nvim"
 fi
 
+FZF_COLORS="\
+gutter:#1F1F28,\
+fg:#DCD7BA,\
+bg:#1F1F28,\
+hl:#727169,\
+fg+:#DCD7BA,\
+bg+:#363646,\
+hl+:#957FB8,\
+info:#54546D,\
+prompt:#98BB6C,\
+pointer:#FF5D62,\
+marker:#957FB8,\
+spinner:#7FB4CA,\
+header:#727169,\
+border:#54546D
+"
+
 export FZF_DEFAULT_OPTS="--layout=reverse \
                          --height 10 \
                          --ansi \
                          --border=rounded \
-                         --no-bold"
+                         --highlight-line \
+                         --no-bold \
+                         --color=$FZF_COLORS"
 
 export PYTHONSTARTUP="$HOME"/.pythonstartup.py
 export RUSTUP_HOME="$HOME"/.rustup
