@@ -2,6 +2,7 @@ return {
     "stevearc/conform.nvim",
     event = "BufWritePre",  -- load before writing
     cmd = "ConformInfo",
+    keys = { "<leader>tf" },
     config = function()
         require("conform").setup({
             formatters_by_ft = {
@@ -21,13 +22,11 @@ return {
 
         vim.keymap.set("n", "<leader>tf", function()
             vim.b.disable_autoformat = not vim.b.disable_autoformat
-            local message = "Autoformat"
+            local message = "enabled"
             if vim.b.disable_autoformat then 
-                message = message.." disabled"
-            else
-                message = message.." enabled"
+                message = "disabled"
             end
-            vim.notify(message, vim.log.levels.INFO)
+            vim.notify("Autoformat: "..message, vim.log.levels.INFO)
         end)
     end,
 }

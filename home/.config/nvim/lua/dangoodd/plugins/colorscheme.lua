@@ -54,9 +54,7 @@ return {
                     BlinkCmpSignatureHelpBorder = { link = "BlinkCmpMenu" },
 
                     -- Indent guides
-                    IblIndent = { link = "Whitespace" },
-                    IblWhitespace = { link = "Whitespace" },
-                    IblScope = { fg = theme.ui.nontext },
+                    MiniIndentscopeSymbol = { fg = theme.ui.nontext },
                 }
             end
         })
