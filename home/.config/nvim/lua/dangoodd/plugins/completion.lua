@@ -13,7 +13,10 @@ return {
     {
         "saghen/blink.cmp",
         version = "*",
-        dependencies = { "L3MON4D3/LuaSnip" },
+        dependencies = {
+            "L3MON4D3/LuaSnip",
+            "folke/lazydev.nvim",
+        },
         config = function()
             require("blink.cmp").setup({
                 completion = {
@@ -35,19 +38,26 @@ return {
                     menu = {
                         border = "rounded",
                         draw = {
-                            columns = { 
-                                { "label" }, 
+                            columns = {
+                                { "label" },
                                 { "kind_icon", "kind", gap = 1 },
                             },
                         },
                     },
                 },
-                signature = { 
+                signature = {
                     enabled = true,
                     window = { border = "rounded" },
                 },
                 sources = {
-                    default = { "lsp", "path", "snippets", "buffer" },
+                    default = { "lsp", "path", "snippets", "buffer", "lazydev" },
+                    providers = {
+                        lazydev = {
+                            name = "LazyDev",
+                            module = "lazydev.integrations.blink",
+                            score_offset = 100,
+                        },
+                    },
                 },
                 snippets = { preset = "luasnip" },
                 keymap = {

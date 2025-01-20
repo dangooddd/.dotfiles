@@ -18,12 +18,13 @@ return {
 
         -- mason
         require("mason").setup({ ui = { border = "rounded" } })
-        
+
         -- setup lsp
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "basedpyright",
                 "clangd",
+                "lua_ls",
                 "bashls",
                 "taplo",
                 "jsonls",
@@ -38,6 +39,23 @@ return {
                     require("lspconfig")[server_name].setup({
                         capabilities = capabilities,
                         on_attach = on_attach,
+                    })
+                end,
+
+                ["lua_ls"] = function()
+                    require("lspconfig")["lua_ls"].setup({
+                        capabilities = capabilities,
+                        on_attach = on_attach,
+                        settings = {
+                            Lua = {
+                                diagnostics = {
+                                    disable = {
+                                        "missing-fields",
+                                        "undefined-global",
+                                    },
+                                },
+                            },
+                        },
                     })
                 end,
 
@@ -118,7 +136,7 @@ return {
                         on_attach = on_attach,
                         cmd = {
                             "clangd",
-                            "--fallback-style="..style,
+                            "--fallback-style=" .. style,
                         }
                     })
                 end,

@@ -21,6 +21,6 @@ return {
             },
         })
 
-        vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
+        vim.keymap.set("n", [[\]], require("oil").toggle_float)
     end,
 }

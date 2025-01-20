@@ -1,6 +1,6 @@
 return {
     "stevearc/conform.nvim",
-    event = "BufWritePre",  -- load before writing
+    event = "BufWritePre", -- load before writing
     cmd = "ConformInfo",
     keys = { "<leader>tf" },
     config = function()
@@ -13,9 +13,9 @@ return {
                     return
                 end
 
-                return { 
-                    timeout_ms = 500, 
-                    lsp_format = "fallback" 
+                return {
+                    timeout_ms = 500,
+                    lsp_format = "fallback"
                 }
             end,
         })
@@ -23,10 +23,10 @@ return {
         vim.keymap.set("n", "<leader>tf", function()
             vim.b.disable_autoformat = not vim.b.disable_autoformat
             local message = "enabled"
-            if vim.b.disable_autoformat then 
+            if vim.b.disable_autoformat then
                 message = "disabled"
             end
-            vim.notify("Autoformat: "..message, vim.log.levels.INFO)
+            vim.notify("Autoformat: " .. message, vim.log.levels.INFO)
         end)
     end,
 }

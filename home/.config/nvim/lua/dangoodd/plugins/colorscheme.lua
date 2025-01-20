@@ -1,6 +1,6 @@
 return {
     "rebelot/kanagawa.nvim",
-    priority = 1000,  -- load first
+    priority = 1000, -- load first
     config = function()
         require("kanagawa").setup({
             commentStyle = { italic = false },
@@ -35,7 +35,7 @@ return {
                     ["@variable.builtin"] = { italic = false },
 
                     -- Menu
-                    Pmenu = { fg = theme.ui.fg , bg = theme.ui.bg_p1 },
+                    Pmenu = { fg = theme.ui.fg, bg = theme.ui.bg_p1 },
                     PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
                     PmenuSbar = { bg = theme.ui.bg_m1 },
                     PmenuThumb = { bg = theme.ui.bg_p2 },
