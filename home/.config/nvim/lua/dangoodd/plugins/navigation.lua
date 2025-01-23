@@ -33,39 +33,11 @@ return {
 
     -- track visited files
     {
-        "echasnovski/mini.visits",
-        event = "VeryLazy",
+        "dangooddd/chosen.nvim",
+        keys = { "<Enter>" },
         config = function()
-            require("mini.visits").setup({
-                track = {
-                    delay = 500,
-                },
-            })
-
-            -- fixed label keybinds
-            vim.keymap.set("n", ";", function()
-                MiniVisits.add_label("core")
-            end)
-
-            vim.keymap.set("n", "<leader>;", function()
-                MiniVisits.remove_label("core")
-            end)
-
-            vim.keymap.set("n", "<Enter>", function()
-                MiniVisits.select_path(nil, { filter = "core" })
-            end)
-
-            -- zoxide-like navigation
-            vim.keymap.set("n", "<leader>z", function()
-                MiniVisits.select_path("", {
-                    sort = MiniVisits.gen_sort.z()
-                })
-            end)
-
-            -- any label keybinds
-            vim.keymap.set("n", "<leader>va", MiniVisits.add_label)
-            vim.keymap.set("n", "<leader>vp", MiniVisits.select_label)
-            vim.keymap.set("n", "<leader>vr", MiniVisits.remove_label)
+            require("chosen").setup()
+            vim.keymap.set("n", "<Enter>", require("chosen").toggle)
         end,
     },
 }

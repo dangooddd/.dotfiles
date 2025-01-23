@@ -12,6 +12,7 @@ return {
             },
             float = {
                 max_width = 0.8,
+                preview_split = "right",
                 win_options = {
                     winhighlight = "NormalNC:NormalFloat",
                 },
