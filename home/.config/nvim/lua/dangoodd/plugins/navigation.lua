@@ -9,13 +9,11 @@ return {
                 fzf_colors = true,
                 winopts = {
                     backdrop = 100,
+                    title_flags = false,
                     preview = {
                         horizontal = "right:40%",
                         layout = "horizontal",
                     }
-                },
-                grep = {
-                    cmd = "rg --hidden",
                 },
             })
 
@@ -35,6 +33,7 @@ return {
     {
         "dangooddd/chosen.nvim",
         keys = { "<Enter>" },
+        cmd = "Chosen",
         config = function()
             require("chosen").setup()
             vim.keymap.set("n", "<Enter>", require("chosen").toggle)
