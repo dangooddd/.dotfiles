@@ -11,10 +11,10 @@ vim.opt.cursorline = true
 vim.opt.cursorlineopt = "number"
 vim.opt.wrap = false
 vim.opt.scrolloff = 3
-vim.opt.ruler = false                    -- removes cursor position from lastline
-vim.opt.hlsearch = false                 -- remove highlight on search
-vim.opt.pumheight = 10                   -- size of completion window
-vim.opt.showmode = false                 -- do not show mode under statusline
+vim.opt.ruler = false                      -- removes cursor position from lastline
+vim.opt.hlsearch = false                   -- remove highlight on search
+vim.opt.pumheight = 10                     -- size of completion window
+vim.opt.showmode = false                   -- do not show mode under statusline
 vim.opt.shortmess = vim.o.shortmess .. "I" -- disable greeting
 
 -- tabs
@@ -55,6 +55,7 @@ vim.keymap.set("n", "<C-k>", vim.cmd.bprev)
 vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
+vim.keymap.set("n", "`", "'", { noremap = true }) -- better marks
 
 -- center editor view
 vim.keymap.set("n", "<leader>tc", function()
