@@ -66,6 +66,10 @@ return {
                         settings = {
                             basedpyright = {
                                 analysis = {
+                                    inlayHints = {
+                                        callArgumentNames = false,
+                                        variableTypes = false,
+                                    },
                                     typeCheckingMode = "standard",
                                 },
                             },
