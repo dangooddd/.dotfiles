@@ -29,13 +29,16 @@ return {
         end,
     },
 
-    -- track visited files
+    -- important files
     {
         "dangooddd/chosen.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
         keys = { "<Enter>" },
         cmd = "Chosen",
         config = function()
-            require("chosen").setup()
+            require("chosen").setup({
+                exit_on_save = true,
+            })
             vim.keymap.set("n", "<Enter>", require("chosen").toggle)
         end,
     },

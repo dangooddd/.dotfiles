@@ -10,20 +10,22 @@ vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 vim.opt.cursorlineopt = "number"
 vim.opt.wrap = false
+vim.opt.splitright = true
+vim.opt.splitbelow = true
 vim.opt.scrolloff = 3
-vim.opt.ruler = false                      -- removes cursor position from lastline
-vim.opt.hlsearch = false                   -- remove highlight on search
-vim.opt.pumheight = 10                     -- size of completion window
-vim.opt.showmode = false                   -- do not show mode under statusline
-vim.opt.shortmess = vim.o.shortmess .. "I" -- disable greeting
+vim.opt.ruler = false         -- removes cursor position from lastline
+vim.opt.hlsearch = false      -- remove highlight on search
+vim.opt.pumheight = 10        -- size of completion window
+vim.opt.showmode = false      -- do not show mode under statusline
+vim.opt.shortmess:append("I") -- disable greeting
 
 -- tabs
-vim.opt.tabstop = 4                                    -- 1 tab represented as 4 spaces
-vim.opt.expandtab = true                               -- <tab> key will create " " insead of "\t"
-vim.opt.shiftwidth = 4                                 -- indent change after backspace and >> <<
-vim.opt.softtabstop = 4                                -- number of spaces instead of tab
-vim.opt.autoindent = true                              -- auto indent
-vim.opt.cinkeys = string.gsub(vim.o.cinkeys, ":,", "") -- shit.
+vim.opt.tabstop = 4         -- 1 tab represented as 4 spaces
+vim.opt.expandtab = true    -- <tab> key will create " " insead of "\t"
+vim.opt.shiftwidth = 4      -- indent change after backspace and >> <<
+vim.opt.softtabstop = 4     -- number of spaces instead of tab
+vim.opt.autoindent = true   -- auto indent
+vim.opt.cinkeys:remove(":") -- shit.
 vim.opt.listchars = { lead = "·" }
 vim.opt.list = true
 
