@@ -14,4 +14,17 @@ return {
             })
         end,
     },
+
+    -- rendering for html, latex, md
+    {
+        "OXY2DEV/markview.nvim",
+        lazy = false,
+        config = function()
+            require("markview").setup({
+                markdown = {
+                    code_blocks = { sign = false },
+                },
+            })
+        end,
+    },
 }
