@@ -84,3 +84,8 @@ end)
 vim.keymap.set("n", "<leader>tw", function()
     vim.opt.wrap = not vim.o.wrap
 end)
+
+-- toggle inlay hints
+vim.keymap.set("n", "<leader>th", function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end)
