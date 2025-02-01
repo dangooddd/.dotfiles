@@ -35,6 +35,20 @@ return {
                     })
                 end,
 
+                ["rust_analyzer"] = function()
+                    require("lspconfig")["rust_analyzer"].setup({
+                        capabilities = capabilities,
+                        settings = {
+                            ["rust-analyzer"] = {
+                                diagnostics = {
+                                    enable = true,
+                                    experimental = { enable = true },
+                                },
+                            },
+                        },
+                    })
+                end,
+
                 ["lua_ls"] = function()
                     require("lspconfig")["lua_ls"].setup({
                         capabilities = capabilities,
