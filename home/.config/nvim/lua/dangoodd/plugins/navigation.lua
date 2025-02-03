@@ -37,7 +37,7 @@ return {
         cmd = "Chosen",
         config = function()
             require("chosen").setup({
-                exit_on_save = true,
+                close_on_save = true,
             })
             vim.keymap.set("n", "<Enter>", require("chosen").toggle)
         end,
