@@ -182,16 +182,16 @@ function mark-go {
 }
 
 function yy {
-	local tmp
+    local tmp
     tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" ]] && [[ "$cwd" != "$PWD" ]]; then
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" ]] && [[ "$cwd" != "$PWD" ]]; then
         if command -v zoxide &> /dev/null; then
             zoxide add "$cwd"
         fi
-		builtin cd -- "$cwd" 
-	fi
-	rm -f -- "$tmp"
+        builtin cd -- "$cwd" 
+    fi
+    rm -f -- "$tmp"
 }
 
 alias open="xdg-open"
@@ -217,22 +217,20 @@ if command -v nvim &> /dev/null; then
     export EDITOR="nvim"
 fi
 
-FZF_COLORS="\
-gutter:#1F1F28,\
-fg:#DCD7BA,\
-bg:#1F1F28,\
-hl:#727169,\
-fg+:#DCD7BA,\
-bg+:#363646,\
-hl+:#957FB8,\
-info:#54546D,\
-prompt:#98BB6C,\
-pointer:#FF5D62,\
-marker:#957FB8,\
-spinner:#7FB4CA,\
-header:#727169,\
-border:#54546D
-"
+FZF_COLORS="gutter:#1F1F28"
+FZF_COLORS+=",fg:#DCD7BA"
+FZF_COLORS+=",bg:#1F1F28"
+FZF_COLORS+=",hl:#727169"
+FZF_COLORS+=",fg+:#DCD7BA"
+FZF_COLORS+=",bg+:#363646"
+FZF_COLORS+=",hl+:#957FB8"
+FZF_COLORS+=",info:#54546D"
+FZF_COLORS+=",prompt:#98BB6C"
+FZF_COLORS+=",pointer:#FF5D62"
+FZF_COLORS+=",marker:#957FB8"
+FZF_COLORS+=",spinner:#7FB4CA"
+FZF_COLORS+=",header:#727169"
+FZF_COLORS+=",border:#54546D"
 
 export FZF_DEFAULT_OPTS="--layout=reverse \
                          --height 10 \
