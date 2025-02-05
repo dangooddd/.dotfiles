@@ -96,4 +96,34 @@ return {
             })
         end,
     },
+
+    -- vim.notify and lsp progress
+    {
+        "j-hui/fidget.nvim",
+        config = function()
+            require("fidget").setup({
+                progress = {
+                    display = { done_ttl = 1 },
+                    ignore = {
+                        "lua_ls",
+                        function(msg)
+                            if msg.lsp_client.name == "rust_analyzer" and
+                                string.find(msg.title, "cargo check")
+                            then
+                                return true
+                            end
+                        end,
+                    }
+                },
+                notification = {
+                    override_vim_notify = true,
+                    window = {
+                        winblend = 0,
+                    },
+                },
+            })
+
+            require("fidget.notification").set_config("default", { icon = "<" }, true)
+        end
+    },
 }
