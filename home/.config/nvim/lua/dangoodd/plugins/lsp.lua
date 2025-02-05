@@ -13,7 +13,12 @@ return {
         -- mason
         require("mason").setup({ ui = { border = "rounded" } })
 
-        -- setup lsp
+        -- lspconfig
+        require("lspconfig")["gdscript"].setup({
+            capabilities = capabilities,
+        })
+
+        -- lspconfig for those that are installed with mason
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "basedpyright",
