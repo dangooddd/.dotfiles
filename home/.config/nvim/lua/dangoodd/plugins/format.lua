@@ -9,24 +9,19 @@ return {
                 python = { "black" },
             },
             format_on_save = function(bufnr)
-                if vim.b[bufnr].disable_autoformat then
-                    return
+                if not vim.b[bufnr].conform_disable then
+                    return {
+                        timeout_ms = 500,
+                        lsp_format = "fallback"
+                    }
                 end
-
-                return {
-                    timeout_ms = 500,
-                    lsp_format = "fallback"
-                }
             end,
         })
 
         vim.keymap.set("n", "<leader>tf", function()
-            vim.b.disable_autoformat = not vim.b.disable_autoformat
-            local message = "enabled"
-            if vim.b.disable_autoformat then
-                message = "disabled"
-            end
-            vim.notify("Autoformat: " .. message, vim.log.levels.INFO)
+            vim.b.conform_disable = not vim.b.conform_disable
+            local status = vim.b.conform_disable and "disabled" or "enabled"
+            vim.notify("Autoformat " .. status, vim.log.levels.INFO)
         end)
     end,
 }

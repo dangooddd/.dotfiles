@@ -26,8 +26,8 @@ vim.opt.shiftwidth = 4      -- indent change after backspace and >> <<
 vim.opt.softtabstop = 4     -- number of spaces instead of tab
 vim.opt.autoindent = true   -- auto indent
 vim.opt.cinkeys:remove(":") -- shit.
-vim.opt.listchars:append("lead:·")
 vim.opt.list = true
+vim.opt.listchars:append("lead:·")
 
 -- global
 vim.g.netrw_banner = 0
@@ -61,23 +61,16 @@ vim.keymap.set("n", "`", "'", { noremap = true }) -- better marks
 
 -- center editor view
 vim.keymap.set("n", "<leader>tc", function()
-    local gso = vim.api.nvim_get_option_value("so", { scope = "global" })
-    local lso = vim.api.nvim_get_option_value("so", { scope = "local" })
-    if lso ~= 999 then
-        vim.opt_local.scrolloff = 999
+    if vim.api.nvim_get_option_value("so", { scope = "local" }) ~= 999 then
+        vim.opt_local.so = 999
     else
-        vim.opt_local.scrolloff = gso
+        vim.opt_local.so = vim.o.so
     end
 end)
 
 -- toggle dark/light background
 vim.keymap.set("n", "<leader>tl", function()
-    local bg = vim.api.nvim_get_option_value("bg", { scope = "global" })
-    if bg == "dark" then
-        vim.opt.background = "light"
-    else
-        vim.opt.background = "dark"
-    end
+    vim.opt.bg = vim.o.bg == "dark" and "light" or "dark"
 end)
 
 -- toggle wrap
