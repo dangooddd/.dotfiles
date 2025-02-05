@@ -7,11 +7,13 @@ return {
         require("conform").setup({
             formatters_by_ft = {
                 python = { "black" },
+                gdscript = { "gdformat" },
             },
             format_on_save = function(bufnr)
                 if not vim.b[bufnr].conform_disable then
                     return {
                         timeout_ms = 500,
+                        async = true,
                         lsp_format = "fallback"
                     }
                 end
