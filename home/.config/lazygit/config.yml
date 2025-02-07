@@ -5,6 +5,8 @@ promptToReturnFromSubprocess: false
 notARepository: skip
 
 gui:
+  border: single
+
   ## Kanagawa
   theme:
     ## Palette
