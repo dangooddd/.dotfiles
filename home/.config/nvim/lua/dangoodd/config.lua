@@ -54,10 +54,17 @@ vim.diagnostic.config({ float = { border = "rounded" } })
 ---------------------------------------
 vim.keymap.set("n", "<C-j>", vim.cmd.bnext)
 vim.keymap.set("n", "<C-k>", vim.cmd.bprev)
-vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
+
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
+
+vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 vim.keymap.set("n", "`", "'", { noremap = true }) -- better marks
+
+-- for merging
+vim.keymap.set("n", "<leader>1", "<cmd>diffget LO")
+vim.keymap.set("n", "<leader>2", "<cmd>diffget BA")
+vim.keymap.set("n", "<leader>3", "<cmd>diffget RE")
 
 -- center editor view
 vim.keymap.set("n", "<leader>tc", function()
