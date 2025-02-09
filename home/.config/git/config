@@ -20,14 +20,13 @@
 [difftool]
     prompt = false
 
-[difftool "nvimdiff"]
-    cmd = nvim -d "$LOCAL" "$REMOTE"
-
 [merge]
     tool = nvimdiff
 
+[mergetool "nvimdiff"]
+    layout = "LOCAL,REMOTE / MERGED"
+
 [mergetool]
     prompt = true
-
-[mergetool "nvimdiff"]
-    cmd = nvim -d "$LOCAL" "$REMOTE" "$MERGED" -c "wincmd w" -c "wincmd J"
+    hideResolved = true
+    keepBackup = false
