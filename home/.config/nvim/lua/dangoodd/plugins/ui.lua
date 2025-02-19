@@ -76,27 +76,6 @@ return {
         end,
     },
 
-    -- vim.ui.input & vim.ui.select
-    {
-        "stevearc/dressing.nvim",
-        event = "VeryLazy",
-        config = function()
-            require("dressing").setup({
-                input = {
-                    title_pos = "center",
-                    relative = "win",
-                    win_options = {
-                        winhighlight = table.concat({
-                            "NormalFloat:Normal",
-                            "FloatBorder:DiagnosticInfo",
-                            "FloatTitle:Title"
-                        }, ","),
-                    },
-                }
-            })
-        end,
-    },
-
     -- vim.notify and lsp progress
     {
         "j-hui/fidget.nvim",
