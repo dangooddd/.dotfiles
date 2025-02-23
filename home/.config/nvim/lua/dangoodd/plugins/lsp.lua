@@ -11,7 +11,12 @@ return {
         local capabilities = require("blink.cmp").get_lsp_capabilities()
 
         -- mason
-        require("mason").setup({ ui = { border = "rounded" } })
+        require("mason").setup({
+            ui = {
+                border = "rounded",
+                backdrop = 100,
+            },
+        })
 
         -- lspconfig
         require("lspconfig")["gdscript"].setup({
