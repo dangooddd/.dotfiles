@@ -45,6 +45,14 @@ return {
                         },
                     },
                 },
+                cmdline = {
+                    enabled = true,
+                    completion = {
+                        menu = {
+                            auto_show = true,
+                        },
+                    },
+                },
                 signature = {
                     enabled = true,
                     window = { border = "rounded" },
