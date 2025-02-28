@@ -47,7 +47,20 @@ return {
                 },
                 cmdline = {
                     enabled = true,
+                    keymap = {
+                        ["<C-y>"] = { "show" },
+                        ["<CR>"] = { "accept", "fallback" },
+                        ["<C-p>"] = { "select_prev", "fallback" },
+                        ["<C-n>"] = { "select_next", "fallback" },
+                        ["<C-e>"] = { "hide" },
+                    },
                     completion = {
+                        list = {
+                            selection = {
+                                preselect = false,
+                                auto_insert = false,
+                            },
+                        },
                         menu = {
                             auto_show = true,
                         },
