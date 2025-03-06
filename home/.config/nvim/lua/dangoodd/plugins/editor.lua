@@ -20,8 +20,8 @@ return {
             local rule = require('nvim-autopairs.rule')
             local cond = require('nvim-autopairs.conds')
             pairs.add_rules({
-                rule("$", "$",{ "tex", "latex", "plaintex" })
-                    -- do not move right when repeat character
+                rule("$", "$", { "tex", "latex", "plaintex" })
+                -- do not move right when repeat character
                     :with_move(cond.none())
             })
         end,
@@ -57,5 +57,16 @@ return {
                 end,
             })
         end,
+    },
+
+    -- textobjects
+    {
+        "echasnovski/mini.ai",
+        version = "*",
+        config = function()
+            require("mini.ai").setup({
+                silent = true,
+            })
+        end
     },
 }
