@@ -10,7 +10,6 @@
 * **Code Editor:** [neovim](https://github.com/neovim/neovim)
 * **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
 * **File manager:** [yazi](https://github.com/sxyazi/yazi)
-* **Fetch:** [fastfetch](https://github.com/fastfetch-cli/fastfetch)
 
 ## Installation
 
