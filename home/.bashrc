@@ -252,10 +252,6 @@ if [[ -f "$CARGO_HOME"/env ]]; then
 fi
 
 # setup cli programs
-if command -v starship &> /dev/null; then
-    eval "$(starship init bash)"
-fi
-
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init bash)"
     function zd {
@@ -265,4 +261,8 @@ fi
 
 if command -v fzf &> /dev/null; then
     eval "$(fzf --bash)"
+fi
+
+if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
 fi
