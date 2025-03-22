@@ -44,10 +44,16 @@ sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
 echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
 ```
 
-Install packages via dnf:
+Install rpm packages:
 
 ```sh
-sudo dnf install $(cat packages.txt)
+sudo dnf install $(cat rpm.txt)
+```
+
+Install flatpak packages:
+
+```sh
+flatpak install $(cat flatpak.txt)
 ```
 
 Install rust programming language:
