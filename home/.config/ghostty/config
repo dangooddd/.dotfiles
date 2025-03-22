@@ -1,17 +1,33 @@
 # ghostty config
 
 # font
-font-family = Jetbrains Mono
+font-family = Jetbrains Mono NL
 font-style-bold = Medium
 adjust-cell-width = -2
+adjust-cell-height = 1
 font-size = 16
+bold-is-bright = false
 
 # window
 window-padding-x = 5
 window-padding-y = 5
+maximize = true
 theme = Kanagawa Wave
+mouse-hide-while-typing = true
 
 # cursor
 cursor-style = block
 cursor-style-blink = false
 shell-integration-features = no-cursor
+adjust-cursor-thickness = 3
+
+# keybinds
+keybind = alt+1=unbind
+keybind = alt+2=unbind
+keybind = alt+3=unbind
+keybind = alt+4=unbind
+keybind = alt+5=unbind
+keybind = alt+6=unbind
+keybind = alt+7=unbind
+keybind = alt+8=unbind
+keybind = alt+9=unbind
