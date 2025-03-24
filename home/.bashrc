@@ -12,9 +12,6 @@ fi
 # Prompt
 #======================================
 function __precmd_hook {
-    # exit code
-    __exit_code=$?
-
     # empty line between prompts
     if [[ -z "$__bash_empty_prompt" ]]; then
         __bash_empty_prompt="Y"
