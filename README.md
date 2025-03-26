@@ -1,15 +1,15 @@
-# `dangooddd`'s linux dotfiles
+# **dangooddd's** linux dotfiles
 
 > Set of configs for cli tools, terminal, shell and other stuff (Fedora).
 
 ## Configurations 
 
-* **Terminal:** [kitty](https://github.com/kovidgoyal/kitty)
-* **Prompt:** [starship](https://github.com/starship/starship)
-* **Shell:** [bash](https://www.gnu.org/software/bash/)
-* **Code Editor:** [neovim](https://github.com/neovim/neovim)
-* **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
-* **File manager:** [yazi](https://github.com/sxyazi/yazi)
+- **Terminal:** [ghostty](https://github.com/ghostty-org/ghostty)
+- **Prompt:** [starship](https://github.com/starship/starship)
+- **Shell:** [bash](https://www.gnu.org/software/bash/)
+- **TUI Editor:** [neovim](https://github.com/neovim/neovim)
+- **GUI Editor:** [vscode](https://github.com/microsoft/vscode)
+- **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
 
 ## Installation
 
@@ -31,52 +31,14 @@ cd .dotfiles
 
 ## Packages
 
-Enable copr repositories:
-
-```sh
-sudo dnf copr enable -y atim/lazygit
-```
-
-Add vscode repository:
-
-```sh
-sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
-```
-
-Add terra repository:
-
-```sh
-sudo dnf install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
-```
-
 Install rpm packages:
 
 ```sh
-sudo dnf install $(cat rpm.txt)
+sudo dnf install $(cat rpm.txt) --skip-unavailable
 ```
 
 Install flatpak packages:
 
 ```sh
 flatpak install $(cat flatpak.txt)
-```
-
-Install rust programming language:
-
-```sh
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-Install rust packages:
-
-```sh
-cargo install --locked starship
-cargo install --locked yazi-fm yazi-cli
-```
-
-Install yazi plugins:
-
-```sh
-ya pack -u
 ```
