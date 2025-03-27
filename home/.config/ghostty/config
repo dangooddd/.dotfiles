@@ -3,7 +3,7 @@
 # font
 font-family = Jetbrains Mono NL
 font-style-bold = Medium
-adjust-cell-width = -2
+adjust-cell-width = -1
 adjust-cell-height = 1
 font-size = 16
 bold-is-bright = false
