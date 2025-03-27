@@ -4,3 +4,4 @@ com.valvesoftware.Steam
 com.obsproject.Studio
 com.discordapp.Discord
 com.github.flxzt.rnote
+it.mijorus.gearlever
