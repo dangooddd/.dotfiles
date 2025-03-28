@@ -191,6 +191,7 @@ function yy {
     rm -f -- "$tmp"
 }
 
+alias pipu="PIP_CONFIG_FILE=/dev/null pip"
 alias open="xdg-open"
 alias la="ls -Av"
 alias ll="ls -Alv"
@@ -243,12 +244,10 @@ export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
 export LESS="--tilde -RFXS"
 
-# source rustup env
 if [[ -f "$CARGO_HOME"/env ]]; then
     . "$CARGO_HOME"/env
 fi
 
-# setup cli programs
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init bash)"
     function zd {
