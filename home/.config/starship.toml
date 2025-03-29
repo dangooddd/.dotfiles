@@ -4,21 +4,21 @@
 "$schema" = "https://starship.rs/config-schema.json"
 
 add_newline = false
-palette = "kanagawa"
+palette = "gruvbox"
 format = """
-[$directory](fg:sumi-ink-3 bg:carp-yellow)\
-[](fg:carp-yellow bg:surimi-orange)\
-[$container$rust$python$git_branch$hostname](fg:sumi-ink-3 bg:surimi-orange)\
-[](fg:surimi-orange bg:peach-red)\
-[$character](fg:sumi-ink-3 bg:peach-red)\
-[](fg:peach-red)\
+[$directory](fg:bg bg:yellow)\
+[](fg:yellow bg:orange)\
+[$container$rust$python$git_branch$hostname](fg:bg bg:orange)\
+[](fg:orange bg:red)\
+[$character](fg:bg bg:red)\
+[](fg:red)\
 [ ](none)"""
 
-[palettes.kanagawa]
-peach-red = "#ff5d62"
-carp-yellow = "#e6c384"
-surimi-orange = "#ffa066"
-sumi-ink-3 = "#1f1f28"
+[palettes.gruvbox]
+bg = "#1d2021"
+red = "#fb4934"
+orange = "#fe8019"
+yellow = "#fabd2f"
 
 [character]
 format = "$symbol"

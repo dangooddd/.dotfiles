@@ -19,43 +19,84 @@ gui:
     # surimiOrange  "#ffa066"
     # oniViolet     "#957fb8"
 
+    # activeBorderColor:
+    #   - "#957fb8"
+    #   - bold
+    #
+    # inactiveBorderColor:
+    #   - "#54546d"
+    #
+    # searchingActiveBorderColor:
+    #   - "#ffa066"
+    #   - bold
+    #
+    # optionsTextColor:
+    #   - "#e6c384"
+    #
+    # selectedLineBgColor:
+    #   - "#2a2a37"
+    #
+    # inactiveViewSelectedLineBgColor:
+    #   - bold
+    #
+    # cherryPickedCommitFgColor:
+    #   - "#1f1f28"
+    #
+    # cherryPickedCommitBgColor:
+    #   - "#957fb8"
+    #
+    # markedBaseCommitFgColor:
+    #   - "#1f1f28"
+    #
+    # markedBaseCommitBgColor:
+    #   - "#ffa066"
+    #
+    # unstagedChangesColor:
+    #   - "#ff5d62"
+    #
+    # defaultFgColor:
+    #   - "#dcd7ba"
+
     activeBorderColor:
-      - "#957fb8"
+      - "#fabd2f"
       - bold
 
     inactiveBorderColor:
-      - "#54546d"
+      - "#a89984"
 
     searchingActiveBorderColor:
-      - "#ffa066"
+      - "#fe8019"
       - bold
 
     optionsTextColor:
-      - "#e6c384"
+      - "#ebdbb2"
 
     selectedLineBgColor:
-      - "#2a2a37"
+      - "#3c3836"
 
     inactiveViewSelectedLineBgColor:
       - bold
 
     cherryPickedCommitFgColor:
-      - "#1f1f28"
+      - "#1d2021"
 
     cherryPickedCommitBgColor:
-      - "#957fb8"
+      - "#b8bb26"
 
     markedBaseCommitFgColor:
-      - "#1f1f28"
+      - "#1d2021"
 
     markedBaseCommitBgColor:
-      - "#ffa066"
+      - "#fabd2f"
 
     unstagedChangesColor:
-      - "#ff5d62"
+      - "#fb4934"
 
     defaultFgColor:
-      - "#dcd7ba"
+      - "#ebdbb2"
 
   authorColors:
-    "*": "#e6c384"
+    "*": "#b8bb26"
+
+  # authorColors:
+  #   "*": "#e6c384"
