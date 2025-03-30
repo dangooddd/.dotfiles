@@ -6,19 +6,19 @@
 add_newline = false
 palette = "gruvbox"
 format = """
-[$directory](fg:bg bg:yellow)\
+[$directory](fg:bg bg:green)\
+[](fg:green bg:yellow)\
+[$container$rust$python$git_branch$hostname](fg:bg bg:yellow)\
 [](fg:yellow bg:orange)\
-[$container$rust$python$git_branch$hostname](fg:bg bg:orange)\
-[](fg:orange bg:red)\
-[$character](fg:bg bg:red)\
-[](fg:red)\
+[$character](fg:bg bg:orange)\
+[](fg:orange)\
 [ ](none)"""
 
 [palettes.gruvbox]
 bg = "#1d2021"
-red = "#fb4934"
 orange = "#fe8019"
 yellow = "#fabd2f"
+green = "#b8bb26"
 
 [character]
 format = "$symbol"

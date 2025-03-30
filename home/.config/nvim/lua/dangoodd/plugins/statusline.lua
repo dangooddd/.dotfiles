@@ -18,11 +18,11 @@ return {
             end
 
             return {
-                normal = accent_status(palette.bright_green),
-                insert = accent_status(palette.bright_yellow),
+                normal = accent_status(palette.bright_aqua),
+                insert = accent_status(palette.bright_blue),
                 visual = accent_status(palette.bright_purple),
-                replace = accent_status(palette.bright_orange),
-                command = accent_status(palette.bright_red),
+                replace = accent_status(palette.bright_yellow),
+                command = accent_status(palette.bright_orange),
                 inactive = {
                     a = { bg = palette.dark1, fg = palette.light4 },
                     b = { bg = palette.dark1, fg = palette.light4 },
