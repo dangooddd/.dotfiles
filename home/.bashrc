@@ -228,7 +228,7 @@ FZF_COLORS+=",pointer:#fb4934"
 FZF_COLORS+=",marker:#b16286"
 FZF_COLORS+=",spinner:#83a598"
 FZF_COLORS+=",header:#928374"
-FZF_COLORS+=",border:#665c54"
+FZF_COLORS+=",border:#a89984"
 
 export FZF_DEFAULT_OPTS="--layout=reverse \
                          --height 10 \

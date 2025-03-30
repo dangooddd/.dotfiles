@@ -20,6 +20,7 @@ return {
                 Whitespace = { fg = palette.dark0 },
                 EndOfBuffer = { fg = palette.dark0_hard },
                 Visual = { fg = "None", bg = palette.dark1 },
+                Label = { link = "GruvboxPurple" },
 
                 -- blink.cmp
                 BlinkCmpMenu = { link = "Normal" },
