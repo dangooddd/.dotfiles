@@ -6,7 +6,7 @@ font-style-bold = Medium
 adjust-cell-width = -1
 adjust-cell-height = 1
 font-size = 16
-bold-is-bright = false
+bold-is-bright = true 
 
 # window
 window-padding-x = 5
@@ -14,7 +14,6 @@ window-padding-y = 5
 maximize = true
 mouse-hide-while-typing = true
 window-theme = ghostty
-# theme = Kanagawa Wave
 theme = GruvboxDarkHard
 
 # cursor

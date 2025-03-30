@@ -5,53 +5,57 @@
 
 add_newline = false
 palette = "gruvbox"
+
 format = """
-[$directory](fg:bg bg:green)\
-[](fg:green bg:yellow)\
-[$container$rust$python$git_branch$hostname](fg:bg bg:yellow)\
-[](fg:yellow bg:orange)\
-[$character](fg:bg bg:orange)\
-[](fg:orange)\
-[ ](none)"""
+$directory\
+(on $git_branch$hostname$container)\
+(via $rust$python)
+$character """
 
 [palettes.gruvbox]
 bg = "#1d2021"
+fg_dim = "#a89984"
 orange = "#fe8019"
 yellow = "#fabd2f"
 green = "#b8bb26"
+aqua = "#8ec07c"
+red = "#fb4934"
 
 [character]
 format = "$symbol"
-success_symbol = ' \$ '
-error_symbol = " # "
-vimcmd_symbol = " N "
-vimcmd_replace_one_symbol = " R "
-vimcmd_replace_symbol = " R "
-vimcmd_visual_symbol = " V "
+success_symbol = '[\$](fg:green)'
+error_symbol = "[#](fg:red)"
 
 [directory]
-format = " $path ($read_only)"
+format = "[$path ]($style)([$read_only ]($read_only_style))"
 read_only = "󰌾 "
-truncation_symbol = ""
-truncation_length = 1
+truncation_length = 2
 truncate_to_repo = false
+fish_style_pwd_dir_length = 2
+style = "fg:aqua"
+read_only_style = "fg:orange"
 
 [git_branch]
-format = " $symbol$branch "
+format = "[$symbol$branch ]($style)"
+style = "fg:fg_dim"
 
 [python]
-format = " $symbol($virtualenv )($version )"
+format = "[$symbol($virtualenv )($version )]($style)"
 symbol = " "
+style = "fg:yellow"
 
 [rust]
-format = " $symbol($version )"
+format = "[$symbol($version )]($style)"
 symbol = " "
+style = "fg:orange"
 
 [hostname]
-format = " $ssh_symbol$hostname "
+format = "[$ssh_symbol$hostname ]($style)"
 ssh_only = true
 ssh_symbol = "󰣀 "
+style = "fg:fg_dim"
 
 [container]
-format = " $symbol$name "
+format = "[$symbol$name ]($style)"
 symbol = " "
+style = "fg:green"
