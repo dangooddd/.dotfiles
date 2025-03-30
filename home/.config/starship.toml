@@ -8,17 +8,16 @@ palette = "gruvbox"
 
 format = """
 $directory\
-(on $git_branch$hostname$container)\
+(on $hostname$git_branch$container)\
 (via $rust$python)
 $character """
 
 [palettes.gruvbox]
-bg = "#1d2021"
-fg_dim = "#a89984"
 orange = "#fe8019"
 yellow = "#fabd2f"
 green = "#b8bb26"
 aqua = "#8ec07c"
+purple = "#d3869b"
 red = "#fb4934"
 
 [character]
@@ -32,30 +31,30 @@ read_only = "󰌾 "
 truncation_length = 2
 truncate_to_repo = false
 fish_style_pwd_dir_length = 2
-style = "fg:aqua"
+style = "fg:yellow"
 read_only_style = "fg:orange"
 
 [git_branch]
 format = "[$symbol$branch ]($style)"
-style = "fg:fg_dim"
+style = "fg:purple"
 
 [python]
 format = "[$symbol($virtualenv )($version )]($style)"
 symbol = " "
-style = "fg:yellow"
+style = "fg:orange"
 
 [rust]
 format = "[$symbol($version )]($style)"
 symbol = " "
-style = "fg:orange"
+style = "fg:red"
 
 [hostname]
 format = "[$ssh_symbol$hostname ]($style)"
 ssh_only = true
 ssh_symbol = "󰣀 "
-style = "fg:fg_dim"
+style = "fg:orange"
 
 [container]
 format = "[$symbol$name ]($style)"
 symbol = " "
-style = "fg:green"
+style = "fg:aqua"

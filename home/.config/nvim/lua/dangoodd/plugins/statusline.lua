@@ -19,7 +19,7 @@ return {
 
             return {
                 normal = accent_status(palette.bright_aqua),
-                insert = accent_status(palette.bright_blue),
+                insert = accent_status(palette.bright_green),
                 visual = accent_status(palette.bright_purple),
                 replace = accent_status(palette.bright_yellow),
                 command = accent_status(palette.bright_orange),
