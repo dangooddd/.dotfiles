@@ -2,15 +2,35 @@
 
 cat > main.tex << 'EOF'
 \documentclass{article}
-\usepackage{fontspec}
-\usepackage{polyglossia}
-\usepackage{geometry}
 \usepackage{amssymb,amsfonts,amsmath}
-\usepackage{enumitem, parskip, booktabs}
-\usepackage{indentfirst, titlesec, array}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
 \usepackage{pdfpages}
+\usepackage{parskip}
 
-% caption
+\usepackage{geometry}
+\geometry{left=2cm}
+\geometry{right=1.5cm}
+\geometry{top=1cm}
+\geometry{bottom=2cm}
+
+\usepackage{fontspec}
+\setmainfont{Liberation Serif}
+
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\fontsize{16}{24}\bfseries}{\thesection}{1em}{} 
+\titleformat{\subsection}{\normalfont\fontsize{14}{21}\bfseries}{\thesubsection}{1em}{}
+
+\usepackage{indentfirst}
+\setlength{\parindent}{1cm}
+
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+\SetLanguageKeys{}{indentfirst=true}
+
 \usepackage{caption}
 \DeclareCaptionLabelSeparator{custom}{. }
 \DeclareCaptionFormat{custom}{#1#2#3}
@@ -20,27 +40,17 @@ cat > main.tex << 'EOF'
   labelsep=custom
 }
 
-% references
 \usepackage[hidelinks]{hyperref}
 \usepackage{nameref}
 \makeatletter
 \newcommand\setcurrentname[1]{\def\@currentlabelname{#1}}
 \makeatother 
 
-% settings
-\setmainfont{Liberation Serif}
-\titleformat{\section}{\normalfont\fontsize{16}{24}\bfseries}{\thesection}{1em}{} 
-\titleformat{\subsection}{\normalfont\fontsize{14}{21}\bfseries}{\thesubsection}{1em}{}
-\geometry{left=2cm}
-\geometry{right=1.5cm}
-\geometry{top=1cm}
-\geometry{bottom=2cm}
-
 % document
 \begin{document}
 \sloppy
-\renewcommand{\figurename}{Рисунок}
 \renewcommand{\contentsname}{Содержание}
+\renewcommand{\figurename}{Рисунок}
 \fontsize{14}{16}\selectfont
 \tableofcontents
 
