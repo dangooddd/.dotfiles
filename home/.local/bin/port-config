@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-# script directory
-BIN="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-SERVER="$1"
+[[ -n "$DOTFILES" ]] || DOTFILES=~/.dotfiles
+cd "$DOTFILES" || exit
 
+SERVER="$1"
 [[ -n "$SERVER" ]] || echo "specify destination server" && exit
-cd "$BIN" || exit
-cd ../../../ || exit  # go to the dotfiles directory
 
 # copy config to the server
 rsync -avz -e ssh --exclude=.git --exclude=wallpapers . "$SERVER":~/.dotfiles
