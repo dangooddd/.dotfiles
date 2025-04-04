@@ -47,13 +47,7 @@ return {
                 },
                 cmdline = {
                     enabled = true,
-                    keymap = {
-                        ["<C-y>"] = { "show" },
-                        ["<CR>"] = { "accept", "fallback" },
-                        ["<C-p>"] = { "select_prev", "fallback" },
-                        ["<C-n>"] = { "select_next", "fallback" },
-                        ["<C-e>"] = { "hide" },
-                    },
+                    keymap = { preset = "inherit" },
                     completion = {
                         list = {
                             selection = {

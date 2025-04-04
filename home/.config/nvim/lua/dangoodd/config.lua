@@ -2,6 +2,7 @@
 -- Options
 ---------------------------------------
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
+vim.opt.winborder = "rounded"
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.undofile = true -- save state of file on write
@@ -36,20 +37,6 @@ vim.g.maplocal = " "
 
 
 ---------------------------------------
--- Lsp
----------------------------------------
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-    vim.lsp.handlers.hover, { border = "rounded" }
-)
-
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-    vim.lsp.handlers.signature_help, { border = "rounded" }
-)
-
-vim.diagnostic.config({ float = { border = "rounded" } })
-
-
----------------------------------------
 -- Keybinds
 ---------------------------------------
 vim.keymap.set("n", "<C-j>", vim.cmd.bnext)
@@ -65,20 +52,6 @@ vim.keymap.set("n", "`", "'", { noremap = true }) -- better marks
 vim.keymap.set("n", "<leader>1", "<cmd>diffget LO")
 vim.keymap.set("n", "<leader>2", "<cmd>diffget BA")
 vim.keymap.set("n", "<leader>3", "<cmd>diffget RE")
-
--- center editor view
-vim.keymap.set("n", "<leader>tc", function()
-    if vim.api.nvim_get_option_value("so", { scope = "local" }) ~= 999 then
-        vim.opt_local.so = 999
-    else
-        vim.opt_local.so = vim.o.so
-    end
-end)
-
--- toggle dark/light background
-vim.keymap.set("n", "<leader>tl", function()
-    vim.opt.bg = vim.o.bg == "dark" and "light" or "dark"
-end)
 
 -- toggle wrap
 vim.keymap.set("n", "<leader>tw", function()
