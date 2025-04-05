@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+cat > main.tex << 'EOF'
+\documentclass{article}
+\usepackage{amssymb,amsfonts,amsmath}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{pdfpages}
+\usepackage{parskip}
+\usepackage{anyfontsize}
+
+\usepackage{geometry}
+\geometry{left=2cm}
+\geometry{right=1.5cm}
+\geometry{top=1cm}
+\geometry{bottom=2cm}
+
+\usepackage{fontspec}
+\setmainfont{Liberation Serif}
+
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\fontsize{16}{24}\bfseries}{\thesection}{1em}{} 
+\titleformat{\subsection}{\normalfont\fontsize{14}{21}\bfseries}{\thesubsection}{1em}{}
+
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage[hidelinks]{hyperref}
+\usepackage{nameref}
+\makeatletter
+\newcommand\setcurrentname[1]{\def\@currentlabelname{#1}}
+\makeatother 
+
+% document
+\begin{document}
+\sloppy
+\fontsize{14}{16}\selectfont
+
+\end{document}
+EOF
