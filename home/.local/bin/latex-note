@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-cat > main.tex << 'EOF'
-\documentclass[14pt]{extarticle}
+cat > preamble.inc.tex << 'EOF'
 \usepackage{amssymb,amsfonts,amsmath}
 \usepackage{mathtools}
 \usepackage{enumitem}
@@ -34,8 +33,4 @@ cat > main.tex << 'EOF'
 \usepackage{polyglossia}
 \setdefaultlanguage{russian}
 \setotherlanguage{english}
-
-\begin{document}
-
-\end{document}
 EOF
