@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-[[ -n "$DOTFILES" ]] || DOTFILES=~/.dotfiles
-cd "$BIN" || exit
-
-git pull origin main
