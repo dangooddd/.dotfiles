@@ -27,8 +27,8 @@ cat > preamble.inc.tex << 'EOF'
 \setmainfont{Liberation Serif}
 
 \usepackage{titlesec}
-\titleformat{\section}{\normalfont\bfseries\large}{\thesection}{1em}{}
-\titleformat{\subsection}{\normalfont\bfseries\normalsize}{\thesubsection}{1em}{}
+\titleformat{\section}{\normalfont\bfseries\Large}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\bfseries\large}{\thesubsection}{1em}{}
 
 \usepackage{polyglossia}
 \setdefaultlanguage{russian}
