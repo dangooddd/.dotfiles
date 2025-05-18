@@ -1,10 +1,14 @@
 # .bashrc
 
 #======================================
-# Global definitions
+# Source definitions
 #======================================
 if [[ -f /etc/bashrc ]]; then
     . /etc/bashrc
+fi
+
+if [[ -f $HOME/.bash_local ]]; then
+    . "$HOME/.bash_local"
 fi
 
 
@@ -261,4 +265,8 @@ fi
 
 if command -v starship &> /dev/null; then
     eval "$(starship init bash)"
+fi
+
+if command -v direnv &> /dev/null; then
+    eval "$(direnv hook bash)"
 fi
