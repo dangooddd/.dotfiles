@@ -7,7 +7,7 @@ if [[ -f /etc/bashrc ]]; then
     . /etc/bashrc
 fi
 
-if [[ -f $HOME/.bash_local ]]; then
+if [[ -f "$HOME"/.bash_local ]]; then
     . "$HOME/.bash_local"
 fi
 
@@ -180,19 +180,6 @@ function mark-list {
 
 function mark-go {
     cd "${__marks_array["$1"]}" && ls -Av
-}
-
-function yy {
-    local tmp
-    tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-    yazi "$@" --cwd-file="$tmp"
-    if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" ]] && [[ "$cwd" != "$PWD" ]]; then
-        if command -v zoxide &> /dev/null; then
-            zoxide add "$cwd"
-        fi
-        builtin cd -- "$cwd" 
-    fi
-    rm -f -- "$tmp"
 }
 
 alias pipu="PIP_CONFIG_FILE=/dev/null pip"
