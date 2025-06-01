@@ -34,11 +34,11 @@ cd .dotfiles
 Install rpm packages:
 
 ```sh
-sudo dnf install $(cat rpm.txt) --skip-unavailable
+sudo dnf install $(cat packages/rpm.txt) --skip-unavailable
 ```
 
 Install flatpak packages:
 
 ```sh
-flatpak install $(cat flatpak.txt)
+flatpak install $(cat packages/flatpak.txt)
 ```
