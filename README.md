@@ -2,15 +2,6 @@
 
 > Set of configs for cli tools, terminal, shell and other stuff (Fedora).
 
-## Configurations 
-
-- **Terminal:** [ghostty](https://github.com/ghostty-org/ghostty)
-- **Prompt:** [starship](https://github.com/starship/starship)
-- **Shell:** [bash](https://www.gnu.org/software/bash/)
-- **TUI Editor:** [neovim](https://github.com/neovim/neovim)
-- **GUI Editor:** [vscode](https://github.com/microsoft/vscode)
-- **Font:** [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)
-
 ## Installation
 
 > [!Warning]
