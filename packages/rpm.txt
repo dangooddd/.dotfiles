@@ -21,3 +21,4 @@ lazygit
 syncthing
 code
 steam
+lutris
