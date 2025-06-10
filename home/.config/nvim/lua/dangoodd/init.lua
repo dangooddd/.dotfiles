@@ -2,4 +2,8 @@
 -- init.lua
 ---------------------------------------
 require("dangoodd.config")
-require("dangoodd.lazy")
+
+-- plugins
+if not vim.g.vscode then
+    require("dangoodd.lazy")
+end

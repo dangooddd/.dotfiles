@@ -54,6 +54,10 @@ return {
                                 preselect = false,
                                 auto_insert = false,
                             },
+                            cycle = {
+                                from_bottom = false,
+                                from_top = false,
+                            },
                         },
                         menu = {
                             auto_show = true,
