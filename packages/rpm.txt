@@ -22,3 +22,4 @@ syncthing
 code
 steam
 lutris
+kitty
