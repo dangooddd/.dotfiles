@@ -2,6 +2,7 @@ cmake
 clang
 bear
 python 
+python-devel
 pip
 pipx
 npm
