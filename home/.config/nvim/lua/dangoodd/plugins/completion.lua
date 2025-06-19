@@ -25,10 +25,6 @@ return {
                             preselect = false,
                             auto_insert = false,
                         },
-                        cycle = {
-                            from_bottom = false,
-                            from_top = false,
-                        },
                     },
                     documentation = {
                         window = { border = "rounded" },
@@ -53,10 +49,6 @@ return {
                             selection = {
                                 preselect = false,
                                 auto_insert = false,
-                            },
-                            cycle = {
-                                from_bottom = false,
-                                from_top = false,
                             },
                         },
                         menu = {
