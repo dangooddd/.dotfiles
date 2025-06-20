@@ -1,3 +1,13 @@
+[ksmserver][Global Shortcuts]
+Halt Without Confirmation=
+Lock Session=Screensaver
+Log Out=Ctrl+Alt+Del
+Log Out Without Confirmation=
+LogOut=
+Reboot=
+Reboot Without Confirmation=
+Shut Down=
+
 [kwin][Global Shortcuts]
 Activate Window Demanding Attention=Meta+Ctrl+A
 Cycle Overview=
@@ -23,8 +33,8 @@ Setup Window Shortcut=
 Show Desktop=Meta+D
 Switch One Desktop Down=Meta+Ctrl+Down
 Switch One Desktop Up=Meta+Ctrl+Up
-Switch One Desktop to the Left=Meta+Ctrl+Left
-Switch One Desktop to the Right=Meta+Ctrl+Right
+Switch One Desktop to the Left=Meta+Ctrl+Left; Meta+Z
+Switch One Desktop to the Right=Meta+Ctrl+Right; Meta+X
 Switch Window Down=Meta+Alt+Down
 Switch Window Left=Meta+Alt+Left
 Switch Window Right=Meta+Alt+Right
@@ -86,18 +96,18 @@ Window Fullscreen=
 Window Grow Horizontal=
 Window Grow Vertical=
 Window Lower=
-Window Maximize=Meta+PgUp; Meta+Backspace
+Window Maximize=Meta+PgUp; Meta+F
 Window Maximize Horizontal=
 Window Maximize Vertical=
-Window Minimize=Meta+PgDown
+Window Minimize=Meta+Shift+Q; Meta+PgDown
 Window Move=
 Window Move Center=
 Window No Border=
 Window On All Desktops=
 Window One Desktop Down=Meta+Ctrl+Shift+Down
 Window One Desktop Up=Meta+Ctrl+Shift+Up
-Window One Desktop to the Left=Meta+Ctrl+Shift+Left
-Window One Desktop to the Right=Meta+Ctrl+Shift+Right
+Window One Desktop to the Left=Meta+Ctrl+Shift+Left; Meta+Shift+Z
+Window One Desktop to the Right=Meta+Ctrl+Shift+Right; Meta+Shift+X
 Window One Screen Down=
 Window One Screen Up=
 Window One Screen to the Left=
@@ -107,12 +117,12 @@ Window Pack Down=
 Window Pack Left=
 Window Pack Right=
 Window Pack Up=
-Window Quick Tile Bottom=Meta+Down
+Window Quick Tile Bottom=Meta+J; Meta+Down
 Window Quick Tile Bottom Left=
 Window Quick Tile Bottom Right=
-Window Quick Tile Left=Meta+Left
-Window Quick Tile Right=Meta+Right
-Window Quick Tile Top=Meta+Up
+Window Quick Tile Left=Meta+Left; Meta+H
+Window Quick Tile Right=Meta+Right; Meta+L
+Window Quick Tile Top=Meta+Up; Meta+K
 Window Quick Tile Top Left=
 Window Quick Tile Top Right=
 Window Raise=
@@ -131,10 +141,10 @@ Window to Desktop 16=
 Window to Desktop 17=
 Window to Desktop 18=
 Window to Desktop 19=
-Window to Desktop 2=Meta+"; Meta+@
+Window to Desktop 2=Meta+@; Meta+"
 Window to Desktop 20=
 Window to Desktop 3=Meta+#; Meta+№
-Window to Desktop 4=Meta+$; Meta+;
+Window to Desktop 4=Meta+;; Meta+$
 Window to Desktop 5=Meta+%
 Window to Desktop 6=
 Window to Desktop 7=
@@ -154,7 +164,7 @@ Window to Screen 6=
 Window to Screen 7=
 disableInputCapture=Meta+Shift+Esc
 view_actual_size=Meta+0
-view_zoom_in=Meta++; Meta+=
+view_zoom_in=Meta+=; Meta++
 view_zoom_out=Meta+-
 
 [org.kde.spectacle.desktop][Global Shortcuts]
@@ -170,7 +180,7 @@ WindowUnderCursorScreenShot=Meta+Ctrl+Print
 _launch=
 
 [plasmashell][Global Shortcuts]
-activate application launcher=Alt+F1; Meta
+activate application launcher=Meta; Alt+F1
 activate task manager entry 1=Meta+F1
 activate task manager entry 10=
 activate task manager entry 2=Meta+F2
