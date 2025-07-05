@@ -18,7 +18,6 @@ tmux
 zoxide
 jetbrains-mono-fonts-all
 ShellCheck
-lazygit
 syncthing
 code
 steam

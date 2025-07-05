@@ -10,26 +10,26 @@
 Clone repository:
 
 ```sh
-git clone https://github.com/dangooddd/.dotfiles.git
+git clone https://github.com/dangooddd/.dotfiles.git "$HOME"/.dotfiles
 ```
 
 Link configuration files via script:
 
 ```sh
-cd .dotfiles
+cd "$HOME"/.dotfiles
 ./install.sh
 ```
 
 ## Packages
 
-Install rpm packages:
+Install fedora packages:
 
 ```sh
-sudo dnf install $(cat packages/rpm.txt) --skip-unavailable
+./scripts/fedora/install-fedora-packages.sh
 ```
 
 Install flatpak packages:
 
 ```sh
-flatpak install $(cat packages/flatpak.txt)
+./scripts/install-flatpak-packages.sh
 ```
