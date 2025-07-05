@@ -22,4 +22,6 @@ syncthing
 code
 steam
 lutris
+google-chrome-stable
+qbittorrent
 kitty
