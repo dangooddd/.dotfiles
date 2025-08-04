@@ -240,13 +240,6 @@ if [[ -f "$CARGO_HOME"/env ]]; then
     . "$CARGO_HOME"/env
 fi
 
-if command -v zoxide &> /dev/null; then
-    eval "$(zoxide init bash)"
-    function zd {
-        __zoxide_z "$@" && ls -Av
-    }
-fi
-
 if command -v fzf &> /dev/null; then
     eval "$(fzf --bash)"
 fi
@@ -258,3 +251,11 @@ fi
 if command -v direnv &> /dev/null; then
     eval "$(direnv hook bash)"
 fi
+
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init bash)"
+    function zd {
+        __zoxide_z "$@" && ls -Av
+    }
+fi
+
