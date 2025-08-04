@@ -28,6 +28,12 @@ Install fedora packages:
 ./scripts/fedora/install-fedora-packages.sh
 ```
 
+Install arch packages:
+
+```sh
+./scripts/arch/install-arch-packages.sh
+```
+
 Install flatpak packages:
 
 ```sh
