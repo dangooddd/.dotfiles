@@ -184,7 +184,6 @@ function mark-go {
 
 alias pipu="PIP_CONFIG_FILE=/dev/null pip"
 alias open="xdg-open"
-alias update-grub="sudo grub2-mkconfig -o /boot/grub2/grub.cfg"
 alias la="ls -Av"
 alias ll="ls -Alv"
 alias rg="rg --smart-case \

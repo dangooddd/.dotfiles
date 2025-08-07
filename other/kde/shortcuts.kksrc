@@ -1,3 +1,18 @@
+[KDE Keyboard Layout Switcher][Global Shortcuts]
+Switch keyboard layout to English (Norman)=
+Switch keyboard layout to English (US)=
+Switch keyboard layout to Russian=
+Switch to Last-Used Keyboard Layout=Meta+Alt+L
+Switch to Next Keyboard Layout=Meta+Space
+
+[google-chrome.desktop][Global Shortcuts]
+_launch=Meta+B
+new-private-window=
+new-window=
+
+[kitty.desktop][Global Shortcuts]
+_launch=Meta+Return
+
 [ksmserver][Global Shortcuts]
 Halt Without Confirmation=
 Lock Session=Screensaver
@@ -33,8 +48,8 @@ Setup Window Shortcut=
 Show Desktop=Meta+D
 Switch One Desktop Down=Meta+Ctrl+Down
 Switch One Desktop Up=Meta+Ctrl+Up
-Switch One Desktop to the Left=Meta+Ctrl+Left; Meta+Z
-Switch One Desktop to the Right=Meta+Ctrl+Right; Meta+X
+Switch One Desktop to the Left=Meta+Z; Meta+Ctrl+Left
+Switch One Desktop to the Right=Meta+X; Meta+Ctrl+Right
 Switch Window Down=Meta+Alt+Down
 Switch Window Left=Meta+Alt+Left
 Switch Window Right=Meta+Alt+Right
@@ -96,7 +111,7 @@ Window Fullscreen=
 Window Grow Horizontal=
 Window Grow Vertical=
 Window Lower=
-Window Maximize=Meta+PgUp; Meta+F
+Window Maximize=Meta+F; Meta+PgUp
 Window Maximize Horizontal=
 Window Maximize Vertical=
 Window Minimize=Meta+Shift+Q; Meta+PgDown
@@ -106,8 +121,8 @@ Window No Border=
 Window On All Desktops=
 Window One Desktop Down=Meta+Ctrl+Shift+Down
 Window One Desktop Up=Meta+Ctrl+Shift+Up
-Window One Desktop to the Left=Meta+Ctrl+Shift+Left; Meta+Shift+Z
-Window One Desktop to the Right=Meta+Ctrl+Shift+Right; Meta+Shift+X
+Window One Desktop to the Left=Meta+Shift+Z; Meta+Ctrl+Shift+Left
+Window One Desktop to the Right=Meta+Shift+X; Meta+Ctrl+Shift+Right
 Window One Screen Down=
 Window One Screen Up=
 Window One Screen to the Left=
@@ -121,7 +136,7 @@ Window Quick Tile Bottom=Meta+J; Meta+Down
 Window Quick Tile Bottom Left=
 Window Quick Tile Bottom Right=
 Window Quick Tile Left=Meta+Left; Meta+H
-Window Quick Tile Right=Meta+Right; Meta+L
+Window Quick Tile Right=Meta+L; Meta+Right
 Window Quick Tile Top=Meta+Up; Meta+K
 Window Quick Tile Top Left=
 Window Quick Tile Top Right=
@@ -144,7 +159,7 @@ Window to Desktop 19=
 Window to Desktop 2=Meta+@; Meta+"
 Window to Desktop 20=
 Window to Desktop 3=Meta+#; Meta+№
-Window to Desktop 4=Meta+;; Meta+$
+Window to Desktop 4=Meta+$; Meta+;
 Window to Desktop 5=Meta+%
 Window to Desktop 6=
 Window to Desktop 7=
@@ -208,3 +223,11 @@ stop current activity=Meta+S
 switch to next activity=
 switch to previous activity=
 toggle do not disturb=
+
+[systemsettings.desktop][Global Shortcuts]
+_launch=Meta+I; Tools
+kcm-kscreen=
+kcm-lookandfeel=
+kcm-powerdevilprofilesconfig=
+kcm-screenlocker=
+kcm-users=
