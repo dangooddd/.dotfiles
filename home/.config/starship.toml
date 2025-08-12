@@ -1,6 +1,3 @@
-# starship.toml
-
-# config schema
 "$schema" = "https://starship.rs/config-schema.json"
 
 add_newline = false
