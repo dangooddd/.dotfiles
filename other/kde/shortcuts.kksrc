@@ -114,7 +114,7 @@ Window Lower=
 Window Maximize=Meta+F; Meta+PgUp
 Window Maximize Horizontal=
 Window Maximize Vertical=
-Window Minimize=Meta+Shift+Q; Meta+PgDown
+Window Minimize=Meta+PgDown; Meta+Shift+Q
 Window Move=
 Window Move Center=
 Window No Border=
@@ -132,12 +132,12 @@ Window Pack Down=
 Window Pack Left=
 Window Pack Right=
 Window Pack Up=
-Window Quick Tile Bottom=Meta+J; Meta+Down
+Window Quick Tile Bottom=Meta+Down; Meta+J
 Window Quick Tile Bottom Left=
 Window Quick Tile Bottom Right=
-Window Quick Tile Left=Meta+Left; Meta+H
+Window Quick Tile Left=Meta+H; Meta+Left
 Window Quick Tile Right=Meta+L; Meta+Right
-Window Quick Tile Top=Meta+Up; Meta+K
+Window Quick Tile Top=Meta+K; Meta+Up
 Window Quick Tile Top Left=
 Window Quick Tile Top Right=
 Window Raise=
@@ -156,10 +156,10 @@ Window to Desktop 16=
 Window to Desktop 17=
 Window to Desktop 18=
 Window to Desktop 19=
-Window to Desktop 2=Meta+@; Meta+"
+Window to Desktop 2=Meta+"; Meta+@
 Window to Desktop 20=
 Window to Desktop 3=Meta+#; Meta+№
-Window to Desktop 4=Meta+$; Meta+;
+Window to Desktop 4=Meta+;; Meta+$
 Window to Desktop 5=Meta+%
 Window to Desktop 6=
 Window to Desktop 7=
@@ -179,7 +179,7 @@ Window to Screen 6=
 Window to Screen 7=
 disableInputCapture=Meta+Shift+Esc
 view_actual_size=Meta+0
-view_zoom_in=Meta+=; Meta++
+view_zoom_in=Meta++; Meta+=
 view_zoom_out=Meta+-
 
 [org.kde.spectacle.desktop][Global Shortcuts]
@@ -225,7 +225,7 @@ switch to previous activity=
 toggle do not disturb=
 
 [systemsettings.desktop][Global Shortcuts]
-_launch=Meta+I; Tools
+_launch=Tools; Meta+I
 kcm-kscreen=
 kcm-lookandfeel=
 kcm-powerdevilprofilesconfig=
