@@ -8,6 +8,7 @@ fzf
 ripgrep
 fd
 lazygit
+wl-clipboard
 google-chrome
 ttf-jetbrains-mono
 ttf-jetbrains-mono-nerd
