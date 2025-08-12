@@ -9,6 +9,7 @@ ripgrep
 fd
 lazygit
 wl-clipboard
+flatpak
 google-chrome
 ttf-jetbrains-mono
 ttf-jetbrains-mono-nerd
