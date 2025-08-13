@@ -4,3 +4,5 @@ com.obsproject.Studio
 com.discordapp.Discord
 com.github.flxzt.rnote
 net.davidotek.pupgui2
+com.usebottles.bottles
+com.valvesoftware.Steam

@@ -20,8 +20,6 @@ jetbrains-mono-fonts-all
 ShellCheck
 syncthing
 code
-steam
-lutris
 google-chrome-stable
 qbittorrent
 kitty

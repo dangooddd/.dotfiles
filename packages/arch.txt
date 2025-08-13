@@ -20,6 +20,4 @@ syncthing
 qbittorrent
 google-chrome
 visual-studio-code-bin
-lutris
-steam
 ttf-ms-win11-auto
