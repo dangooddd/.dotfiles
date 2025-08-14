@@ -11,7 +11,7 @@ return {
                     backdrop = 100,
                     title_flags = false,
                     preview = {
-                        horizontal = "right:40%",
+                        horizontal = "right:50%",
                         layout = "horizontal",
                     }
                 },

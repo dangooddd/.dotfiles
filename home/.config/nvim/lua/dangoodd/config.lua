@@ -63,3 +63,106 @@ end)
 vim.keymap.set("n", "<leader>th", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end)
+
+--------------------------------------------------------------------------------
+-- LSP
+--------------------------------------------------------------------------------
+
+-- rust
+vim.lsp.config("rust_analyzer", {
+    settings = {
+        ["rust-analyzer"] = {
+            diagnostics = {
+                enable = true,
+                experimental = { enable = true },
+            },
+        },
+    },
+})
+vim.lsp.enable("rust_analyzer")
+
+-- lua
+vim.lsp.config("lua_ls", {
+    settings = {
+        Lua = {
+            diagnostics = {
+                disable = {
+                    "missing-fields",
+                    "undefined-global",
+                },
+            },
+        },
+    },
+})
+vim.lsp.enable("lua_ls")
+
+-- python
+vim.lsp.config("basedpyright", {
+    settings = {
+        basedpyright = {
+            analysis = {
+                typeCheckingMode = "standard",
+            },
+        },
+    },
+})
+vim.lsp.enable("basedpyright")
+
+vim.lsp.config("pylsp", {
+    settings = {
+        pylsp = {
+            plugins = {
+                -- use black as default formatter
+                yapf = { enabled = false },
+                autopep8 = { enabled = false },
+                black = { enabled = true },
+                pycodestyle = {
+                    enabled = true,
+                    ignore = { "E203", "E701", "W503" },
+                    maxLineLength = 88
+                }
+            }
+        },
+    },
+})
+
+-- latex
+vim.lsp.config("texlab", {
+    settings = {
+        texlab = {
+            build = {
+                executable = "latexmk",
+                args = {
+                    "-lualatex",
+                    "-interaction=nonstopmode",
+                    "-outdir=build",
+                },
+                onSave = true,
+            },
+        }
+    }
+})
+vim.lsp.enable("texlab")
+
+-- bash
+vim.lsp.config("bashls", {
+    settings = {
+        bashIde = {
+            shellcheckArguments = {
+                "--exclude=SC1090,SC1091,SC2076,SC2164"
+            },
+        }
+    }
+})
+vim.lsp.enable("bashls")
+
+-- cpp
+vim.lsp.config("clangd", {
+    cmd = {
+        "clangd",
+        "--fallback-style=llvm",
+        "--header-insertion=iwyu",
+        "-j=4",
+    },
+})
+vim.lsp.enable("clangd")

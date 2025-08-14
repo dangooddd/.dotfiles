@@ -5,14 +5,8 @@ return {
     keys = { "<leader>tf" },
     config = function()
         require("conform").setup({
-            formatters = {
-                gdformat = {
-                    append_args = { "--use-spaces=4" },
-                },
-            },
             formatters_by_ft = {
                 python = { "black" },
-                gdscript = { "gdformat" },
             },
             format_after_save = function(bufnr)
                 if not vim.b[bufnr].conform_disable then
