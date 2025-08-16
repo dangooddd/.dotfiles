@@ -35,7 +35,7 @@ return {
             options = {
                 theme = gruvbox_custom(),
                 component_separators = { left = "", right = "" },
-                section_separators = { left = "", right = "" },
+                section_separators = { left = "", right = "" },
                 globalstatus = true,
                 refresh = {
                     statusline = 50,
