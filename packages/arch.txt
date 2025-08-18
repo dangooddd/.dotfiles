@@ -11,8 +11,6 @@ lazygit
 bash-completion
 wl-clipboard
 flatpak
-ttf-jetbrains-mono
-ttf-jetbrains-mono-nerd
 npm
 python
 python-pip
@@ -21,4 +19,7 @@ syncthing
 qbittorrent
 google-chrome
 visual-studio-code-bin
+ttc-iosevka
+ttf-nerd-fonts-symbols
+ttf-nerd-fonts-symbols-mono
 ttf-ms-win11-auto
