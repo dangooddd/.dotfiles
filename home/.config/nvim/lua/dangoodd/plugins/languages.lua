@@ -5,7 +5,19 @@ return {
         lazy = false,
         branch = "main",
         build = ":TSUpdate",
-        config = function() end,
+        config = function()
+            require("nvim-treesitter").setup()
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = "*",
+                callback = function(event)
+                    local ok, _ = pcall(vim.treesitter.start, event.buf)
+                    if not ok then
+                        local lang = vim.treesitter.language.get_lang(event.match)
+                        require("nvim-treesitter").install(lang)
+                    end
+                end,
+            })
+        end,
     },
 
     -- lua
