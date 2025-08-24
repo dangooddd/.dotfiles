@@ -35,14 +35,6 @@ function __venv_hook {
     fi
 }
 
-function __empty_prompt_hook {
-    if [[ -z "$__empty_prompt" ]]; then
-        __empty_prompt="Y"
-    else
-        echo ""
-    fi
-}
-
 function __window_title_hook {
     echo -ne "\e]0;${PWD/#$HOME/\~}\a"
 }
@@ -62,10 +54,9 @@ function __osc7_hook {
     printf '\e]7;file://%s%s\e\\' "${HOSTNAME}" "${encoded}"
 }
 
-PROMPT_COMMAND=("__window_title_hook")
+PROMPT_COMMAND+=("__window_title_hook")
 PROMPT_COMMAND+=("__osc7_hook")
 PROMPT_COMMAND+=("__venv_hook")
-PROMPT_COMMAND+=("__empty_prompt_hook")
 
 
 ################################################################################
