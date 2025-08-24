@@ -1,0 +1,41 @@
+################################################################################
+# General
+################################################################################
+font-family = IosevkaTerm Nerd Font
+font-style-bold = Medium
+font-size = 14
+bold-is-bright = true 
+
+# window
+window-padding-x = 5
+window-padding-y = 5
+mouse-hide-while-typing = true
+window-theme = ghostty
+theme = GruvboxDarkHard
+
+# cursor
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor, no-title
+adjust-cursor-thickness = 2
+
+
+################################################################################
+# Keybinds
+################################################################################
+keybind = ctrl+space>c=new_tab
+keybind = ctrl+space>&=close_tab
+keybind = ctrl+space>x=close_window
+keybind = ctrl+space>shift+\=new_split:right
+keybind = ctrl+space>shift+-=new_split:down
+
+keybind = alt+h=goto_split:left
+keybind = alt+j=goto_split:down
+keybind = alt+k=goto_split:up
+keybind = alt+l=goto_split:right
+
+keybind = alt+ctrl+h=resize_split:left,10
+keybind = alt+ctrl+j=resize_split:down,10
+keybind = alt+ctrl+k=resize_split:up,10
+keybind = alt+ctrl+l=resize_split:right,10
+keybind = alt+ctrl+plus=equalize_splits

@@ -34,7 +34,6 @@ function __venv_hook {
         venv-update
     fi
 }
-PROMPT_COMMAND+=("__venv_hook")
 
 function __empty_prompt_hook {
     if [[ -z "$__empty_prompt" ]]; then
@@ -43,12 +42,10 @@ function __empty_prompt_hook {
         echo ""
     fi
 }
-PROMPT_COMMAND+=("__empty_prompt_hook")
 
 function __window_title_hook {
     echo -ne "\e]0;${PWD/#$HOME/\~}\a"
 }
-PROMPT_COMMAND+=("__window_title_hook")
 
 function __osc7_hook {
     local strlen=${#PWD}
@@ -64,7 +61,11 @@ function __osc7_hook {
     done
     printf '\e]7;file://%s%s\e\\' "${HOSTNAME}" "${encoded}"
 }
+
+PROMPT_COMMAND=("__window_title_hook")
 PROMPT_COMMAND+=("__osc7_hook")
+PROMPT_COMMAND+=("__venv_hook")
+PROMPT_COMMAND+=("__empty_prompt_hook")
 
 
 ################################################################################
@@ -233,12 +234,12 @@ if command -v fzf &> /dev/null; then
     eval "$(fzf --bash)"
 fi
 
-if command -v starship &> /dev/null; then
-    eval "$(starship init bash)"
-fi
-
 if command -v direnv &> /dev/null; then
     eval "$(direnv hook bash)"
+fi
+
+if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
 fi
 
 if command -v zoxide &> /dev/null; then
