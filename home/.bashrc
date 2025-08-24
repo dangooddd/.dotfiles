@@ -1,61 +1,70 @@
 ################################################################################
-# Source definitions
+# General
 ################################################################################
 if [[ -f /etc/bashrc ]]; then
     . /etc/bashrc
 fi
 
 if [[ -f "$HOME"/.bash_local ]]; then
-    . "$HOME/.bash_local"
+    . "$HOME"/.bash_local
 fi
 
-
-################################################################################
-# Prompt
-################################################################################
-function __precmd_hook {
-    # empty line between prompts
-    if [[ -z "$__bash_empty_prompt" ]]; then
-        __bash_empty_prompt="Y"
-    else
-        echo ""
-    fi
-
-    # window title
-    echo -ne "\e]0;${PWD/#$HOME/\~}\a"
-
-    # auto-venv
-    if [[ -z "$__auto_venv_stop" ]]; then
-        venv-update
-    fi
-}
-
-export VIRTUAL_ENV_DISABLE_PROMPT="Y"
-PROMPT_COMMAND=("__precmd_hook")
-
-
-################################################################################
-# Path 
-################################################################################
 function add-path {
     if ! [[ "$PATH" =~ "$1:" ]]; then
         PATH="$1:$PATH"
         export PATH
     fi
 }
-add-path "$HOME/.local/bin"
-add-path "$HOME/.cargo/bin"
+add-path "$HOME"/.local/bin
+add-path "$HOME"/.cargo/bin
 
-
-################################################################################
-# Bash options
-################################################################################
 export HISTSIZE=500
 export HISTFILESIZE=10000
 export HISTTIMEFORMAT="%F %T "
 export HISTCONTROL="erasedups:ignoreboth"
 shopt -s histappend
 shopt -s checkwinsize
+
+
+################################################################################
+# Prompt
+################################################################################
+function __venv_hook {
+    if [[ -z "$__auto_venv_stop" ]]; then
+        venv-update
+    fi
+}
+PROMPT_COMMAND+=("__venv_hook")
+
+function __empty_prompt_hook {
+    if [[ -z "$__empty_prompt" ]]; then
+        __empty_prompt="Y"
+    else
+        echo ""
+    fi
+}
+PROMPT_COMMAND+=("__empty_prompt_hook")
+
+function __window_title_hook {
+    echo -ne "\e]0;${PWD/#$HOME/\~}\a"
+}
+PROMPT_COMMAND+=("__window_title_hook")
+
+function __osc7_hook {
+    local strlen=${#PWD}
+    local encoded=""
+    local pos c o
+    for (( pos=0; pos<strlen; pos++ )); do
+        c=${PWD:$pos:1}
+        case "$c" in
+            [-/:_.!\'\(\)~[:alnum:]] ) o="${c}" ;;
+            * ) printf -v o '%%%02X' "'${c}" ;;
+        esac
+        encoded+="${o}"
+    done
+    printf '\e]7;file://%s%s\e\\' "${HOSTNAME}" "${encoded}"
+}
+PROMPT_COMMAND+=("__osc7_hook")
 
 
 ################################################################################
@@ -121,7 +130,7 @@ function ls {
 
 function clear {
     command clear
-    __bash_empty_prompt=""
+    __empty_prompt=""
 }
 
 function yank {
@@ -214,6 +223,7 @@ export RUSTUP_HOME="$HOME"/.rustup
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
 export LESS="--tilde -RFXS"
+export VIRTUAL_ENV_DISABLE_PROMPT="Y"
 
 if [[ -f "$CARGO_HOME"/env ]]; then
     . "$CARGO_HOME"/env
@@ -237,4 +247,3 @@ if command -v zoxide &> /dev/null; then
         __zoxide_z "$@" && ls -Av
     }
 fi
-
