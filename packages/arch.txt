@@ -3,7 +3,7 @@ tree-sitter-cli
 direnv
 zoxide
 starship
-foot
+ghostty
 tmux
 fzf
 ripgrep
