@@ -1,8 +1,9 @@
 nvim
+tree-sitter-cli
 direnv
 zoxide
 starship
-kitty
+foot
 tmux
 fzf
 ripgrep
@@ -19,7 +20,5 @@ syncthing
 qbittorrent
 google-chrome
 visual-studio-code-bin
-ttc-iosevka
-ttf-nerd-fonts-symbols
-ttf-nerd-fonts-symbols-mono
+ttf-iosevkaterm-nerd
 ttf-ms-win11-auto
