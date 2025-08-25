@@ -4,12 +4,13 @@ add_newline = false
 palette = "gruvbox"
 
 format = """
-(${custom.prompt_indicator} $directory )\
-(on ($hostname )($git_branch )($container ))\
-(via ($rust )($python ))\
+[\\[](fg:white)$directory\
+( [on](fg:white)( $hostname)( $git_branch)( $container))\
+( [via](fg:white)( $rust )( $python))[\\]](fg:white)\
 $character """
 
 [palettes.gruvbox]
+white = "#a89984"
 orange = "#fe8019"
 yellow = "#fabd2f"
 green = "#b8bb26"
@@ -19,7 +20,7 @@ red = "#fb4934"
 
 [character]
 format = "$symbol"
-success_symbol = '[%](fg:green)'
+success_symbol = "[%](fg:green)"
 error_symbol = "[#](fg:red)"
 
 [directory]
@@ -28,7 +29,7 @@ read_only = "󰌾"
 truncation_length = 1
 truncate_to_repo = false
 fish_style_pwd_dir_length = 1
-style = "fg:yellow"
+style = "fg:orange"
 read_only_style = "fg:red"
 
 [git_branch]
@@ -44,7 +45,7 @@ style = "fg:yellow"
 [rust]
 format = "[$symbol ($version)]($style)"
 symbol = ""
-style = "fg:orange"
+style = "fg:red"
 
 [hostname]
 format = "[$ssh_symbol $hostname]($style)"
@@ -56,8 +57,3 @@ style = "fg:green"
 format = "[$symbol $name]($style)"
 symbol = ""
 style = "fg:aqua"
-
-[custom.prompt_indicator]
-when = true
-format = "[ ]($style)"
-style = "bg:orange"
