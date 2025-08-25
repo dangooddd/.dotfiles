@@ -6,7 +6,7 @@ palette = "gruvbox"
 format = """
 [\\[](fg:white)$directory\
 ( [on](fg:white)( $hostname)( $git_branch)( $container))\
-( [via](fg:white)( $rust )( $python))[\\]](fg:white)\
+( [via](fg:white)( $rust)( $python))[\\]](fg:white)\
 $character """
 
 [palettes.gruvbox]
@@ -21,11 +21,11 @@ red = "#fb4934"
 [character]
 format = "$symbol"
 success_symbol = "[%](fg:green)"
-error_symbol = "[#](fg:red)"
+error_symbol = "[%](fg:red)"
 
 [directory]
-format = "[$path]($style)( [$read_only]($read_only_style))"
-read_only = "󰌾"
+format = "[$path]($style)( [\\($read_only\\)]($read_only_style))"
+read_only = "ro"
 truncation_length = 1
 truncate_to_repo = false
 fish_style_pwd_dir_length = 1
@@ -33,27 +33,27 @@ style = "fg:orange"
 read_only_style = "fg:red"
 
 [git_branch]
-format = "[$symbol $branch]($style)"
-symbol = ""
+format = "[\\($symbol\\) $branch]($style)"
+symbol = "git"
 style = "fg:purple"
 
 [python]
-format = "[$symbol ($virtualenv )($version)]($style)"
-symbol = ""
+format = "[\\($symbol\\) ($virtualenv )($version)]($style)"
+symbol = "py"
 style = "fg:yellow"
 
 [rust]
-format = "[$symbol ($version)]($style)"
-symbol = ""
+format = "[\\($symbol\\) ($version)]($style)"
+symbol = "rs"
 style = "fg:red"
 
 [hostname]
-format = "[$ssh_symbol $hostname]($style)"
+format = "[\\($ssh_symbol\\) $hostname]($style)"
 ssh_only = true
-ssh_symbol = "󰣀"
+ssh_symbol = "ssh"
 style = "fg:green"
 
 [container]
-format = "[$symbol $name]($style)"
-symbol = ""
+format = "[\\($symbol\\) $name]($style)"
+symbol = "box"
 style = "fg:aqua"
