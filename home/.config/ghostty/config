@@ -27,7 +27,7 @@ adjust-cursor-thickness = 2
 ################################################################################
 keybind = ctrl+space>c=new_tab
 keybind = ctrl+space>&=close_tab
-keybind = ctrl+space>x=close_window
+keybind = ctrl+space>x=close_surface
 keybind = ctrl+space>shift+\=new_split:right
 keybind = ctrl+space>shift+-=new_split:down
 
