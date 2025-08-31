@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-sudo pacman -S --needed base-devel
-sudo pacman -S rustup
+sudo pacman -S --noconfirm --needed base-devel rustup
 rustup toolchain install stable
 
 cd /tmp
