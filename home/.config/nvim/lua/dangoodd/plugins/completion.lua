@@ -73,7 +73,7 @@ return {
                 snippets = { preset = "luasnip" },
                 keymap = {
                     ["<C-y>"] = { "show", "show_documentation", "hide_documentation" },
-                    ["<C-e>"] = { "hide" },
+                    ["<C-g>"] = { "hide" },
                     ["<C-p>"] = { "select_prev", "fallback" },
                     ["<C-n>"] = { "select_next", "fallback" },
                     ["<C-u>"] = { "scroll_documentation_up", "fallback" },

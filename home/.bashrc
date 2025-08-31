@@ -132,32 +132,32 @@ function venv-update-setname {
 
 __venv_update_name=.venv
 function venv-update {
-    local path="$__venv_update_name/bin/activate"
-    local venv=""
-    [[ -e "../$path" ]] && venv="../$path"
-    [[ -e "$path" ]] && venv="$path"
+    local activate_tmp="$__venv_update_name/bin/activate"
+    local activate=""
+    [[ -e ../$activate_tmp ]] && activate=../"$activate_tmp"
+    [[ -e $activate_tmp ]] && activate="$activate_tmp"
 
     # not active
-    if [[ -z "$VIRTUAL_ENV" ]] &&
-        [[ -n "$venv" ]]; then
-        . "$venv"
+    if [[ -z $VIRTUAL_ENV ]] &&
+        [[ -n $activate ]]; then
+        source "$activate"
     fi
 
     # nested interactive shells (for example, tmux)
     if [[ -n "$VIRTUAL_ENV" ]] &&
-        ! [[ "$(type -t deactivate)" == "function" ]]; then
-        . "$VIRTUAL_ENV"/bin/activate
+        ! [[ $(type -t deactivate) == *function* ]]; then
+        source "$VIRTUAL_ENV"/bin/activate
     fi
 
     # update venv
-    if [[ -n "$VIRTUAL_ENV" ]] &&
+    if [[ -n $VIRTUAL_ENV ]] &&
         [[ "$(dirname "$VIRTUAL_ENV")" != "$PWD" ]] &&
-        [[ -n "$venv" ]]; then
-        . "$venv"
+        [[ -n $activate ]]; then
+        source "$activate"
     fi
 
     # exit of venv
-    if [[ -n "$VIRTUAL_ENV" ]] &&
+    if [[ -n $VIRTUAL_ENV ]] &&
         ! [[ "$PWD" =~ "$(dirname "$VIRTUAL_ENV")" ]]; then
         deactivate
     fi
@@ -166,6 +166,10 @@ function venv-update {
 function ls {
     command ls --group-directories-first \
                --color=auto "$@"
+}
+
+function la {
+    ls -Av
 }
 
 function yank {
@@ -208,8 +212,6 @@ function paste-cut {
     ls -Av
 }
 
-alias la="ls -Av"
-alias ll="ls -Alv"
 alias rg="rg --smart-case \
              --hidden \
              --glob=!./git \
@@ -236,6 +238,6 @@ fi
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init bash)"
     function zd {
-        __zoxide_z "$@" && ls -Av
+        __zoxide_z "$@" && la
     }
 fi
