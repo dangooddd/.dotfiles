@@ -21,6 +21,9 @@ vim.opt.pumheight = 10        -- size of completion window
 vim.opt.showmode = false      -- do not show mode under statusline
 vim.opt.shortmess:append("I") -- disable greeting
 
+-- treesitter
+vim.treesitter.language.register("bash", "zsh")
+
 -- tabs
 vim.opt.tabstop = 4         -- 1 tab represented as 4 spaces
 vim.opt.expandtab = true    -- <tab> key will create " " insead of "\t"
@@ -35,9 +38,6 @@ vim.opt.listchars:append("lead:·")
 vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocal = " "
-
--- treesitter
-vim.treesitter.language.register("bash", "zsh")
 
 
 --------------------------------------------------------------------------------

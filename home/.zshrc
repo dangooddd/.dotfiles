@@ -1,35 +1,30 @@
 ################################################################################
 # General
 ################################################################################
-HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
-bindkey -e
+setopt globdots
+setopt histignoredups
+setopt sharehistory
+setopt histexpiredupsfirst
+setopt autocd
 
-setopt GLOB_DOTS
-setopt HIST_IGNORE_DUPS
-setopt SHARE_HISTORY
-setopt HIST_EXPIRE_DUPS_FIRST
+bindkey -e
+bindkey "$terminfo[kRIT5]" forward-word # ctrl+right
+bindkey "$terminfo[kLFT5]" backward-word # ctrl+left
+bindkey "$terminfo[kcbt]" reverse-menu-complete # shift+tab
+bindkey "^H" backward-kill-word # ctrl+backspace
+bindkey "^[[3;5~" kill-word # ctrl+delete
 
 if command -v dircolors &> /dev/null; then
     eval "$(dircolors -b)"
 fi
 
-function include {
-    if [[ $# -eq 0 ]]; then
-        return 1
-    fi
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
 
-    local file="$1"
-    shift 1
-
-    if [[ -f $file && -r $file ]]; then
-        source "$file" "$@"
-        return $?
-    fi
-
-    return 1
-}
+path+=("$HOME"/.local/bin)
+path+=("$HOME"/.cargo/bin)
+export PATH
 
 FZF_COLORS="gutter:#1d2021"
 FZF_COLORS+=",fg:#ebdbb2"
@@ -58,11 +53,6 @@ export LESS="--tilde -RFXS"
 export PYTHONSTARTUP="$HOME"/.pythonstartup.py
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
-export DIRENV_BASH=$(which bash)
-
-include "$CARGO_HOME"/env
-include /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-# include /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 
 ################################################################################
@@ -74,10 +64,9 @@ compinit
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" "ma=38;5;13;7"
-zstyle ':completion:*:*:*:*:descriptions' format '%F{13}-- %d --%f'
-zstyle ':completion:*' group-name ''
-bindkey '^[[Z' reverse-menu-complete
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" "ma=38;5;7;7"
+zstyle ':completion:*' group-name ""
+zstyle ':completion:*:*:*:*:descriptions' format "%F{8}> %d%f"
 
 
 ################################################################################
@@ -95,7 +84,7 @@ function osc7-pwd() {
     emulate -L zsh
     setopt extendedglob
     local LC_ALL=C
-    printf '\e]7;file://%s%s\e\' $HOST ${PWD//(#m)([^@-Za-z&-;_~])/%${(l:2::0:)$(([##16]#MATCH))}}
+    printf '\e]7;file://%s%s\e\' "$HOST" "${PWD//(#m)([^@-Za-z&-;_~])/%${(l:2::0:)$(([##16]#MATCH))}}"
 }
 
 function venv-autoupdate {
@@ -134,10 +123,8 @@ function venv-update-setname {
 
 __venv_update_name=.venv
 function venv-update {
-    local activate_tmp="$__venv_update_name/bin/activate"
-    local activate=""
-    [[ -e ../$activate_tmp ]] && activate=../"$activate_tmp"
-    [[ -e $activate_tmp ]] && activate="$activate_tmp"
+    local activate="$__venv_update_name/bin/activate"
+    [[ -e $activate ]] || activate=""
 
     # not active
     if [[ -z $VIRTUAL_ENV ]] &&
@@ -145,22 +132,22 @@ function venv-update {
         source "$activate"
     fi
 
-    # nested interactive shells (for example, tmux)
-    if [[ -n "$VIRTUAL_ENV" ]] &&
+    # nested interactive shells
+    if [[ -n $VIRTUAL_ENV ]] &&
         [[ $(type -w deactivate) != *function* ]]; then
         source "$VIRTUAL_ENV"/bin/activate
     fi
 
     # update venv
     if [[ -n $VIRTUAL_ENV ]] &&
-        [[ "$(dirname "$VIRTUAL_ENV")" != "$PWD" ]] &&
-        [[ -n $activate ]]; then
+        [[ -n $activate ]] &&
+        [[ $VIRTUAL_ENV/bin/activate != $PWD/$activate ]]; then
         source "$activate"
     fi
 
     # exit of venv
     if [[ -n $VIRTUAL_ENV ]] &&
-        ! [[ "$PWD" =~ "$(dirname "$VIRTUAL_ENV")" ]]; then
+        ! [[ $PWD =~ $(dirname "$VIRTUAL_ENV") ]]; then
         deactivate
     fi
 }
@@ -178,6 +165,7 @@ alias rg="rg --smart-case \
              --hidden \
              --glob=!./git \
              --pretty"
+
 alias gg="git status -s"
 alias gb="git branch"
 alias gl="git log"
@@ -204,3 +192,26 @@ fi
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init zsh)"
 fi
+
+
+################################################################################
+# Sourcing
+################################################################################
+function include {
+    if [[ $# -eq 0 ]]; then
+        return 1
+    fi
+
+    local file="$1"
+    shift 1
+
+    if [[ -f $file && -r $file ]]; then
+        source "$file" "$@"
+        return $?
+    fi
+
+    return 1
+}
+
+include "$CARGO_HOME"/env
+include /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
