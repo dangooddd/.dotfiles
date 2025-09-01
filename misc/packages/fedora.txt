@@ -5,6 +5,7 @@ python
 python-devel
 pip
 pipx
+zsh
 npm
 wl-clipboard
 fd-find

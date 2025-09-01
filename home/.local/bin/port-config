@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-SERVER="$1"
-[[ -n "$SERVER" ]] || echo "Specify destination server" && exit
-cd "$HOME"/.dotfiles || exit
-
-# copy config to the server
-rsync -avz -e ssh --exclude=.git --exclude=other/wallpapers . "$SERVER":~/.dotfiles

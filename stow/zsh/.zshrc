@@ -158,7 +158,7 @@ function ls {
 }
 
 function la {
-    ls -Av
+    ls -Av "$@"
 }
 
 alias rg="rg --smart-case \
