@@ -1,6 +1,6 @@
 zsh
-zsh-completion
-zsh-autosuggestion
+zsh-completions
+zsh-autosuggestions
 bash-completion
 nvim
 tree-sitter-cli
