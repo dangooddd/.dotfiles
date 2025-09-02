@@ -1,8 +1,7 @@
 STOW_DIR := stow
-TARGET   := ~
 
 all:
-	cd $(STOW_DIR) && stow -v -t $(TARGET) *
+	cd $(STOW_DIR) && stow -v -t ~ *
 
 clean:
-	cd $(STOW_DIR) && stow -D -v -t $(TARGET) *
+	cd $(STOW_DIR) && stow -D -v -t ~ *
