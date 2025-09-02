@@ -70,36 +70,6 @@ zstyle ':completion:*:*:*:*:descriptions' format "%F{8}> %d%f"
 
 
 ################################################################################
-# Hooks
-################################################################################
-autoload -Uz add-zsh-hook
-
-function set-title {
-    echo -ne "\e]0;${PWD/#$HOME/~}\a"
-}
-set-title
-
-function osc7-pwd() {
-    (( ZSH_SUBSHELL )) && return
-    emulate -L zsh
-    setopt extendedglob
-    local LC_ALL=C
-    printf '\e]7;file://%s%s\e\' "$HOST" "${PWD//(#m)([^@-Za-z&-;_~])/%${(l:2::0:)$(([##16]#MATCH))}}"
-}
-
-function venv-autoupdate {
-    if [[ -z "$__venv_autoupdate_stop" ]]; then
-        venv-update
-    fi
-}
-
-add-zsh-hook chpwd set-title 
-add-zsh-hook chpwd osc7-pwd
-add-zsh-hook chpwd venv-autoupdate
-add-zsh-hook chpwd la
-
-
-################################################################################
 # Aliases and functions
 ################################################################################
 function venv-autoupdate-toggle {
@@ -192,6 +162,38 @@ fi
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init zsh)"
 fi
+
+
+################################################################################
+# Hooks
+################################################################################
+autoload -Uz add-zsh-hook
+
+function set-title {
+    echo -ne "\e]0;${PWD/#$HOME/~}\a"
+}
+set-title
+
+function osc7-pwd() {
+    (( ZSH_SUBSHELL )) && return
+    emulate -L zsh
+    setopt extendedglob
+    local LC_ALL=C
+    printf '\e]7;file://%s%s\e\' "$HOST" "${PWD//(#m)([^@-Za-z&-;_~])/%${(l:2::0:)$(([##16]#MATCH))}}"
+}
+osc7-pwd
+
+function venv-autoupdate {
+    if [[ -z "$__venv_autoupdate_stop" ]]; then
+        venv-update
+    fi
+}
+venv-autoupdate
+
+add-zsh-hook chpwd set-title 
+add-zsh-hook chpwd osc7-pwd
+add-zsh-hook chpwd venv-autoupdate
+add-zsh-hook chpwd la
 
 
 ################################################################################
