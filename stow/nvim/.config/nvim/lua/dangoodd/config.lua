@@ -31,8 +31,6 @@ vim.opt.shiftwidth = 4      -- indent change after backspace and >> <<
 vim.opt.softtabstop = 4     -- number of spaces instead of tab
 vim.opt.autoindent = true   -- auto indent
 vim.opt.cinkeys:remove(":") -- shit.
-vim.opt.list = true
-vim.opt.listchars:append("lead:·")
 
 -- global
 vim.g.netrw_banner = 0
