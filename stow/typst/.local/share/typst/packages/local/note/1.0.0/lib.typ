@@ -43,9 +43,25 @@
   fill: rgb("#fff9c086"),
 ).with(numbering: none)
 
+#let corollary = thmbox(
+  "corollary",
+  "Следствие",
+  outset: 0.3em,
+  inset: 0.8em,
+  stroke: 0.2pt,
+  fill: rgb("#fff9c086"),
+).with(numbering: none)
+
 #let example = thmplain(
   "example",
   "Пример",
+  outset: 0em,
+  inset: 0em,
+).with(numbering: none)
+
+#let note = thmplain(
+  "note",
+  "Замечание",
   outset: 0em,
   inset: 0em,
 ).with(numbering: none)
