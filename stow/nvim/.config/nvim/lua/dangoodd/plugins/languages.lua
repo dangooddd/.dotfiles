@@ -38,11 +38,15 @@ return {
 
     -- typst
     {
-        'chomosuke/typst-preview.nvim',
+        "chomosuke/typst-preview.nvim",
         ft = "typst",
-        version = '1.*',
+        version = "1.*",
         config = function()
-            require("typst-preview").setup()
+            require("typst-preview").setup({
+                dependencies_bin = {
+                    ["tinymist"] = vim.fn.exepath("tinymist"),
+                }
+            })
         end
     }
 }

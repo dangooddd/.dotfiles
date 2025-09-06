@@ -146,8 +146,9 @@ vim.lsp.config("texlab", {
 })
 vim.lsp.enable("texlab")
 
--- bash
+-- shell
 vim.lsp.config("bashls", {
+    filetypes = { "sh", "zsh" },
     settings = {
         bashIde = {
             shellcheckArguments = {
@@ -169,11 +170,12 @@ vim.lsp.config("clangd", {
 })
 vim.lsp.enable("clangd")
 
+-- typst
 vim.lsp.config["tinymist"] = {
     settings = {
         formatterMode = "typstyle",
-        exportPdf = "onType",
-        semanticTokens = "disable"
+        exportPdf = "onSave",
+        semanticTokens = "disable",
     }
 }
 vim.lsp.enable("tinymist")
