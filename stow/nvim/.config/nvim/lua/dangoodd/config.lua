@@ -65,6 +65,7 @@ vim.keymap.set("n", "<leader>th", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end)
 
+
 --------------------------------------------------------------------------------
 -- LSP
 --------------------------------------------------------------------------------
@@ -167,3 +168,12 @@ vim.lsp.config("clangd", {
     },
 })
 vim.lsp.enable("clangd")
+
+vim.lsp.config["tinymist"] = {
+    settings = {
+        formatterMode = "typstyle",
+        exportPdf = "onType",
+        semanticTokens = "disable"
+    }
+}
+vim.lsp.enable("tinymist")

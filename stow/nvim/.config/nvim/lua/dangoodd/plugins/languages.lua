@@ -36,18 +36,13 @@ return {
         end,
     },
 
-    -- rendering for html, latex, md
+    -- typst
     {
-        "OXY2DEV/markview.nvim",
-        lazy = false,
-        -- to load before treesitter
-        priority = 45,
+        'chomosuke/typst-preview.nvim',
+        ft = "typst",
+        version = '1.*',
         config = function()
-            require("markview").setup({
-                markdown = {
-                    code_blocks = { sign = false },
-                },
-            })
-        end,
-    },
+            require("typst-preview").setup()
+        end
+    }
 }
