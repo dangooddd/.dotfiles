@@ -1,0 +1,28 @@
+// Zed keymap
+[
+  {
+    "context": "Workspace",
+    "bindings": {}
+  },
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      "ctrl-b": "vim::Left",
+      "ctrl-f": "vim::Right"
+    }
+  },
+  {
+    "context": "Editor && vim_mode != insert",
+    "bindings": {
+      "ctrl-b": "workspace::ToggleLeftDock",
+      "space f": "file_finder::Toggle",
+      "space \\": "project_panel::ToggleFocus"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "space \\": "project_panel::ToggleFocus"
+    }
+  }
+]
