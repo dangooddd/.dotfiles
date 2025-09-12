@@ -53,6 +53,7 @@ export LESS="--tilde -RFXS"
 export PYTHONSTARTUP="$HOME"/.pythonstartup.py
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
+export EDITOR="nvim"
 
 
 ################################################################################
