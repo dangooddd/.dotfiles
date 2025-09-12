@@ -27,12 +27,10 @@ return {
                         },
                     },
                     documentation = {
-                        window = { border = "rounded" },
                         auto_show = true,
                         auto_show_delay_ms = 50,
                     },
                     menu = {
-                        border = "rounded",
                         draw = {
                             columns = {
                                 { "label" },
@@ -58,7 +56,6 @@ return {
                 },
                 signature = {
                     enabled = true,
-                    window = { border = "rounded" },
                 },
                 sources = {
                     default = { "lsp", "path", "snippets", "buffer", "lazydev" },

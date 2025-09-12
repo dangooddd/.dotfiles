@@ -25,10 +25,6 @@ return {
                 -- blink.cmp
                 BlinkCmpMenu = { link = "Normal" },
                 BlinkCmpMenuBorder = { link = "BlinkCmpMenu" },
-                BlinkCmpMenuSelection = { fg = "None", bg = palette.dark1 },
-                BlinkCmpLabelMatch = { fg = palette.bright_green },
-                BlinkCmpScrollBarGutter = { bg = palette.dark2 },
-                BlinkCmpScrollBarThumb = { bg = palette.light1 },
 
                 -- indent guides
                 MiniIndentscopeSymbol = { fg = palette.dark1 },

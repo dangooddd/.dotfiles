@@ -3,11 +3,11 @@
 
 #let style(body) = {
   set text(
-     font: "New Computer Modern",
-     size: 16pt,
-   )
+    font: "New Computer Modern",
+    size: 16pt,
+  )
 
-  set page(height: auto, margin: 1.5cm)
+  set page(margin: 1.5cm)
   set heading(numbering: "1.1")
   set enum(numbering: "1)")
   show heading: set block(above: 1.5em, below: 1em)

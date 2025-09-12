@@ -9,10 +9,8 @@ return {
     {
         "williamboman/mason.nvim",
         config = function()
-            -- mason
             require("mason").setup({
                 ui = {
-                    border = "rounded",
                     backdrop = 100,
                 },
             })

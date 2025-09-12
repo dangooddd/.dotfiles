@@ -2,7 +2,6 @@ return {
     -- picker
     {
         "ibhagwan/fzf-lua",
-        dependencies = { "nvim-tree/nvim-web-devicons" },
         event = "VeryLazy",
         config = function()
             require("fzf-lua").setup({
@@ -32,7 +31,6 @@ return {
     -- important files
     {
         "dangooddd/chosen.nvim",
-        dependencies = { "nvim-tree/nvim-web-devicons" },
         keys = { "<Enter>" },
         cmd = "Chosen",
         config = function()
