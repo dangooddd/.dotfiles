@@ -1,10 +1,10 @@
 // Zed settings
 {
   "agent": {
-    "default_profile": "write",
+    "default_profile": "minimal",
     "default_model": {
       "provider": "deepseek",
-      "model": "deepseek-reasoner"
+      "model": "deepseek-chat"
     }
   },
   "ui_font_size": 16,
@@ -16,13 +16,14 @@
   "theme": {
     "mode": "system",
     "light": "Gruvbox Light Soft",
-    "dark": "Gruvbox Dark Hard"
+    "dark": "Tokyo Night Storm"
   },
   "vim_mode": true,
   "cursor_blink": false,
   "show_edit_predictions": false,
   "languages": {
     "Python": {
+      "language_servers": ["basedpyright", "ruff"],
       "formatter": [
         {
           "language_server": {
@@ -30,6 +31,15 @@
           }
         }
       ]
+    }
+  },
+  "lsp": {
+    "basedpyright": {
+      "settings": {
+        "python.analysis": {
+          "typeCheckingMode": "basic"
+        }
+      }
     }
   }
 }

@@ -2,7 +2,13 @@
 [
   {
     "context": "Workspace",
-    "bindings": {}
+    "bindings": {
+      "alt-q": "pane::CloseActiveItem",
+      "alt-h": "workspace::ActivatePaneLeft",
+      "alt-j": "workspace::ActivatePaneDown",
+      "alt-k": "workspace::ActivatePaneUp",
+      "alt-l": "workspace::ActivatePaneRight"
+    }
   },
   {
     "context": "Editor && vim_mode == insert",
@@ -24,6 +30,12 @@
     "context": "ProjectPanel",
     "bindings": {
       "space \\": "project_panel::ToggleFocus"
+    }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-`": "workspace::ToggleBottomDock"
     }
   }
 ]
