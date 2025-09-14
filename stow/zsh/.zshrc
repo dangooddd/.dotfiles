@@ -26,20 +26,20 @@ path+=("$HOME"/.local/bin)
 path+=("$HOME"/.cargo/bin)
 export PATH
 
-FZF_COLORS="gutter:#1d2021"
-FZF_COLORS+=",fg:#ebdbb2"
-FZF_COLORS+=",bg:#1d2021"
-FZF_COLORS+=",hl:#928374"
-FZF_COLORS+=",fg+:#ebdbb2"
-FZF_COLORS+=",bg+:#3c3836"
-FZF_COLORS+=",hl+:#d3869b"
-FZF_COLORS+=",info:#665c54"
-FZF_COLORS+=",prompt:#b8bb26"
-FZF_COLORS+=",pointer:#fb4934"
-FZF_COLORS+=",marker:#b16286"
-FZF_COLORS+=",spinner:#83a598"
-FZF_COLORS+=",header:#928374"
-FZF_COLORS+=",border:#a89984"
+FZF_COLORS="gutter:-1"
+FZF_COLORS+=",fg:-1"
+FZF_COLORS+=",bg:-1"
+FZF_COLORS+=",hl:-1:dim"
+FZF_COLORS+=",fg+:10"
+FZF_COLORS+=",bg+:-1"
+FZF_COLORS+=",hl+:14"
+FZF_COLORS+=",info:8"
+FZF_COLORS+=",prompt:10"
+FZF_COLORS+=",pointer:10"
+FZF_COLORS+=",marker:2"
+FZF_COLORS+=",spinner:6"
+FZF_COLORS+=",header:8"
+FZF_COLORS+=",border:8"
 
 export FZF_DEFAULT_OPTS="--layout=reverse \
                          --height 10 \
