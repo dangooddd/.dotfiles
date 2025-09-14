@@ -30,12 +30,12 @@ FZF_COLORS="gutter:-1"
 FZF_COLORS+=",fg:-1"
 FZF_COLORS+=",bg:-1"
 FZF_COLORS+=",hl:-1:dim"
-FZF_COLORS+=",fg+:10"
+FZF_COLORS+=",fg+:12"
 FZF_COLORS+=",bg+:-1"
 FZF_COLORS+=",hl+:14"
 FZF_COLORS+=",info:8"
-FZF_COLORS+=",prompt:10"
-FZF_COLORS+=",pointer:10"
+FZF_COLORS+=",prompt:12"
+FZF_COLORS+=",pointer:12"
 FZF_COLORS+=",marker:2"
 FZF_COLORS+=",spinner:6"
 FZF_COLORS+=",header:8"
@@ -65,7 +65,6 @@ compinit
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" "ma=38;5;7;7"
 zstyle ':completion:*' group-name ""
 zstyle ':completion:*:*:*:*:descriptions' format "%F{8}> %d%f"
 

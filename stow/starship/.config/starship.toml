@@ -1,27 +1,17 @@
 "$schema" = "https://starship.rs/config-schema.json"
 
 add_newline = false
-palette = "gruvbox"
 
 format = """
-[\\[](fg:white)$directory\
-( [on](fg:white)( $hostname)( $git_branch)( $container))\
-( [via](fg:white)( $rust)( $python))[\\]](fg:white)\
+\\[$directory\
+( on( $git_branch))\
+( via( $rust)( $python))\\]\
 $character """
-
-[palettes.gruvbox]
-white = "#a89984"
-orange = "#fe8019"
-yellow = "#fabd2f"
-green = "#b8bb26"
-aqua = "#8ec07c"
-purple = "#d3869b"
-red = "#fb4934"
 
 [character]
 format = "$symbol"
-success_symbol = "[%](fg:green)"
-error_symbol = "[%](fg:red)"
+success_symbol = "[%](fg:bright-cyan)"
+error_symbol = "[%](fg:bright-red)"
 
 [directory]
 format = "[$path]($style)( [\\($read_only\\)]($read_only_style))"
@@ -29,31 +19,20 @@ read_only = "ro"
 truncation_length = 1
 truncate_to_repo = false
 fish_style_pwd_dir_length = 1
-style = "fg:orange"
-read_only_style = "fg:red"
+style = "fg:bright-green"
+read_only_style = "fg:bright-red"
 
 [git_branch]
-format = "[\\($symbol\\) $branch]($style)"
-symbol = "git"
-style = "fg:purple"
+format = "[$symbol $branch]($style)"
+symbol = "\\(git\\)"
+style = "fg:bright-purple"
 
 [python]
-format = "[\\($symbol\\) ($virtualenv )($version)]($style)"
-symbol = "py"
-style = "fg:yellow"
+format = "[$symbol ($virtualenv )($version)]($style)"
+symbol = "\\(py\\)"
+style = "fg:bright-yellow"
 
 [rust]
-format = "[\\($symbol\\) ($version)]($style)"
-symbol = "rs"
-style = "fg:red"
-
-[hostname]
-format = "[\\($ssh_symbol\\) $hostname]($style)"
-ssh_only = true
-ssh_symbol = "ssh"
-style = "fg:green"
-
-[container]
-format = "[\\($symbol\\) $name]($style)"
-symbol = "box"
-style = "fg:aqua"
+format = "[$symbol ($version)]($style)"
+symbol = "\\(rs\\)"
+style = "fg:bright-red"
