@@ -15,8 +15,13 @@
   "buffer_font_family": "IosevkaTerm Nerd Font",
   "theme": {
     "mode": "system",
-    "light": "Gruvbox Light Soft",
-    "dark": "Tokyo Night Storm"
+    "light": "Gruvbox Light",
+    "dark": "Gruvbox Dark Hard"
+  },
+  "experimental.theme_overrides": {
+    "scrollbar.thumb.active_background": "#fe8019ac",
+    "scrollbar.thumb.hover_background": "#fbf1c74c",
+    "scrollbar.thumb.background": "#a899844c"
   },
   "vim_mode": true,
   "cursor_blink": false,

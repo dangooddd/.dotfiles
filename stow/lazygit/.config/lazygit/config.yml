@@ -24,7 +24,7 @@ gui:
       - bold
 
     selectedLineBgColor:
-      - cyan
+      - "#555555"
 
     inactiveViewSelectedLineBgColor:
       - bold
