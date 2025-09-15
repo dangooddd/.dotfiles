@@ -1,10 +1,10 @@
 // Zed settings
 {
   "agent": {
-    "default_profile": "minimal",
+    "default_profile": "write",
     "default_model": {
       "provider": "deepseek",
-      "model": "deepseek-chat"
+      "model": "deepseek-reasoner"
     }
   },
   "ui_font_size": 16,
@@ -19,7 +19,7 @@
     "dark": "Gruvbox Dark Hard"
   },
   "experimental.theme_overrides": {
-    "scrollbar.thumb.active_background": "#fe8019ac",
+    "scrollbar.thumb.active_background": "#83a598ac",
     "scrollbar.thumb.hover_background": "#fbf1c74c",
     "scrollbar.thumb.background": "#a899844c"
   },
