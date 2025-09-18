@@ -13,7 +13,7 @@ maximize = true
 confirm-close-surface = false
 mouse-hide-while-typing = true
 window-theme = ghostty
-theme = GruvboxDarkHard
+theme = Gruvbox Dark Hard
 
 # cursor
 cursor-style = block
