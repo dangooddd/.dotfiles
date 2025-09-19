@@ -6,7 +6,6 @@ nvim
 tree-sitter-cli
 direnv
 zoxide
-starship
 ghostty
 tmux
 fzf
@@ -23,5 +22,6 @@ syncthing
 qbittorrent
 google-chrome
 visual-studio-code-bin
+zed
 ttf-iosevkaterm-nerd
 ttf-ms-win11-auto

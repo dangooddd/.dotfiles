@@ -5,6 +5,7 @@ setopt globdots
 setopt histignoredups
 setopt sharehistory
 setopt histexpiredupsfirst
+setopt promptsubst
 setopt autocd
 
 bindkey -e
@@ -51,9 +52,40 @@ export FZF_DEFAULT_OPTS="--layout=reverse \
 
 export LESS="--tilde -RFXS"
 export PYTHONSTARTUP="$HOME"/.pythonstartup.py
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
 export EDITOR="nvim"
+
+
+################################################################################
+# Prompt
+################################################################################
+autoload -Uz vcs_info
+
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' formats '[%b]'
+zstyle ':vcs_info:git:*' actionformats '[%b|%a]'
+
+function virtualenv_info {
+    if [[ -n $VIRTUAL_ENV ]]; then
+        local venv_name="${VIRTUAL_ENV##*/}"
+        local python_version=$(python --version 2>&1 | cut -d' ' -f2)
+        echo "[$venv_name|v$python_version]"
+    fi
+}
+
+function git_info {
+    vcs_info
+    echo "$vcs_info_msg_0_"
+}
+
+PROMPT='%F{10}%~%f'               # PWD
+PROMPT+='%(1j.%F{12} (+%j).)%f'     # Jobs number
+PROMPT+=' %(?.%F{14}.%F{9})%%%f ' # Exit status
+
+RPROMPT='%F{11}$(virtualenv_info)%f'
+RPROMPT+='%F{13}$(git_info)%f'
 
 
 ################################################################################
@@ -147,10 +179,6 @@ alias gp="git push"
 ################################################################################
 # Init
 ################################################################################
-if command -v starship &> /dev/null; then
-    eval "$(starship init zsh)"
-fi
-
 if command -v fzf &> /dev/null; then
     eval "$(fzf --zsh)"
 fi
