@@ -80,11 +80,11 @@ function git_info {
     echo "$vcs_info_msg_0_"
 }
 
-PROMPT='%F{10}%~%f'               # PWD
-PROMPT+='%(1j.%F{12} (+%j).)%f'     # Jobs number
-PROMPT+=' %(?.%F{14}.%F{9})%%%f ' # Exit status
+PROMPT='%F{10}%~%f '
+PROMPT+='%(?.%F{14}.%F{9})%%%f '
 
 RPROMPT='%F{11}$(virtualenv_info)%f'
+RPROMPT+='%(1j.%F{12}[jobs|+%j].)%f'
 RPROMPT+='%F{13}$(git_info)%f'
 
 
