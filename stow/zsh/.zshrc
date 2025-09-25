@@ -47,7 +47,6 @@ export FZF_DEFAULT_OPTS="--layout=reverse \
                          --ansi \
                          --border=rounded \
                          --highlight-line \
-                         --no-bold \
                          --color=$FZF_COLORS"
 
 export LESS="--tilde -RFXS"
