@@ -9,9 +9,9 @@ setopt promptsubst
 setopt autocd
 
 bindkey -e
-bindkey "$terminfo[kRIT5]" forward-word # ctrl+right
-bindkey "$terminfo[kLFT5]" backward-word # ctrl+left
-bindkey "$terminfo[kcbt]" reverse-menu-complete # shift+tab
+bindkey "^[[1;5C" forward-word # ctrl+right
+bindkey "^[[1;5D" backward-word # ctrl+left
+bindkey "^[[Z" reverse-menu-complete # shift+tab
 bindkey "^H" backward-kill-word # ctrl+backspace
 bindkey "^[[3;5~" kill-word # ctrl+delete
 
@@ -206,15 +206,6 @@ function set-title {
 }
 set-title
 
-function osc7-pwd() {
-    (( ZSH_SUBSHELL )) && return
-    emulate -L zsh
-    setopt extendedglob
-    local LC_ALL=C
-    printf '\e]7;file://%s%s\e\' "$HOST" "${PWD//(#m)([^@-Za-z&-;_~])/%${(l:2::0:)$(([##16]#MATCH))}}"
-}
-osc7-pwd
-
 function venv-autoupdate {
     if [[ -z "$__venv_autoupdate_stop" ]]; then
         venv-update
@@ -223,7 +214,6 @@ function venv-autoupdate {
 venv-autoupdate
 
 add-zsh-hook chpwd set-title 
-add-zsh-hook chpwd osc7-pwd
 add-zsh-hook chpwd venv-autoupdate
 add-zsh-hook chpwd la
 
