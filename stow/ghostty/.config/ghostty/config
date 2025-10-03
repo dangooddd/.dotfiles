@@ -13,11 +13,12 @@ maximize = true
 confirm-close-surface = false
 mouse-hide-while-typing = true
 window-theme = ghostty
-theme = Gruvbox Dark Hard
+theme = Atom One Dark
 
 # cursor
 cursor-style = block
 cursor-style-blink = false
+cursor-text = #21252b
 shell-integration-features = no-cursor, no-title
 adjust-cursor-thickness = 2
 

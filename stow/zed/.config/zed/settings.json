@@ -16,46 +16,14 @@
   "theme": {
     "mode": "system",
     "light": "Gruvbox Light",
-    "dark": "Gruvbox Dark Hard"
-  },
-  "experimental.theme_overrides": {
-    "scrollbar.thumb.active_background": "#83a598ac",
-    "scrollbar.thumb.hover_background": "#fbf1c74c",
-    "scrollbar.thumb.background": "#a899844c",
-    "terminal.foreground": "#a89984ffff",
-    "terminal.bright_foreground": "#fbf1c7ff",
-    "terminal.dim_foreground": "#766b5dff",
-    "terminal.ansi.black": "#282828ff",
-    "terminal.ansi.bright_black": "#928374ff",
-    "terminal.ansi.dim_black": "#fbf1c7ff",
-    "terminal.ansi.red": "#cc241dff",
-    "terminal.ansi.bright_red": "#fb4934ff",
-    "terminal.ansi.dim_red": "#8e1814ff",
-    "terminal.ansi.green": "#98971aff",
-    "terminal.ansi.bright_green": "#b8bb26ff",
-    "terminal.ansi.dim_green": "#6a6912ff",
-    "terminal.ansi.yellow": "#d79921ff",
-    "terminal.ansi.bright_yellow": "#fabd2fff",
-    "terminal.ansi.dim_yellow": "#966a17ff",
-    "terminal.ansi.blue": "#458588ff",
-    "terminal.ansi.bright_blue": "#83a598ff",
-    "terminal.ansi.dim_blue": "#305d5fff",
-    "terminal.ansi.magenta": "#b16286ff",
-    "terminal.ansi.bright_magenta": "#d3869bff",
-    "terminal.ansi.dim_magenta": "#7c455eff",
-    "terminal.ansi.cyan": "#689d6aff",
-    "terminal.ansi.bright_cyan": "#8ec07cff",
-    "terminal.ansi.dim_cyan": "#496e4aff",
-    "terminal.ansi.white": "#a89984ff",
-    "terminal.ansi.bright_white": "#fbf1c7ff",
-    "terminal.ansi.dim_white": "#766b5dff"
+    "dark": "One Dark"
   },
   "vim_mode": true,
   "cursor_blink": false,
   "show_edit_predictions": false,
   "languages": {
     "Python": {
-      "language_servers": ["ty", "ruff"],
+      "language_servers": ["basedpyright", "ruff"],
       "formatter": [
         {
           "language_server": {
@@ -69,7 +37,7 @@
     "basedpyright": {
       "settings": {
         "python.analysis": {
-          "typeCheckingMode": "basic"
+          "typeCheckingMode": "off"
         }
       }
     }
