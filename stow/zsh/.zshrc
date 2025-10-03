@@ -23,6 +23,9 @@ HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 
+# Use bold colors, so in tty it becomes bright
+[[ -z $DISPLAY ]] && ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black,bold" 
+
 path+=("$HOME"/.local/bin)
 path+=("$HOME"/.cargo/bin)
 export PATH
@@ -31,9 +34,9 @@ FZF_COLORS="gutter:-1"
 FZF_COLORS+=",fg:-1"
 FZF_COLORS+=",bg:-1"
 FZF_COLORS+=",hl:-1:dim"
-FZF_COLORS+=",fg+:12"
-FZF_COLORS+=",bg+:#555555"
-FZF_COLORS+=",hl+:14"
+FZF_COLORS+=",fg+:-1"
+FZF_COLORS+=",bg+:#444444"
+FZF_COLORS+=",hl+:10"
 FZF_COLORS+=",info:8"
 FZF_COLORS+=",prompt:12"
 FZF_COLORS+=",pointer:12"
@@ -45,8 +48,8 @@ FZF_COLORS+=",border:8"
 export FZF_DEFAULT_OPTS="--layout=reverse \
                          --height 10 \
                          --ansi \
-                         --border=rounded \
-                         --highlight-line \
+                         --border=sharp \
+                         --no-bold \
                          --color=$FZF_COLORS"
 
 export LESS="--tilde -RFXS"
@@ -55,6 +58,7 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
 export EDITOR="nvim"
+
 
 
 ################################################################################
@@ -79,12 +83,12 @@ function git_info {
     echo "$vcs_info_msg_0_"
 }
 
-PROMPT='%F{10}%~%f '
-PROMPT+='%(?.%F{14}.%F{9})%%%f '
+PROMPT='%F{2}%~%f '
+PROMPT+='%(?.%F{6}.%F{1})%%%f '
 
-RPROMPT='%F{11}$(virtualenv_info)%f'
-RPROMPT+='%(1j.%F{12}[jobs|+%j].)%f'
-RPROMPT+='%F{13}$(git_info)%f'
+RPROMPT='%F{3}$(virtualenv_info)%f'
+RPROMPT+='%(1j.%F{4}[jobs|+%j].)%f'
+RPROMPT+='%F{5}$(git_info)%f'
 
 
 ################################################################################
@@ -96,8 +100,6 @@ compinit
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' group-name ""
-zstyle ':completion:*:*:*:*:descriptions' format "%F{8}> %d%f"
 
 
 ################################################################################

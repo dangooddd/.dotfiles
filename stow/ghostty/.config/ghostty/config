@@ -18,6 +18,7 @@ theme = Atom One Dark
 # cursor
 cursor-style = block
 cursor-style-blink = false
+# DO NOT FORGET TO CLEAN AFTER GHOSTTY 1.2.1
 cursor-text = #21252b
 shell-integration-features = no-cursor, no-title
 adjust-cursor-thickness = 2
