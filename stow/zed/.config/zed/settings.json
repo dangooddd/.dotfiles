@@ -34,6 +34,13 @@
     }
   },
   "lsp": {
+    "ty": {
+      "settings": {
+        "experimental": {
+          "rename": true
+        }
+      }
+    },
     "basedpyright": {
       "settings": {
         "python.analysis": {
