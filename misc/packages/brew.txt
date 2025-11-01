@@ -1,0 +1,12 @@
+nvim
+zoxide
+ripgrep
+fzf
+fd
+lazygit
+direnv
+zsh-completions
+zsh-autosuggestions
+python
+uv
+tree-sitter-cli

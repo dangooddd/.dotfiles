@@ -19,6 +19,10 @@ if command -v dircolors &> /dev/null; then
     eval "$(dircolors -b)"
 fi
 
+if command -v /opt/homebrew/bin/brew &> /dev/null; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
@@ -26,9 +30,15 @@ SAVEHIST=10000
 # Use bold colors, so in tty it becomes bright
 [[ -z $DISPLAY ]] && ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=black,bold" 
 
+if command -v brew &> /dev/null; then
+    path=("$(brew --prefix)"/opt/coreutils/libexec/gnubin $path)
+    fpath=("$(brew --prefix)"/share/zsh-completions $fpath)
+fi
+
 path+=("$HOME"/.local/bin)
 path+=("$HOME"/.cargo/bin)
 export PATH
+export FPATH
 
 FZF_COLORS="gutter:-1"
 FZF_COLORS+=",fg:-1"
@@ -224,7 +234,7 @@ add-zsh-hook chpwd la
 ################################################################################
 function include {
     if [[ $# -eq 0 ]]; then
-        return 1
+        return
     fi
 
     local file="$1"
@@ -232,11 +242,12 @@ function include {
 
     if [[ -f $file && -r $file ]]; then
         source "$file" "$@"
-        return $?
     fi
-
-    return 1
 }
 
 include "$CARGO_HOME"/env
 include /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+if command -v brew &> /dev/null; then
+    include "$(brew --prefix)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
