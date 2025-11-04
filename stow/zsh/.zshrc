@@ -23,7 +23,7 @@ if command -v /opt/homebrew/bin/brew &> /dev/null; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-HISTFILE=~/.zsh_history
+HISTFILE="$HOME"/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 
@@ -64,11 +64,15 @@ export FZF_DEFAULT_OPTS="--layout=reverse \
 
 export LESS="--tilde -RFXS"
 export PYTHONSTARTUP="$HOME"/.pythonstartup.py
-export VIRTUAL_ENV_DISABLE_PROMPT=1
 export CARGO_HOME="$HOME"/.cargo
 export PAGER="less"
 export EDITOR="nvim"
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 
+export XDG_CONFIG_HOME="$HOME"/.config
+export XDG_CACHE_HOME="$HOME"/.cache
+export XDG_DATA_HOME="$HOME"/.local/share
+export XDG_STATE_HOME="$HOME"/.local/state
 
 
 ################################################################################
