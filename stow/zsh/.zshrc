@@ -249,6 +249,8 @@ function include {
     fi
 }
 
+# Device specific definitions
+include "$HOME"/.zlocal.zsh
 include "$CARGO_HOME"/env
 include /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
