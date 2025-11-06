@@ -33,6 +33,7 @@ SAVEHIST=10000
 if command -v brew &> /dev/null; then
     path=("$(brew --prefix)"/opt/coreutils/libexec/gnubin $path)
     fpath=("$(brew --prefix)"/share/zsh-completions $fpath)
+    fpath=("$(brew --prefix)"/share/zsh/site-functions $fpath)
 fi
 
 path+=("$HOME"/.local/bin)
