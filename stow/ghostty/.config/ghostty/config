@@ -3,7 +3,7 @@
 ################################################################################
 font-family = IosevkaTerm Nerd Font
 font-style-bold = Medium
-font-size = 14
+font-size = 15
 bold-is-bright = true 
 
 # window
@@ -13,7 +13,7 @@ maximize = true
 confirm-close-surface = false
 mouse-hide-while-typing = true
 window-theme = ghostty
-theme = Atom One Dark
+theme = Gruvbox Dark Hard
 
 # cursor
 cursor-style = block
