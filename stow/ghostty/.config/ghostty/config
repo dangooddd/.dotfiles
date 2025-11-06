@@ -13,12 +13,13 @@ maximize = true
 confirm-close-surface = false
 mouse-hide-while-typing = true
 window-theme = ghostty
+macos-titlebar-style = tabs 
 theme = Gruvbox Dark Hard
 
 # cursor
 cursor-style = block
 cursor-style-blink = false
-shell-integration-features = no-cursor, no-title
+shell-integration-features = no-cursor, no-title, ssh-env, ssh-terminfo
 adjust-cursor-thickness = 2
 
 
