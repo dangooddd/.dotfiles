@@ -24,7 +24,7 @@ require("lazy").setup({
     },
     install = {
         missing = true,
-        colorscheme = { "kanagawa", "retrobox" },
+        colorscheme = { "gruvbox", "retrobox" },
     },
     change_detection = {
         enable = true,

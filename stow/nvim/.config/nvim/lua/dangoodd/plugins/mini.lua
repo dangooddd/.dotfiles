@@ -7,11 +7,6 @@ return {
             n_lines = 25,
         })
 
-        -- surround actions
-        require("mini.surround").setup({
-            n_lines = 25,
-        })
-
         -- git integration
         require("mini.git").setup()
 
