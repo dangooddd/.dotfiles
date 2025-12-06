@@ -17,7 +17,7 @@
   "auto_signature_help": true,
   "languages": {
     "Python": {
-      "language_servers": ["ty", "ruff"],
+      "language_servers": ["basedpyright", "ruff"],
       "formatter": [
         {
           "language_server": {
@@ -37,8 +37,8 @@
     },
     "basedpyright": {
       "settings": {
-        "python.analysis": {
-          "typeCheckingMode": "off"
+        "basedpyright.analysis": {
+          "typeCheckingMode": "basic"
         }
       }
     }
