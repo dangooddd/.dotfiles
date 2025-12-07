@@ -10,3 +10,5 @@ zsh-autosuggestions
 python
 uv
 tree-sitter-cli
+font-iosevka-term-nerd-font
+steam

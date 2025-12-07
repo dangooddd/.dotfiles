@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-
-DIR="$HOME"/.dotfiles/misc/latex
-cp "$DIR"/note.inc.tex ./preamble.inc.tex

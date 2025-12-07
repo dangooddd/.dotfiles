@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-
-SERVER="$1"
-[ -n "$SERVER" ] || echo "No destination, skip" && exit
-cd "$HOME"/.dotfiles || exit
-rsync -avz -e ssh --exclude=.git --exclude=misc/wallpapers . "$SERVER":~/.dotfiles
