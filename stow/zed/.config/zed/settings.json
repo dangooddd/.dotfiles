@@ -3,9 +3,9 @@
   "agent": {
     "default_profile": "write",
     "default_model": {
-      "provider": "deepseek",
-      "model": "deepseek-reasoner"
-    }
+      "provider": "openrouter",
+      "model": "minimax/minimax-m2.1",
+    },
   },
   "ui_font_size": 16,
   "buffer_font_size": 16,
@@ -21,26 +21,26 @@
       "formatter": [
         {
           "language_server": {
-            "name": "ruff"
-          }
-        }
-      ]
-    }
+            "name": "ruff",
+          },
+        },
+      ],
+    },
   },
   "lsp": {
     "ty": {
       "settings": {
         "experimental": {
-          "rename": true
-        }
-      }
+          "rename": true,
+        },
+      },
     },
     "basedpyright": {
       "settings": {
         "basedpyright.analysis": {
-          "typeCheckingMode": "basic"
-        }
-      }
-    }
-  }
+          "typeCheckingMode": "basic",
+        },
+      },
+    },
+  },
 }
