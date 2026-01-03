@@ -9,6 +9,12 @@ zsh-completions
 zsh-autosuggestions
 python
 uv
+stow
 tree-sitter-cli
 font-iosevka-term-nerd-font
+ghostty
+google-chrome
+telegram
 steam
+zed
+visual-studio-code

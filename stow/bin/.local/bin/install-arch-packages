@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-
-paru -S --needed --noconfirm - < "$HOME"/.dotfiles/misc/packages/arch.txt

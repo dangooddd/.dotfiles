@@ -1,0 +1,11 @@
+nvim
+zoxide
+ripgrep
+fzf
+fd
+lazygit
+uv
+tree-sitter-cli
+stow
+devcontainer
+devpod
