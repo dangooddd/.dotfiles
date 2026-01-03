@@ -8,4 +8,3 @@ uv
 tree-sitter-cli
 stow
 devcontainer
-devpod
