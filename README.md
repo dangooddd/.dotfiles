@@ -4,12 +4,6 @@
 
 ## Installation
 
-Install dependencies:
-
-```sh
-sudo pacman -S --noconfirm --needed git stow base-devel
-```
-
 Clone repository:
 
 ```sh
@@ -21,4 +15,11 @@ Install dotfiles:
 ```sh
 cd "$HOME"/.dotfiles
 make
+```
+
+Install packages:
+```sh
+# make macos - for macos
+# make dev - for linux dev packages (remote development)
+make arch
 ```
