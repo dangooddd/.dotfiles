@@ -35,7 +35,8 @@ vim.opt.cinkeys:remove(":") -- shit.
 -- global
 vim.g.netrw_banner = 0
 vim.g.mapleader = " "
-vim.g.maplocal = " "
+vim.g.maplocalleader = " "
+vim.g.python3_host_prog = vim.fn.expand("~/.venv_nvim/bin/python3")
 
 
 --------------------------------------------------------------------------------
@@ -47,7 +48,6 @@ vim.keymap.set("n", "<C-k>", vim.cmd.bprev)
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
 
-vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 vim.keymap.set("n", "`", "'", { noremap = true }) -- better marks
 
 -- for merging
@@ -108,25 +108,8 @@ vim.lsp.config("basedpyright", {
         },
     },
 })
-vim.lsp.enable("basedpyright")
 
-vim.lsp.config("pylsp", {
-    settings = {
-        pylsp = {
-            plugins = {
-                -- use black as default formatter
-                yapf = { enabled = false },
-                autopep8 = { enabled = false },
-                black = { enabled = true },
-                pycodestyle = {
-                    enabled = true,
-                    ignore = { "E203", "E701", "W503" },
-                    maxLineLength = 88
-                }
-            }
-        },
-    },
-})
+vim.lsp.enable("ty")
 
 -- latex
 vim.lsp.config("texlab", {

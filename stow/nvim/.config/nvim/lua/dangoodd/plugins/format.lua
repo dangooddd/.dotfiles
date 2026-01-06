@@ -6,7 +6,7 @@ return {
     config = function()
         require("conform").setup({
             formatters_by_ft = {
-                python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
+                python = { "ruff_format", "ruff_organize_imports" },
             },
             format_after_save = function(bufnr)
                 if not vim.b[bufnr].conform_disable then

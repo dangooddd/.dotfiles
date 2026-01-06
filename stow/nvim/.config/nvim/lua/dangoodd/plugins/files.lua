@@ -3,12 +3,8 @@ return {
     config = function()
         require("oil").setup({
             default_file_explorer = true,
-            columns = {
-                { "icon", add_padding = false },
-            },
-            view_options = {
-                show_hidden = true,
-            },
+            columns = { { "icon", add_padding = false } },
+            view_options = { show_hidden = true },
             float = {
                 max_width = 0.8,
                 preview_split = "right",

@@ -17,7 +17,7 @@
   "auto_signature_help": true,
   "languages": {
     "Python": {
-      "language_servers": ["basedpyright", "ruff"],
+      "language_servers": ["ty", "ruff"],
       "formatter": [
         {
           "language_server": {

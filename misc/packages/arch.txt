@@ -16,9 +16,9 @@ wl-clipboard
 flatpak
 stow
 npm
+uv
 python
 python-pip
-python-pipx
 syncthing
 qbittorrent
 google-chrome
