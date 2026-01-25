@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-if command -v brew &> /dev/null; then
+if command -v brew >/dev/null 2>&1; then
     brew shellenv
 else
     for brew_path in \
