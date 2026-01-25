@@ -1,10 +1,9 @@
-nvim
-zoxide
-ripgrep
-fzf
-fd
-lazygit
-uv
-tree-sitter-cli
 stow
+lazygit
+opencode
+nvim
+fzf
+zoxide
+uv
 devcontainer
+tree-sitter-cli
