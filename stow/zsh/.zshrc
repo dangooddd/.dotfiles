@@ -19,13 +19,16 @@ if command -v dircolors &> /dev/null; then
     eval "$(dircolors -b)"
 fi
 
-if command -v /opt/homebrew/bin/brew &> /dev/null; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+for brew_path in \
+    "/opt/homebrew/bin/brew" \
+    "/home/linuxbrew/.linuxbrew/bin/brew" \
+    "$HOME/.linuxbrew/bin/brew"
+do
+if [ -x "$brew_path" ]; then
+    eval "$("$brew_path" shellenv)"
+    break
 fi
-
-if command -v /home/linuxbrew/.linuxbrew/bin/brew &> /dev/null; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
+done
 
 HISTFILE="$HOME"/.zsh_history
 HISTSIZE=10000
@@ -45,7 +48,6 @@ path+=("$HOME"/.cargo/bin)
 export PATH
 export FPATH
 
-FZF_COLORS="gutter:-1"
 FZF_COLORS+=",fg:-1"
 FZF_COLORS+=",bg:-1"
 FZF_COLORS+=",hl:-1:dim"
@@ -254,8 +256,7 @@ function include {
     fi
 }
 
-# Device specific definitions
-include "$HOME"/.zlocal.zsh
+include "$HOME"/.zshrc.local
 include "$CARGO_HOME"/env
 include /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
