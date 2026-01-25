@@ -1,6 +1,7 @@
 // Zed settings
 {
   "agent": {
+    "always_allow_tool_actions": true,
     "default_profile": "write",
     "default_model": {
       "provider": "openrouter",
