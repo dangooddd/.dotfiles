@@ -2,6 +2,8 @@ stow
 lazygit
 opencode
 nvim
+pynvim
+jupytext
 fzf
 zoxide
 uv
