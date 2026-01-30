@@ -1,0 +1,5 @@
+pynvim
+jupyter-client
+prompt-toolkit
+pillow
+pygments
