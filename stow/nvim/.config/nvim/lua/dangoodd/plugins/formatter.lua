@@ -2,14 +2,13 @@ return {
     "stevearc/conform.nvim",
     event = "BufWritePre", -- load before writing
     cmd = "ConformInfo",
-    keys = { "<leader>tf" },
     config = function()
         require("conform").setup({
             formatters_by_ft = {
                 python = { "ruff_format", "ruff_organize_imports" },
             },
             format_after_save = function(bufnr)
-                if not vim.b[bufnr].conform_disable then
+                if not vim.b[bufnr].conform_stop then
                     return {
                         lsp_format = "fallback"
                     }
@@ -17,10 +16,8 @@ return {
             end,
         })
 
-        vim.keymap.set("n", "<leader>tf", function()
-            vim.b.conform_disable = not vim.b.conform_disable
-            local status = vim.b.conform_disable and "disabled" or "enabled"
-            vim.notify("Autoformat " .. status, vim.log.levels.INFO)
-        end)
+        vim.api.nvim_create_user_command("ConformToggle", function()
+            vim.b.conform_stop = not vim.b.conform_stop
+        end, {})
     end,
 }

@@ -1,29 +1,18 @@
 return {
-    -- treesitter
+    -- default lsp configs
     {
-        "nvim-treesitter/nvim-treesitter",
-        lazy = false,
-        branch = "main",
-        build = ":TSUpdate",
+        "neovim/nvim-lspconfig",
+        config = function() end,
+    },
+
+    -- manager
+    {
+        "williamboman/mason.nvim",
         config = function()
-            require("nvim-treesitter").setup()
-
-            local langs = {}
-            for _, value in ipairs(require("nvim-treesitter").get_available()) do
-                langs[value] = true
-            end
-
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = "*",
-                callback = function(event)
-                    local ok, _ = pcall(vim.treesitter.start, event.buf)
-                    if not ok then
-                        local lang = vim.treesitter.language.get_lang(event.match)
-                        if langs[lang] then
-                            require("nvim-treesitter").install(lang)
-                        end
-                    end
-                end,
+            require("mason").setup({
+                ui = {
+                    backdrop = 100,
+                },
             })
         end,
     },
@@ -55,6 +44,43 @@ return {
                     ["tinymist"] = vim.fn.exepath("tinymist"),
                 }
             })
+        end,
+    },
+
+    {
+        "dangooddd/pyrola.nvim",
+        dependencies = { "nvim-treesitter/nvim-treesitter" },
+        build = ":UpdateRemotePlugins",
+        config = function()
+            local pyrola = require("pyrola")
+
+            pyrola.setup({
+                kernel_map = {
+                    python = "python"
+                },
+                split_horizontal = false,
+                split_ratio = 0.5,
+            })
+
+            vim.keymap.set("n", "<leader>js", function()
+                pyrola.send_statement_definition()
+            end, { noremap = true })
+
+            vim.keymap.set("v", "<leader>jv", function()
+                pyrola.send_visual_to_repl()
+            end, { noremap = true })
+
+            vim.keymap.set("n", "<leader>jb", function()
+                pyrola.send_buffer_to_repl()
+            end, { noremap = true })
+
+            vim.keymap.set("n", "<leader>ji", function()
+                pyrola.inspect()
+            end, { noremap = true })
+
+            vim.keymap.set("n", "<leader>jh", function()
+                pyrola.open_history_manager()
+            end, { noremap = true })
         end,
     },
 }

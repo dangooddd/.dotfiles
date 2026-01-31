@@ -25,9 +25,6 @@ return {
                 -- blink.cmp
                 BlinkCmpMenu = { link = "Normal" },
                 BlinkCmpMenuBorder = { link = "BlinkCmpMenu" },
-
-                -- indent guides
-                MiniIndentscopeSymbol = { fg = palette.dark1 },
             }
         })
         vim.cmd.colorscheme("gruvbox")
