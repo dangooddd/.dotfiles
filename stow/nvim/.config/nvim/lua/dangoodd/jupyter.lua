@@ -54,19 +54,20 @@ local function open_ipynb(buf)
     end
 
     -- create python file from notebook and open it
-    if not run({ "jupytext", "--to", "py:percent", vim.api.nvim_buf_get_name(0) }) then return end
-    vim.cmd("keepalt keepjumps edit " .. vim.fn.fnameescape(py))
-    pcall(vim.api.nvim_buf_delete, buf, { force = true })
+    if not run({ "jupytext", "--to", "py:percent", vim.api.nvim_buf_get_name(buf) }) then return end
+    vim.api.nvim_buf_set_name(buf, vim.fn.fnameescape(py))
+    vim.api.nvim_buf_call(buf, vim.cmd.edit)
 end
 
 vim.api.nvim_create_autocmd("FileType", {
+    group = group,
     pattern = "python",
     callback = function(args)
         vim.api.nvim_buf_create_user_command(args.buf, "JupyterSync", convert_py, {})
     end,
 })
 
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
     group = group,
     pattern = "*.ipynb",
     callback = function(args)
