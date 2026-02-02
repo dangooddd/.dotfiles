@@ -47,39 +47,39 @@ return {
         end,
     },
 
+    -- python repl
     {
-        "dangooddd/pyrola.nvim",
-        dependencies = { "nvim-treesitter/nvim-treesitter" },
+        "dangooddd/pyrepl.nvim",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+            "3rd/image.nvim",
+        },
         build = ":UpdateRemotePlugins",
         config = function()
-            local pyrola = require("pyrola")
+            local pyrepl = require("pyrepl")
 
-            pyrola.setup({
-                kernel_map = {
-                    python = "python"
-                },
+            pyrepl.setup({
                 split_horizontal = false,
                 split_ratio = 0.5,
+                style = "gruvbox-dark",
+                image_max_width_ratio = 0.4,
+                image_max_height_ratio = 0.4,
             })
 
             vim.keymap.set("n", "<leader>js", function()
-                pyrola.send_statement_definition()
+                pyrepl.send_statement()
             end, { noremap = true })
 
             vim.keymap.set("v", "<leader>jv", function()
-                pyrola.send_visual_to_repl()
+                pyrepl.send_visual()
             end, { noremap = true })
 
             vim.keymap.set("n", "<leader>jb", function()
-                pyrola.send_buffer_to_repl()
+                pyrepl.send_buffer()
             end, { noremap = true })
 
             vim.keymap.set("n", "<leader>ji", function()
-                pyrola.inspect()
-            end, { noremap = true })
-
-            vim.keymap.set("n", "<leader>jh", function()
-                pyrola.open_history_manager()
+                pyrepl.open_images()
             end, { noremap = true })
         end,
     },

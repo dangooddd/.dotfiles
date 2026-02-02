@@ -4,7 +4,9 @@ return {
         "ibhagwan/fzf-lua",
         event = "VeryLazy",
         config = function()
-            require("fzf-lua").setup({
+            local fzf = require("fzf-lua")
+
+            fzf.setup({
                 fzf_colors = true,
                 winopts = {
                     backdrop = 100,
@@ -16,7 +18,6 @@ return {
                 },
             })
 
-            local fzf = require("fzf-lua")
             vim.keymap.set("n", "<leader>ff", fzf.files)
             vim.keymap.set("n", "<leader>fh", fzf.helptags)
             vim.keymap.set("n", "<leader>fb", fzf.buffers)
