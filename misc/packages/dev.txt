@@ -6,5 +6,7 @@ fzf
 zoxide
 uv
 zsh
+imagemagick
+gcc
 devcontainer
 tree-sitter-cli
