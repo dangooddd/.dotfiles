@@ -36,6 +36,7 @@ vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.python3_host_prog = "~/.venv_nvim/bin/python"
+vim.g.clipboard = "osc52"
 
 -- other
 vim.treesitter.language.register("bash", "zsh")
