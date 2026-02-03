@@ -16,6 +16,6 @@
   "nvim-surround": { "branch": "main", "commit": "1098d7b3c34adcfa7feb3289ee434529abd4afd1" },
   "nvim-treesitter": { "branch": "main", "commit": "4967fa48b0fe7a7f92cee546c76bb4bb61bb14d5" },
   "oil.nvim": { "branch": "master", "commit": "f55b25e493a7df76371cfadd0ded5004cb9cd48a" },
-  "pyrepl.nvim": { "branch": "main", "commit": "4aeb5e7b15986a20d3cfc791a84511e168989c7f" },
+  "pyrepl.nvim": { "branch": "main", "commit": "8d4919aaad20dbc50bff9abe5bef82d278b5bbe5" },
   "typst-preview.nvim": { "branch": "master", "commit": "e123a7ab64e52d836e00dea9251e85b201f38966" }
 }
