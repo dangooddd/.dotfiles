@@ -59,28 +59,16 @@ return {
             local pyrepl = require("pyrepl")
 
             pyrepl.setup({
-                split_horizontal = false,
-                split_ratio = 0.5,
                 style = "gruvbox-dark",
-                image_max_width_ratio = 0.4,
-                image_max_height_ratio = 0.4,
             })
 
-            vim.keymap.set("n", "<leader>js", function()
-                pyrepl.send_statement()
-            end, { noremap = true })
-
-            vim.keymap.set("v", "<leader>jv", function()
-                pyrepl.send_visual()
-            end, { noremap = true })
-
-            vim.keymap.set("n", "<leader>jb", function()
-                pyrepl.send_buffer()
-            end, { noremap = true })
-
-            vim.keymap.set("n", "<leader>ji", function()
-                pyrepl.open_images()
-            end, { noremap = true })
+            vim.keymap.set("n", "<leader>jo", ":PyREPLOpen<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>jh", ":PyREPLHide<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>jc", ":PyREPLClose<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>js", ":PyREPLSendStatement<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>jb", ":PyREPLSendBuffer<CR>", { silent = true })
+            vim.keymap.set("v", "<leader>jv", ":<C-u>PyREPLSendVisual<CR>gv", { silent = true })
+            vim.keymap.set("n", "<leader>ji", ":PyREPLOpenImages<CR>", { silent = true })
         end,
     },
 }

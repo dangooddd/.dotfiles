@@ -21,6 +21,7 @@ vim.opt.pumheight = 10        -- size of completion window
 vim.opt.showmode = false      -- do not show mode under statusline
 vim.opt.shortmess:append("I") -- disable greeting
 vim.opt.termguicolors = true
+vim.opt.mouse = "a"
 
 -- tabs
 vim.opt.tabstop = 4         -- 1 tab represented as 4 spaces
