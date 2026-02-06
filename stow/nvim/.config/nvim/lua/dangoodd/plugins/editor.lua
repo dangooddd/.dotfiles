@@ -26,14 +26,6 @@ return {
         end,
     },
 
-    -- images
-    {
-        "3rd/image.nvim",
-        config = function()
-            require("image").setup()
-        end,
-    },
-
     -- mini
     {
         "nvim-mini/mini.nvim",

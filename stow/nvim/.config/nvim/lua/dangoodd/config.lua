@@ -20,7 +20,6 @@ vim.opt.hlsearch = false      -- remove highlight on search
 vim.opt.pumheight = 10        -- size of completion window
 vim.opt.showmode = false      -- do not show mode under statusline
 vim.opt.shortmess:append("I") -- disable greeting
-vim.opt.termguicolors = true
 vim.opt.mouse = "a"
 
 -- tabs
@@ -36,7 +35,6 @@ vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.python3_host_prog = "~/.venv_nvim/bin/python"
-vim.g.clipboard = "osc52"
 
 -- other
 vim.treesitter.language.register("bash", "zsh")

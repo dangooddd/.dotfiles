@@ -1,5 +1,5 @@
 pynvim
 jupyter-client
-prompt-toolkit
+jupyter-console
 pillow
-pygments
+cairosvg

@@ -50,25 +50,23 @@ return {
     -- python repl
     {
         "dangooddd/pyrepl.nvim",
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter",
-            "3rd/image.nvim",
-        },
+        dependencies = { "nvim-treesitter/nvim-treesitter" },
         build = ":UpdateRemotePlugins",
         config = function()
             local pyrepl = require("pyrepl")
 
             pyrepl.setup({
                 style = "gruvbox-dark",
+                filetypes = { "python", "markdown" }
             })
 
-            vim.keymap.set("n", "<leader>jo", ":PyREPLOpen<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>jh", ":PyREPLHide<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>jc", ":PyREPLClose<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>js", ":PyREPLSendStatement<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>jb", ":PyREPLSendBuffer<CR>", { silent = true })
-            vim.keymap.set("v", "<leader>jv", ":<C-u>PyREPLSendVisual<CR>gv", { silent = true })
-            vim.keymap.set("n", "<leader>ji", ":PyREPLOpenImages<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>jo", ":PyreplOpen<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>jh", ":PyreplHide<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>jc", ":PyreplClose<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>jf", ":PyreplSendBuffer<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>jb", ":PyreplSendBlock<CR>", { silent = true })
+            vim.keymap.set("v", "<leader>jv", ":<C-u>PyreplSendVisual<CR>gv<Esc>", { silent = true })
+            vim.keymap.set("n", "<leader>ji", ":PyreplOpenImages<CR>", { silent = true })
         end,
     },
 }

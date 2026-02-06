@@ -6,7 +6,9 @@ fzf
 zoxide
 uv
 zsh
-imagemagick
+tmux
+zsh-completions
+zsh-autosuggestions
 gcc
 devcontainer
 tree-sitter-cli
