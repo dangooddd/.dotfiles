@@ -154,12 +154,14 @@ function venv-update {
     if [[ -z $VIRTUAL_ENV ]] &&
         [[ -n $activate ]]; then
         source "$activate"
+        return
     fi
 
     # nested interactive shells
     if [[ -n $VIRTUAL_ENV ]] &&
         [[ $(type -w deactivate) != *function* ]]; then
         source "$VIRTUAL_ENV"/bin/activate
+        return
     fi
 
     # update venv
@@ -167,12 +169,14 @@ function venv-update {
         [[ -n $activate ]] &&
         [[ $VIRTUAL_ENV/bin/activate != $PWD/$activate ]]; then
         source "$activate"
+        return
     fi
 
     # exit of venv
     if [[ -n $VIRTUAL_ENV ]] &&
         ! [[ $PWD =~ $(dirname "$VIRTUAL_ENV") ]]; then
         deactivate
+        return
     fi
 }
 
