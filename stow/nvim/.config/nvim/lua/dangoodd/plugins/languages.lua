@@ -57,7 +57,9 @@ return {
 
             pyrepl.setup({
                 style = "gruvbox-dark",
-                filetypes = { "python", "markdown" }
+                filetypes = { "python", "markdown" },
+                image_width_ratio = 0.3,
+                image_height_ratio = 0.4,
             })
 
             vim.keymap.set("n", "<leader>jo", ":PyreplOpen<CR>", { silent = true })
