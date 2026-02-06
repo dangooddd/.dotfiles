@@ -1,1 +1,3 @@
 jupytext
+ty
+ruff
