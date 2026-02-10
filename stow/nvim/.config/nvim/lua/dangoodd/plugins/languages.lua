@@ -47,19 +47,26 @@ return {
         end,
     },
 
+    -- markdown
+    {
+        "MeanderingProgrammer/render-markdown.nvim",
+        dependencies = { "nvim-treesitter/nvim-treesitter" },
+        config = function()
+            require("render-markdown").setup({
+                completions = { lsp = { enabled = true } },
+            })
+        end
+    },
+
     -- python repl
     {
         "dangooddd/pyrepl.nvim",
         dependencies = { "nvim-treesitter/nvim-treesitter" },
-        build = ":UpdateRemotePlugins",
         config = function()
             local pyrepl = require("pyrepl")
 
             pyrepl.setup({
                 style = "gruvbox-dark",
-                filetypes = { "python", "markdown" },
-                image_width_ratio = 0.3,
-                image_height_ratio = 0.4,
             })
 
             vim.keymap.set("n", "<leader>jo", ":PyreplOpen<CR>", { silent = true })
@@ -69,6 +76,7 @@ return {
             vim.keymap.set("n", "<leader>jb", ":PyreplSendBlock<CR>", { silent = true })
             vim.keymap.set("v", "<leader>jv", ":<C-u>PyreplSendVisual<CR>gv<Esc>", { silent = true })
             vim.keymap.set("n", "<leader>ji", ":PyreplOpenImages<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>js", ":PyreplInstall")
         end,
     },
 }

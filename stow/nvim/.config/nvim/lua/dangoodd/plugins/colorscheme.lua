@@ -4,7 +4,6 @@ return {
     config = function()
         local palette = require("gruvbox").palette
         require("gruvbox").setup({
-            bold = false,
             italic = {
                 strings = false,
                 emphasis = false,

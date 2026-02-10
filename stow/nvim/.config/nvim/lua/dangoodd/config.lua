@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------
 vim.opt.clipboard = "unnamedplus"      -- use system clipboard
 vim.opt.guicursor:append("a:blinkon0") -- remove cursor blink
-vim.opt.winborder = "rounded"
+vim.opt.winborder = "single"
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.undofile = true -- save state of file on write
