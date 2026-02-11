@@ -12,16 +12,13 @@ arch:
 	$(script_dir)/install-arch-packages.sh
 	$(script_dir)/install-flatpak-packages.sh
 	$(script_dir)/install-uv-packages.sh
-	$(script_dir)/setup-pynvim-environment.sh
 
 macos:
 	$(script_dir)/install-brew.sh
 	$(script_dir)/install-brew-packages.sh
 	$(script_dir)/install-uv-packages.sh
-	$(script_dir)/setup-pynvim-environment.sh
 
 dev:
 	$(script_dir)/install-brew.sh
 	$(script_dir)/install-dev-packages.sh
 	$(script_dir)/install-uv-packages.sh
-	$(script_dir)/setup-pynvim-environment.sh
