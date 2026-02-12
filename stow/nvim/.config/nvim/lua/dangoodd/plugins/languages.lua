@@ -72,9 +72,11 @@ return {
             vim.keymap.set("n", "<leader>jo", ":PyreplOpen<CR>", { silent = true })
             vim.keymap.set("n", "<leader>jh", ":PyreplHide<CR>", { silent = true })
             vim.keymap.set("n", "<leader>jc", ":PyreplClose<CR>", { silent = true })
+            vim.keymap.set("v", "<leader>jv", ":<C-u>PyreplSendVisual<CR>gv<Esc>", { silent = true })
             vim.keymap.set("n", "<leader>jf", ":PyreplSendBuffer<CR>", { silent = true })
             vim.keymap.set("n", "<leader>jb", ":PyreplSendBlock<CR>", { silent = true })
-            vim.keymap.set("v", "<leader>jv", ":<C-u>PyreplSendVisual<CR>gv<Esc>", { silent = true })
+            vim.keymap.set("n", "<leader>jp", ":PyreplBlockBackward<CR>", { silent = true })
+            vim.keymap.set("n", "<leader>jn", ":PyreplBlockForward<CR>", { silent = true })
             vim.keymap.set("n", "<leader>ji", ":PyreplOpenImages<CR>", { silent = true })
             vim.keymap.set("n", "<leader>js", ":PyreplInstall")
         end,
