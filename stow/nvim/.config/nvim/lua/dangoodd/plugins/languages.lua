@@ -63,11 +63,7 @@ return {
         "dangooddd/pyrepl.nvim",
         dependencies = { "nvim-treesitter/nvim-treesitter" },
         config = function()
-            local pyrepl = require("pyrepl")
-
-            pyrepl.setup({
-                style = "gruvbox-dark",
-            })
+            require("pyrepl").setup()
 
             vim.keymap.set("n", "<leader>jo", ":PyreplOpen<CR>", { silent = true })
             vim.keymap.set("n", "<leader>jh", ":PyreplHide<CR>", { silent = true })
