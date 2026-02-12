@@ -1,12 +1,16 @@
 ################################################################################
 # General
 ################################################################################
+shell-integration-features = no-cursor, no-title, ssh-terminfo
+clipboard-write = allow
+clipboard-read = allow
+
+# font
 font-family = IosevkaTerm Nerd Font
 font-style-bold = Medium
 font-size = 15
 bold-is-bright = true 
 
-# window
 window-padding-x = 5
 window-padding-y = 5
 maximize = true
@@ -19,9 +23,7 @@ theme = Gruvbox Dark Hard
 # cursor
 cursor-style = block
 cursor-style-blink = false
-shell-integration-features = no-cursor, no-title, ssh-terminfo
 adjust-cursor-thickness = 2
-
 
 ################################################################################
 # Keybinds
