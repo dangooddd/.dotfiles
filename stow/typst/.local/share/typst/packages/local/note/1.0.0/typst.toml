@@ -1,9 +1,0 @@
-[package]
-name = "note"
-version = "1.0.0"
-entrypoint = "lib.typ"
-description = "Note template."
-
-[template]
-path = "template"
-entrypoint = "main.typ"
