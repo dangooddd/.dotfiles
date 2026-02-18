@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- Options
 --------------------------------------------------------------------------------
-vim.opt.clipboard = "unnamedplus"      -- use system clipboard
+vim.opt.clipboard = "unnamedplus" -- use system clipboard
 vim.opt.guicursor:append("a:blinkon0") -- remove cursor blink
 vim.opt.winborder = "single"
 vim.opt.number = true
@@ -15,31 +15,29 @@ vim.opt.wrap = false
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.scrolloff = 3
-vim.opt.ruler = false         -- removes cursor position from lastline
-vim.opt.hlsearch = false      -- remove highlight on search
-vim.opt.pumheight = 10        -- size of completion window
-vim.opt.showmode = false      -- do not show mode under statusline
+vim.opt.ruler = false -- removes cursor position from lastline
+vim.opt.hlsearch = false -- remove highlight on search
+vim.opt.pumheight = 10 -- size of completion window
+vim.opt.showmode = false -- do not show mode under statusline
 vim.opt.shortmess:append("I") -- disable greeting
 vim.opt.mouse = "a"
 
 -- tabs
-vim.opt.tabstop = 4         -- 1 tab represented as 4 spaces
-vim.opt.expandtab = true    -- <tab> key will create " " insead of "\t"
-vim.opt.shiftwidth = 4      -- indent change after backspace and >> <<
-vim.opt.softtabstop = 4     -- number of spaces instead of tab
-vim.opt.autoindent = true   -- auto indent
+vim.opt.tabstop = 4 -- 1 tab represented as 4 spaces
+vim.opt.expandtab = true -- <tab> key will create " " insead of "\t"
+vim.opt.shiftwidth = 4 -- indent change after backspace and >> <<
+vim.opt.softtabstop = 4 -- number of spaces instead of tab
+vim.opt.autoindent = true -- auto indent
 vim.opt.cinkeys:remove(":") -- shit.
 
 -- global
 vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.g.python3_host_prog = "~/.venv_nvim/bin/python"
 
 -- other
 vim.treesitter.language.register("bash", "zsh")
 vim.diagnostic.config({ virtual_text = true })
-
 
 --------------------------------------------------------------------------------
 -- Keybinds
@@ -59,7 +57,6 @@ end)
 vim.keymap.set("n", "<leader>th", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end)
-
 
 --------------------------------------------------------------------------------
 -- LSP
@@ -82,10 +79,14 @@ vim.lsp.enable("rust_analyzer")
 vim.lsp.config("lua_ls", {
     settings = {
         Lua = {
+            workspace = {
+                library = {
+                    vim.env.VIMRUNTIME,
+                },
+            },
             diagnostics = {
                 disable = {
                     "missing-fields",
-                    "undefined-global",
                 },
             },
         },
@@ -119,8 +120,8 @@ vim.lsp.config("texlab", {
                 },
                 onSave = true,
             },
-        }
-    }
+        },
+    },
 })
 vim.lsp.enable("texlab")
 
@@ -130,10 +131,10 @@ vim.lsp.config("bashls", {
     settings = {
         bashIde = {
             shellcheckArguments = {
-                "--exclude=SC1090,SC1091,SC2076,SC2164"
+                "--exclude=SC1090,SC1091,SC2076,SC2164",
             },
-        }
-    }
+        },
+    },
 })
 vim.lsp.enable("bashls")
 
@@ -154,6 +155,6 @@ vim.lsp.config["tinymist"] = {
         formatterMode = "typstyle",
         exportPdf = "onSave",
         semanticTokens = "disable",
-    }
+    },
 }
 vim.lsp.enable("tinymist")

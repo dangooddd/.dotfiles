@@ -42,7 +42,7 @@ return {
             require("typst-preview").setup({
                 dependencies_bin = {
                     ["tinymist"] = vim.fn.exepath("tinymist"),
-                }
+                },
             })
         end,
     },
@@ -55,7 +55,7 @@ return {
             require("render-markdown").setup({
                 completions = { lsp = { enabled = true } },
             })
-        end
+        end,
     },
 
     -- python repl

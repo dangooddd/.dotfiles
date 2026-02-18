@@ -6,6 +6,5 @@ remote="$1"
 rsync -avz \
   --exclude='*.jpg' \
   --exclude='*.png' \
-  --exclude='.git/' \
   "$dotfiles" "$remote"
 

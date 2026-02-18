@@ -6,11 +6,12 @@ return {
         require("conform").setup({
             formatters_by_ft = {
                 python = { "ruff_format", "ruff_organize_imports" },
+                lua = { "stylua" },
             },
             format_after_save = function(bufnr)
                 if not vim.b[bufnr].conform_stop then
                     return {
-                        lsp_format = "fallback"
+                        lsp_format = "fallback",
                     }
                 end
             end,

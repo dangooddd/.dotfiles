@@ -14,7 +14,7 @@ return {
                     preview = {
                         horizontal = "right:50%",
                         layout = "horizontal",
-                    }
+                    },
                 },
             })
 

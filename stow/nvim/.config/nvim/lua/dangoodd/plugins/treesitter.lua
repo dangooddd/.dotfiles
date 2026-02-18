@@ -11,7 +11,7 @@ return {
             langs[value] = true
         end
 
-        vim.api.nvim_create_autocmd('FileType', {
+        vim.api.nvim_create_autocmd("FileType", {
             pattern = "*",
             callback = function(event)
                 local ok, _ = pcall(vim.treesitter.start, event.buf)

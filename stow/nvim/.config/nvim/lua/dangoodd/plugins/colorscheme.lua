@@ -24,7 +24,7 @@ return {
                 -- blink.cmp
                 BlinkCmpMenu = { link = "Normal" },
                 BlinkCmpMenuBorder = { link = "BlinkCmpMenu" },
-            }
+            },
         })
         vim.cmd.colorscheme("gruvbox")
     end,
