@@ -63,24 +63,28 @@ return {
         "dangooddd/pyrepl.nvim",
         dependencies = { "nvim-treesitter/nvim-treesitter" },
         config = function()
-            require("pyrepl").setup()
+            local pyrepl = require("pyrepl")
+            pyrepl.setup()
 
-            -- main
-            vim.keymap.set("n", "<leader>jo", ":PyreplOpen<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>jh", ":PyreplHide<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>jc", ":PyreplClose<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>ji", ":PyreplOpenImages<CR>", { silent = true })
+            -- main commands
+            vim.keymap.set("n", "<leader>jo", pyrepl.open_repl)
+            vim.keymap.set("n", "<leader>jh", pyrepl.hide_repl)
+            vim.keymap.set("n", "<leader>jc", pyrepl.close_repl)
+            vim.keymap.set({ "n", "t" }, "<C-j>", pyrepl.toggle_repl_focus)
+            vim.keymap.set("n", "<leader>ji", pyrepl.open_images)
 
-            -- send
-            vim.keymap.set("v", "<leader>jv", ":<C-u>PyreplSendVisual<CR>gv<Esc>", { silent = true })
-            vim.keymap.set("n", "<leader>jf", ":PyreplSendBuffer<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>jb", ":PyreplSendBlock<CR>", { silent = true })
+            -- send commands
+            vim.keymap.set("n", "<leader>jf", pyrepl.send_buffer)
+            vim.keymap.set("n", "<leader>jb", pyrepl.send_block)
+            vim.keymap.set("v", "<leader>jv", pyrepl.send_visual)
 
-            -- utility
-            vim.keymap.set("n", "<leader>jp", ":PyreplBlockBackward<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>jn", ":PyreplBlockForward<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>je", ":PyreplExport<CR>", { silent = true })
-            vim.keymap.set("n", "<leader>js", ":PyreplInstall")
+            -- utility commands
+            vim.keymap.set("n", "<leader>jp", pyrepl.block_backward)
+            vim.keymap.set("n", "<leader>jn", pyrepl.block_forward)
+            vim.keymap.set("n", "<leader>je", pyrepl.export_notebook)
+            vim.keymap.set("n", "<leader>js", function()
+                pyrepl.install_packages("uv")
+            end)
         end,
     },
 }
