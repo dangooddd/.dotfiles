@@ -9,6 +9,5 @@ zsh
 tmux
 zsh-completions
 zsh-autosuggestions
-gcc
 devcontainer
 tree-sitter-cli

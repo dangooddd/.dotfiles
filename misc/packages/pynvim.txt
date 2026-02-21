@@ -1,5 +1,0 @@
-pynvim
-jupyter-client
-jupyter-console
-pillow
-cairosvg
