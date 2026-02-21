@@ -1,10 +1,12 @@
 stow_dir := stow
 script_dir := script
 
-all:
+.PHONY: stow unstow arch macos dev
+
+stow:
 	cd $(stow_dir) && stow --no-folding -v -t ~ *
 
-clean:
+unstow:
 	cd $(stow_dir) && stow --no-folding -D -v -t ~ *
 
 arch:
