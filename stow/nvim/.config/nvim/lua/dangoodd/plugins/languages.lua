@@ -70,21 +70,19 @@ return {
             vim.keymap.set("n", "<leader>jo", pyrepl.open_repl)
             vim.keymap.set("n", "<leader>jh", pyrepl.hide_repl)
             vim.keymap.set("n", "<leader>jc", pyrepl.close_repl)
+            vim.keymap.set("n", "<leader>ji", pyrepl.open_image_history)
             vim.keymap.set({ "n", "t" }, "<C-j>", pyrepl.toggle_repl_focus)
-            vim.keymap.set("n", "<leader>ji", pyrepl.open_images)
 
             -- send commands
-            vim.keymap.set("n", "<leader>jf", pyrepl.send_buffer)
-            vim.keymap.set("n", "<leader>jb", pyrepl.send_block)
+            vim.keymap.set("n", "<leader>jb", pyrepl.send_buffer)
+            vim.keymap.set("n", "<leader>jl", pyrepl.send_cell)
             vim.keymap.set("v", "<leader>jv", pyrepl.send_visual)
 
             -- utility commands
-            vim.keymap.set("n", "<leader>jp", pyrepl.block_backward)
-            vim.keymap.set("n", "<leader>jn", pyrepl.block_forward)
-            vim.keymap.set("n", "<leader>je", pyrepl.export_notebook)
-            vim.keymap.set("n", "<leader>js", function()
-                pyrepl.install_packages("uv")
-            end)
+            vim.keymap.set("n", "<leader>jp", pyrepl.step_cell_backward)
+            vim.keymap.set("n", "<leader>jn", pyrepl.step_cell_forward)
+            vim.keymap.set("n", "<leader>je", pyrepl.export_to_notebook)
+            vim.keymap.set("n", "<leader>js", ":PyreplInstall")
         end,
     },
 }
