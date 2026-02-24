@@ -54,6 +54,7 @@ return {
         config = function()
             require("render-markdown").setup({
                 completions = { lsp = { enabled = true } },
+                code = { border = "thick" },
             })
         end,
     },
