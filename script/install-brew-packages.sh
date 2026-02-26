@@ -3,5 +3,9 @@
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 package_dir="$(cd "$script_dir/../misc/packages" && pwd)"
 
-eval "$("$script_dir"/get-brew-shellenv.sh)"
-xargs brew install < "$package_dir/brew.txt"
+if command -v brew &> /dev/null; then
+    xargs brew install < "$package_dir/brew.txt"
+else
+    echo "$(basename "$0"): brew not found"
+fi
+
