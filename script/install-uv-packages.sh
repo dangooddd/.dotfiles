@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-package_dir="$(cd "$script_dir/../misc/packages" && pwd)"
+script_dir="$(dirname "$(realpath "$0")")"
+cd "$script_dir/../misc/packages"
 
-for pkg in $(cat "$package_dir/uv.txt"); do
-  uv tool install "$pkg"
+for pkg in $(cat uv.txt); do
+    uv tool install "$pkg"
 done

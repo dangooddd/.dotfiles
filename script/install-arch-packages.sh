@@ -1,6 +1,5 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-package_dir="$(cd "$script_dir/../misc/packages" && pwd)"
-
-yay -S --needed --noconfirm - < "$package_dir/arch.txt"
+script_dir="$(dirname "$(realpath "$0")")"
+cd "$script_dir/../misc/packages"
+yay -S --needed --noconfirm - < arch.txt

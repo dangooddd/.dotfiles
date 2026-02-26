@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 sudo pacman -S --noconfirm --needed git base-devel less 
 cd /tmp

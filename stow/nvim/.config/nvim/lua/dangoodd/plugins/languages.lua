@@ -63,6 +63,8 @@ return {
     {
         "dangooddd/pyrepl.nvim",
         dependencies = { "nvim-treesitter/nvim-treesitter" },
+        -- dev = true,
+        -- dir = "~/Dev/Github/pyrepl.nvim/",
         config = function()
             local pyrepl = require("pyrepl")
             pyrepl.setup()

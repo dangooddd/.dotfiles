@@ -1,25 +1,20 @@
-# **dangooddd's** linux dotfiles
+# **dangooddd's** dotfiles
 
-> Set of configuration files for tools I use.
+> Unix systems only!
 
 ## Installation
 
 Clone repository:
 
 ```sh
-git clone https://github.com/dangooddd/.dotfiles.git "$HOME"/.dotfiles
+git clone https://github.com/dangooddd/.dotfiles.git
 ```
 
 Install dotfiles:
 
 ```sh
-cd "$HOME"/.dotfiles
-make
-```
-
-Install packages:
-```sh
-# make macos - for macos
-# make dev - for linux dev packages (remote development)
-make arch
+cd .dotfiles
+script/setup-arch.sh
+# script/setup-macos.sh
+# script/setup-dev.sh
 ```

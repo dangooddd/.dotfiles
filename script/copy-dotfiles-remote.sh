@@ -1,10 +1,11 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-dotfiles="$(cd "$(dirname "$(readlink -f "$0")")/../" && pwd)"
+script_dir="$(dirname "$(realpath "$0")")"
 remote="$1"
+cd "$script_dir/../"
 
 rsync -avz \
   --exclude='*.jpg' \
   --exclude='*.png' \
-  "$dotfiles" "$remote"
+  "$(pwd)" "$remote"
 
