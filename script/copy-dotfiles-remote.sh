@@ -8,4 +8,3 @@ rsync -avz \
   --exclude='*.jpg' \
   --exclude='*.png' \
   "$(pwd)" "$remote"
-

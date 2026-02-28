@@ -24,10 +24,10 @@ for brew_path in \
     "/home/linuxbrew/.linuxbrew/bin/brew" \
     "$HOME/.linuxbrew/bin/brew"
 do
-if [ -x "$brew_path" ]; then
-    eval "$("$brew_path" shellenv)"
-    break
-fi
+    if [ -x "$brew_path" ]; then
+        eval "$("$brew_path" shellenv)"
+        break
+    fi
 done
 
 HISTFILE="$HOME"/.zsh_history

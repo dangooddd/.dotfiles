@@ -8,4 +8,3 @@ if command -v brew &> /dev/null; then
 else
     echo "$(basename "$0"): brew not found"
 fi
-
