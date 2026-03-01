@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
+if ! command -v brew &> /dev/null; then
+    echo "$(basename "$0"): brew not found, skip"
+    exit
+fi
+
 script_dir="$(dirname "$(realpath "$0")")"
 cd "$script_dir/../misc/packages"
-
-if command -v brew &> /dev/null; then
-    xargs brew install < brew.txt
-else
-    echo "$(basename "$0"): brew not found"
-fi
+xargs brew install < brew.txt

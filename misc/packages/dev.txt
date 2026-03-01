@@ -1,13 +1,12 @@
 stow
+nvim
 lazygit
 opencode
-nvim
 fzf
 zoxide
+tmux
 uv
 zsh
-tmux
 zsh-completions
 zsh-autosuggestions
-devcontainer
 tree-sitter-cli
