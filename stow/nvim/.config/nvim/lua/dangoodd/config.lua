@@ -2,7 +2,8 @@
 -- Options
 --------------------------------------------------------------------------------
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
-vim.opt.guicursor:append("a:blinkon0") -- remove cursor blink
+vim.opt.guicursor:remove({ "t:block-blinkon500-blinkoff500-TermCursor" })
+vim.opt.fillchars:append({ eob = " " })
 vim.opt.winborder = "single"
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -32,6 +33,7 @@ vim.opt.cinkeys:remove(":") -- shit.
 
 -- global
 vim.g.netrw_banner = 0
+vim.g.clipboard = "osc52"
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 

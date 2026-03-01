@@ -1,31 +1,13 @@
 return {
-    "ellisonleao/gruvbox.nvim",
-    priority = 1000,
+    "rose-pine/neovim",
+    name = "rose-pine",
     config = function()
-        local palette = require("gruvbox").palette
-        require("gruvbox").setup({
-            italic = {
-                strings = false,
-                emphasis = false,
-                comments = false,
-                folds = false,
-            },
-            contrast = "hard",
-            transparent_mode = true,
-            overrides = {
-                -- builtin
-                SignColumn = { bg = "None" },
-                CursorLineNr = { bg = "None" },
-                Whitespace = { fg = palette.dark0 },
-                EndOfBuffer = { fg = palette.dark0_hard },
-                Visual = { fg = "None", bg = palette.dark1 },
-                Label = { link = "GruvboxPurple" },
-
-                -- blink.cmp
-                BlinkCmpMenu = { link = "Normal" },
-                BlinkCmpMenuBorder = { link = "BlinkCmpMenu" },
+        require("rose-pine").setup({
+            styles = {
+                italic = false,
+                transparency = true,
             },
         })
-        vim.cmd.colorscheme("gruvbox")
+        vim.cmd("colorscheme rose-pine")
     end,
 }

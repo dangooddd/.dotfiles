@@ -98,3 +98,6 @@ vim.lsp.config["tinymist"] = {
     },
 }
 vim.lsp.enable("tinymist")
+
+-- json
+vim.lsp.enable("jsonls")

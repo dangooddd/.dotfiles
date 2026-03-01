@@ -4,8 +4,8 @@
 shell-integration-features = no-cursor, no-title, ssh-terminfo
 clipboard-write = allow
 clipboard-read = allow
+app-notifications = no-clipboard-copy
 
-# font
 font-family = IosevkaTerm Nerd Font
 font-style-bold = Medium
 font-size = 15
@@ -18,9 +18,8 @@ confirm-close-surface = false
 mouse-hide-while-typing = true
 window-theme = ghostty
 macos-titlebar-style = tabs 
-theme = Gruvbox Dark Hard
+theme = Rose Pine
 
-# cursor
 cursor-style = block
 cursor-style-blink = false
 adjust-cursor-thickness = 2

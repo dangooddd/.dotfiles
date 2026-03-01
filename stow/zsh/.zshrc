@@ -48,26 +48,13 @@ path+=("$HOME"/.cargo/bin)
 export PATH
 export FPATH
 
-FZF_COLORS+=",fg:-1"
-FZF_COLORS+=",bg:-1"
-FZF_COLORS+=",hl:-1:dim"
-FZF_COLORS+=",fg+:-1"
-FZF_COLORS+=",bg+:#444444"
-FZF_COLORS+=",hl+:10"
-FZF_COLORS+=",info:8"
-FZF_COLORS+=",prompt:12"
-FZF_COLORS+=",pointer:12"
-FZF_COLORS+=",marker:2"
-FZF_COLORS+=",spinner:6"
-FZF_COLORS+=",header:8"
-FZF_COLORS+=",border:8"
-
-export FZF_DEFAULT_OPTS="--layout=reverse \
-                         --height 10 \
-                         --ansi \
-                         --border=sharp \
-                         --no-bold \
-                         --color=$FZF_COLORS"
+export FZF_DEFAULT_OPTS="
+	--color=fg:#908caa,bg:#191724,hl:#ebbcba
+	--color=fg+:#e0def4,bg+:#403d52,hl+:#ebbcba
+	--color=border:#6e6a86,header:#31748f,gutter:#191724
+	--color=spinner:#f6c177,info:#9ccfd8
+	--color=pointer:#c4a7e7,marker:#eb6f92,prompt:#908caa
+    --layout=reverse --height=15 --border=sharp --ansi"
 
 export LESS="--tilde -RFXS"
 export PYTHONSTARTUP="$HOME"/.pythonstartup.py
