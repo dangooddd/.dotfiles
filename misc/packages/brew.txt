@@ -8,7 +8,7 @@ zsh-autosuggestions
 python
 uv
 stow
-opencode
+anomalyco/tap/opencode
 tree-sitter-cli
 font-iosevka-term-nerd-font
 ghostty
