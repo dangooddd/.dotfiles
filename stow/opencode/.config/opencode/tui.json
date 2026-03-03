@@ -1,4 +1,5 @@
 {
     "$schema": "https://opencode.ai/tui.json",
-    "theme": "rosepine"
+    "theme": "rosepine",
+    "scroll_speed": 0.5,
 }
