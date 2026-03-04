@@ -147,6 +147,7 @@ c_info='\[\e[35m\]'
 
 function __ps1_hook {
     local exit_code=$?
+    printf '\e]0;%s@%s: %s\a' "$USER" "${HOSTNAME%%.*}" "${PWD/#${HOME}/\~}"
 
     PS1="${c_pwd}\w${c_reset}"
 
