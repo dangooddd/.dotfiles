@@ -33,8 +33,6 @@ export FZF_DEFAULT_OPTS="
     --layout=reverse --height=15 --border=sharp --ansi"
 
 export LESS="--tilde -RFXS"
-export PYTHONSTARTUP="${HOME}/.pythonstartup.py"
-export CARGO_HOME="${HOME}/.cargo"
 export PAGER="less"
 export EDITOR="nvim"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
@@ -115,10 +113,6 @@ if [[ -r ${HOME}/.bashrc.local ]]; then
     source "${HOME}/.bashrc.local"
 fi
 
-if [[ -r ${CARGO_HOME}/env ]]; then
-    source "${CARGO_HOME}/env"
-fi
-
 if [[ -r /usr/share/git/completion/git-prompt.sh ]]; then
     source /usr/share/git/completion/git-prompt.sh
 elif [[ -r /usr/lib/git-core/git-sh-prompt ]]; then
@@ -148,7 +142,6 @@ c_info='\[\e[35m\]'
 function __ps1_hook {
     local exit_code=$?
     printf '\e]0;%s@%s: %s\a' "$USER" "${HOSTNAME%%.*}" "${PWD/#${HOME}/\~}"
-
     PS1="${c_pwd}\w${c_reset}"
 
     if [[ -n $VIRTUAL_ENV ]]; then
