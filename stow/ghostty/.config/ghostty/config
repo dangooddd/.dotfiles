@@ -1,5 +1,5 @@
 ################################################################################
-# General
+# Common
 ################################################################################
 shell-integration-features = no-cursor, no-title, ssh-terminfo
 clipboard-write = allow
@@ -17,6 +17,7 @@ maximize = true
 confirm-close-surface = false
 mouse-hide-while-typing = true
 window-theme = ghostty
+macos-option-as-alt = left
 macos-titlebar-style = tabs 
 theme = Rose Pine
 

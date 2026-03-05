@@ -67,24 +67,15 @@ function v {
     while true; do
         local target="$dir/$venv"
         local activate="$target/bin/activate"
+        [[ -n $VIRTUAL_ENV && "$VIRTUAL_ENV" == "$target" ]] && return
 
         if [[ -r "$activate" ]]; then
-            if [[ -n $VIRTUAL_ENV && "$VIRTUAL_ENV" == "$target" ]]; then
-                return
-            fi
-
-            if declare -F deactivate &> /dev/null; then
-                deactivate
-            fi
-
+            declare -F deactivate &> /dev/null && deactivate
             source "$activate"
             return
         fi
 
-        if [[ "$dir" == "/" ]]; then
-            return 1
-        fi
-
+        [[ "$dir" == "/" ]] && return 1
         dir="$(dirname "$dir")"
     done
 }
