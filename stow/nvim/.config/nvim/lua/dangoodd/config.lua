@@ -20,7 +20,6 @@ vim.opt.ruler = false -- removes cursor position from lastline
 vim.opt.hlsearch = false -- remove highlight on search
 vim.opt.pumheight = 10 -- size of completion window
 vim.opt.showmode = false -- do not show mode under statusline
-vim.opt.shortmess:append("I") -- disable greeting
 vim.opt.mouse = "a"
 
 -- tabs
@@ -37,23 +36,126 @@ vim.g.clipboard = "osc52"
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- other
-vim.treesitter.language.register("bash", "zsh")
-vim.diagnostic.config({ virtual_text = true })
-
 --------------------------------------------------------------------------------
 -- Keybinds
 --------------------------------------------------------------------------------
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
-vim.keymap.set("n", "<leader>kd", vim.diagnostic.open_float)
+vim.keymap.set("n", "<leader>K", vim.diagnostic.open_float)
+vim.keymap.set("n", "<leader>qd", vim.diagnostic.setqflist)
+vim.keymap.set("n", "<leader>ql", "<Cmd>copen<CR>")
 
 -- toggle wrap
 vim.keymap.set("n", "<leader>tw", function()
-    vim.opt.wrap = not vim.o.wrap
+    vim.o.wrap = not vim.o.wrap
 end)
 
 -- toggle inlay hints
 vim.keymap.set("n", "<leader>th", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end)
+
+--------------------------------------------------------------------------------
+-- LSP
+--------------------------------------------------------------------------------
+vim.diagnostic.config({ virtual_text = true })
+
+-- rust
+vim.lsp.config("rust_analyzer", {
+    settings = {
+        ["rust-analyzer"] = {
+            diagnostics = {
+                enable = true,
+                experimental = { enable = true },
+            },
+        },
+    },
+})
+vim.lsp.enable("rust_analyzer")
+
+-- lua
+vim.lsp.config("lua_ls", {
+    settings = {
+        Lua = {
+            workspace = {
+                library = {
+                    vim.env.VIMRUNTIME,
+                },
+            },
+            diagnostics = {
+                disable = {
+                    "missing-fields",
+                },
+            },
+        },
+    },
+})
+vim.lsp.enable("lua_ls")
+
+-- python
+vim.lsp.config("basedpyright", {
+    settings = {
+        basedpyright = {
+            analysis = {
+                typeCheckingMode = "standard",
+            },
+        },
+    },
+})
+
+vim.lsp.enable("ty")
+
+-- latex
+vim.lsp.config("texlab", {
+    settings = {
+        texlab = {
+            build = {
+                executable = "latexmk",
+                args = {
+                    "-lualatex",
+                    "-interaction=nonstopmode",
+                    "-outdir=build",
+                },
+                onSave = true,
+            },
+        },
+    },
+})
+vim.lsp.enable("texlab")
+
+-- shell
+vim.lsp.config("bashls", {
+    filetypes = { "sh", "zsh" },
+    settings = {
+        bashIde = {
+            shellcheckArguments = {
+                "--exclude=SC1090,SC1091,SC2076,SC2164",
+            },
+        },
+    },
+})
+vim.lsp.enable("bashls")
+
+-- cpp
+vim.lsp.config("clangd", {
+    cmd = {
+        "clangd",
+        "--fallback-style=llvm",
+        "--header-insertion=iwyu",
+        "-j=4",
+    },
+})
+vim.lsp.enable("clangd")
+
+-- typst
+vim.lsp.config["tinymist"] = {
+    settings = {
+        formatterMode = "typstyle",
+        exportPdf = "onSave",
+        semanticTokens = "disable",
+    },
+}
+vim.lsp.enable("tinymist")
+
+-- json
+vim.lsp.enable("jsonls")
