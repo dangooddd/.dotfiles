@@ -18,8 +18,10 @@ vim.opt.splitbelow = true
 vim.opt.scrolloff = 3
 vim.opt.ruler = false -- removes cursor position from lastline
 vim.opt.hlsearch = false -- remove highlight on search
-vim.opt.pumheight = 10 -- size of completion window
 vim.opt.showmode = false -- do not show mode under statusline
+vim.opt.pumheight = 10
+vim.opt.pumborder = vim.o.winborder
+vim.opt.completeopt = "menu,menuone,noselect,noinsert,popup"
 vim.opt.mouse = "a"
 
 -- tabs
@@ -59,6 +61,12 @@ end)
 -- LSP
 --------------------------------------------------------------------------------
 vim.diagnostic.config({ virtual_text = true })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        vim.lsp.completion.enable(true, args.data.client_id, args.buf, { autotrigger = true })
+    end,
+})
 
 -- rust
 vim.lsp.config("rust_analyzer", {
