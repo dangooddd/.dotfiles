@@ -10,9 +10,7 @@ return {
         "williamboman/mason.nvim",
         config = function()
             require("mason").setup({
-                ui = {
-                    backdrop = 100,
-                },
+                ui = { backdrop = 100 },
             })
         end,
     },
@@ -28,20 +26,6 @@ return {
                         path = "${3rd}/luv/library",
                         words = { "vim%.uv" },
                     },
-                },
-            })
-        end,
-    },
-
-    -- typst
-    {
-        "chomosuke/typst-preview.nvim",
-        ft = "typst",
-        version = "1.*",
-        config = function()
-            require("typst-preview").setup({
-                dependencies_bin = {
-                    ["tinymist"] = vim.fn.exepath("tinymist"),
                 },
             })
         end,
