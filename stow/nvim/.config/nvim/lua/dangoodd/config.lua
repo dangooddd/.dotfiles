@@ -22,6 +22,7 @@ vim.opt.showmode = false -- do not show mode under statusline
 vim.opt.pumheight = 10
 vim.opt.pumborder = vim.o.winborder
 vim.opt.completeopt = "menu,menuone,noselect,noinsert,popup"
+vim.opt.wildmode = "longest:full"
 vim.opt.mouse = "a"
 
 -- tabs
