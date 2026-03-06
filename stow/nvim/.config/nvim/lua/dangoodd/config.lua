@@ -16,23 +16,21 @@ vim.opt.wrap = false
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.scrolloff = 3
-vim.opt.ruler = false    -- removes cursor position from lastline
 vim.opt.hlsearch = false -- remove highlight on search
-vim.opt.showmode = false -- do not show mode under statusline
 vim.opt.pumheight = 10
 -- TODO: nvim 0.12
 -- vim.opt.pumborder = vim.o.winborder
-vim.opt.completeopt = "menu,menuone,noselect,noinsert,popup"
+vim.opt.completeopt = "menu,menuone,noselect,noinsert"
 vim.opt.shortmess:append({ c = true, C = true }) -- remove completion messages
 vim.opt.wildmode = "longest:full"
 vim.opt.mouse = "a"
 
 -- tabs
-vim.opt.tabstop = 4         -- 1 tab represented as 4 spaces
-vim.opt.expandtab = true    -- <tab> key will create " " insead of "\t"
-vim.opt.shiftwidth = 4      -- indent change after backspace and >> <<
-vim.opt.softtabstop = 4     -- number of spaces instead of tab
-vim.opt.autoindent = true   -- auto indent
+vim.opt.tabstop = 4 -- 1 tab represented as 4 spaces
+vim.opt.expandtab = true -- <tab> key will create " " insead of "\t"
+vim.opt.shiftwidth = 4 -- indent change after backspace and >> <<
+vim.opt.softtabstop = 4 -- number of spaces instead of tab
+vim.opt.autoindent = true -- auto indent
 vim.opt.cinkeys:remove(":") -- shit.
 
 -- global
@@ -40,6 +38,43 @@ vim.g.netrw_banner = 0
 vim.g.clipboard = "osc52"
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+
+--------------------------------------------------------------------------------
+-- Statusline
+--------------------------------------------------------------------------------
+function _G.statusline_diagnostics()
+    local count = vim.diagnostic.count(0, {})
+    local e = count[vim.diagnostic.severity.ERROR] or 0
+    local w = count[vim.diagnostic.severity.WARN] or 0
+    local i = count[vim.diagnostic.severity.INFO] or 0
+
+    local parts = {}
+
+    if e > 0 then
+        parts[#parts + 1] = "%#DiagnosticError#E:" .. e
+    end
+
+    if w > 0 then
+        parts[#parts + 1] = "%#DiagnosticWarn#W:" .. w
+    end
+
+    if i > 0 then
+        parts[#parts + 1] = "%#DiagnosticInfo#I:" .. i
+    end
+
+    if #parts == 0 then
+        return ""
+    end
+
+    return table.concat(parts, "%#StatusLine# ") .. "%#StatusLine#"
+end
+
+vim.o.ruler = false
+vim.o.statusline = table.concat({
+    " %f %y%m%r",
+    "%=",
+    "%{%v:lua.statusline_diagnostics()%} %l:%c %p%% ",
+})
 
 --------------------------------------------------------------------------------
 -- Keybinds
@@ -63,13 +98,17 @@ end)
 --------------------------------------------------------------------------------
 -- LSP
 --------------------------------------------------------------------------------
-vim.diagnostic.config({ virtual_text = true })
-
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
-        vim.lsp.completion.enable(true, args.data.client_id, args.buf, { autotrigger = true })
+        local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
+        if client:supports_method("textDocument/completion") then
+            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+        end
     end,
 })
+
+vim.diagnostic.config({ virtual_text = true })
 
 -- rust
 vim.lsp.config("rust_analyzer", {
@@ -91,6 +130,8 @@ vim.lsp.config("lua_ls", {
             workspace = {
                 library = {
                     vim.env.VIMRUNTIME,
+                    "${3rd}/luv/library",
+                    vim.fn.stdpath("data") .. "/lazy",
                 },
             },
             diagnostics = {

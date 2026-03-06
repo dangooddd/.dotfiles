@@ -19,9 +19,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- lazy config
 require("lazy").setup({
-    spec = {
-        { import = "dangoodd.plugins" },
-    },
+    spec = require("dangoodd.plugins"),
     install = {
         missing = true,
     },
