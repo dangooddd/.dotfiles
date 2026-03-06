@@ -6,7 +6,6 @@ return {
             require("rose-pine").setup({
                 styles = {
                     italic = false,
-                    -- transparency = true,
                 },
                 highlight_groups = {
                     Pmenu = { bg = "overlay" },
@@ -15,6 +14,8 @@ return {
                     PmenuKindSel = { bg = "highlight_med", fg = "rose" },
                     PmenuExtraSel = { link = "PmenuSel" },
                     PmenuSbar = { bg = "highlight_med" },
+                    StatusLineTerm = { link = "StatusLine" },
+                    StatusLineTermNC = { link = "StatusLineNC" },
                 },
             })
             vim.cmd("colorscheme rose-pine")
