@@ -16,21 +16,23 @@ vim.opt.wrap = false
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.scrolloff = 3
-vim.opt.ruler = false -- removes cursor position from lastline
+vim.opt.ruler = false    -- removes cursor position from lastline
 vim.opt.hlsearch = false -- remove highlight on search
 vim.opt.showmode = false -- do not show mode under statusline
 vim.opt.pumheight = 10
-vim.opt.pumborder = vim.o.winborder
+-- TODO: nvim 0.12
+-- vim.opt.pumborder = vim.o.winborder
 vim.opt.completeopt = "menu,menuone,noselect,noinsert,popup"
+vim.opt.shortmess:append({ c = true, C = true }) -- remove completion messages
 vim.opt.wildmode = "longest:full"
 vim.opt.mouse = "a"
 
 -- tabs
-vim.opt.tabstop = 4 -- 1 tab represented as 4 spaces
-vim.opt.expandtab = true -- <tab> key will create " " insead of "\t"
-vim.opt.shiftwidth = 4 -- indent change after backspace and >> <<
-vim.opt.softtabstop = 4 -- number of spaces instead of tab
-vim.opt.autoindent = true -- auto indent
+vim.opt.tabstop = 4         -- 1 tab represented as 4 spaces
+vim.opt.expandtab = true    -- <tab> key will create " " insead of "\t"
+vim.opt.shiftwidth = 4      -- indent change after backspace and >> <<
+vim.opt.softtabstop = 4     -- number of spaces instead of tab
+vim.opt.autoindent = true   -- auto indent
 vim.opt.cinkeys:remove(":") -- shit.
 
 -- global

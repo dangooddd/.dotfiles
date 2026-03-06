@@ -24,14 +24,13 @@ require("lazy").setup({
     },
     install = {
         missing = true,
-        colorscheme = { "gruvbox", "retrobox" },
     },
     change_detection = {
         enable = true,
         notify = false,
     },
     ui = {
-        border = "rounded",
+        border = vim.o.winborder,
         backdrop = 100,
     },
 })
