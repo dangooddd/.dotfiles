@@ -11,9 +11,11 @@ return {
                 winopts = {
                     backdrop = 100,
                     title_flags = false,
+                    border = vim.o.winborder,
                     preview = {
                         horizontal = "right:50%",
                         layout = "horizontal",
+                        border = vim.o.winborder,
                     },
                 },
             })
