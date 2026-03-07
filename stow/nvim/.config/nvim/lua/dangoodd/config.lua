@@ -18,8 +18,6 @@ vim.opt.splitbelow = true
 vim.opt.scrolloff = 3
 vim.opt.hlsearch = false -- remove highlight on search
 vim.opt.pumheight = 10
--- TODO: nvim 0.12
--- vim.opt.pumborder = vim.o.winborder
 vim.opt.completeopt = "menu,menuone,noselect,noinsert"
 vim.opt.shortmess:append({ c = true, C = true }) -- remove completion messages
 vim.opt.wildmode = "longest:full"
