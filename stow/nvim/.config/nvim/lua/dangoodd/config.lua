@@ -71,7 +71,7 @@ end
 
 vim.o.ruler = false
 vim.o.statusline = table.concat({
-    " %f %m%r",
+    " %<%f %m%r",
     "%=",
     "%{%v:lua.statusline_diagnostics()%} %l:%c %p%% ",
 })
