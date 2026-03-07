@@ -18,7 +18,7 @@
     tool = nvimdiff
 
 [difftool]
-    prompt = false
+    prompt = true
 
 [merge]
     tool = nvimdiff

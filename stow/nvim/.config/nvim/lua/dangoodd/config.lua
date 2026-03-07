@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
 vim.opt.guicursor:remove("t:block-blinkon500-blinkoff500-TermCursor")
-vim.opt.fillchars:append({ eob = " " })
+vim.opt.fillchars:append({ eob = " ", diff = " " })
 vim.opt.winborder = "single"
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -21,6 +21,7 @@ vim.opt.pumheight = 10
 vim.opt.completeopt = "menu,menuone,noselect,noinsert"
 vim.opt.shortmess:append("cC") -- remove completion messages
 vim.opt.wildmode = "longest:full"
+vim.opt.diffopt = "algorithm:histogram,internal,filler,closeoff,indent-heuristic,linematch:60,context:3"
 vim.opt.mouse = "a"
 
 -- tabs
@@ -38,7 +39,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 --------------------------------------------------------------------------------
--- Statusline
+-- Theming
 --------------------------------------------------------------------------------
 function _G.statusline_diagnostics()
     local count = vim.diagnostic.count(0, {})
@@ -64,7 +65,7 @@ function _G.statusline_diagnostics()
         return ""
     end
 
-    return table.concat(parts, "%#StatusLine# ") .. "%#StatusLine#"
+    return table.concat(parts, " ") .. "%*"
 end
 
 vim.o.ruler = false
@@ -80,15 +81,16 @@ vim.o.statusline = table.concat({
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
 vim.keymap.set("n", "<leader>K", vim.diagnostic.open_float)
-vim.keymap.set("n", "<leader>qd", vim.diagnostic.setqflist)
 vim.keymap.set("n", "<leader>ql", "<Cmd>copen<CR>")
 
--- toggle wrap
+vim.keymap.set("n", "<leader>qd", function()
+    vim.diagnostic.setqflist({ open = false })
+end)
+
 vim.keymap.set("n", "<leader>tw", function()
     vim.o.wrap = not vim.o.wrap
 end)
 
--- toggle inlay hints
 vim.keymap.set("n", "<leader>th", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end)
