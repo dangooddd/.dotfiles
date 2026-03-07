@@ -11,6 +11,7 @@ return {
                     Pmenu = { bg = "overlay" },
                     PmenuExtra = { link = "Pmenu" },
                     PmenuSel = { bg = "highlight_med" },
+                    PmenuKind = { link = "Pmenu" },
                     PmenuKindSel = { bg = "highlight_med", fg = "rose" },
                     PmenuExtraSel = { link = "PmenuSel" },
                     PmenuSbar = { bg = "highlight_med" },
