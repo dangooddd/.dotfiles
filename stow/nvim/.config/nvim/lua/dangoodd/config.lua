@@ -2,7 +2,7 @@
 -- Options
 --------------------------------------------------------------------------------
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
-vim.opt.guicursor:remove({ "t:block-blinkon500-blinkoff500-TermCursor" })
+vim.opt.guicursor:remove("t:block-blinkon500-blinkoff500-TermCursor")
 vim.opt.fillchars:append({ eob = " " })
 vim.opt.winborder = "single"
 vim.opt.number = true
@@ -19,7 +19,7 @@ vim.opt.scrolloff = 3
 vim.opt.hlsearch = false -- remove highlight on search
 vim.opt.pumheight = 10
 vim.opt.completeopt = "menu,menuone,noselect,noinsert"
-vim.opt.shortmess:append({ c = true, C = true }) -- remove completion messages
+vim.opt.shortmess:append("cC") -- remove completion messages
 vim.opt.wildmode = "longest:full"
 vim.opt.mouse = "a"
 
@@ -106,7 +106,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
                 convert = function(item)
                     return {
                         abbr = item.label,
-                        kind = item.kind and vim.lsp.protocol.CompletionItemKind[item.kind] or "",
+                        kind = vim.lsp.protocol.CompletionItemKind[item.kind] or "",
                         menu = "",
                     }
                 end,
