@@ -5,47 +5,47 @@ promptToReturnFromSubprocess: false
 notARepository: skip
 
 gui:
-  border: single
-
   theme:
     activeBorderColor:
-      - "#31748f"
+      - "#97BACC"
       - bold
 
     inactiveBorderColor:
-      - "#6e6a86"
+      - "#556753"
 
     searchingActiveBorderColor:
-      - "#ebbcba"
+      - "#DF867A"
       - bold
 
     optionsTextColor:
-      - "#9ccfd8"
+      - "#63AFA0"
 
     selectedLineBgColor:
-      - "#403d52"
+      - "#2D382E"
 
     inactiveViewSelectedLineBgColor:
-      - "#21202e"
+      - "#1D261F"
       - bold
 
     cherryPickedCommitFgColor:
-      - "#1f1d2e"
+      - "#131914"
 
     cherryPickedCommitBgColor:
-      - "#ebbcba"
+      - "#DF867A"
 
     markedBaseCommitFgColor:
-      - "#9ccfd8"
+      - "#63AFA0"
 
     markedBaseCommitBgColor:
-      - "#f6c177"
+      - "#DAC05B"
 
     unstagedChangesColor:
-      - "#eb6f92"
+      - "#DF867A"
 
     defaultFgColor:
-      - "#e0def4"
+      - "#D4DCC2"
 
   authorColors:
-    "*": "#9ccfd8"
+    "*": "#63AFA0"
+
+  border: single
