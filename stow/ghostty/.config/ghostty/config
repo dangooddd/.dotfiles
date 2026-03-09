@@ -19,11 +19,36 @@ mouse-hide-while-typing = true
 window-theme = ghostty
 macos-option-as-alt = left
 macos-titlebar-style = tabs 
-theme = Rose Pine
 
 cursor-style = block
 cursor-style-blink = false
 adjust-cursor-thickness = 2
+
+################################################################################
+# Theme
+################################################################################
+background = 131914
+foreground = D4DCC2
+
+selection-background = 2D382E
+selection-foreground = cell-foreground
+
+palette = 0=131914
+palette = 1=DF867A
+palette = 2=84B87E
+palette = 3=DAC05B
+palette = 4=97BACC
+palette = 5=B89CC1
+palette = 6=63AFA0
+palette = 7=D4DCC2
+palette = 8=556753
+palette = 9=DF867A
+palette = 10=84B87E
+palette = 11=DAC05B
+palette = 12=97BACC
+palette = 13=B89CC1
+palette = 14=63AFA0
+palette = 15=F5F9EA
 
 ################################################################################
 # Keybinds
@@ -44,3 +69,8 @@ keybind = alt+ctrl+j=resize_split:down,10
 keybind = alt+ctrl+k=resize_split:up,10
 keybind = alt+ctrl+l=resize_split:right,10
 keybind = alt+ctrl+plus=equalize_splits
+
+################################################################################
+# Local
+################################################################################
+config-file = ?local.conf

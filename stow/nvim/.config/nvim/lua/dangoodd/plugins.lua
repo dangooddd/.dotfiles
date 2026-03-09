@@ -1,30 +1,5 @@
 return {
     {
-        "rose-pine/neovim",
-        name = "rose-pine",
-        config = function()
-            require("rose-pine").setup({
-                styles = {
-                    italic = false,
-                },
-                highlight_groups = {
-                    Pmenu = { bg = "highlight_low" },
-                    PmenuExtra = { link = "Pmenu" },
-                    PmenuSel = { bg = "highlight_med" },
-                    PmenuKind = { link = "Pmenu" },
-                    PmenuKindSel = { bg = "highlight_med", fg = "rose" },
-                    PmenuExtraSel = { link = "PmenuSel" },
-                    PmenuSbar = { link = "PmenuSel" },
-                    PmenuThumb = { bg = "highlight_high" },
-                    StatusLineTerm = { link = "StatusLine" },
-                    StatusLineTermNC = { link = "StatusLineNC" },
-                },
-            })
-            vim.cmd("colorscheme rose-pine")
-        end,
-    },
-
-    {
         "stevearc/conform.nvim",
         event = "BufWritePre",
         cmd = "ConformInfo",

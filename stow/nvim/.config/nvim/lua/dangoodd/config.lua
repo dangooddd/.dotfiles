@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
 vim.opt.guicursor:remove("t:block-blinkon500-blinkoff500-TermCursor")
-vim.opt.fillchars:append({ eob = " ", diff = " " })
+vim.opt.fillchars:append({ eob = " ", diff = "/" })
 vim.opt.winborder = "single"
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -74,6 +74,8 @@ vim.o.statusline = table.concat({
     "%=",
     "%{%v:lua.statusline_diagnostics()%} %l:%c %p%% ",
 })
+
+vim.cmd("colorscheme jungle")
 
 --------------------------------------------------------------------------------
 -- Keybinds
@@ -198,14 +200,6 @@ vim.lsp.config("bashls", {
 vim.lsp.enable("bashls")
 
 -- cpp
-vim.lsp.config("clangd", {
-    cmd = {
-        "clangd",
-        "--fallback-style=llvm",
-        "--header-insertion=iwyu",
-        "-j=4",
-    },
-})
 vim.lsp.enable("clangd")
 
 -- typst
