@@ -1,9 +1,322 @@
 --------------------------------------------------------------------------------
--- init.lua
+-- Options
 --------------------------------------------------------------------------------
-require("dangoodd.config")
+vim.o.clipboard = "unnamedplus" -- use system clipboard
+vim.o.winborder = "single"
+vim.o.undofile = true -- save state of file on write
+vim.o.autoread = true -- autoread changes from other sources
+vim.o.wrap = false
+vim.o.splitright = true
+vim.o.splitbelow = true
+vim.o.scrolloff = 3
+vim.o.hlsearch = false -- remove highlight on search
+vim.o.mouse = "a"
+vim.opt.diffopt:append("algorithm:histogram")
+vim.opt.guicursor:remove("t:block-blinkon500-blinkoff500-TermCursor")
+vim.opt.fillchars:append({ eob = " ", diff = "/" })
 
--- plugins
-if not vim.g.vscode then
-    require("dangoodd.lazy")
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.signcolumn = "yes"
+vim.o.cursorline = true
+vim.o.cursorlineopt = "number"
+
+vim.o.pumheight = 10
+vim.o.pumborder = vim.o.winborder
+vim.o.completeopt = "menu,menuone,noselect,noinsert"
+vim.o.wildmode = "longest:full"
+vim.opt.shortmess:append("cC") -- remove completion messages
+
+vim.o.tabstop = 4 -- 1 tab represented as 4 spaces
+vim.o.expandtab = true -- <tab> key will create " " insead of "\t"
+vim.o.shiftwidth = 4 -- indent change after backspace and >> <<
+vim.o.softtabstop = 4 -- number of spaces instead of tab
+vim.o.autoindent = true -- auto indent
+
+vim.g.netrw_banner = 0
+vim.g.clipboard = "osc52"
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+vim.diagnostic.config({ virtual_text = true })
+
+--------------------------------------------------------------------------------
+-- Theme
+--------------------------------------------------------------------------------
+function _G.tabline()
+    local s = ""
+
+    for i = 1, vim.fn.tabpagenr("$") do
+        local is_current = (i == vim.fn.tabpagenr())
+        local win = vim.fn.tabpagewinnr(i)
+        local buf = vim.fn.tabpagebuflist(i)[win]
+        local name = vim.api.nvim_buf_get_name(buf)
+        local close = vim.bo[buf].modified and " + " or " X "
+        name = name == "" and "[No Name]" or vim.fn.fnamemodify(name, ":t")
+
+        s = s .. " " .. (is_current and "%#TabLineSel#" or "%#TabLine#")
+        s = s .. "%" .. i .. "T"
+        s = s .. name .. "%" .. i .. "X" .. close
+        s = s .. "%" .. i .. "T"
+    end
+
+    s = s .. "%#TabLineFill#%T"
+
+    return s
 end
+
+function _G.statusline_diagnostic()
+    local count = vim.diagnostic.count(0, {})
+    local e = count[vim.diagnostic.severity.ERROR] or 0
+    local w = count[vim.diagnostic.severity.WARN] or 0
+    local i = count[vim.diagnostic.severity.INFO] or 0
+
+    local parts = {}
+
+    if e > 0 then
+        parts[#parts + 1] = "%#DiagnosticError#E:" .. e
+    end
+
+    if w > 0 then
+        parts[#parts + 1] = "%#DiagnosticWarn#W:" .. w
+    end
+
+    if i > 0 then
+        parts[#parts + 1] = "%#DiagnosticInfo#I:" .. i
+    end
+
+    if #parts == 0 then
+        return ""
+    end
+
+    return table.concat(parts, " ") .. "%*"
+end
+
+vim.o.ruler = false
+vim.o.tabline = "%!v:lua.tabline()"
+vim.o.statusline = " %<%f %m%r %=%{%v:lua.statusline_diagnostic()%} %l:%c %p%% "
+vim.cmd("colorscheme jungle")
+
+--------------------------------------------------------------------------------
+-- Plugins
+--------------------------------------------------------------------------------
+vim.pack.add({
+    { src = "https://github.com/stevearc/conform.nvim" },
+    { src = "https://github.com/kylechui/nvim-surround" },
+    { src = "https://github.com/nvim-mini/mini.icons" },
+    { src = "https://github.com/neovim/nvim-lspconfig" },
+    { src = "https://github.com/williamboman/mason.nvim" },
+    { src = "https://github.com/dangooddd/pyrepl.nvim" },
+    { src = "https://github.com/ibhagwan/fzf-lua" },
+    { src = "https://github.com/stevearc/oil.nvim" },
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+}, {
+    confirm = false,
+    load = true,
+})
+
+require("nvim-treesitter").setup()
+require("nvim-surround").setup()
+require("mini.icons").setup()
+require("pyrepl").setup()
+require("mason").setup({ ui = { backdrop = 100 } })
+
+require("conform").setup({
+    formatters_by_ft = {
+        python = { "ruff_format", "ruff_organize_imports" },
+        lua = { "stylua" },
+    },
+    format_after_save = function(bufnr)
+        if not vim.b[bufnr].conform_stop then
+            return { lsp_format = "fallback" }
+        end
+    end,
+})
+
+require("fzf-lua").setup({
+    fzf_colors = true,
+    winopts = {
+        backdrop = 100,
+        title_flags = false,
+        border = vim.o.winborder,
+        preview = {
+            horizontal = "right:50%",
+            layout = "horizontal",
+            border = vim.o.winborder,
+        },
+    },
+})
+
+require("oil").setup({
+    default_file_explorer = true,
+    columns = { { "icon", add_padding = false } },
+    view_options = { show_hidden = true },
+    float = {
+        max_width = 0.8,
+        preview_split = "right",
+        win_options = { winhighlight = "NormalNC:NormalFloat" },
+    },
+    keymaps = { ["q"] = { "actions.close", mode = "n" } },
+})
+
+--------------------------------------------------------------------------------
+-- Keybinds
+--------------------------------------------------------------------------------
+vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
+vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
+vim.keymap.set("n", "<leader>K", vim.diagnostic.open_float)
+vim.keymap.set("n", "<leader>ql", "<Cmd>copen<CR>")
+
+vim.keymap.set("n", "<leader>qd", function()
+    vim.diagnostic.setqflist({ open = false })
+end)
+
+vim.keymap.set("n", "<leader>tw", function()
+    vim.o.wrap = not vim.o.wrap
+end)
+
+vim.keymap.set("n", "<leader>th", function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end)
+
+vim.api.nvim_create_user_command("ConformToggle", function()
+    vim.b.conform_stop = not vim.b.conform_stop
+end, {})
+
+vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
+vim.keymap.set("n", "<leader>ff", require("fzf-lua").files)
+vim.keymap.set("n", "<leader>fh", require("fzf-lua").helptags)
+vim.keymap.set("n", "<leader>fb", require("fzf-lua").buffers)
+vim.keymap.set("n", "<leader>fg", require("fzf-lua").git_files)
+vim.keymap.set("n", "<leader>fd", require("fzf-lua").diagnostics_workspace)
+vim.keymap.set("n", "<leader>fl", require("fzf-lua").live_grep)
+vim.keymap.set("n", "<leader>fz", require("fzf-lua").builtin)
+vim.keymap.set("n", "<leader>fr", require("fzf-lua").resume)
+
+vim.keymap.set("n", "<leader>jo", require("pyrepl").open_repl)
+vim.keymap.set("n", "<leader>jh", require("pyrepl").hide_repl)
+vim.keymap.set("n", "<leader>jc", require("pyrepl").close_repl)
+vim.keymap.set("n", "<leader>ji", require("pyrepl").open_image_history)
+vim.keymap.set("n", "<leader>jb", require("pyrepl").send_buffer)
+vim.keymap.set("n", "<leader>jl", require("pyrepl").send_cell)
+vim.keymap.set("v", "<leader>jv", require("pyrepl").send_visual)
+vim.keymap.set("n", "<leader>jp", require("pyrepl").step_cell_backward)
+vim.keymap.set("n", "<leader>jn", require("pyrepl").step_cell_forward)
+vim.keymap.set("n", "<leader>je", require("pyrepl").export_to_notebook)
+vim.keymap.set({ "n", "t" }, "<C-j>", require("pyrepl").toggle_repl_focus)
+vim.keymap.set("n", "<leader>js", ":PyreplInstall")
+
+--------------------------------------------------------------------------------
+-- Hooks
+--------------------------------------------------------------------------------
+local langs = {}
+for _, value in ipairs(require("nvim-treesitter").get_available()) do
+    langs[value] = true
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "*",
+    callback = vim.schedule_wrap(function(event)
+        local lang = vim.treesitter.language.get_lang(event.match)
+        if not langs[lang] then
+            return
+        end
+
+        local ok, _ = pcall(vim.treesitter.start, event.buf)
+        if not ok then
+            require("nvim-treesitter").install(lang)
+        end
+    end),
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
+        if client:supports_method("textDocument/completion") then
+            vim.lsp.completion.enable(true, client.id, args.buf, {
+                autotrigger = true,
+                convert = function()
+                    return { menu = "" }
+                end,
+            })
+        end
+    end,
+})
+
+--------------------------------------------------------------------------------
+-- LSP
+--------------------------------------------------------------------------------
+vim.lsp.config("rust_analyzer", {
+    settings = {
+        ["rust-analyzer"] = {
+            diagnostics = {
+                enable = true,
+                experimental = { enable = true },
+            },
+        },
+    },
+})
+
+vim.lsp.config("lua_ls", {
+    settings = {
+        Lua = {
+            workspace = {
+                library = {
+                    vim.env.VIMRUNTIME,
+                    "${3rd}/luv/library",
+                    vim.fs.joinpath(vim.fn.stdpath("data"), "site", "pack", "core", "opt"),
+                },
+            },
+            diagnostics = {
+                disable = {
+                    "missing-fields",
+                },
+            },
+        },
+    },
+})
+
+vim.lsp.config("texlab", {
+    settings = {
+        texlab = {
+            build = {
+                executable = "latexmk",
+                args = {
+                    "-lualatex",
+                    "-interaction=nonstopmode",
+                    "-outdir=build",
+                },
+                onSave = true,
+            },
+        },
+    },
+})
+
+vim.lsp.config("bashls", {
+    filetypes = { "sh", "zsh" },
+    settings = {
+        bashIde = {
+            shellcheckArguments = {
+                "--exclude=SC1090,SC1091,SC2076,SC2164",
+            },
+        },
+    },
+})
+
+vim.lsp.config("tinymist", {
+    settings = {
+        formatterMode = "typstyle",
+        exportPdf = "onSave",
+        semanticTokens = "disable",
+    },
+})
+
+vim.lsp.enable("ruff")
+vim.lsp.enable("ty")
+vim.lsp.enable("lua_ls")
+vim.lsp.enable("clangd")
+vim.lsp.enable("texlab")
+vim.lsp.enable("bashls")
+vim.lsp.enable("tinymist")
+vim.lsp.enable("jsonls")
+vim.lsp.enable("rust_analyzer")
