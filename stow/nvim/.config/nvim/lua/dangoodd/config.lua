@@ -39,9 +39,31 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 --------------------------------------------------------------------------------
--- Theming
+-- Theme
 --------------------------------------------------------------------------------
-function _G.statusline_diagnostics()
+function _G.tabline()
+    local s = ""
+
+    for i = 1, vim.fn.tabpagenr("$") do
+        local is_current = (i == vim.fn.tabpagenr())
+        local win = vim.fn.tabpagewinnr(i)
+        local buf = vim.fn.tabpagebuflist(i)[win]
+        local name = vim.api.nvim_buf_get_name(buf)
+        local close = vim.bo[buf].modified and " + " or " X "
+        name = name == "" and "[No Name]" or vim.fn.fnamemodify(name, ":t")
+
+        s = s .. " " .. (is_current and "%#TabLineSel#" or "%#TabLine#")
+        s = s .. "%" .. i .. "T"
+        s = s .. name .. "%" .. i .. "X" .. close
+        s = s .. "%" .. i .. "T"
+    end
+
+    s = s .. "%#TabLineFill#%T"
+
+    return s
+end
+
+function _G.statusline_diagnostic()
     local count = vim.diagnostic.count(0, {})
     local e = count[vim.diagnostic.severity.ERROR] or 0
     local w = count[vim.diagnostic.severity.WARN] or 0
@@ -69,12 +91,8 @@ function _G.statusline_diagnostics()
 end
 
 vim.o.ruler = false
-vim.o.statusline = table.concat({
-    " %<%f %m%r",
-    "%=",
-    "%{%v:lua.statusline_diagnostics()%} %l:%c %p%% ",
-})
-
+vim.o.tabline = "%!v:lua.tabline()"
+vim.o.statusline = " %<%f %m%r %=%{%v:lua.statusline_diagnostic()%} %l:%c %p%% "
 vim.cmd("colorscheme jungle")
 
 --------------------------------------------------------------------------------
