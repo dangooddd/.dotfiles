@@ -170,16 +170,7 @@ vim.lsp.config("lua_ls", {
 vim.lsp.enable("lua_ls")
 
 -- python
-vim.lsp.config("basedpyright", {
-    settings = {
-        basedpyright = {
-            analysis = {
-                typeCheckingMode = "standard",
-            },
-        },
-    },
-})
-
+vim.lsp.enable("ruff")
 vim.lsp.enable("ty")
 
 -- latex
