@@ -4,7 +4,7 @@
 vim.o.clipboard = "unnamedplus" -- use system clipboard
 vim.o.winborder = "single"
 vim.o.undofile = true -- save state of file on write
-vim.o.autoread = true -- autoread changes from other sources
+vim.o.autoread = true -- read changes from other sources
 vim.o.wrap = false
 vim.o.splitright = true
 vim.o.splitbelow = true
@@ -31,10 +31,9 @@ vim.o.tabstop = 4 -- 1 tab represented as 4 spaces
 vim.o.expandtab = true -- <tab> key will create " " insead of "\t"
 vim.o.shiftwidth = 4 -- indent change after backspace and >> <<
 vim.o.softtabstop = 4 -- number of spaces instead of tab
-vim.o.autoindent = true -- auto indent
+vim.o.autoindent = true
 
 vim.g.netrw_banner = 0
-vim.g.clipboard = "osc52"
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.diagnostic.config({ virtual_text = true })
@@ -159,7 +158,7 @@ require("oil").setup({
 })
 
 --------------------------------------------------------------------------------
--- Keybinds
+-- Keybinds / Commands
 --------------------------------------------------------------------------------
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
@@ -183,6 +182,7 @@ vim.api.nvim_create_user_command("ConformToggle", function()
 end, {})
 
 vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
+
 vim.keymap.set("n", "<leader>ff", require("fzf-lua").files)
 vim.keymap.set("n", "<leader>fh", require("fzf-lua").helptags)
 vim.keymap.set("n", "<leader>fb", require("fzf-lua").buffers)
