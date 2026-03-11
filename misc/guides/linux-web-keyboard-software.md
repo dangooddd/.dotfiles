@@ -12,7 +12,7 @@ Then create udev rules:
 
 ```sh
 ID=19f5
-sudo echo 'KERNEL=="hidraw*", ATTRS{idVendor}=="$ID", MODE="0666"' > /etc/udev/rules.d/50-nuphy.rules
+printf 'KERNEL=="hidraw*", ATTRS{idVendor}=="%s", MODE="0666"' "$ID" | sudo tee /etc/udev/rules.d/50-nuphy.rules
 ```
 
 Then reload udev rules:
