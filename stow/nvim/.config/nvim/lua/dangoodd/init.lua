@@ -14,7 +14,6 @@ vim.o.mouse = "a"
 vim.opt.diffopt:append("algorithm:histogram")
 vim.opt.guicursor:remove("t:block-blinkon500-blinkoff500-TermCursor")
 vim.opt.fillchars:append({ eob = " ", diff = "/" })
-
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.signcolumn = "yes"
@@ -36,12 +35,23 @@ vim.o.autoindent = true
 vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.diagnostic.config({ virtual_text = true })
+
+vim.diagnostic.config({
+    virtual_text = true,
+    status = {
+        format = {
+            [vim.diagnostic.severity.ERROR] = "%#DiagnosticError#E",
+            [vim.diagnostic.severity.WARN] = "%#DiagnosticWarn#W",
+            [vim.diagnostic.severity.INFO] = "%#DiagnosticInfo#I",
+            [vim.diagnostic.severity.HINT] = "%#DiagnosticHint#H",
+        },
+    },
+})
 
 --------------------------------------------------------------------------------
 -- Theme
 --------------------------------------------------------------------------------
-function _G.tabline()
+function _G.Tabline()
     local s = ""
 
     for i = 1, vim.fn.tabpagenr("$") do
@@ -63,36 +73,9 @@ function _G.tabline()
     return s
 end
 
-function _G.statusline_diagnostic()
-    local count = vim.diagnostic.count(0, {})
-    local e = count[vim.diagnostic.severity.ERROR] or 0
-    local w = count[vim.diagnostic.severity.WARN] or 0
-    local i = count[vim.diagnostic.severity.INFO] or 0
-
-    local parts = {}
-
-    if e > 0 then
-        parts[#parts + 1] = "%#DiagnosticError#E:" .. e
-    end
-
-    if w > 0 then
-        parts[#parts + 1] = "%#DiagnosticWarn#W:" .. w
-    end
-
-    if i > 0 then
-        parts[#parts + 1] = "%#DiagnosticInfo#I:" .. i
-    end
-
-    if #parts == 0 then
-        return ""
-    end
-
-    return table.concat(parts, " ") .. "%*"
-end
-
 vim.o.ruler = false
-vim.o.tabline = "%!v:lua.tabline()"
-vim.o.statusline = " %<%f %m%r %=%{%v:lua.statusline_diagnostic()%} %l:%c %p%% "
+vim.o.tabline = "%!v:lua.Tabline()"
+vim.o.statusline = " %<%f %m%r %=%{%v:lua.vim.diagnostic.status()%} %l:%c %p%% "
 vim.cmd("colorscheme jungle")
 
 --------------------------------------------------------------------------------
