@@ -60,7 +60,7 @@ function _G.Tabline()
         local is_current = (i == vim.fn.tabpagenr())
         local win = vim.fn.tabpagewinnr(i)
         local buf = vim.fn.tabpagebuflist(i)[win]
-        local name = vim.api.nvim_buf_get_name(buf)
+        local name = vim.api.nvim_buf_get_name(buf):gsub("/+$", "")
         local close = vim.bo[buf].modified and " + " or " X "
         name = name == "" and "[No Name]" or vim.fn.fnamemodify(name, ":t")
 
