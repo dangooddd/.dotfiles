@@ -32,6 +32,13 @@ vim.o.shiftwidth = 4 -- indent change after backspace and >> <<
 vim.o.softtabstop = 4 -- number of spaces instead of tab
 vim.o.autoindent = true
 
+vim.o.langmap = [[йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ъ],]]
+    .. [[фa,ыs,вd,аf,пg,рh,оj,лk,дl,ж\;,э',]]
+    .. [[яz,чx,сc,мv,иb,тn,ьm,б\,,ю.,]]
+    .. [[ЁQ,ЦW,УE,КR,ЕT,НY,ГU,ШI,ЩO,ЗP,Х{,Ъ},]]
+    .. [[ФA,ЫS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\:,Э",]]
+    .. [[ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б<,Ю>]]
+
 vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
