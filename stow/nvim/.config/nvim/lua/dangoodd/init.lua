@@ -1,7 +1,6 @@
 --------------------------------------------------------------------------------
 -- Options
 --------------------------------------------------------------------------------
-vim.o.clipboard = "unnamedplus" -- use system clipboard
 vim.o.winborder = "single"
 vim.o.undofile = true -- save state of file on write
 vim.o.autoread = true -- read changes from other sources
@@ -14,6 +13,7 @@ vim.o.mouse = "a"
 vim.opt.diffopt:append("algorithm:histogram")
 vim.opt.guicursor:remove("t:block-blinkon500-blinkoff500-TermCursor")
 vim.opt.fillchars:append({ eob = " ", diff = "/" })
+
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.signcolumn = "yes"
@@ -151,6 +151,10 @@ require("oil").setup({
 --------------------------------------------------------------------------------
 -- Keybinds / Commands
 --------------------------------------------------------------------------------
+vim.keymap.set({ "n", "x" }, "<leader>y", '"+y')
+vim.keymap.set({ "n", "x" }, "<leader>p", '"+p')
+vim.keymap.set({ "n", "x" }, "<leader>P", '"+P')
+
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
 vim.keymap.set("n", "<leader>K", vim.diagnostic.open_float)
