@@ -13,7 +13,7 @@
       "src": "https://github.com/williamboman/mason.nvim"
     },
     "mini.icons": {
-      "rev": "ff2e4f1d29f659cc2bad0f9256f2f6195c6b2428",
+      "rev": "5b9076dae1bfbe47ba4a14bc8b967cde0ab5d77e",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "nvim-lspconfig": {
