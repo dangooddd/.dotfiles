@@ -124,7 +124,6 @@ require("conform").setup({
 })
 
 require("fzf-lua").setup({
-    fzf_colors = true,
     winopts = {
         backdrop = 100,
         title_flags = false,
