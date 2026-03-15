@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ! command -v uv &> /dev/null; then
+if ! command -v uv &>/dev/null; then
     echo "$(basename "$0"): uv not found, skip"
     exit
 fi
@@ -8,6 +8,6 @@ fi
 script_dir="$(dirname "$(realpath "$0")")"
 cd "$script_dir/../misc/packages"
 
-for pkg in $(cat uv.txt); do
+while IFS= read -r pkg; do
     uv tool install "$pkg"
-done
+done <uv.txt

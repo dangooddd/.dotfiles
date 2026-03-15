@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ! command -v stow &> /dev/null; then
+if ! command -v stow &>/dev/null; then
     echo "$(basename "$0"): stow not found, skip"
     exit
 fi
