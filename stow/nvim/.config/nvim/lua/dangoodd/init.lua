@@ -258,7 +258,6 @@ vim.lsp.config("lua_ls", {
             workspace = {
                 library = {
                     vim.env.VIMRUNTIME,
-                    "${3rd}/luv/library",
                     vim.fs.joinpath(vim.fn.stdpath("data"), "site", "pack", "core", "opt"),
                 },
             },

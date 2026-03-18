@@ -5,7 +5,7 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "fzf-lua": {
-      "rev": "6e41ba7505f35a6f054ca682b043aa0cea36c2ef",
+      "rev": "54669c347fe94d5be41322bd5526095f3e528713",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "mason.nvim": {
@@ -17,7 +17,7 @@
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "nvim-lspconfig": {
-      "rev": "dd261ad5266ab5bbec249d21efeceda98ff3e1a6",
+      "rev": "702f69fb167e9119f14adc4dfd4fcadf4d1b07a0",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-surround": {
@@ -25,7 +25,7 @@
       "src": "https://github.com/kylechui/nvim-surround"
     },
     "nvim-treesitter": {
-      "rev": "ebc3201290b8372df2b3a1c23b71b9f007d972ff",
+      "rev": "2b50ab5ccbcd9e5708deb351308edd738adbf84c",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "oil.nvim": {
