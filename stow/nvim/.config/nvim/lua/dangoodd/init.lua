@@ -157,7 +157,6 @@ vim.keymap.set({ "n", "x" }, "<leader>P", '"+P')
 
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
-vim.keymap.set("n", "<leader>K", vim.diagnostic.open_float)
 vim.keymap.set("n", "<leader>ql", "<Cmd>copen<CR>")
 
 vim.keymap.set("n", "<leader>qd", function()
