@@ -82,10 +82,27 @@ function _G.Tabline()
     return s
 end
 
+function _G.Statusline()
+    local s = " %<%f %m%r%="
+    local progress = vim.ui.progress_status()
+    local diagnostic = vim.diagnostic.status()
+
+    if #progress > 0 then
+        s = s .. " " .. progress
+    end
+
+    if #diagnostic > 0 then
+        s = s .. " " .. diagnostic
+    end
+
+    s = s .. " %l:%c %p%% "
+    return s
+end
+
+vim.cmd("colorscheme jungle")
 vim.o.ruler = false
 vim.o.tabline = "%!v:lua.Tabline()"
-vim.o.statusline = " %<%f %m%r %=%{%v:lua.vim.diagnostic.status()%} %l:%c %p%% "
-vim.cmd("colorscheme jungle")
+vim.o.statusline = "%!v:lua.Statusline()"
 
 --------------------------------------------------------------------------------
 -- Plugins
