@@ -162,7 +162,6 @@ require("oil").setup({
         preview_split = "right",
         win_options = { winhighlight = "NormalNC:NormalFloat" },
     },
-    keymaps = { ["q"] = { "actions.close", mode = "n" } },
 })
 
 --------------------------------------------------------------------------------
