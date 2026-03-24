@@ -10,8 +10,8 @@ vim.o.splitbelow = true
 vim.o.scrolloff = 3
 vim.o.hlsearch = false -- remove highlight on search
 vim.o.mouse = "a"
+vim.o.guicursor = "n-v-c-i:block-Cursor,t:block-TermCursor,r-cr-o:hor20"
 vim.opt.diffopt:append("algorithm:histogram")
-vim.opt.guicursor:remove("t:block-blinkon500-blinkoff500-TermCursor")
 vim.opt.fillchars:append({ eob = " ", diff = "/" })
 
 vim.o.number = true
