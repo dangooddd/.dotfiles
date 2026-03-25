@@ -1,4 +1,4 @@
-require("dangoodd.base16").setup({
+require("base16").setup({
     base00 = "#131914",
     base01 = "#1D261F",
     base02 = "#2D382E",
