@@ -12,6 +12,7 @@ vim.o.hlsearch = false
 vim.o.mouse = "a"
 vim.o.fillchars = "eob: ,diff:/"
 vim.o.diffopt = vim.o.diffopt .. ",algorithm:histogram"
+vim.o.guicursor = "n-v-c-ci:block,i-ve:ver25,r-cr-o:hor20,t:block-TermCursor"
 
 vim.o.number = true
 vim.o.relativenumber = true
@@ -37,9 +38,6 @@ vim.o.langmap = [[йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ъ],]]
     .. [[ЁQ,ЦW,УE,КR,ЕT,НY,ГU,ШI,ЩO,ЗP,Х{,Ъ},]]
     .. [[ФA,ЫS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\:,Э",]]
     .. [[ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б<,Ю>]]
-
-vim.o.guicursor = "n-v:block,ve:ver25,r-cr-o:hor20,"
-    .. "i-c-ci:block-blinkon500-blinkoff500,t:block-TermCursor"
 
 vim.g.netrw_banner = 0
 vim.g.mapleader = " "
