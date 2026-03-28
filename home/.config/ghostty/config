@@ -6,7 +6,7 @@ clipboard-write = allow
 clipboard-read = allow
 app-notifications = no-clipboard-copy
 
-font-family = IosevkaTerm Nerd Font
+font-family = Iosevka Term
 font-style-bold = SemiBold
 font-size = 15
 
