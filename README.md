@@ -14,7 +14,7 @@ Install dotfiles:
 
 ```sh
 cd .dotfiles
-script/setup-arch.sh
-# script/setup-macos.sh
-# script/setup-dev.sh
+scripts/setup-arch.sh
+# scripts/setup-macos.sh
+# scripts/setup-dev.sh
 ```
