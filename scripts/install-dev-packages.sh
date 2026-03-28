@@ -5,6 +5,10 @@ if ! command -v brew &>/dev/null; then
     exit
 fi
 
-script_dir="$(dirname "$(realpath "$0")")"
-cd "$script_dir/../misc/packages"
-xargs brew install <brew.txt
+packages=(
+    uv fzf tmux nvim lazygit
+    tree-sitter-cli
+    anomalyco/tap/opencode
+)
+
+brew install "${packages[@]}"

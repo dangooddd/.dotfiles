@@ -12,4 +12,4 @@ cd "$script_dir/../"
 rsync -avz \
   --exclude='*.jpg' \
   --exclude='*.png' \
-  "$(pwd)" "$remote"
+  "$PWD" "$remote"

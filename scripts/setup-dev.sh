@@ -5,6 +5,6 @@ cd "$script_dir"
 
 ./install-brew.sh
 eval "$(./get-brew-shellenv.sh)"
-./install-brew-packages.sh
+./install-dev-packages.sh
 ./install-uv-packages.sh
-./stow-dotfiles.sh
+./link-dotfiles.sh

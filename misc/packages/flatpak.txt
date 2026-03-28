@@ -1,5 +1,0 @@
-org.telegram.desktop
-com.obsproject.Studio
-com.github.flxzt.rnote
-net.davidotek.pupgui2
-com.valvesoftware.Steam

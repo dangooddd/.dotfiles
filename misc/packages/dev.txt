@@ -1,8 +1,0 @@
-stow
-nvim
-tree-sitter-cli
-lazygit
-anomalyco/tap/opencode
-fzf
-tmux
-uv

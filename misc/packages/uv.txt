@@ -1,3 +1,0 @@
-jupytext
-ty
-ruff

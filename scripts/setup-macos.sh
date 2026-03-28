@@ -3,8 +3,8 @@
 script_dir="$(dirname "$(realpath "$0")")"
 cd "$script_dir"
 
-./install-yay.sh
-./install-arch-packages.sh
-./install-flatpak-packages.sh
+./install-brew.sh
+eval "$(./get-brew-shellenv.sh)"
+./install-brew-packages.sh
 ./install-uv-packages.sh
-./stow-dotfiles.sh
+./link-dotfiles.sh
