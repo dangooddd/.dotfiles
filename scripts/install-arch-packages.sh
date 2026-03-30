@@ -6,9 +6,9 @@ if ! command -v yay &>/dev/null; then
 fi
 
 packages=(
-    uv fzf tmux nvim opencode
-    lazygit flatpak npm ghostty
-    ttc-iosevka wl-clipboard bash-completion
+    uv fzf tmux nvim lazygit
+    ttc-iosevka bash-completion
+    flatpak bun ghostty wl-clipboard
     tree-sitter-cli qbittorrent google-chrome
 )
 

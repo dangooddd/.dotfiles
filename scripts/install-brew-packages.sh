@@ -6,10 +6,10 @@ if ! command -v brew &>/dev/null; then
 fi
 
 packages=(
-    git python uv font-iosevka
+    git python uv font-iosevka bun
     fzf nvim lazygit tree-sitter-cli
-    anomalyco/tap/opencode bash bash-completion@2
-    ghostty google-chrome telegram
+    bash bash-completion@2 ghostty
+    google-chrome telegram
 )
 
 brew install "${packages[@]}"

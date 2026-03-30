@@ -7,8 +7,7 @@ fi
 
 packages=(
     uv fzf tmux nvim lazygit
-    tree-sitter-cli
-    anomalyco/tap/opencode
+    tree-sitter-cli bun
 )
 
 brew install "${packages[@]}"

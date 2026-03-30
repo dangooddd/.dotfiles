@@ -24,7 +24,7 @@ if [[ -n $HOMEBREW_PREFIX ]]; then
     PATH="${HOMEBREW_PREFIX}/opt/coreutils/libexec/gnubin:${PATH}"
 fi
 
-PATH="${PATH}:${HOME}/.local/bin:${HOME}/.cargo/bin"
+PATH="${PATH}:${HOME}/.local/bin:${HOME}/.cargo/bin:${HOME}/.cache/.bun/bin"
 export PATH
 
 export LESS="--tilde -RFXS"
