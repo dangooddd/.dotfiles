@@ -7,5 +7,5 @@ cd "$script_dir"
 eval "$(./get-brew-shellenv.sh)"
 ./install-brew-packages.sh
 ./install-uv-packages.sh
-./install-bun-packages.sh
+./install-npm-packages.sh
 ./link-dotfiles.sh

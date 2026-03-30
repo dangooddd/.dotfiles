@@ -6,7 +6,7 @@ if ! command -v brew &>/dev/null; then
 fi
 
 packages=(
-    git python uv font-iosevka bun
+    git python uv font-iosevka npm
     fzf nvim lazygit tree-sitter-cli
     bash bash-completion@2 ghostty
     google-chrome telegram

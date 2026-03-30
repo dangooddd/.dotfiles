@@ -7,5 +7,5 @@ cd "$script_dir"
 ./install-arch-packages.sh
 ./install-flatpak-packages.sh
 ./install-uv-packages.sh
-./install-bun-packages.sh
+./install-npm-packages.sh
 ./link-dotfiles.sh

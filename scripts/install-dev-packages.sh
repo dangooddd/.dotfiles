@@ -7,7 +7,7 @@ fi
 
 packages=(
     uv fzf tmux nvim lazygit
-    tree-sitter-cli bun
+    tree-sitter-cli npm
 )
 
 brew install "${packages[@]}"
