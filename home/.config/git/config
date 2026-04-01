@@ -9,7 +9,7 @@
     username = dangooddd
 
 [alias]
-    uncommit = reset HEAD^
+    dt = difftool --dir-diff
 
 [init]
     defaultBranch = main

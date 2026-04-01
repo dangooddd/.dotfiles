@@ -107,6 +107,9 @@ vim.o.statusline = "%!v:lua.Statusline()"
 --------------------------------------------------------------------------------
 -- Plugins
 --------------------------------------------------------------------------------
+vim.cmd("packadd nvim.difftool")
+vim.cmd("packadd nvim.undotree")
+
 vim.pack.add({
     "https://github.com/stevearc/conform.nvim",
     "https://github.com/kylechui/nvim-surround",
@@ -173,9 +176,9 @@ vim.keymap.set({ "n", "x" }, "<leader>P", '"+P')
 
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
-vim.keymap.set("n", "<leader>ql", "<Cmd>copen<CR>")
+vim.keymap.set("n", "<leader>q", "<Cmd>copen<CR>")
 
-vim.keymap.set("n", "<leader>qd", function()
+vim.keymap.set("n", "<leader>d", function()
     vim.diagnostic.setqflist({ open = false })
 end)
 
@@ -205,6 +208,7 @@ vim.keymap.set("n", "<leader>fr", require("fzf-lua").resume)
 vim.keymap.set("n", "<leader>jo", require("pyrepl").open_repl)
 vim.keymap.set("n", "<leader>jh", require("pyrepl").hide_repl)
 vim.keymap.set("n", "<leader>jc", require("pyrepl").close_repl)
+vim.keymap.set("n", "<leader>jt", require("pyrepl").toggle_repl)
 vim.keymap.set("n", "<leader>ji", require("pyrepl").open_image_history)
 vim.keymap.set("n", "<leader>jb", require("pyrepl").send_buffer)
 vim.keymap.set("n", "<leader>jl", require("pyrepl").send_cell)

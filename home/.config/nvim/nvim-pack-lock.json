@@ -33,8 +33,12 @@
       "src": "https://github.com/stevearc/oil.nvim"
     },
     "pyrepl.nvim": {
-      "rev": "49141cc1195736a698c13acb5807be3ad2e60ccc",
+      "rev": "6e195f436730fa9d4ae9971a75ad83712de92300",
       "src": "https://github.com/dangooddd/pyrepl.nvim"
+    },
+    "pyrepl.nvim1": {
+      "rev": "6e195f436730fa9d4ae9971a75ad83712de92300",
+      "src": "https://github.com/dangooddd/pyrepl.nvim.git"
     }
   }
 }
