@@ -108,15 +108,15 @@ vim.o.statusline = "%!v:lua.Statusline()"
 -- Plugins
 --------------------------------------------------------------------------------
 vim.pack.add({
-    { src = "https://github.com/stevearc/conform.nvim" },
-    { src = "https://github.com/kylechui/nvim-surround" },
-    { src = "https://github.com/nvim-mini/mini.icons" },
-    { src = "https://github.com/neovim/nvim-lspconfig" },
-    { src = "https://github.com/williamboman/mason.nvim" },
-    { src = "https://github.com/dangooddd/pyrepl.nvim" },
-    { src = "https://github.com/ibhagwan/fzf-lua" },
-    { src = "https://github.com/stevearc/oil.nvim" },
-    { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+    "https://github.com/stevearc/conform.nvim",
+    "https://github.com/kylechui/nvim-surround",
+    "https://github.com/nvim-mini/mini.icons",
+    "https://github.com/neovim/nvim-lspconfig",
+    "https://github.com/williamboman/mason.nvim",
+    "https://github.com/dangooddd/pyrepl.nvim",
+    "https://github.com/ibhagwan/fzf-lua",
+    "https://github.com/stevearc/oil.nvim",
+    "https://github.com/nvim-treesitter/nvim-treesitter",
 }, {
     confirm = false,
     load = true,
