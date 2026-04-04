@@ -30,9 +30,3 @@ $ARGUMENTS
    - Order slices so earlier ones provide working foundations for later ones
    - For each significant change in the plan, explain *why* that change is needed
    - Reader should understand the reasoning behind each individual piece of your plan
-
-3. Present the result:
-   - Give the plan in execution order
-   - Call out tradeoffs and risks
-   - Ask questions only where the answer would change implementation
-   - For every question, provide a recommended default and explain the tradeoff
