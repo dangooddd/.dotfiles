@@ -113,7 +113,6 @@ vim.pack.add({
     "https://github.com/nvim-mini/mini.icons",
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/williamboman/mason.nvim",
-    "https://github.com/dangooddd/pyrepl.nvim",
     "https://github.com/ibhagwan/fzf-lua",
     "https://github.com/stevearc/oil.nvim",
     "https://github.com/nvim-treesitter/nvim-treesitter",
