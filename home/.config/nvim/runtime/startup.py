@@ -110,13 +110,9 @@ def startup() -> None:
     dead = Event()
     thread = Thread(target=image_worker, args=(queue, dead, nvim), daemon=True)
 
-    try:
-        enable_matplotlib_backend(shell)
-        install_image_handlers(shell, queue)
-        thread.start()
-
-    except Exception as e:
-        nvim.exec_lua("vim.notify(..., vim.log.levels.ERROR)", str(e))
+    enable_matplotlib_backend(shell)
+    install_image_handlers(shell, queue)
+    thread.start()
 
 
 startup()
