@@ -2,20 +2,20 @@ local M = {}
 
 local template = [[
 {
-    "cells": [
-        {
-            "cell_type": "code",
-            "execution_count": null,
-            "metadata": {},
-            "outputs": [],
-            "source": []
-        }
-    ],
-    "metadata": {
-        "language_info": { "name": "python" }
-    },
-    "nbformat": 4,
-    "nbformat_minor": 5
+  "cells": [
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": []
+    }
+  ],
+  "metadata": {
+    "language_info": { "name": "python" }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
 }
 ]]
 
@@ -50,11 +50,13 @@ local function convert_from_text(text, name, notebook)
         error("[jupytext] executable not found", 0)
     end
 
-    local cmd
+    local cmd = { "jupytext", "--output", name }
+    local format = "py:percent"
+
     if notebook then
-        cmd = { "jupytext", "--update", "--output", name, "--to", "ipynb", "-" }
+        vim.list_extend(cmd, { "--update", "--from", format, "--to", "ipynb", "-" })
     else
-        cmd = { "jupytext", "--output", name, "--to", "py:percent", "-" }
+        vim.list_extend(cmd, { "--to", format, "-" })
     end
 
     local result = vim.system(cmd, { text = true, stdin = text }):wait()
@@ -75,17 +77,16 @@ function M.convert_to_python()
     vim.ui.select(choices, {
         prompt = string.format('Convert notebook to "%s"?', name),
     }, function(_, idx)
+        if idx == nil then
+            return
+        end
+
         if idx == 1 then
             local text = get_buf_text(0)
             if #text == 0 then
                 text = template
             end
-
-            local ok, error = pcall(convert_from_text, text, name, false)
-            if not ok then
-                vim.notify(tostring(error), vim.log.levels.ERROR)
-                return
-            end
+            convert_from_text(text, name, false)
         end
 
         edit_relative(name)
@@ -97,12 +98,8 @@ function M.export_to_notebook()
     local text = get_buf_text(0)
 
     vim.schedule(function()
-        local ok, error = pcall(convert_from_text, text, name, true)
-        if not ok then
-            vim.notify(tostring(error), vim.log.levels.ERROR)
-        else
-            print(string.format('[jupytext] script exported to "%s"', name))
-        end
+        convert_from_text(text, name, true)
+        print(string.format('[jupytext] script exported to "%s"', name))
     end)
 end
 
