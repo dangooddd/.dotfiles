@@ -107,9 +107,6 @@ vim.o.statusline = "%!v:lua.Statusline()"
 --------------------------------------------------------------------------------
 -- Plugins
 --------------------------------------------------------------------------------
-vim.cmd("packadd nvim.difftool")
-vim.cmd("packadd nvim.undotree")
-
 vim.pack.add({
     "https://github.com/stevearc/conform.nvim",
     "https://github.com/kylechui/nvim-surround",
@@ -124,6 +121,9 @@ vim.pack.add({
     confirm = false,
     load = true,
 })
+
+vim.cmd("packadd nvim.difftool")
+vim.cmd("packadd nvim.undotree")
 
 require("placeholders").setup()
 require("ipython").setup()
@@ -182,7 +182,7 @@ vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
 vim.keymap.set("n", "<leader>q", "<Cmd>copen<CR>")
 
 vim.keymap.set("n", "<leader>d", function()
-    vim.diagnostic.setqflist({ open = false })
+    vim.diagnostic.setqflist({ open = true })
 end)
 
 vim.keymap.set("n", "<leader>tw", function()
@@ -210,8 +210,8 @@ vim.keymap.set("n", "<leader>fl", require("fzf-lua").live_grep)
 vim.keymap.set("n", "<leader>fz", require("fzf-lua").builtin)
 vim.keymap.set("n", "<leader>fr", require("fzf-lua").resume)
 
+vim.keymap.set("n", "<leader>jo", require("ipython").toggle_repl)
 vim.keymap.set("n", "<leader>jc", require("ipython").close_repl)
-vim.keymap.set("n", "<leader>jt", require("ipython").toggle_repl)
 vim.keymap.set("n", "<leader>ji", require("ipython").open_history)
 vim.keymap.set("v", "<leader>jv", require("ipython").send_visual)
 vim.keymap.set("n", "<leader>js", require("ipython").install_packages)

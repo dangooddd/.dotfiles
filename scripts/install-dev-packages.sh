@@ -7,7 +7,7 @@ fi
 
 packages=(
     uv fzf tmux nvim lazygit
-    tree-sitter-cli npm
+    tree-sitter-cli npm imagemagick
 )
 
 brew install "${packages[@]}"

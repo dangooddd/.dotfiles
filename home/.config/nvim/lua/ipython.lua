@@ -125,7 +125,6 @@ local function open_new_repl()
         vim.api.nvim_get_runtime_file("runtime/startup.py", false)[1],
     }
 
-    -- start job from created scratch buffer
     local chan = 0
     vim.api.nvim_buf_call(buf, function()
         chan = vim.fn.jobstart(cmd, {
@@ -145,7 +144,6 @@ local function open_new_repl()
         error("[ipython] failed to start: unknown error", 0)
     end
 
-    -- set REPL state
     repl = {
         buf = buf,
         win = win,
@@ -173,7 +171,7 @@ function M.toggle_repl_focus()
     end
 
     if vim.api.nvim_get_current_win() == repl.win then
-        vim.cmd.stopinsert() -- start terminal mode
+        vim.cmd.stopinsert()
         vim.cmd.wincmd("p")
     else
         vim.api.nvim_set_current_win(repl.win)
@@ -203,7 +201,6 @@ function M.close_repl()
         return
     end
 
-    -- prevent possible recursion
     repl.closing = true
     M.hide_repl()
     vim.fn.jobstop(repl.chan)
@@ -343,20 +340,15 @@ local function setup_history_keybinds()
     vim.keymap.set("n", "dd", function()
         pop_history(history.idx)
         if #history.images == 0 then
-            M.close_history()
+            vim.cmd(":q")
         else
             M.open_history(history.idx)
         end
     end, opts)
 
     -- exit image
-    vim.keymap.set("n", "q", function()
-        M.close_history()
-    end, opts)
-
-    vim.keymap.set("n", "<Esc>", function()
-        M.close_history()
-    end, opts)
+    vim.keymap.set("n", "q", "<Cmd>:q<CR>", opts)
+    vim.keymap.set("n", "<Esc>", "<Cmd>:q<CR>", opts)
 end
 
 function M.close_history()
@@ -364,7 +356,6 @@ function M.close_history()
         return
     end
 
-    -- prevent possible recursion
     history.closing = true
     vim.on_key(nil, ns)
 
@@ -397,20 +388,17 @@ function M.open_history(idx, focus)
         return
     end
 
-    -- ensure last image is cleared
     if history.images[history.idx] then
         history.images[history.idx]:clear()
     end
     history.idx = math.max(1, math.min(idx or history.idx, #history.images))
 
-    -- ensure state buf is valid
     if not (history.buf and vim.api.nvim_buf_is_valid(history.buf)) then
         history.buf = vim.api.nvim_create_buf(false, true)
         setup_history_buf_autocmds()
         setup_history_keybinds()
     end
 
-    -- ensure images win is valid
     if not (history.win and vim.api.nvim_win_is_valid(history.win)) then
         history.win = open_history_win(history.buf)
         setup_history_win_autocmds()
@@ -422,7 +410,6 @@ function M.open_history(idx, focus)
     local opts = { title = title, title_pos = "center" }
     vim.api.nvim_win_set_config(history.win, opts)
 
-    -- focus history manager or show image once before any cursor movement
     if focus or focus == nil then
         vim.on_key(nil, ns)
         vim.api.nvim_set_current_win(history.win)
@@ -433,7 +420,6 @@ function M.open_history(idx, focus)
         end, ns)
     end
 
-    -- render current image
     history.images[history.idx]:render(history.buf, history.win)
 end
 
@@ -548,7 +534,7 @@ function M.install_packages()
         cmd = "uv " .. cmd
     end
 
-    -- feed the command to install required packages, waiting for confirmation
+    -- feed the command to install required packages
     vim.api.nvim_feedkeys(":!" .. cmd, "n", true)
 end
 

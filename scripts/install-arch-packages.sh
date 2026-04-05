@@ -7,8 +7,8 @@ fi
 
 packages=(
     uv fzf tmux nvim lazygit
-    ttc-iosevka bash-completion
     flatpak npm ghostty wl-clipboard
+    ttc-iosevka bash-completion imagemagick
     tree-sitter-cli qbittorrent google-chrome
 )
 

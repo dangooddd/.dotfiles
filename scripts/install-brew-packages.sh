@@ -8,8 +8,8 @@ fi
 packages=(
     git python uv font-iosevka npm
     fzf nvim lazygit tree-sitter-cli
-    bash bash-completion@2 ghostty
-    google-chrome telegram
+    bash bash-completion@2 imagemagick
+    ghostty google-chrome telegram
 )
 
 brew install "${packages[@]}"

@@ -87,4 +87,4 @@ prompt_toolkit_overrides = {
 
 prompt_toolkit_style = dict(ptk_defaults.PROMPT_TOOLKIT_STYLE)
 prompt_toolkit_style.update(prompt_toolkit_overrides)
-ptk_defaults.PROMPT_TOOLKIT_STYLE[:] = list(prompt_toolkit_style.items())
+ptk_defaults.PROMPT_TOOLKIT_STYLE = list(prompt_toolkit_style.items())
