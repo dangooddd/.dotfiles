@@ -125,10 +125,13 @@ vim.pack.add({
     load = true,
 })
 
+require("placeholders").setup()
+require("ipython").setup()
+require("jupytext").setup()
+
 require("nvim-treesitter").setup()
 require("nvim-surround").setup()
 require("mini.icons").setup()
-require("pyrepl").setup()
 require("mason").setup({ ui = { backdrop = 100 } })
 
 require("conform").setup({
@@ -196,6 +199,8 @@ end, {})
 
 vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
 
+vim.keymap.set("n", "<leader>je", require("jupytext").export_to_notebook)
+
 vim.keymap.set("n", "<leader>ff", require("fzf-lua").files)
 vim.keymap.set("n", "<leader>fh", require("fzf-lua").helptags)
 vim.keymap.set("n", "<leader>fb", require("fzf-lua").buffers)
@@ -205,19 +210,12 @@ vim.keymap.set("n", "<leader>fl", require("fzf-lua").live_grep)
 vim.keymap.set("n", "<leader>fz", require("fzf-lua").builtin)
 vim.keymap.set("n", "<leader>fr", require("fzf-lua").resume)
 
-vim.keymap.set("n", "<leader>jo", require("pyrepl").open_repl)
-vim.keymap.set("n", "<leader>jh", require("pyrepl").hide_repl)
-vim.keymap.set("n", "<leader>jc", require("pyrepl").close_repl)
-vim.keymap.set("n", "<leader>jt", require("pyrepl").toggle_repl)
-vim.keymap.set("n", "<leader>ji", require("pyrepl").open_image_history)
-vim.keymap.set("n", "<leader>jb", require("pyrepl").send_buffer)
-vim.keymap.set("n", "<leader>jl", require("pyrepl").send_cell)
-vim.keymap.set("v", "<leader>jv", require("pyrepl").send_visual)
-vim.keymap.set("n", "<leader>jp", require("pyrepl").step_cell_backward)
-vim.keymap.set("n", "<leader>jn", require("pyrepl").step_cell_forward)
-vim.keymap.set("n", "<leader>je", require("pyrepl").export_to_notebook)
-vim.keymap.set({ "n", "t" }, "<C-j>", require("pyrepl").toggle_repl_focus)
-vim.keymap.set("n", "<leader>js", ":PyreplInstall")
+vim.keymap.set("n", "<leader>jc", require("ipython").close_repl)
+vim.keymap.set("n", "<leader>jt", require("ipython").toggle_repl)
+vim.keymap.set("n", "<leader>ji", require("ipython").open_history)
+vim.keymap.set("v", "<leader>jv", require("ipython").send_visual)
+vim.keymap.set("n", "<leader>js", require("ipython").install_packages)
+vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").toggle_repl_focus)
 
 --------------------------------------------------------------------------------
 -- Hooks

@@ -21,7 +21,7 @@ macos-titlebar-style = tabs
 
 cursor-style = block
 cursor-style-blink = false
-adjust-cursor-thickness = 1
+adjust-cursor-thickness = 2
 
 ################################################################################
 # Theme

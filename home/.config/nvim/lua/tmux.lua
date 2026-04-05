@@ -4,14 +4,12 @@ local timeout_ms = 200
 local tmux_detected = nil
 local esc = "\x1b"
 
----Wrap an escape sequence so tmux passes it through to the terminal.
 ---@param sequence string
 ---@return string
 function M.wrap_tmux(sequence)
     return esc .. "Ptmux;" .. sequence:gsub(esc, esc .. esc) .. esc .. "\\"
 end
 
----Detect tmux by sending DA1.
 ---@return boolean
 function M.detect_tmux()
     if tmux_detected ~= nil then

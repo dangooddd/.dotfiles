@@ -1,8 +1,11 @@
----@class PlaceholdersImage
 local M = {}
-M.__index = M
+
+---@class PlaceholdersImage
+local Image = {}
+Image.__index = Image
 
 local tmux = require("tmux")
+local group = vim.api.nvim_create_augroup("Placeholders", { clear = true })
 local ns = vim.api.nvim_create_namespace("Placeholders")
 local next_id = 1
 local max_ids = 256
@@ -58,7 +61,21 @@ local diac = {
 }
 -- stylua: ignore end
 
----Send a kitty graphics APC sequence.
+---@param path string
+local function file_to_png_base64(path)
+    local result = vim.system({
+        "magick",
+        path,
+        "png:-",
+    }, { text = false }):wait()
+
+    if result.code ~= 0 then
+        error("[placeholders] magic failed: " .. (result.stderr or "unknown error"))
+    end
+
+    return vim.base64.encode(result.stdout)
+end
+
 ---@param body string
 local function send_apc(body)
     local sequence = esc .. "_G" .. body .. esc .. "\\"
@@ -70,7 +87,6 @@ local function send_apc(body)
     vim.api.nvim_ui_send(sequence)
 end
 
----Upload base64 PNG data to the terminal image store.
 ---@param img_id integer
 ---@param img_data string
 local function upload_image(img_id, img_data)
@@ -87,7 +103,6 @@ local function delete_image(img_id)
     send_apc(("a=d,d=I,i=%d,q=2"):format(img_id))
 end
 
----Place an uploaded image into a cell region.
 ---@param img_id integer
 ---@param cols integer
 ---@param rows integer
@@ -102,66 +117,14 @@ local function get_image_id()
     return id
 end
 
----@class PlaceholdersGeometry
----@field x? integer
----@field y? integer
----@field rows? integer
----@field cols? integer
-
----Draw image in buffer with given geometry.
----@param buf integer
----@param img_id integer
----@param geometry PlaceholdersGeometry
-local function draw(buf, img_id, geometry)
-    local x = geometry.x or 0
-    local y = geometry.y or 0
-    local rows = geometry.rows or 0
-    local cols = geometry.cols or 0
-    vim.bo[buf].modifiable = true
-
-    vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
-
-    -- pad buffer so image can fit
-    local buf_lines = vim.api.nvim_buf_line_count(buf)
-    local extra = {}
-    for _ = 1, (y + rows - buf_lines) do
-        extra[#extra + 1] = ""
-    end
-    vim.api.nvim_buf_set_lines(buf, buf_lines, buf_lines, false, extra)
-
-    -- highlight placeholders
-    local hl = "PlaceholdersImage" .. img_id
-    vim.api.nvim_set_hl(0, hl, { fg = img_id, ctermfg = img_id })
-
-    -- write placeholders
-    for r = 1, rows do
-        local line = placeholder .. diac[r] .. string.rep(placeholder, cols - 1)
-        vim.api.nvim_buf_set_extmark(buf, ns, y + r - 1, 0, {
-            virt_text = { { line, hl } },
-            virt_text_win_col = x,
-            hl_mode = "combine",
-        })
-    end
-
-    vim.bo[buf].modifiable = false
-    vim.defer_fn(function()
-        create_placement(img_id, cols, rows)
-    end, 25)
-end
-
----@param img_base64 string
----@return PlaceholdersImage|nil
-function M.create(img_base64)
-    local self = setmetatable({}, M)
-    self.id = get_image_id()
-    upload_image(self.id, img_base64)
-    return self
-end
-
 ---@param buf integer
 ---@param win integer
-function M:render(buf, win)
+function Image:render(buf, win)
     if not (vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_win_is_valid(win) and self.id) then
+        return
+    end
+
+    if not vim.bo[buf].modifiable then
         return
     end
 
@@ -170,16 +133,23 @@ function M:render(buf, win)
     local rows = vim.api.nvim_win_get_height(win)
     local cols = vim.api.nvim_win_get_width(win)
 
-    draw(self.buf, self.id, {
-        x = 0,
-        y = 0,
-        rows = rows,
-        cols = cols,
-    })
+    local hl = "PlaceholdersImage" .. self.id
+    vim.api.nvim_set_hl(0, hl, { fg = self.id, ctermfg = self.id })
+
+    local lines = {}
+    for r = 1, rows do
+        lines[#lines + 1] = placeholder .. diac[r] .. string.rep(placeholder, cols - 1)
+    end
+
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    vim.hl.range(buf, ns, hl, { 0, 0 }, { rows, #lines[#lines] }, {})
+
+    vim.defer_fn(function()
+        create_placement(self.id, cols, rows)
+    end, 25)
 end
 
----Clear placeholders image and buffer extmark.
-function M:clear()
+function Image:clear()
     if self.id then
         clear_image(self.id)
         if self.buf and vim.api.nvim_buf_is_valid(self.buf) then
@@ -189,13 +159,75 @@ function M:clear()
     end
 end
 
----Delete placeholders image completely.
-function M:delete()
+function Image:delete()
     if self.id then
         self:clear()
         delete_image(self.id)
         self.id = nil
     end
+end
+
+---@param img_base64 string
+---@return PlaceholdersImage|nil
+function M.create(img_base64)
+    local image = setmetatable({}, Image)
+    image.id = get_image_id()
+    upload_image(image.id, img_base64)
+    return image
+end
+
+function M.image_preview(path)
+    local result = file_to_png_base64(path)
+    local image = M.create(result)
+    assert(image)
+
+    local ratio = 0.8
+    local width = vim.o.columns
+    local height = vim.o.lines
+    local float_width = math.max(1, math.floor(width * ratio))
+    local float_height = math.max(1, math.floor(height * ratio))
+    local col = math.max(0, math.floor((width - float_width - 2) / 2))
+    local row = -float_height - 2
+
+    local buf = vim.api.nvim_create_buf(false, true)
+    local win = vim.api.nvim_open_win(buf, false, {
+        relative = "laststatus",
+        width = float_width,
+        height = float_height,
+        row = row,
+        col = col,
+        style = "minimal",
+    })
+
+    vim.api.nvim_create_autocmd("BufLeave", {
+        buffer = buf,
+        group = group,
+        callback = vim.schedule_wrap(function()
+            image:delete()
+            pcall(vim.api.nvim_win_close, win, false)
+            vim.cmd.bdelete(buf)
+        end),
+    })
+
+    vim.keymap.set("n", "q", "<Cmd>:q<CR>", { buffer = buf, silent = true })
+    vim.keymap.set("n", "<Esc>", "<Cmd>:q<CR>", { buffer = buf, silent = true })
+    vim.api.nvim_set_current_win(win)
+
+    image:render(buf, win)
+end
+
+function M.setup()
+    if vim.fn.executable("magick") ~= 1 then
+        return
+    end
+
+    vim.api.nvim_create_user_command("Placeholders", function(o)
+        if #o.args > 0 then
+            M.image_preview(o.args)
+        else
+            M.image_preview(vim.api.nvim_buf_get_name(0))
+        end
+    end, { complete = "file", nargs = "?" })
 end
 
 return M

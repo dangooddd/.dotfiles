@@ -43,11 +43,11 @@ end
 ---@param notebook boolean
 local function convert_from_text(text, name, notebook)
     if name == "" then
-        error("notebook name cannot be empty", 0)
+        error("[jupytext] notebook name cannot be empty", 0)
     end
 
     if vim.fn.executable("jupytext") ~= 1 then
-        error("jupytext executable not found", 0)
+        error("[jupytext] executable not found", 0)
     end
 
     local cmd
@@ -57,21 +57,16 @@ local function convert_from_text(text, name, notebook)
         cmd = { "jupytext", "--output", name, "--to", "py:percent", "-" }
     end
 
-    local obj = vim.system(cmd, { text = true, stdin = text }):wait()
-    if obj.code ~= 0 then
-        error("failed to convert text via jupytext", 0)
+    local result = vim.system(cmd, { text = true, stdin = text }):wait()
+    if result.code ~= 0 then
+        error("[jupytext] failed to convert text: " .. (result.stderr or "unknown error"), 0)
     end
 end
 
----@param buf integer
-function M.convert_to_python(buf)
-    if not vim.api.nvim_buf_is_valid(buf) then
-        return
-    end
-
-    local name = bufname_with_ext(buf, "py")
+function M.convert_to_python()
+    local name = bufname_with_ext(0, "py")
     local stat = vim.uv.fs_stat(name)
-    local choices = { "no", "yes" }
+    local choices = { "convert" }
 
     if stat and stat.type == "file" then
         choices[#choices + 1] = "open existing file"
@@ -81,11 +76,7 @@ function M.convert_to_python(buf)
         prompt = string.format('Convert notebook to "%s"?', name),
     }, function(_, idx)
         if idx == 1 then
-            return
-        end
-
-        if idx == 2 then
-            local text = get_buf_text(buf)
+            local text = get_buf_text(0)
             if #text == 0 then
                 text = template
             end
@@ -101,23 +92,48 @@ function M.convert_to_python(buf)
     end)
 end
 
----@param buf integer
-function M.export_to_notebook(buf)
-    if not vim.api.nvim_buf_is_valid(buf) then
-        return
-    end
-
-    local name = bufname_with_ext(buf, "ipynb")
-    local text = get_buf_text(buf)
+function M.export_to_notebook()
+    local name = bufname_with_ext(0, "ipynb")
+    local text = get_buf_text(0)
 
     vim.schedule(function()
         local ok, error = pcall(convert_from_text, text, name, true)
         if not ok then
             vim.notify(tostring(error), vim.log.levels.ERROR)
         else
-            print(string.format('script exported to "%s"', name))
+            print(string.format('[jupytext] script exported to "%s"', name))
         end
     end)
+end
+
+function M.setup()
+    if vim.fn.executable("jupytext") ~= 1 then
+        return
+    end
+
+    local complete = function(arglead)
+        local items = { "convert", "export" }
+        return vim.tbl_filter(function(item)
+            return vim.startswith(item, arglead)
+        end, items)
+    end
+
+    vim.api.nvim_create_user_command("Jupytext", function(o)
+        if o.args == "convert" then
+            M.convert_to_python()
+        elseif o.args == "export" then
+            M.export_to_notebook()
+        else
+            error("[jupytext] unknown command: " .. o.args, 0)
+        end
+    end, { complete = complete, nargs = 1 })
+
+    local group = vim.api.nvim_create_augroup("Jupytext", { clear = true })
+    vim.api.nvim_create_autocmd("BufReadPost", {
+        group = group,
+        pattern = "*.ipynb",
+        callback = vim.schedule_wrap(M.convert_to_python),
+    })
 end
 
 return M
