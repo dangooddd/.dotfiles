@@ -239,12 +239,21 @@ vim.api.nvim_create_autocmd("FileType", {
     end),
 })
 
+local chars = {}
+for i = 32, 126 do
+    chars[#chars + 1] = string.char(i)
+end
+
 vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-        local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+    callback = function(event)
+        local client = assert(vim.lsp.get_client_by_id(event.data.client_id))
 
         if client:supports_method("textDocument/completion") then
-            vim.lsp.completion.enable(true, client.id, args.buf, {
+            local provider = client.server_capabilities.completionProvider or {}
+            provider.triggerCharacters = chars
+            client.server_capabilities.completionProvider = provider
+
+            vim.lsp.completion.enable(true, client.id, event.buf, {
                 autotrigger = true,
                 convert = function()
                     return { menu = "" }
