@@ -2,6 +2,7 @@ local M = {}
 
 local timeout_ms = 200
 local tmux_detected = nil
+local container_detected = nil
 local esc = "\x1b"
 
 ---@param sequence string
@@ -49,6 +50,21 @@ function M.detect_tmux()
     end
 
     return tmux_detected
+end
+
+---@return boolean
+function M.detect_container()
+    if container_detected ~= nil then
+        return container_detected
+    end
+
+    if vim.uv.fs_stat("/.dockerenv") or vim.uv.fs_stat("/run/.containerenv") then
+        container_detected = true
+    else
+        container_detected = false
+    end
+
+    return container_detected
 end
 
 return M

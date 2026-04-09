@@ -4,7 +4,7 @@ local M = {}
 local Image = {}
 Image.__index = Image
 
-local tmux = require("tmux")
+local utils = require("utils")
 local group = vim.api.nvim_create_augroup("Placeholders", { clear = true })
 local ns = vim.api.nvim_create_namespace("Placeholders")
 local next_id = 1
@@ -80,8 +80,8 @@ end
 local function send_apc(body)
     local sequence = esc .. "_G" .. body .. esc .. "\\"
 
-    if tmux.detect_tmux() then
-        sequence = tmux.wrap_tmux(sequence)
+    if utils.detect_tmux() then
+        sequence = utils.wrap_tmux(sequence)
     end
 
     vim.api.nvim_ui_send(sequence)
