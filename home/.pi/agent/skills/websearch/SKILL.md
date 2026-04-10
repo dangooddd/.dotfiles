@@ -26,7 +26,6 @@ command -v ddgs
 If `ddgs` is missing and package installation is allowed in the environment:
 
 ```bash
-# or python -m pip install -U ddgs
 uv tool install ddgs
 ```
 
@@ -88,16 +87,14 @@ Use `news` when the user explicitly wants recent developments, announcements, or
 
 ```bash
 ddgs images -q "saturn rings" -m 8 -nc
-ddgs images -q "butterfly" -c Blue -l Wide -m 10 -nc
+ddgs images -q "butterfly" -l Wide -m 10 -nc
 ```
 
 Useful image filters:
 
 - `--size Small|Medium|Large|Wallpaper`
-- `--color color|Monochrome|Red|Orange|Yellow|Green|Blue|Purple|Pink|Brown|Black|Gray|Teal|White`
 - `--type_image photo|clipart|gif|transparent|line`
 - `--layout Square|Tall|Wide`
-- `--license_image any|Public|Share|ShareCommercially|Modify|ModifyCommercially`
 
 ## Common options
 
