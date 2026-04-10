@@ -5,7 +5,7 @@ if ! command -v uv &>/dev/null; then
     exit
 fi
 
-packages=(jupytext ty ruff)
+packages=(jupytext ty ruff ddgs)
 
 for pkg in "${packages[@]}"; do
     uv tool install --upgrade "$pkg"
