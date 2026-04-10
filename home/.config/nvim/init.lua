@@ -263,9 +263,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
-if require("utils").detect_tmux() then
-    vim.g.clipboard = "tmux"
-elseif require("utils").detect_container() then
+if require("utils").detect_container() then
     vim.g.clipboard = "osc52"
 end
 
