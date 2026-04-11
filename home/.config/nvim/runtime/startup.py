@@ -11,22 +11,23 @@ from IPython import get_ipython
 from IPython.terminal.ipapp import TerminalInteractiveShell
 
 
-def png_handler(data: str):
+def png_handler(data: str) -> str:
     return data
 
 
-def svg_handler(data: str):
+def svg_handler(data: str) -> str | None:
     try:
         import cairosvg
 
         png_bytes = cairosvg.svg2png(bytestring=data.encode("utf-8"))
         return base64.b64encode(png_bytes).decode("utf-8")
+
     except Exception as e:
         print(f"Failed to process svg image: {e}")
         return None
 
 
-def jpg_handler(data: str):
+def jpg_handler(data: str) -> str | None:
     try:
         from PIL import Image
 
@@ -35,12 +36,13 @@ def jpg_handler(data: str):
         output = io.BytesIO()
         img.save(output, format="PNG")
         return base64.b64encode(output.getvalue()).decode("utf-8")
+
     except Exception as e:
         print(f"Failed to process jpg image: {e}")
         return None
 
 
-def image_worker(queue: Queue[str], dead: Event, nvim: pynvim.Nvim) -> None:
+def image_worker(queue: Queue[str], dead: Event, nvim: pynvim.Nvim):
     try:
         while True:
             data = queue.get()
@@ -60,7 +62,7 @@ def image_worker(queue: Queue[str], dead: Event, nvim: pynvim.Nvim) -> None:
 def register_mime_renderer(
     shell: TerminalInteractiveShell,
     mime: str,
-    handler: Callable[[Any, dict[str, Any]], Any],
+    renderer: Callable[[Any, dict[str, Any]], Any],
 ):
     assert shell.display_formatter is not None
 
@@ -68,25 +70,25 @@ def register_mime_renderer(
         shell.display_formatter.active_types.append(mime)
 
     shell.display_formatter.formatters[mime].enabled = True
-    shell.mime_renderers[mime] = handler
+    shell.mime_renderers[mime] = renderer
 
 
-def install_image_handlers(shell: TerminalInteractiveShell, queue: Queue[str]) -> None:
-    def wrap_handler(handler: Callable[[Any], str]):
-        def wrapped(data: Any, metadata: dict[str, Any] | None):
+def register_image_renderers(shell: TerminalInteractiveShell, queue: Queue[str]):
+    def image_renderer(handler: Callable[[Any], str | None]):
+        def wrapper(data: Any, metadata: dict[str, Any] | None):
             _ = metadata
             payload = handler(data)
             if payload is not None:
                 queue.put(payload)
 
-        return wrapped
+        return wrapper
 
-    register_mime_renderer(shell, "image/png", wrap_handler(png_handler))
-    register_mime_renderer(shell, "image/jpeg", wrap_handler(jpg_handler))
-    register_mime_renderer(shell, "image/svg+xml", wrap_handler(svg_handler))
+    register_mime_renderer(shell, "image/png", image_renderer(png_handler))
+    register_mime_renderer(shell, "image/jpeg", image_renderer(jpg_handler))
+    register_mime_renderer(shell, "image/svg+xml", image_renderer(svg_handler))
 
 
-def enable_matplotlib_backend(shell: TerminalInteractiveShell) -> None:
+def enable_matplotlib_integration(shell: TerminalInteractiveShell):
     try:
         import matplotlib
         from matplotlib_inline.backend_inline import configure_inline_support
@@ -99,7 +101,7 @@ def enable_matplotlib_backend(shell: TerminalInteractiveShell) -> None:
         pass
 
 
-def startup() -> None:
+def startup():
     path = os.environ.get("NVIM")
     shell = get_ipython()
     assert shell is not None
@@ -110,8 +112,8 @@ def startup() -> None:
     dead = Event()
     thread = Thread(target=image_worker, args=(queue, dead, nvim), daemon=True)
 
-    enable_matplotlib_backend(shell)
-    install_image_handlers(shell, queue)
+    register_image_renderers(shell, queue)
+    enable_matplotlib_integration(shell)
     thread.start()
 
 
