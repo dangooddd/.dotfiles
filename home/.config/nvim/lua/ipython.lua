@@ -2,13 +2,14 @@ local M = {}
 
 ---@class IPythonState
 ---@field closing boolean
+---@field hiding boolean
 ---@field chan integer
 ---@field buf integer
 ---@field win integer|nil
 
 ---@class IPythonImages
 ---@field closing boolean
----@field images table
+---@field images PlaceholdersImage[]
 ---@field idx integer
 ---@field buf integer|nil
 ---@field win integer|nil
@@ -60,7 +61,7 @@ local function create_repl_win(buf)
 end
 
 local function setup_repl_buf_autocmds()
-    if not (repl and repl.buf and vim.api.nvim_buf_is_valid(repl.buf)) then
+    if not repl then
         return
     end
 
@@ -81,7 +82,7 @@ local function setup_repl_buf_autocmds()
 end
 
 local function setup_repl_win_autocmds()
-    if not (repl and repl.win and vim.api.nvim_win_is_valid(repl.win)) then
+    if not (repl and repl.win) then
         return
     end
 
@@ -95,24 +96,23 @@ local function setup_repl_win_autocmds()
         group = group,
         pattern = tostring(repl.win),
         callback = function()
-            if repl then
-                repl.win = nil
-            end
+            M.hide_repl()
         end,
         once = true,
     })
 end
 
-local function open_hidden_repl()
-    if repl and not (repl.win and vim.api.nvim_win_is_valid(repl.win)) then
-        repl.win = create_repl_win(repl.buf)
-        setup_repl_win_autocmds()
-    end
-end
-
-local function open_new_repl()
+function M.open_repl()
     if repl then
+        if not repl.win then
+            repl.win = create_repl_win(repl.buf)
+            setup_repl_win_autocmds()
+        end
         return
+    end
+
+    if vim.fn.executable("ipython") ~= 1 then
+        error("[ipython] failed to start: executable not found", 0)
     end
 
     local buf = vim.api.nvim_create_buf(false, true)
@@ -121,6 +121,8 @@ local function open_new_repl()
 
     local cmd = {
         "ipython",
+        "--TerminalInteractiveShell.true_color",
+        vim.o.termguicolors and "True" or "False",
         "--InteractiveShellApp.exec_files",
         vim.api.nvim_get_runtime_file("runtime/startup.py", false)[1],
     }
@@ -129,7 +131,6 @@ local function open_new_repl()
     vim.api.nvim_buf_call(buf, function()
         chan = vim.fn.jobstart(cmd, {
             term = true,
-            pty = true,
             env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
             on_exit = function()
                 vim.on_key(function()
@@ -140,23 +141,25 @@ local function open_new_repl()
         })
     end)
 
-    if chan == 0 or chan == -1 then
-        error("[ipython] failed to start: unknown error", 0)
-    end
-
     repl = {
         buf = buf,
         win = win,
         chan = chan,
         closing = false,
+        hiding = false,
     }
+
+    if chan == 0 or chan == -1 then
+        M.close_repl()
+        error("[ipython] failed to start: unknown error", 0)
+    end
 
     setup_repl_buf_autocmds()
     setup_repl_win_autocmds()
 end
 
 local function scroll_repl()
-    if repl and repl.win and vim.api.nvim_win_is_valid(repl.win) then
+    if repl and repl.win then
         vim.api.nvim_win_call(repl.win, function()
             vim.cmd.normal({ "G", bang = true })
         end)
@@ -164,11 +167,12 @@ local function scroll_repl()
 end
 
 function M.toggle_repl_focus()
-    open_hidden_repl()
-
-    if not (repl and repl.win and vim.api.nvim_win_is_valid(repl.win)) then
+    if not repl then
         return
     end
+
+    M.open_repl()
+    assert(repl.win)
 
     if vim.api.nvim_get_current_win() == repl.win then
         vim.cmd.stopinsert()
@@ -179,20 +183,16 @@ function M.toggle_repl_focus()
     end
 end
 
-function M.open_repl()
-    if repl then
-        open_hidden_repl()
-    else
-        open_new_repl()
-    end
-end
-
 function M.hide_repl()
-    if repl and repl.win and vim.api.nvim_win_is_valid(repl.win) then
-        pcall(function()
-            vim.api.nvim_win_close(repl.win, true)
-            repl.win = nil
-        end)
+    if not repl or repl.hiding then
+        return
+    end
+
+    if repl.win then
+        repl.hiding = true
+        pcall(vim.api.nvim_win_close, repl.win, true)
+        repl.win = nil
+        repl.hiding = false
     end
 end
 
@@ -210,7 +210,7 @@ function M.close_repl()
 end
 
 function M.toggle_repl()
-    if repl and repl.win and vim.api.nvim_win_is_valid(repl.win) then
+    if repl and repl.win then
         M.hide_repl()
     else
         M.open_repl()
@@ -262,7 +262,7 @@ local function push_history(img_base64)
 end
 
 local function setup_history_buf_autocmds()
-    if not (history.buf and vim.api.nvim_buf_is_valid(history.buf)) then
+    if not history.buf then
         return
     end
 
@@ -283,7 +283,7 @@ local function setup_history_buf_autocmds()
 end
 
 local function setup_history_win_autocmds()
-    if not (history.win and vim.api.nvim_win_is_valid(history.win)) then
+    if not history.win then
         return
     end
 
@@ -304,7 +304,7 @@ local function setup_history_win_autocmds()
 end
 
 local function setup_history_keybinds()
-    if not (history.buf and vim.api.nvim_buf_is_valid(history.buf)) then
+    if not history.buf then
         return
     end
 
@@ -363,18 +363,14 @@ function M.close_history()
         history.images[history.idx]:clear()
     end
 
-    if history.buf and vim.api.nvim_buf_is_valid(history.buf) then
-        pcall(function()
-            vim.api.nvim_buf_delete(history.buf, { force = true })
-            history.buf = nil
-        end)
+    if history.buf then
+        pcall(vim.cmd.bdelete, history.buf)
+        history.buf = nil
     end
 
-    if history.win and vim.api.nvim_win_is_valid(history.win) then
-        pcall(function()
-            vim.api.nvim_win_close(history.win, true)
-            history.win = nil
-        end)
+    if history.win then
+        pcall(vim.api.nvim_win_close, history.win, true)
+        history.win = nil
     end
 
     history.closing = false
@@ -393,13 +389,13 @@ function M.open_history(idx, focus)
     end
     history.idx = math.max(1, math.min(idx or history.idx, #history.images))
 
-    if not (history.buf and vim.api.nvim_buf_is_valid(history.buf)) then
+    if not history.buf then
         history.buf = vim.api.nvim_create_buf(false, true)
         setup_history_buf_autocmds()
         setup_history_keybinds()
     end
 
-    if not (history.win and vim.api.nvim_win_is_valid(history.win)) then
+    if not history.win then
         history.win = open_history_win(history.buf)
         setup_history_win_autocmds()
     else
@@ -407,8 +403,7 @@ function M.open_history(idx, focus)
     end
 
     local title = string.format(" History %d/%d ", history.idx, #history.images)
-    local opts = { title = title, title_pos = "center" }
-    vim.api.nvim_win_set_config(history.win, opts)
+    vim.api.nvim_win_set_config(history.win, { title = title, title_pos = "center" })
 
     if focus or focus == nil then
         vim.on_key(nil, ns)
