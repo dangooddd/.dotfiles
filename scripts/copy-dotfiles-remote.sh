@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ! command -v rsync &> /dev/null; then
+if ! command -v rsync &>/dev/null; then
     echo "$(basename "$0"): rsync not found, skip"
     exit
 fi
@@ -10,6 +10,6 @@ remote="$1"
 cd "$script_dir/../"
 
 rsync -avz \
-  --exclude='*.jpg' \
-  --exclude='*.png' \
-  "$PWD" "$remote"
+    --exclude='*.jpg' \
+    --exclude='*.png' \
+    "$PWD" "$remote"
