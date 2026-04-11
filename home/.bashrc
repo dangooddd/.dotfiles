@@ -6,8 +6,9 @@ shopt -s histappend
 set -o emacs
 
 HISTSIZE=10000
-HISTFILESIZE=10000
+HISTFILESIZE=100000
 HISTCONTROL=ignoreboth:erasedups
+PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
 
 for brew_path in \
     /opt/homebrew/bin/brew \
@@ -150,4 +151,4 @@ function __ps1_hook {
     PS1+=" ${c_sign}\$${c_reset} "
 }
 
-PROMPT_COMMAND="__ps1_hook;${PROMPT_COMMAND}"
+PROMPT_COMMAND="__ps1_hook; ${PROMPT_COMMAND}"
