@@ -1,5 +1,9 @@
 local M = {}
 
+local placeholders = require("placeholders")
+local group = vim.api.nvim_create_augroup("IPython", { clear = true })
+local ns = vim.api.nvim_create_namespace("IPython")
+
 ---@class IPythonState
 ---@field closing boolean
 ---@field hiding boolean
@@ -7,15 +11,15 @@ local M = {}
 ---@field buf integer
 ---@field win integer|nil
 
+---@type IPythonState|nil
+local repl = nil
+
 ---@class IPythonImages
 ---@field closing boolean
 ---@field images PlaceholdersImage[]
 ---@field idx integer
 ---@field buf integer|nil
 ---@field win integer|nil
-
----@type IPythonState|nil
-local repl = nil
 
 ---@type IPythonImages
 local history = {
@@ -41,9 +45,27 @@ local compound_top_level_nodes = {
     with_statement = true,
 }
 
-local placeholders = require("placeholders")
-local group = vim.api.nvim_create_augroup("IPython", { clear = true })
-local ns = vim.api.nvim_create_namespace("IPython")
+local packages = { "ipython", "pynvim" }
+
+---@class PythonCommands
+---@field pip string[]
+---@field run string[]
+
+---@return PythonCommands
+local function resolve_python_commands()
+    if vim.fn.executable("uv") == 1 then
+        return { pip = { "uv", "pip" }, run = { "uv", "run" } }
+    elseif vim.fn.executable("python3") == 1 then
+        return { pip = { "python3", "-m", "pip" }, run = { "python3" } }
+    else
+        error("[ipython] neither `python3`, nor `uv` executable was found")
+    end
+end
+
+function M.install_packages()
+    local pip = resolve_python_commands().pip
+    vim.cmd(string.format("!%s install %s", table.concat(pip, " "), table.concat(packages, " ")))
+end
 
 --------------------------------------------------------------------------------
 -- REPL
@@ -111,21 +133,32 @@ function M.open_repl()
         return
     end
 
-    if vim.fn.executable("ipython") ~= 1 then
-        error("[ipython] failed to start: executable not found", 0)
+    local python = resolve_python_commands()
+    local show = vim.list_extend(python.pip, { "show" })
+
+    for _, pkg in ipairs(packages) do
+        local ok, installed = pcall(function()
+            local cmd = vim.list_extend({}, show)
+            return vim.system(vim.list_extend(cmd, { pkg })):wait().code == 0
+        end)
+
+        if not ok or not installed then
+            error(string.format("[ipython] failed to start: package `%s` is not installed", pkg), 0)
+        end
     end
 
     local buf = vim.api.nvim_create_buf(false, true)
     local win = create_repl_win(buf)
     vim.bo[buf].bufhidden = "hide"
 
-    local cmd = {
-        "ipython",
+    local cmd = vim.list_extend(python.run, {
+        "-m",
+        "IPython",
         "--TerminalInteractiveShell.true_color",
         vim.o.termguicolors and "True" or "False",
         "--InteractiveShellApp.exec_files",
         vim.api.nvim_get_runtime_file("runtime/startup.py", false)[1],
-    }
+    })
 
     local chan = 0
     vim.api.nvim_buf_call(buf, function()
@@ -523,15 +556,6 @@ end
 --------------------------------------------------------------------------------
 -- Setup
 --------------------------------------------------------------------------------
-function M.install_packages()
-    local cmd = "pip install ipython pynvim cairosvg pillow"
-    if vim.fn.executable("uv") == 1 then
-        cmd = "uv " .. cmd
-    end
-
-    -- feed the command to install required packages
-    vim.api.nvim_feedkeys(":!" .. cmd, "n", true)
-end
 
 function M.setup()
     local complete = function(arglead)
