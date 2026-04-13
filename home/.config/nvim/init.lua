@@ -22,7 +22,7 @@ vim.o.cursorlineopt = "number"
 
 vim.o.pumheight = 10
 vim.o.pumborder = vim.o.winborder
-vim.o.completeopt = "menu,menuone,noselect,noinsert"
+vim.o.completeopt = "menu,menuone,noselect,noinsert,fuzzy"
 vim.o.wildmode = "longest:full"
 vim.o.shortmess = vim.o.shortmess .. "c" -- remove completion messages
 
