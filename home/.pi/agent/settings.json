@@ -1,9 +1,14 @@
 {
-  "lastChangelogVersion": "0.66.1",
+  "lastChangelogVersion": "0.67.3",
   "theme": "jungle",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.4",
   "defaultThinkingLevel": "medium",
   "quietStartup": true,
-  "packages": []
+  "packages": [],
+  "editorPaddingX": 1,
+  "enableInstallTelemetry": false,
+  "treeFilterMode": "user-only",
+  "collapseChangelog": true,
+  "showHardwareCursor": true
 }
