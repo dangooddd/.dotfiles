@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ! command -v uv &>/dev/null; then
+if ! command -v uv &> /dev/null; then
     echo "$(basename "$0"): uv not found, skip"
     exit
 fi

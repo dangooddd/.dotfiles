@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ! command -v rsync &>/dev/null; then
+if ! command -v rsync &> /dev/null; then
     echo "$(basename "$0"): rsync not found, skip"
     exit
 fi

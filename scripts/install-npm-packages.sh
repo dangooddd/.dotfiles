@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ! command -v npm &>/dev/null; then
+if ! command -v npm &> /dev/null; then
     echo "$(basename "$0"): npm not found, skip"
     exit
 fi

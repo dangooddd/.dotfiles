@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ! command -v yay &>/dev/null; then
+if ! command -v yay &> /dev/null; then
     echo "$(basename "$0"): yay not found, skip"
     exit
 fi

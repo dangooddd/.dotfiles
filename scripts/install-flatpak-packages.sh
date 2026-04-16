@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ! command -v flatpak &>/dev/null; then
+if ! command -v flatpak &> /dev/null; then
     echo "$(basename "$0"): flatpak not found, skip"
     exit
 fi

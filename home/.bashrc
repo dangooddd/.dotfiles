@@ -67,7 +67,7 @@ function v {
 
         if [[ -r "$activate" ]]; then
             declare -F deactivate &> /dev/null && deactivate
-            source "$activate"
+            source "$activate" && echo "$activate"
             return
         fi
 
