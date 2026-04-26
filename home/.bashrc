@@ -76,6 +76,22 @@ function v {
     done
 }
 
+function d {
+    docker exec -it -e TERM="$TERM" -e COLORTERM="$COLORTERM" "$1" bash
+}
+
+function _docker_container_completion {
+    local cmp
+    cmp="${COMP_WORDS[COMP_CWORD]}"
+
+    if (( COMP_CWORD == 1 )); then
+        mapfile -t COMPREPLY < <(compgen -W "$(docker ps --format '{{.Names}}')" -- "$cmp")
+    fi
+}
+
+complete -F _docker_container_completion d
+complete -F _docker_container_completion copy-dotfiles-docker
+
 ################################################################################
 # Init
 ################################################################################
@@ -83,12 +99,14 @@ if command -v dircolors &> /dev/null; then
     eval "$(dircolors -b)"
 fi
 
-if command -v fzf &>/dev/null; then
+if command -v fzf &> /dev/null; then
     eval "$(fzf --bash)"
 fi
 
-if [[ -z $SSH_AUTH_SOCK ]]; then
-    eval "$(ssh-agent -s)" &> /dev/null
+if command -v ssh-agent &> /dev/null; then
+    if [[ -z $SSH_AUTH_SOCK ]]; then
+        eval "$(ssh-agent -s)" &> /dev/null
+    fi
 fi
 
 ################################################################################
