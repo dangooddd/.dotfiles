@@ -5,7 +5,7 @@ if ! command -v npm &> /dev/null; then
     exit
 fi
 
-packages=(@mariozechner/pi-coding-agent)
+packages=(@earendil-works/pi-coding-agent)
 
 npm config set prefix "${HOME}/.local"
 npm config set fund false

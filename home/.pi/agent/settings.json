@@ -1,9 +1,9 @@
 {
-  "lastChangelogVersion": "0.69.0",
+  "lastChangelogVersion": "0.74.0",
   "theme": "jungle",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.4",
-  "defaultThinkingLevel": "medium",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "xhigh",
   "quietStartup": true,
   "packages": [],
   "editorPaddingX": 1,
