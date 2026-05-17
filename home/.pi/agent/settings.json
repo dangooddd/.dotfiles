@@ -3,7 +3,7 @@
   "theme": "jungle",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "xhigh",
+  "defaultThinkingLevel": "low",
   "quietStartup": true,
   "packages": [],
   "editorPaddingX": 1,

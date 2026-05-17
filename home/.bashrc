@@ -25,7 +25,7 @@ if [[ -n $HOMEBREW_PREFIX ]]; then
     PATH="${HOMEBREW_PREFIX}/opt/coreutils/libexec/gnubin:${PATH}"
 fi
 
-PATH="${PATH}:${HOME}/.local/bin:${HOME}/.cargo/bin"
+PATH="${PATH}:${HOME}/.local/bin"
 export PATH
 
 export LESS="--tilde -RFXS"
@@ -38,6 +38,39 @@ export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_STATE_HOME="${HOME}/.local/state"
+
+################################################################################
+# Sourcing
+################################################################################
+if [[ -r ${HOME}/.bashrc.local ]]; then
+    source "${HOME}/.bashrc.local"
+fi
+
+if [[ -r ${HOME}/.cargo/env ]]; then
+    source "${HOME}/.cargo/env"
+fi
+
+for git_prompt in \
+    /usr/share/git/completion/git-prompt.sh \
+    /usr/lib/git-core/git-sh-prompt \
+    ${HOMEBREW_PREFIX}/etc/bash_completion.d/git-completion.bash
+do
+    if [[ -r $git_prompt ]]; then
+        source "$git_prompt"
+        break
+    fi
+done
+
+for bash_completion in \
+    /usr/share/bash-completion/bash_completion \
+    /etc/bash_completion \
+    ${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh
+do
+    if [[ -r $bash_completion ]]; then
+        source "$bash_completion"
+        break
+    fi
+done
 
 ################################################################################
 # Aliases and functions
@@ -108,35 +141,6 @@ if command -v ssh-agent &> /dev/null; then
         eval "$(ssh-agent -s)" &> /dev/null
     fi
 fi
-
-################################################################################
-# Sourcing
-################################################################################
-if [[ -r ${HOME}/.bashrc.local ]]; then
-    source "${HOME}/.bashrc.local"
-fi
-
-for git_prompt in \
-    /usr/share/git/completion/git-prompt.sh \
-    /usr/lib/git-core/git-sh-prompt \
-    ${HOMEBREW_PREFIX}/etc/bash_completion.d/git-completion.bash
-do
-    if [[ -r $git_prompt ]]; then
-        source "$git_prompt"
-        break
-    fi
-done
-
-for bash_completion in \
-    /usr/share/bash-completion/bash_completion \
-    /etc/bash_completion \
-    ${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh
-do
-    if [[ -r $bash_completion ]]; then
-        source "$bash_completion"
-        break
-    fi
-done
 
 ################################################################################
 # Prompt
