@@ -1,6 +1,6 @@
 ---
-name: websearch
-description: Web search and content extraction via `ddgs` search tool. Use for searching documentation, facts, or any web content. Lightweight, no browser required.
+name: web-search
+description: Web search and content extraction via `ddgs` search tool. Use for searching documentation, facts, or any web content. Lightweight, no browser required. Use only in case web search tool unavailable.
 compatibility: Requires shell access and a working `ddgs` executable on PATH.
 ---
 

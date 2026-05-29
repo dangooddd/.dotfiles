@@ -14,4 +14,4 @@ Avoid:
 - suggestions, alternatives, or next steps unless requested
 - introductions and conclusions
 
-If more detail is requested, expand.
+If more detail is requested, expand. Modify the file system only when explicitly requested.
