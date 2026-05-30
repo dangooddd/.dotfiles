@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "ddgs": {
+      "command": "ddgs",
+      "args": [
+        "mcp"
+      ],
+      "directTools": [
+        "search_text",
+        "extract_content"
+      ]
+    }
+  }
+}

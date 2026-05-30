@@ -4,62 +4,24 @@ description: Convert documents like PDF, DOCX, XLSX, and PPTX to Markdown with t
 compatibility: Requires shell access and a working `markitdown` executable on PATH.
 ---
 
-# MarkItDown
+# Convert documents to Markdown format
 
-## Overview
+## Usage
 
-Use this skill when you need to convert documents to Markdown for reading or further analysis.
-
-Supported common formats include:
-- PDF
-- DOCX
-- XLSX
-- PPTX
-- HTML
-- CSV, JSON, XML
-- EPUB
-
-## Setup
-
-Before first use, confirm that the executable exists and is runnable:
+Before first use of `markitdown`, confirm that the executable exists:
 
 ```bash
 command -v markitdown
 ```
 
-If `markitdown` is missing and package installation is allowed in the environment:
+Examples of usage:
 
 ```bash
-uv tool install "markitdown[all]"
+markitdown document.pdf  # write to stdout
+markitdown document.pdf -o document.md  # write to file
+markitdown --help
 ```
-
-## Usage
-
-### Core rules
 
 - Prefer writing converted output to stdout for temporary work.
 - Use `-o <file>.md` only when you need to inspect the result in multiple passes.
-- Use `markitdown` as the default converter for office documents and PDFs.
-- If conversion quality is poor for a specific file, consider a format-specific fallback separately.
-
-### Write to stdout
-
-```bash
-markitdown document.pdf
-markitdown report.docx > report.md
-```
-
-### Convert a file to Markdown
-
-```bash
-markitdown document.pdf -o document.md
-markitdown report.docx -o report.md
-markitdown sheet.xlsx -o sheet.md
-markitdown slides.pptx -o slides.md
-```
-
-### Help
-
-```bash
-markitdown --help
-```
+- Supported formats: PDF, DOCX, XLSX, PPTX, HTML, CSV, JSON, XML, EPUB.

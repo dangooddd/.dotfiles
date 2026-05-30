@@ -1,14 +1,16 @@
 {
-  "lastChangelogVersion": "0.77.0",
   "theme": "jungle",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "low",
+  "defaultThinkingLevel": "xhigh",
   "quietStartup": true,
-  "packages": [],
+  "packages": [
+    "npm:pi-mcp-adapter"
+  ],
   "editorPaddingX": 1,
   "enableInstallTelemetry": false,
   "treeFilterMode": "user-only",
   "collapseChangelog": true,
-  "showHardwareCursor": true
+  "showHardwareCursor": true,
+  "lastChangelogVersion": "0.78.0"
 }

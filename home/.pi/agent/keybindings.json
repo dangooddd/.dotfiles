@@ -12,5 +12,11 @@
   ],
   "app.model.cycleBackward": [
     "alt+p"
+  ],
+  "app.session.toggleNamedFilter": [
+    "ctrl+f"
+  ],
+  "app.session.togglePath": [
+    "ctrl+t"
   ]
 }
