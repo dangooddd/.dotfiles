@@ -2,11 +2,8 @@
   "theme": "jungle",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "xhigh",
+  "defaultThinkingLevel": "low",
   "quietStartup": true,
-  "packages": [
-    "npm:pi-mcp-adapter"
-  ],
   "editorPaddingX": 1,
   "enableInstallTelemetry": false,
   "treeFilterMode": "user-only",

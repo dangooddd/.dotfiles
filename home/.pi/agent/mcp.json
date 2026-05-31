@@ -5,7 +5,7 @@
       "args": [
         "mcp"
       ],
-      "directTools": [
+      "enable": [
         "search_text",
         "extract_content"
       ]
