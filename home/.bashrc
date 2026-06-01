@@ -123,7 +123,6 @@ function _docker_container_completion {
 }
 
 complete -F _docker_container_completion d
-complete -F _docker_container_completion copy-dotfiles-docker
 
 ################################################################################
 # Init
