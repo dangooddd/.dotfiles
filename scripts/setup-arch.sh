@@ -3,9 +3,10 @@
 script_dir="$(dirname "$(realpath "$0")")"
 cd "$script_dir"
 
+./sync-dotfiles.sh
+./create-aliases.sh
 ./install-yay.sh
 ./install-arch-packages.sh
 ./install-flatpak-packages.sh
-./install-uv-packages.sh
-./install-npm-packages.sh
-./link-dotfiles.sh
+./install-py-packages.sh
+./install-js-packages.sh

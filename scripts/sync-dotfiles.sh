@@ -6,5 +6,5 @@ cd "$script_dir/../home"
 find "$PWD" \( -type f -o -type l \) -print0 | while read -r -d '' src; do
     dst="${src/"$PWD"/"$HOME"}"
     mkdir -p "$(dirname "$dst")"
-    (set -x; ln -sfn "$src" "$dst")
+    (set -x; cp -f "$src" "$dst")
 done
