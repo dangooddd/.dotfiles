@@ -64,6 +64,7 @@ type Connected = {
 
 const MAX_RENDERED_ARGS_CHARS = 1000;
 const MAX_TOOLS_PAGES = 100;
+const OAUTH_CALLBACK_TIMEOUT = 300000;
 const connected: Connected[] = [];
 const authPath = join(process.env.PI_CODING_AGENT_DIR || join(process.env.HOME || "", ".pi", "agent"), "mcp-auth.json");
 
@@ -97,6 +98,7 @@ function authKey(name: string, serverUrl?: string) {
 class BrowserOAuthProvider implements OAuthClientProvider {
     private redirect = "";
     private verifier?: string;
+    private oauthState = randomBytes(32).toString("hex");
 
     constructor(
         private name: string,
@@ -112,6 +114,14 @@ class BrowserOAuthProvider implements OAuthClientProvider {
         return this.redirect;
     }
 
+    get expectedState() {
+        return this.oauthState;
+    }
+
+    async state() {
+        return this.oauthState;
+    }
+
     get clientMetadata() {
         return {
             redirect_uris: [this.redirect],
@@ -120,13 +130,13 @@ class BrowserOAuthProvider implements OAuthClientProvider {
             grant_types: ["authorization_code", "refresh_token"],
             response_types: ["code"],
             client_name: "Pi MCP",
-            scope: this.config.oauth && this.config.oauth.scope ? expandEnv(this.config.oauth.scope) : undefined,
+            scope: this.config.oauth && this.config.oauth.scope ? this.config.oauth.scope : undefined,
         };
     }
 
     async clientInformation() {
         const store = await readAuthStore();
-        const serverUrl = this.config.url ? expandEnv(this.config.url) : undefined;
+        const serverUrl = this.config.url;
         const saved = store[authKey(this.name, serverUrl)]?.clientInformation;
 
         if (saved) {
@@ -135,15 +145,15 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
         if (this.config.oauth && this.config.oauth.clientId) {
             return {
-                client_id: expandEnv(this.config.oauth.clientId),
-                client_secret: this.config.oauth.clientSecret ? expandEnv(this.config.oauth.clientSecret) : undefined,
+                client_id: this.config.oauth.clientId,
+                client_secret: this.config.oauth.clientSecret,
             };
         }
     }
 
     async saveClientInformation(clientInformation: any) {
         const store = await readAuthStore();
-        const serverUrl = this.config.url ? expandEnv(this.config.url) : undefined;
+        const serverUrl = this.config.url;
         const key = authKey(this.name, serverUrl);
         store[key] = {
             ...(store[key] ?? {}),
@@ -156,7 +166,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async tokens() {
         const store = await readAuthStore();
-        const serverUrl = this.config.url ? expandEnv(this.config.url) : undefined;
+        const serverUrl = this.config.url;
         const tokens = store[authKey(this.name, serverUrl)]?.tokens;
 
         if (!tokens) {
@@ -174,7 +184,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async saveTokens(tokens: any) {
         const store = await readAuthStore();
-        const serverUrl = this.config.url ? expandEnv(this.config.url) : undefined;
+        const serverUrl = this.config.url;
         const key = authKey(this.name, serverUrl);
 
         store[key] = {
@@ -220,23 +230,50 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
 
     const provider = new BrowserOAuthProvider(name, config, onRedirect);
     const code = await new Promise<string>((resolve, reject) => {
+        const timeout = setTimeout(() => finish(new Error("OAuth callback timeout")), OAUTH_CALLBACK_TIMEOUT);
+        let settled = false;
+
+        const finish = (error?: unknown, code?: string) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timeout);
+            try {
+                http.close();
+            } catch {}
+            error ? reject(error) : resolve(code!);
+        };
+
         const http = createServer((req, res) => {
             const url = new URL(req.url ?? "/", "http://127.0.0.1");
             const code = url.searchParams.get("code");
+            const state = url.searchParams.get("state");
             const error = url.searchParams.get("error");
+            const errorDescription = url.searchParams.get("error_description");
+            const message = errorDescription || error || "missing authorization code";
 
-            res.end(
-                code ? "MCP auth complete. You can close this tab." : `MCP auth failed: ${error ?? "missing code"}`,
-            );
-            http.close();
-
-            if (code) {
-                resolve(code);
-            } else {
-                reject(new Error(error ?? "missing authorization code"));
+            if (url.pathname !== "/callback") {
+                res.statusCode = 404;
+                res.end("Not found");
+                return;
             }
+
+            if (error || !code) {
+                res.end(`MCP auth failed: ${message}`);
+                finish(new Error(message));
+                return;
+            }
+
+            if (state !== provider.expectedState) {
+                res.end("MCP auth failed: invalid OAuth state");
+                finish(new Error("invalid OAuth state"));
+                return;
+            }
+
+            res.end("MCP auth complete. You can close this tab.");
+            finish(undefined, code);
         });
 
+        http.on("error", finish);
         http.listen(0, "127.0.0.1", async () => {
             const addr = http.address();
             const port = typeof addr === "object" && addr ? addr.port : 0;
@@ -244,25 +281,42 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
 
             try {
                 await auth(provider, {
-                    serverUrl: expandEnv(config.url!),
-                    scope: config.oauth && config.oauth.scope ? expandEnv(config.oauth.scope) : undefined,
+                    serverUrl: config.url!,
+                    scope: config.oauth && config.oauth.scope ? config.oauth.scope : undefined,
                 });
             } catch (e) {
-                http.close();
-                reject(e);
+                finish(e);
             }
         });
     });
 
     await auth(provider, {
-        serverUrl: expandEnv(config.url),
+        serverUrl: config.url,
         authorizationCode: code,
-        scope: config.oauth && config.oauth.scope ? expandEnv(config.oauth.scope) : undefined,
+        scope: config.oauth && config.oauth.scope ? config.oauth.scope : undefined,
     });
 }
 
-function expandRecord(record?: Record<string, string>) {
-    return Object.fromEntries(Object.entries(record ?? {}).map(([key, value]) => [key, expandEnv(value)]));
+function expandConfig(config: ServerConfig): ServerConfig {
+    const expandRecord = (record?: Record<string, string>) =>
+        record ? Object.fromEntries(Object.entries(record).map(([key, value]) => [key, expandEnv(value)])) : undefined;
+
+    return {
+        ...config,
+        command: config.command ? expandEnv(config.command) : undefined,
+        args: config.args?.map(expandEnv),
+        env: expandRecord(config.env),
+        cwd: config.cwd ? expandEnv(config.cwd) : undefined,
+        url: config.url ? expandEnv(config.url) : undefined,
+        headers: expandRecord(config.headers),
+        oauth: config.oauth
+            ? {
+                  clientId: config.oauth.clientId ? expandEnv(config.oauth.clientId) : undefined,
+                  clientSecret: config.oauth.clientSecret ? expandEnv(config.oauth.clientSecret) : undefined,
+                  scope: config.oauth.scope ? expandEnv(config.oauth.scope) : undefined,
+              }
+            : config.oauth,
+    };
 }
 
 async function loadConfig(cwd: string): Promise<Record<string, ServerConfig>> {
@@ -277,7 +331,7 @@ async function loadConfig(cwd: string): Promise<Record<string, ServerConfig>> {
         }
     }
 
-    return out;
+    return Object.fromEntries(Object.entries(out).map(([name, config]) => [name, expandConfig(config)]));
 }
 
 async function listTools(client: Client, timeout = 10000) {
@@ -310,10 +364,10 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
         }
 
         transport = new StdioClientTransport({
-            command: expandEnv(config.command),
-            args: (config.args ?? []).map(expandEnv),
-            env: { ...process.env, ...expandRecord(config.env) } as Record<string, string>,
-            cwd: config.cwd ? expandEnv(config.cwd) : undefined,
+            command: config.command,
+            args: config.args ?? [],
+            env: { ...process.env, ...(config.env ?? {}) } as Record<string, string>,
+            cwd: config.cwd,
             stderr: "pipe",
         });
     } else {
@@ -321,11 +375,9 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
             throw new Error("http MCP server requires url");
         }
 
-        const headers = expandRecord(config.headers);
         const authProvider = config.oauth ? new BrowserOAuthProvider(name, config) : undefined;
-
-        transport = new StreamableHTTPClientTransport(new URL(expandEnv(config.url)), {
-            requestInit: { headers },
+        transport = new StreamableHTTPClientTransport(new URL(config.url), {
+            requestInit: { headers: config.headers ?? {} },
             authProvider,
         });
     }
@@ -549,7 +601,7 @@ export default function mcp(pi: ExtensionAPI) {
             }
 
             const store = await readAuthStore();
-            delete store[authKey(name, expandEnv(config.url))];
+            delete store[authKey(name, config.url)];
             await writeAuthStore(store);
 
             ctx.ui.notify(`MCP server "${name}" logged out, run /mcp-reload`, "info");
