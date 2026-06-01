@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
 
-[[ -e "$1" ]] || exit 1
-scripts="$(dirname "$(realpath "$0")")"
-src="$(realpath -s "$1")"
+home="$(dirname "$(dirname "$(realpath "$0")")")/home"
 
-case "$src" in
-    "$HOME"/*) rel="${src#"$HOME"/}" ;;
-    *) exit 1 ;;
-esac
+for arg in "$@"; do
+    [[ -e "$arg" ]] || exit 1
+    src="$(realpath "$arg")"
 
-dst="$scripts/../home/$rel"
-mkdir -p "$(dirname "$dst")"
-cp -aL "$src" "$dst"
+    case "$src" in
+        "$HOME"/*) rel="${src#"$HOME"/}" ;;
+        *) exit 1 ;;
+    esac
+
+    if [[ -d "$src" ]]; then
+        src="${src}/."
+    fi
+
+    dst="$home/$rel"
+    mkdir -p "$(dirname "$dst")"
+    (set -x; cp -r "$src" "$dst")
+done
