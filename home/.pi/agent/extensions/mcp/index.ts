@@ -10,7 +10,6 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { auth, type OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
 import { readFile, writeFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { createServer } from "node:http";
 import { randomBytes } from "node:crypto";
@@ -51,7 +50,6 @@ type AuthStore = Record<
         serverUrl?: string;
         tokens?: StoredTokens;
         clientInformation?: any;
-        codeVerifier?: string;
     }
 >;
 
@@ -65,8 +63,8 @@ type Connected = {
 };
 
 const MAX_RENDERED_ARGS_CHARS = 1000;
+const MAX_TOOLS_PAGES = 100;
 const connected: Connected[] = [];
-const registeredToolNames = new Set<string>();
 const authPath = join(process.env.PI_CODING_AGENT_DIR || join(process.env.HOME || "", ".pi", "agent"), "mcp-auth.json");
 
 const expandEnv = (s: string) =>
@@ -78,11 +76,12 @@ const expandEnv = (s: string) =>
 const sanitizeName = (s: string) => s.replace(/[^a-zA-Z0-9_]/g, "_").replace(/^_+|_+$/g, "") || "mcp";
 
 async function readJson(path: string) {
-    if (!existsSync(path)) {
-        return {};
+    try {
+        return JSON.parse(await readFile(path, "utf8"));
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") return {};
+        throw error;
     }
-
-    return JSON.parse(await readFile(path, "utf8"));
 }
 
 const readAuthStore = async () => (await readJson(authPath)) as AuthStore;
@@ -97,6 +96,7 @@ function authKey(name: string, serverUrl?: string) {
 
 class BrowserOAuthProvider implements OAuthClientProvider {
     private redirect = "";
+    private verifier?: string;
 
     constructor(
         private name: string,
@@ -201,28 +201,15 @@ class BrowserOAuthProvider implements OAuthClientProvider {
     }
 
     async saveCodeVerifier(codeVerifier: string) {
-        const store = await readAuthStore();
-        const serverUrl = this.config.url ? expandEnv(this.config.url) : undefined;
-        const key = authKey(this.name, serverUrl);
-        store[key] = {
-            ...(store[key] ?? {}),
-            serverName: this.name,
-            serverUrl,
-            codeVerifier,
-        };
-        await writeAuthStore(store);
+        this.verifier = codeVerifier;
     }
 
     async codeVerifier() {
-        const store = await readAuthStore();
-        const serverUrl = this.config.url ? expandEnv(this.config.url) : undefined;
-        const codeVerifier = store[authKey(this.name, serverUrl)]?.codeVerifier;
-
-        if (!codeVerifier) {
+        if (!this.verifier) {
             throw new Error(`No OAuth code verifier saved for MCP server: ${this.name}`);
         }
 
-        return codeVerifier;
+        return this.verifier;
     }
 }
 
@@ -285,7 +272,6 @@ async function loadConfig(cwd: string): Promise<Record<string, ServerConfig>> {
 
     for (const file of files) {
         const config = (await readJson(file)) as McpConfig;
-
         if (config.mcpServers && typeof config.mcpServers === "object") {
             Object.assign(out, config.mcpServers);
         }
@@ -294,10 +280,10 @@ async function loadConfig(cwd: string): Promise<Record<string, ServerConfig>> {
     return out;
 }
 
-async function listTools(client: Client, timeout = 10_000) {
+async function listTools(client: Client, timeout = 10000) {
     const tools: any[] = [];
 
-    for (let cursor: string | undefined = undefined; ; ) {
+    for (let cursor: string | undefined = undefined, pageCount = 0; pageCount < MAX_TOOLS_PAGES; pageCount++) {
         const page = await client.listTools(cursor ? { cursor } : undefined, {
             timeout,
         });
@@ -336,7 +322,6 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
         }
 
         const headers = expandRecord(config.headers);
-
         const authProvider = config.oauth ? new BrowserOAuthProvider(name, config) : undefined;
 
         transport = new StreamableHTTPClientTransport(new URL(expandEnv(config.url)), {
@@ -345,9 +330,15 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
         });
     }
 
-    await client.connect(transport, { timeout: config.timeout ?? 10_000 });
-    const tools = await listTools(client, config.timeout ?? 10_000);
-    return { name, config, client, transport, tools };
+    try {
+        await client.connect(transport, { timeout: config.timeout ?? 10000 });
+        const tools = await listTools(client, config.timeout ?? 10000);
+        return { name, config, client, transport, tools };
+    } catch (error) {
+        await client.close().catch(() => undefined);
+        await transport.close?.().catch(() => undefined);
+        throw error;
+    }
 }
 
 async function toPiContent(items: any[]) {
@@ -366,7 +357,7 @@ async function toPiContent(items: any[]) {
                 const fullOutputPath = join(tmpdir(), `pi-mcp-${randomBytes(8).toString("hex")}.txt`);
 
                 await withFileMutationQueue(fullOutputPath, async () => {
-                    await writeFile(fullOutputPath, original, "utf8");
+                    await writeFile(fullOutputPath, original, { encoding: "utf8", mode: 0o600 });
                 });
 
                 text += `\n\n[Full output: ${fullOutputPath}. Truncated: ${truncated.outputLines} lines shown]`;
@@ -391,19 +382,6 @@ async function toPiContent(items: any[]) {
     return content;
 }
 
-function uniqueToolName(name: string, toolName: string) {
-    const base = sanitizeName(`${name}_${toolName}`);
-    let candidate = base;
-    let suffix = 2;
-
-    while (registeredToolNames.has(candidate)) {
-        candidate = `${base}_${suffix++}`;
-    }
-
-    registeredToolNames.add(candidate);
-    return candidate;
-}
-
 function registeredToolCount(conn: Connected) {
     const allow = new Set(conn.config.tools ?? []);
 
@@ -415,8 +393,15 @@ function registeredToolCount(conn: Connected) {
 }
 
 function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: any) {
-    const toolName = uniqueToolName(name, tool.name);
     const config = conn.config;
+    const existingToolNames = new Set(pi.getAllTools().map((tool) => tool.name));
+    const baseToolName = sanitizeName(`${name}_${tool.name}`);
+    let toolName = baseToolName;
+    let suffix = 2;
+
+    while (existingToolNames.has(toolName)) {
+        toolName = `${baseToolName}_${suffix++}`;
+    }
 
     pi.registerTool(
         defineTool({
@@ -460,7 +445,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                     undefined,
                     {
                         signal,
-                        timeout: config.timeout ?? 60_000,
+                        timeout: config.timeout ?? 60000,
                     },
                 );
 
@@ -505,11 +490,10 @@ export default function mcp(pi: ExtensionAPI) {
                     if (allow.size && !allow.has(tool.name)) {
                         continue;
                     }
-
                     registerMcpTool(pi, conn, name, tool);
                 }
             } catch (e: any) {
-                ctx.ui.notify(`MCP ${name}: ${e?.message ?? e}`, "warning");
+                ctx.ui.notify(`MCP server "${name}": ${e?.message ?? e}`, "warning");
             }
         }
     });
@@ -522,22 +506,29 @@ export default function mcp(pi: ExtensionAPI) {
         description: "Authorize an HTTP MCP server with browser OAuth",
         handler: async (args, ctx) => {
             const name = String(args ?? "").trim();
-
-            if (!name) {
-                return ctx.ui.notify("Usage: /mcp-auth <server>", "warning");
-            }
-
             const servers = await loadConfig(ctx.cwd);
             const config = servers[name];
 
+            if (!name) {
+                return ctx.ui.notify("Server name is required: /mcp-auth <server>", "warning");
+            }
+
             if (!config) {
-                return ctx.ui.notify(`MCP ${name}: not found`, "warning");
+                return ctx.ui.notify(`MCP server "${name}" not found`, "warning");
+            }
+
+            if (!config.url) {
+                return ctx.ui.notify(`MCP server "${name}" is not an HTTP server`, "warning");
+            }
+
+            if (!config.oauth) {
+                return ctx.ui.notify(`OAuth is not enabled for MCP server "${name}"`, "warning");
             }
 
             await browserAuth(name, config, async (url) => {
-                ctx.ui.notify(`MCP ${name}: open this URL to authorize\n${url}`, "info");
+                ctx.ui.notify(`Open this URL to authorize MCP server "${name}"\n${url}`, "info");
             });
-            ctx.ui.notify(`MCP ${name}: auth complete, run /mcp-reload`, "info");
+            ctx.ui.notify(`MCP server "${name}" authenticated, run /mcp-reload`, "info");
         },
     });
 
@@ -547,21 +538,21 @@ export default function mcp(pi: ExtensionAPI) {
             const name = String(args ?? "").trim();
 
             if (!name) {
-                return ctx.ui.notify("Usage: /mcp-logout <server>", "warning");
+                return ctx.ui.notify("Server name is required: /mcp-logout <server>", "warning");
             }
 
             const servers = await loadConfig(ctx.cwd);
             const config = servers[name];
 
             if (!config?.url) {
-                return ctx.ui.notify(`MCP ${name}: HTTP server with url not found`, "warning");
+                return ctx.ui.notify(`HTTP MCP server "${name}" not found`, "warning");
             }
 
             const store = await readAuthStore();
             delete store[authKey(name, expandEnv(config.url))];
             await writeAuthStore(store);
 
-            ctx.ui.notify(`MCP ${name}: logged out, run /mcp-reload`, "info");
+            ctx.ui.notify(`MCP server "${name}" logged out, run /mcp-reload`, "info");
         },
     });
 
@@ -577,7 +568,7 @@ export default function mcp(pi: ExtensionAPI) {
         description: "Show MCP servers and tools",
         handler: async (_args, ctx) => {
             if (!connected.length) {
-                return ctx.ui.notify("MCP: no connected servers", "info");
+                return ctx.ui.notify("No connected MCP servers", "info");
             }
 
             const total = connected.reduce((sum, conn) => sum + registeredToolCount(conn), 0);
@@ -586,7 +577,7 @@ export default function mcp(pi: ExtensionAPI) {
                 return `${conn.name}: ${count}/${conn.tools.length} tool(s) registered`;
             });
 
-            ctx.ui.notify([`MCP: ${total} registered tool(s)`, ...lines].join("\n"), "info");
+            ctx.ui.notify([`${total} MCP tool(s) registered`, ...lines].join("\n"), "info");
         },
     });
 }
