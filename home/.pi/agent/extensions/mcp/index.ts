@@ -9,8 +9,8 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { auth, type OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
-import { readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { createServer } from "node:http";
 import { randomBytes } from "node:crypto";
 import { tmpdir } from "node:os";
@@ -87,12 +87,15 @@ async function readJson(path: string) {
 
 const readAuthStore = async () => (await readJson(authPath)) as AuthStore;
 
-async function writeAuthStore(store: any) {
-    await writeFile(authPath, JSON.stringify(store, null, 2), { mode: 0o600 });
+async function writeAuthStore(store: AuthStore) {
+    const tempPath = `${authPath}.${process.pid}.${Date.now()}.tmp`;
+    await mkdir(dirname(authPath), { recursive: true });
+    await writeFile(tempPath, JSON.stringify(store, null, 2), { encoding: "utf8", mode: 0o600 });
+    await rename(tempPath, authPath);
 }
 
-function authKey(name: string, serverUrl?: string) {
-    return `${name}|${serverUrl ?? ""}`;
+function authKey(name: string, serverUrl: string) {
+    return `${name}|${serverUrl}`;
 }
 
 class BrowserOAuthProvider implements OAuthClientProvider {
@@ -136,7 +139,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async clientInformation() {
         const store = await readAuthStore();
-        const serverUrl = this.config.url;
+        const serverUrl = this.config.url!;
         const saved = store[authKey(this.name, serverUrl)]?.clientInformation;
 
         if (saved) {
@@ -153,7 +156,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async saveClientInformation(clientInformation: any) {
         const store = await readAuthStore();
-        const serverUrl = this.config.url;
+        const serverUrl = this.config.url!;
         const key = authKey(this.name, serverUrl);
         store[key] = {
             ...(store[key] ?? {}),
@@ -166,7 +169,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async tokens() {
         const store = await readAuthStore();
-        const serverUrl = this.config.url;
+        const serverUrl = this.config.url!;
         const tokens = store[authKey(this.name, serverUrl)]?.tokens;
 
         if (!tokens) {
@@ -184,7 +187,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async saveTokens(tokens: any) {
         const store = await readAuthStore();
-        const serverUrl = this.config.url;
+        const serverUrl = this.config.url!;
         const key = authKey(this.name, serverUrl);
 
         store[key] = {
@@ -526,7 +529,14 @@ export default function mcp(pi: ExtensionAPI) {
     }
 
     pi.on("session_start", async (_event, ctx) => {
-        const servers = await loadConfig(ctx.cwd);
+        let servers: Record<string, ServerConfig>;
+
+        try {
+            servers = await loadConfig(ctx.cwd);
+        } catch (e: any) {
+            ctx.ui.notify(`Failed to load MCP config: ${e?.message ?? e}`, "warning");
+            return;
+        }
 
         for (const [name, config] of Object.entries(servers)) {
             if (config.enabled === false) {
@@ -558,12 +568,20 @@ export default function mcp(pi: ExtensionAPI) {
         description: "Authorize an HTTP MCP server with browser OAuth",
         handler: async (args, ctx) => {
             const name = String(args ?? "").trim();
-            const servers = await loadConfig(ctx.cwd);
-            const config = servers[name];
 
             if (!name) {
                 return ctx.ui.notify("Server name is required: /mcp-auth <server>", "warning");
             }
+
+            let servers: Record<string, ServerConfig>;
+
+            try {
+                servers = await loadConfig(ctx.cwd);
+            } catch (e: any) {
+                return ctx.ui.notify(`Failed to load MCP config: ${e?.message ?? e}`, "warning");
+            }
+
+            const config = servers[name];
 
             if (!config) {
                 return ctx.ui.notify(`MCP server "${name}" not found`, "warning");
@@ -577,9 +595,14 @@ export default function mcp(pi: ExtensionAPI) {
                 return ctx.ui.notify(`OAuth is not enabled for MCP server "${name}"`, "warning");
             }
 
-            await browserAuth(name, config, async (url) => {
-                ctx.ui.notify(`Open this URL to authorize MCP server "${name}"\n${url}`, "info");
-            });
+            try {
+                await browserAuth(name, config, async (url) => {
+                    ctx.ui.notify(`Open this URL to authorize MCP server "${name}"\n${url}`, "info");
+                });
+            } catch (e: any) {
+                return ctx.ui.notify(`OAuth failed for MCP server "${name}": ${e?.message ?? e}`, "warning");
+            }
+
             ctx.ui.notify(`MCP server "${name}" authenticated, run /mcp-reload`, "info");
         },
     });
@@ -593,16 +616,27 @@ export default function mcp(pi: ExtensionAPI) {
                 return ctx.ui.notify("Server name is required: /mcp-logout <server>", "warning");
             }
 
-            const servers = await loadConfig(ctx.cwd);
+            let servers: Record<string, ServerConfig>;
+
+            try {
+                servers = await loadConfig(ctx.cwd);
+            } catch (e: any) {
+                return ctx.ui.notify(`Failed to load MCP config: ${e?.message ?? e}`, "warning");
+            }
+
             const config = servers[name];
 
             if (!config?.url) {
                 return ctx.ui.notify(`HTTP MCP server "${name}" not found`, "warning");
             }
 
-            const store = await readAuthStore();
-            delete store[authKey(name, config.url)];
-            await writeAuthStore(store);
+            try {
+                const store = await readAuthStore();
+                delete store[authKey(name, config.url)];
+                await writeAuthStore(store);
+            } catch (e: any) {
+                return ctx.ui.notify(`Failed to update MCP auth store: ${e?.message ?? e}`, "warning");
+            }
 
             ctx.ui.notify(`MCP server "${name}" logged out, run /mcp-reload`, "info");
         },
