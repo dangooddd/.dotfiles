@@ -137,6 +137,7 @@ require("conform").setup({
     formatters_by_ft = {
         python = { "ruff_format", "ruff_organize_imports" },
         lua = { "stylua" },
+        typescript = { "biome" },
     },
     format_after_save = function(bufnr)
         if not vim.b[bufnr].conform_stop then
@@ -334,6 +335,7 @@ vim.lsp.config("tinymist", {
     },
 })
 
+
 vim.lsp.enable("ruff")
 vim.lsp.enable("ty")
 vim.lsp.enable("lua_ls")
@@ -343,3 +345,4 @@ vim.lsp.enable("bashls")
 vim.lsp.enable("tinymist")
 vim.lsp.enable("jsonls")
 vim.lsp.enable("rust_analyzer")
+vim.lsp.enable("ts_ls")
