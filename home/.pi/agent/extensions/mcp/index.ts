@@ -64,6 +64,7 @@ type Connected = {
     tools: any[];
 };
 
+const MAX_RENDERED_ARGS_CHARS = 1000;
 const connected: Connected[] = [];
 const registeredToolNames = new Set<string>();
 const authPath = join(process.env.PI_CODING_AGENT_DIR || join(process.env.HOME || "", ".pi", "agent"), "mcp-auth.json");
@@ -431,12 +432,10 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
             renderCall(args, theme, context) {
                 const callArgs = context.args ?? args ?? {};
                 const argsText = JSON.stringify(callArgs, null, 2);
+                const renderedArgs =
+                    argsText.length <= MAX_RENDERED_ARGS_CHARS ? ` ${theme.fg("muted", theme.bold(argsText))}` : "";
 
-                return new Text(
-                    `${theme.fg("toolTitle", theme.bold(toolName))} ${theme.fg("muted", theme.bold(argsText))}\n`,
-                    0,
-                    0,
-                );
+                return new Text(`${theme.fg("toolTitle", theme.bold(toolName))}${renderedArgs}\n`, 0, 0);
             },
 
             renderResult(result, _options, theme) {
