@@ -1,29 +1,18 @@
 {
   "name": "mcp",
-  "version": "0.1.0",
-  "description": "Minimal eager MCP direct-tools extension for Pi.",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "type": "module",
-  "private": true,
-  "license": "MIT",
-  "pi": {
-    "extensions": [
-      "./index.ts"
-    ]
-  },
-  "scripts": {
-    "typecheck": "tsc --noEmit"
-  },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "typebox": "*"
+    "@earendil-works/pi-tui": "^0.78.0",
+    "@modelcontextprotocol/sdk": "^1.29.0"
   },
   "devDependencies": {
-    "@earendil-works/pi-coding-agent": "^0.74.0",
-    "@types/node": "^20.0.0",
-    "typescript": "^5.6.0"
+    "@earendil-works/pi-coding-agent": "^0.78.0",
+    "@types/node": "^25.9.1"
   },
-  "peerDependencies": {
-    "@earendil-works/pi-coding-agent": "*",
-    "typebox": "*"
-  }
+  "private": true
 }

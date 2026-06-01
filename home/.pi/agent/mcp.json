@@ -1,11 +1,11 @@
 {
   "mcpServers": {
-    "ddgs": {
+    "web": {
       "command": "ddgs",
       "args": [
         "mcp"
       ],
-      "enable": [
+      "tools": [
         "search_text",
         "extract_content"
       ]

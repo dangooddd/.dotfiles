@@ -11,7 +11,7 @@ npm config set prefix "${HOME}/.local"
 npm config set fund false
 npm install -g "${packages[@]}"
 
-for dir in "${HOME}/.pi/agent/extensions/*/"; do
+for dir in "${HOME}/.pi/agent/extensions"/*/; do
     [[ -d "$dir" ]] || continue
     cd "$dir"
     npm install
