@@ -1,7 +1,14 @@
-import { defineTool, getAgentDir, type ExtensionAPI, type ToolDefinition } from "@earendil-works/pi-coding-agent";
+import {
+    defineTool,
+    getAgentDir,
+    type AgentToolResult,
+    type ExtensionAPI,
+    type ToolDefinition,
+} from "@earendil-works/pi-coding-agent";
 import {
     DEFAULT_MAX_BYTES,
     DEFAULT_MAX_LINES,
+    formatSize,
     keyHint,
     truncateHead,
     withFileMutationQueue,
@@ -72,8 +79,10 @@ type Connected = {
 
 type McpConfig = { mcpServers?: Record<string, ServerConfig> };
 type McpTransport = StdioClientTransport | StreamableHTTPClientTransport;
+type McpToolDetails = { truncation: ReturnType<typeof truncateHead>; fullOutputPath: string };
+type McpAgentToolResult = AgentToolResult<McpToolDetails | undefined>;
+type PiToolContent = McpAgentToolResult["content"];
 
-const MAX_RENDERED_ARGS_CHARS = 500;
 const MAX_TOOLS_PAGES = 100;
 const OAUTH_CALLBACK_TIMEOUT = 300000;
 const connected: Connected[] = [];
@@ -438,44 +447,64 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
     }
 }
 
+function truncationMarker(details: McpToolDetails) {
+    const { truncation, fullOutputPath } = details;
+    const warnings = [`Full output: ${fullOutputPath}`];
+
+    if (truncation.truncatedBy === "lines") {
+        warnings.push(`Truncated: showing ${truncation.outputLines} of ${truncation.totalLines} lines`);
+    } else {
+        const limit = formatSize(truncation.maxBytes ?? DEFAULT_MAX_BYTES);
+        warnings.push(`Truncated: ${truncation.outputLines} lines shown (${limit} limit)`);
+    }
+
+    return `[${warnings.join(". ")}]`;
+}
+
 async function toPiContent(items: ContentBlock[]) {
-    const content = [];
-    const source = items.length ? items : ([{ type: "text", text: "[Empty result]" }] as ContentBlock[]);
+    let details: McpToolDetails | undefined;
+    const content: PiToolContent = [];
+    const source: ContentBlock[] = items.length ? items : [{ type: "text", text: "[Empty result]" }];
+    const textBlocks: string[] = [];
 
     for (const item of source) {
         if (item.type === "text") {
-            const original = String(item.text ?? "");
-            const truncated = truncateHead(original, {
-                maxBytes: DEFAULT_MAX_BYTES,
-                maxLines: DEFAULT_MAX_LINES,
-            });
-
-            let text = truncated.content;
-            if (truncated.truncated) {
-                const fullOutputPath = join(tmpdir(), `pi-mcp-${randomBytes(8).toString("hex")}.txt`);
-
-                await withFileMutationQueue(fullOutputPath, async () => {
-                    await writeFile(fullOutputPath, original, { encoding: "utf8", mode: 0o600 });
-                });
-
-                text += `\n\n[Full output: ${fullOutputPath}. Truncated: ${truncated.outputLines} lines shown]`;
-            }
-
-            content.push({ type: "text" as const, text });
+            textBlocks.push(item.text);
             continue;
         }
 
         if (item.type === "image") {
             content.push({
-                type: "image" as const,
+                type: "image",
                 data: item.data,
                 mimeType: item.mimeType,
             });
-            continue;
         }
     }
 
-    return content;
+    if (textBlocks.length) {
+        const text = textBlocks.join("\n");
+        const truncated = truncateHead(text, {
+            maxBytes: DEFAULT_MAX_BYTES,
+            maxLines: DEFAULT_MAX_LINES,
+        });
+
+        let output = truncated.content;
+        if (truncated.truncated) {
+            const fullOutputPath = join(tmpdir(), `pi-mcp-${randomBytes(8).toString("hex")}.txt`);
+
+            await withFileMutationQueue(fullOutputPath, async () => {
+                await writeFile(fullOutputPath, text, { encoding: "utf8", mode: 0o600 });
+            });
+
+            details = { truncation: truncated, fullOutputPath };
+            output += `\n\n${truncationMarker(details)}`;
+        }
+
+        content.push({ type: "text", text: output });
+    }
+
+    return { content, details };
 }
 
 function registeredToolCount(conn: Connected) {
@@ -500,7 +529,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
     }
 
     pi.registerTool(
-        defineTool({
+        defineTool<ToolDefinition["parameters"], McpToolDetails | undefined>({
             name: toolName,
             label: `MCP ${name}/${tool.name}`,
             description: tool.description || `MCP tool ${tool.name} from ${name}`,
@@ -513,20 +542,24 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
             renderCall(args, theme, context) {
                 const callArgs = context.args ?? args ?? {};
                 const argsText = JSON.stringify(callArgs, null, 2);
-                const renderedArgs =
-                    argsText.length <= MAX_RENDERED_ARGS_CHARS ? ` ${theme.fg("toolTitle", theme.bold(argsText))}` : "";
-
-                return new Text(`${theme.fg("toolTitle", theme.bold(toolName))}${renderedArgs}\n`, 0, 0);
+                const call = argsText === "{}" ? toolName : `${toolName} ${argsText}`;
+                return new Text(`${theme.fg("toolTitle", theme.bold(call))}\n`, 0, 0);
             },
 
             renderResult(result, options, theme) {
-                const text = ((result as { content?: ContentBlock[] }).content ?? [])
+                const details = result.details;
+                let output = result.content
                     .filter((item) => item.type === "text")
-                    .map((item) => String(item.text ?? ""))
+                    .map((item) => item.text)
                     .join("\n");
 
-                const marker = text.match(/\n\n(\[Full output: [^\]]+\. Truncated: \d+ lines shown\])$/);
-                const output = marker ? text.slice(0, marker.index).trimEnd() : text;
+                if (details && output.endsWith("]")) {
+                    const footerStart = output.lastIndexOf("\n\n[");
+                    if (footerStart !== -1 && output.slice(footerStart).includes(details.fullOutputPath)) {
+                        output = output.slice(0, footerStart).trimEnd();
+                    }
+                }
+
                 const renderedOutput = output
                     .split("\n")
                     .map((line) => theme.fg("toolOutput", line))
@@ -539,12 +572,15 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                         const remaining = lines.length - displayLines.length;
 
                         if (remaining > 0) {
-                            const expandHint = keyHint("app.tools.expand", "to expand");
-                            displayLines.push(theme.fg("muted", `... (${remaining} more lines,`) + ` ${expandHint})`);
+                            const expand = keyHint("app.tools.expand", "to expand");
+                            const hint = theme.fg("muted", `... (${remaining} more lines,`) + ` ${expand})`;
+                            displayLines.push(...new Text(hint, 0, 0).render(width));
                         }
 
-                        if (marker) {
-                            displayLines.push(theme.fg("warning", marker[1]));
+                        if (details) {
+                            displayLines.push(
+                                ...new Text(`\n${theme.fg("warning", truncationMarker(details))}`, 0, 0).render(width),
+                            );
                         }
 
                         return displayLines;
@@ -563,7 +599,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                     },
                 )) as CallToolResult;
 
-                const content = await toPiContent(result.content);
+                const { content, details } = await toPiContent(result.content);
                 if (result.isError) {
                     throw new Error(
                         content
@@ -573,7 +609,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                     );
                 }
 
-                return { content, details: undefined };
+                return { content, details };
             },
         }),
     );
