@@ -443,6 +443,12 @@ async function toPiContent(items: any[]) {
     return content;
 }
 
+function oauthServerNames(servers: Record<string, ServerConfig>) {
+    return Object.entries(servers)
+        .filter(([, config]) => config.url && config.oauth)
+        .map(([name]) => name);
+}
+
 function registeredToolCount(conn: Connected) {
     const allow = new Set(conn.config.tools ?? []);
 
@@ -572,13 +578,7 @@ export default function mcp(pi: ExtensionAPI) {
 
     pi.registerCommand("mcp-auth", {
         description: "Authorize an HTTP MCP server with browser OAuth",
-        handler: async (args, ctx) => {
-            const name = String(args ?? "").trim();
-
-            if (!name) {
-                return ctx.ui.notify("Server name is required: /mcp-auth <server>", "warning");
-            }
-
+        handler: async (_args, ctx) => {
             let servers: Record<string, ServerConfig>;
 
             try {
@@ -587,19 +587,14 @@ export default function mcp(pi: ExtensionAPI) {
                 return ctx.ui.notify(`Failed to load MCP config: ${e?.message ?? e}`, "warning");
             }
 
-            const config = servers[name];
-
-            if (!config) {
-                return ctx.ui.notify(`MCP server "${name}" not found`, "warning");
+            const names = oauthServerNames(servers);
+            if (!names.length) {
+                return ctx.ui.notify("No OAuth MCP servers configured", "info");
             }
 
-            if (!config.url) {
-                return ctx.ui.notify(`MCP server "${name}" is not an HTTP server`, "warning");
-            }
-
-            if (!config.oauth) {
-                return ctx.ui.notify(`OAuth is not enabled for MCP server "${name}"`, "warning");
-            }
+            const name = await ctx.ui.select("Select MCP server to authorize:", names);
+            if (!name) return;
+            const config = servers[name]!;
 
             try {
                 await browserAuth(name, config, async (url) => {
@@ -623,13 +618,7 @@ export default function mcp(pi: ExtensionAPI) {
 
     pi.registerCommand("mcp-logout", {
         description: "Remove stored MCP OAuth credentials",
-        handler: async (args, ctx) => {
-            const name = String(args ?? "").trim();
-
-            if (!name) {
-                return ctx.ui.notify("Server name is required: /mcp-logout <server>", "warning");
-            }
-
+        handler: async (_args, ctx) => {
             let servers: Record<string, ServerConfig>;
 
             try {
@@ -638,15 +627,18 @@ export default function mcp(pi: ExtensionAPI) {
                 return ctx.ui.notify(`Failed to load MCP config: ${e?.message ?? e}`, "warning");
             }
 
-            const config = servers[name];
-
-            if (!config?.url) {
-                return ctx.ui.notify(`HTTP MCP server "${name}" not found`, "warning");
+            const names = oauthServerNames(servers);
+            if (!names.length) {
+                return ctx.ui.notify("No OAuth MCP servers configured", "info");
             }
+
+            const name = await ctx.ui.select("Select MCP server to logout:", names);
+            if (!name) return;
+            const config = servers[name]!;
 
             try {
                 const store = await readAuthStore();
-                delete store[authKey(name, config.url)];
+                delete store[authKey(name, config.url!)];
                 await writeAuthStore(store);
             } catch (e: any) {
                 return ctx.ui.notify(`Failed to update MCP auth store: ${e?.message ?? e}`, "warning");
