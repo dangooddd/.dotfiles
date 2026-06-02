@@ -407,7 +407,7 @@ async function closeAllServers() {
 }
 
 async function connectServer(name: string, config: ServerConfig): Promise<Connected> {
-    const client = new Client({ name: "pi-mcp", version: "0.1.0" }, { capabilities: {} });
+    const client = new Client({ name: "pi-mcp", version: "1.0.0" }, { capabilities: {} });
     const type = config.type ?? (config.command ? "stdio" : "http");
     let transport: McpTransport;
 
@@ -518,6 +518,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
     const config = conn.config;
     const existingToolNames = new Set(pi.getAllTools().map((tool) => tool.name));
     const baseToolName = sanitizeName(`${name}_${tool.name}`);
+    const promptSnippet = `Tool ${tool.name} from MCP server "${name}"`;
     let toolName = baseToolName;
     let suffix = 2;
 
@@ -528,9 +529,9 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
     pi.registerTool(
         defineTool<ToolDefinition["parameters"], McpToolDetails | undefined>({
             name: toolName,
-            label: `MCP ${name}/${tool.name}`,
-            description: tool.description || `MCP tool ${tool.name} from ${name}`,
-            promptSnippet: `Call MCP ${name}/${tool.name}`,
+            label: toolName,
+            description: tool.description || promptSnippet,
+            promptSnippet: promptSnippet,
             parameters: (tool.inputSchema ?? {
                 type: "object",
                 properties: {},
@@ -612,7 +613,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
     );
 }
 
-async function registerAllServers(pi: ExtensionAPI, ctx: ExtensionContext) {
+async function connectAllServers(pi: ExtensionAPI, ctx: ExtensionContext) {
     let servers: Record<string, ServerConfig>;
 
     try {
@@ -642,7 +643,7 @@ async function registerAllServers(pi: ExtensionAPI, ctx: ExtensionContext) {
 
 export default function mcp(pi: ExtensionAPI) {
     pi.on("session_start", (_event, ctx) => {
-        void registerAllServers(pi, ctx);
+        void connectAllServers(pi, ctx);
     });
 
     pi.on("session_shutdown", async () => {
