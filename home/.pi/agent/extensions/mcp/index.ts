@@ -8,7 +8,7 @@ import {
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { auth, type OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
+import { auth, UnauthorizedError, type OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { createServer } from "node:http";
@@ -33,6 +33,7 @@ type ServerConfig = {
               clientId?: string;
               clientSecret?: string;
               scope?: string;
+              redirectUri?: string;
           };
 };
 
@@ -99,7 +100,7 @@ function authKey(name: string, serverUrl: string) {
 }
 
 class BrowserOAuthProvider implements OAuthClientProvider {
-    private redirect = "";
+    private redirect: string;
     private verifier?: string;
     private oauthState = randomBytes(32).toString("hex");
 
@@ -107,10 +108,9 @@ class BrowserOAuthProvider implements OAuthClientProvider {
         private name: string,
         private config: ServerConfig,
         private onRedirect?: (url: URL) => void | Promise<void>,
-    ) {}
-
-    setRedirectUrl(url: string) {
-        this.redirect = url;
+    ) {
+        this.redirect =
+            config.oauth && config.oauth.redirectUri ? config.oauth.redirectUri : "http://127.0.0.1:19876/callback";
     }
 
     get redirectUrl() {
@@ -207,7 +207,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async redirectToAuthorization(authorizationUrl: URL) {
         if (!this.onRedirect) {
-            throw new Error(`OAuth required for MCP server: ${this.name}`);
+            throw new UnauthorizedError("OAuth required, run /mcp-auth");
         }
 
         await this.onRedirect(authorizationUrl);
@@ -254,7 +254,7 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
             const errorDescription = url.searchParams.get("error_description");
             const message = errorDescription || error || "missing authorization code";
 
-            if (url.pathname !== "/callback") {
+            if (url.pathname !== callbackUrl.pathname) {
                 res.statusCode = 404;
                 res.end("Not found");
                 return;
@@ -276,12 +276,11 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
             finish(undefined, code);
         });
 
-        http.on("error", finish);
-        http.listen(0, "127.0.0.1", async () => {
-            const addr = http.address();
-            const port = typeof addr === "object" && addr ? addr.port : 0;
-            provider.setRedirectUrl(`http://127.0.0.1:${port}/callback`);
+        const callbackUrl = new URL(provider.redirectUrl);
+        const callbackPort = Number(callbackUrl.port || (callbackUrl.protocol === "https:" ? 443 : 80));
 
+        http.on("error", finish);
+        http.listen(callbackPort, callbackUrl.hostname, async () => {
             try {
                 const result = await auth(provider, {
                     serverUrl: config.url!,
@@ -323,6 +322,7 @@ function expandConfig(config: ServerConfig): ServerConfig {
                   clientId: config.oauth.clientId ? expandEnv(config.oauth.clientId) : undefined,
                   clientSecret: config.oauth.clientSecret ? expandEnv(config.oauth.clientSecret) : undefined,
                   scope: config.oauth.scope ? expandEnv(config.oauth.scope) : undefined,
+                  redirectUri: config.oauth.redirectUri ? expandEnv(config.oauth.redirectUri) : undefined,
               }
             : config.oauth,
     };
