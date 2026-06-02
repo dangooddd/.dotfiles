@@ -1,13 +1,9 @@
 {
   "mcpServers": {
     "web": {
-      "command": "ddgs",
+      "command": "uvx",
       "args": [
-        "mcp"
-      ],
-      "tools": [
-        "search_text",
-        "extract_content"
+        "duckduckgo-mcp-server"
       ]
     }
   }
