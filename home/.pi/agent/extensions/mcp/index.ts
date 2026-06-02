@@ -56,14 +56,16 @@ type AuthStore = Record<
     }
 >;
 
-type McpConfig = { mcpServers?: Record<string, ServerConfig> };
 type Connected = {
     name: string;
     config: ServerConfig;
     client: Client;
-    transport: any;
+    transport: McpTransport;
     tools: Tool[];
 };
+
+type McpConfig = { mcpServers?: Record<string, ServerConfig> };
+type McpTransport = StdioClientTransport | StreamableHTTPClientTransport;
 
 const MAX_RENDERED_ARGS_CHARS = 1000;
 const MAX_TOOLS_PAGES = 100;
@@ -71,13 +73,20 @@ const OAUTH_CALLBACK_TIMEOUT = 300000;
 const connected: Connected[] = [];
 const authPath = join(process.env.PI_CODING_AGENT_DIR || join(process.env.HOME || "", ".pi", "agent"), "mcp-auth.json");
 
-const expandEnv = (s: string) =>
-    s.replace(
+function expandEnv(s: string) {
+    return s.replace(
         /\{env:([A-Z0-9_]+)\}|\$\{([A-Z0-9_]+)\}|\$([A-Z0-9_]+)/gi,
         (_, a, b, c) => process.env[a || b || c] ?? "",
     );
+}
 
-const sanitizeName = (s: string) => s.replace(/[^a-zA-Z0-9_]/g, "_").replace(/^_+|_+$/g, "") || "mcp";
+function sanitizeName(s: string) {
+    return s.replace(/[^a-zA-Z0-9_]/g, "_").replace(/^_+|_+$/g, "") || "mcp";
+}
+
+function errorMessage(error: unknown) {
+    return error instanceof Error ? error.message : String(error);
+}
 
 async function readJson(path: string) {
     try {
@@ -228,6 +237,12 @@ class BrowserOAuthProvider implements OAuthClientProvider {
     }
 }
 
+function oauthServerNames(servers: Record<string, ServerConfig>) {
+    return Object.entries(servers)
+        .filter(([, config]) => config.url && config.oauth)
+        .map(([name]) => name);
+}
+
 async function browserAuth(name: string, config: ServerConfig, onRedirect: (url: URL) => void | Promise<void>) {
     if (!config.url) {
         throw new Error("browser OAuth requires http MCP server url");
@@ -364,10 +379,25 @@ async function listTools(client: Client, timeout = 10000) {
     return tools;
 }
 
+async function closeServer(conn: { client: Client; transport: McpTransport }) {
+    if (conn.transport instanceof StreamableHTTPClientTransport && conn.transport.sessionId) {
+        await conn.transport.terminateSession().catch(() => undefined);
+    }
+
+    await conn.client.close().catch(() => undefined);
+    await conn.transport.close().catch(() => undefined);
+}
+
+async function closeAllServers() {
+    for (const conn of connected.splice(0)) {
+        await closeServer(conn);
+    }
+}
+
 async function connectServer(name: string, config: ServerConfig): Promise<Connected> {
     const client = new Client({ name: "pi-mcp", version: "0.1.0" }, { capabilities: {} });
     const type = config.type ?? (config.command ? "stdio" : "http");
-    let transport: any;
+    let transport: McpTransport;
 
     if (type === "stdio") {
         if (!config.command) {
@@ -398,8 +428,7 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
         const tools = await listTools(client, config.timeout ?? 10000);
         return { name, config, client, transport, tools };
     } catch (error) {
-        await client.close().catch(() => undefined);
-        await transport.close?.().catch(() => undefined);
+        await closeServer({ client, transport });
         throw error;
     }
 }
@@ -443,12 +472,6 @@ async function toPiContent(items: any[]) {
     }
 
     return content;
-}
-
-function oauthServerNames(servers: Record<string, ServerConfig>) {
-    return Object.entries(servers)
-        .filter(([, config]) => config.url && config.oauth)
-        .map(([name]) => name);
 }
 
 function registeredToolCount(conn: Connected) {
@@ -530,25 +553,13 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
 }
 
 export default function mcp(pi: ExtensionAPI) {
-    async function closeAll() {
-        for (const conn of connected.splice(0)) {
-            try {
-                await conn.transport.terminateSession?.();
-            } catch {}
-
-            try {
-                await conn.client.close();
-            } catch {}
-        }
-    }
-
     pi.on("session_start", async (_event, ctx) => {
         let servers: Record<string, ServerConfig>;
 
         try {
             servers = await loadConfig(ctx.cwd);
-        } catch (e: any) {
-            ctx.ui.notify(`Failed to load MCP config: ${e?.message ?? e}`, "warning");
+        } catch (e) {
+            ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
             return;
         }
 
@@ -568,14 +579,14 @@ export default function mcp(pi: ExtensionAPI) {
                     }
                     registerMcpTool(pi, conn, name, tool);
                 }
-            } catch (e: any) {
-                ctx.ui.notify(`MCP server "${name}": ${e?.message ?? e}`, "warning");
+            } catch (e) {
+                ctx.ui.notify(`MCP server "${name}": ${errorMessage(e)}`, "warning");
             }
         }
     });
 
     pi.on("session_shutdown", async () => {
-        await closeAll();
+        await closeAllServers();
     });
 
     pi.registerCommand("mcp-auth", {
@@ -585,8 +596,8 @@ export default function mcp(pi: ExtensionAPI) {
 
             try {
                 servers = await loadConfig(ctx.cwd);
-            } catch (e: any) {
-                return ctx.ui.notify(`Failed to load MCP config: ${e?.message ?? e}`, "warning");
+            } catch (e) {
+                return ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
             }
 
             const names = oauthServerNames(servers);
@@ -610,8 +621,8 @@ export default function mcp(pi: ExtensionAPI) {
                         await pi.exec("xdg-open", [url.toString()]).catch(() => undefined);
                     }
                 });
-            } catch (e: any) {
-                return ctx.ui.notify(`OAuth failed for MCP server "${name}": ${e?.message ?? e}`, "warning");
+            } catch (e) {
+                return ctx.ui.notify(`OAuth failed for MCP server "${name}": ${errorMessage(e)}`, "warning");
             }
 
             ctx.ui.notify(`MCP server "${name}" authenticated, run /mcp-reload`, "info");
@@ -625,8 +636,8 @@ export default function mcp(pi: ExtensionAPI) {
 
             try {
                 servers = await loadConfig(ctx.cwd);
-            } catch (e: any) {
-                return ctx.ui.notify(`Failed to load MCP config: ${e?.message ?? e}`, "warning");
+            } catch (e) {
+                return ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
             }
 
             const names = oauthServerNames(servers);
@@ -642,8 +653,8 @@ export default function mcp(pi: ExtensionAPI) {
                 const store = await readAuthStore();
                 delete store[authKey(name, config.url!)];
                 await writeAuthStore(store);
-            } catch (e: any) {
-                return ctx.ui.notify(`Failed to update MCP auth store: ${e?.message ?? e}`, "warning");
+            } catch (e) {
+                return ctx.ui.notify(`Failed to update MCP auth store: ${errorMessage(e)}`, "warning");
             }
 
             ctx.ui.notify(`MCP server "${name}" logged out, run /mcp-reload`, "info");
@@ -653,7 +664,7 @@ export default function mcp(pi: ExtensionAPI) {
     pi.registerCommand("mcp-reload", {
         description: "Reload Pi runtime after MCP config/auth changes",
         handler: async (_args, ctx) => {
-            await closeAll();
+            await closeAllServers();
             await ctx.reload();
         },
     });
