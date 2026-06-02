@@ -3,6 +3,7 @@ import {
     getAgentDir,
     type AgentToolResult,
     type ExtensionAPI,
+    type ExtensionContext,
     type ToolDefinition,
 } from "@earendil-works/pi-coding-agent";
 import {
@@ -36,11 +37,9 @@ type ServerConfig = {
     command?: string;
     args?: string[];
     env?: Record<string, string>;
-    cwd?: string;
     url?: string;
     headers?: Record<string, string>;
     tools?: string[];
-    enabled?: boolean;
     timeout?: number;
     oauth?:
         | false
@@ -346,7 +345,6 @@ function expandConfig(config: ServerConfig): ServerConfig {
         command: config.command ? expandEnv(config.command) : undefined,
         args: config.args?.map(expandEnv),
         env: expandRecord(config.env),
-        cwd: config.cwd ? expandEnv(config.cwd) : undefined,
         url: config.url ? expandEnv(config.url) : undefined,
         headers: expandRecord(config.headers),
         oauth: config.oauth
@@ -422,7 +420,6 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
             command: config.command,
             args: config.args ?? [],
             env: { ...process.env, ...(config.env ?? {}) } as Record<string, string>,
-            cwd: config.cwd,
             stderr: "pipe",
         });
     } else {
@@ -615,37 +612,37 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
     );
 }
 
-export default function mcp(pi: ExtensionAPI) {
-    pi.on("session_start", async (_event, ctx) => {
-        let servers: Record<string, ServerConfig>;
+async function registerAllServers(pi: ExtensionAPI, ctx: ExtensionContext) {
+    let servers: Record<string, ServerConfig>;
 
+    try {
+        servers = await loadConfig(ctx.cwd);
+    } catch (e) {
+        ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
+        return;
+    }
+
+    for (const [name, config] of Object.entries(servers)) {
         try {
-            servers = await loadConfig(ctx.cwd);
-        } catch (e) {
-            ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
-            return;
-        }
+            const allow = new Set(config.tools ?? []);
+            const conn = await connectServer(name, config);
+            connected.push(conn);
 
-        for (const [name, config] of Object.entries(servers)) {
-            if (config.enabled === false) {
-                continue;
-            }
-
-            try {
-                const allow = new Set(config.tools ?? []);
-                const conn = await connectServer(name, config);
-                connected.push(conn);
-
-                for (const tool of conn.tools) {
-                    if (allow.size && !allow.has(tool.name)) {
-                        continue;
-                    }
-                    registerMcpTool(pi, conn, name, tool);
+            for (const tool of conn.tools) {
+                if (allow.size && !allow.has(tool.name)) {
+                    continue;
                 }
-            } catch (e) {
-                ctx.ui.notify(`MCP server "${name}": ${errorMessage(e)}`, "warning");
+                registerMcpTool(pi, conn, name, tool);
             }
+        } catch (e) {
+            ctx.ui.notify(`MCP server "${name}": ${errorMessage(e)}`, "warning");
         }
+    }
+}
+
+export default function mcp(pi: ExtensionAPI) {
+    pi.on("session_start", (_event, ctx) => {
+        void registerAllServers(pi, ctx);
     });
 
     pi.on("session_shutdown", async () => {
@@ -688,7 +685,7 @@ export default function mcp(pi: ExtensionAPI) {
                 return ctx.ui.notify(`OAuth failed for MCP server "${name}": ${errorMessage(e)}`, "warning");
             }
 
-            ctx.ui.notify(`MCP server "${name}" authenticated, run /mcp-reload`, "info");
+            ctx.ui.notify(`MCP server "${name}" authenticated, run /reload`, "info");
         },
     });
 
@@ -720,15 +717,7 @@ export default function mcp(pi: ExtensionAPI) {
                 return ctx.ui.notify(`Failed to update MCP auth store: ${errorMessage(e)}`, "warning");
             }
 
-            ctx.ui.notify(`MCP server "${name}" logged out, run /mcp-reload`, "info");
-        },
-    });
-
-    pi.registerCommand("mcp-reload", {
-        description: "Reload Pi runtime after MCP config/auth changes",
-        handler: async (_args, ctx) => {
-            await closeAllServers();
-            await ctx.reload();
+            ctx.ui.notify(`MCP server "${name}" logged out, run /reload`, "info");
         },
     });
 
