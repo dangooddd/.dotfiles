@@ -1,4 +1,4 @@
-import { defineTool, type ExtensionAPI, type ToolDefinition } from "@earendil-works/pi-coding-agent";
+import { defineTool, getAgentDir, type ExtensionAPI, type ToolDefinition } from "@earendil-works/pi-coding-agent";
 import {
     DEFAULT_MAX_BYTES,
     DEFAULT_MAX_LINES,
@@ -73,11 +73,11 @@ type Connected = {
 type McpConfig = { mcpServers?: Record<string, ServerConfig> };
 type McpTransport = StdioClientTransport | StreamableHTTPClientTransport;
 
-const MAX_RENDERED_ARGS_CHARS = 1000;
+const MAX_RENDERED_ARGS_CHARS = 500;
 const MAX_TOOLS_PAGES = 100;
 const OAUTH_CALLBACK_TIMEOUT = 300000;
 const connected: Connected[] = [];
-const authPath = join(process.env.PI_CODING_AGENT_DIR || join(process.env.HOME || "", ".pi", "agent"), "mcp-auth.json");
+const authPath = join(getAgentDir(), "mcp-auth.json");
 
 function expandEnv(s: string) {
     return s.replace(
@@ -352,8 +352,7 @@ function expandConfig(config: ServerConfig): ServerConfig {
 }
 
 async function loadConfig(cwd: string): Promise<Record<string, ServerConfig>> {
-    const home = process.env.PI_CODING_AGENT_DIR || join(process.env.HOME || "", ".pi", "agent");
-    const files = [join(home, "mcp.json"), join(cwd, ".pi", "mcp.json")];
+    const files = [join(getAgentDir(), "mcp.json"), join(cwd, ".pi", "mcp.json")];
     const out: Record<string, ServerConfig> = {};
 
     for (const file of files) {
@@ -441,7 +440,7 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
 
 async function toPiContent(items: ContentBlock[]) {
     const content = [];
-    const source = items.length ? items : ([{ type: "text", text: "" }] as ContentBlock[]);
+    const source = items.length ? items : ([{ type: "text", text: "[Empty result]" }] as ContentBlock[]);
 
     for (const item of source) {
         if (item.type === "text") {
@@ -474,8 +473,6 @@ async function toPiContent(items: ContentBlock[]) {
             });
             continue;
         }
-
-        content.push({ type: "text" as const, text: JSON.stringify(item) });
     }
 
     return content;
@@ -517,14 +514,15 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                 const callArgs = context.args ?? args ?? {};
                 const argsText = JSON.stringify(callArgs, null, 2);
                 const renderedArgs =
-                    argsText.length <= MAX_RENDERED_ARGS_CHARS ? ` ${theme.fg("muted", theme.bold(argsText))}` : "";
+                    argsText.length <= MAX_RENDERED_ARGS_CHARS ? ` ${theme.fg("toolTitle", theme.bold(argsText))}` : "";
 
                 return new Text(`${theme.fg("toolTitle", theme.bold(toolName))}${renderedArgs}\n`, 0, 0);
             },
 
             renderResult(result, options, theme) {
                 const text = ((result as { content?: ContentBlock[] }).content ?? [])
-                    .map((item) => (item.type === "text" ? String(item.text ?? "") : "[image]"))
+                    .filter((item) => item.type === "text")
+                    .map((item) => String(item.text ?? ""))
                     .join("\n");
 
                 const marker = text.match(/\n\n(\[Full output: [^\]]+\. Truncated: \d+ lines shown\])$/);
@@ -541,9 +539,8 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                         const remaining = lines.length - displayLines.length;
 
                         if (remaining > 0) {
-                            displayLines.push(
-                                `${theme.fg("muted", `... (${remaining} more lines,`)} ${keyHint("app.tools.expand", "to expand")})`,
-                            );
+                            const expandHint = keyHint("app.tools.expand", "to expand");
+                            displayLines.push(theme.fg("muted", `... (${remaining} more lines,`) + ` ${expandHint})`);
                         }
 
                         if (marker) {
@@ -568,7 +565,12 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
 
                 const content = await toPiContent(result.content);
                 if (result.isError) {
-                    throw new Error(content.map((item) => (item.type === "text" ? item.text : "[image]")).join("\n"));
+                    throw new Error(
+                        content
+                            .filter((item) => item.type === "text")
+                            .map((item) => item.text)
+                            .join("\n"),
+                    );
                 }
 
                 return { content, details: undefined };
