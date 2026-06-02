@@ -8,18 +8,12 @@ compatibility: Requires shell access and a working `markitdown` executable on PA
 
 ## Usage
 
-Before first use of `markitdown`, confirm that the executable exists:
-
-```bash
-command -v markitdown
-```
-
 Examples of usage:
 
 ```bash
 markitdown document.pdf  # write to stdout
 markitdown document.pdf -o document.md  # write to file
-markitdown --help
+markitdown --help  # other capabilities
 ```
 
 - Prefer writing converted output to stdout for temporary work.

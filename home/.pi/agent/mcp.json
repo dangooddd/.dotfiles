@@ -1,9 +1,10 @@
 {
   "mcpServers": {
-    "web": {
-      "command": "uvx",
+    "ddg": {
+      "command": "duckduckgo-mcp-server",
       "args": [
-        "duckduckgo-mcp-server"
+        "--fetch-backend",
+        "auto"
       ]
     }
   }
