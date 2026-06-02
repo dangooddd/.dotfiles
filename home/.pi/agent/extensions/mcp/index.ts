@@ -1,4 +1,4 @@
-import { defineTool, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { defineTool, type ExtensionAPI, type ToolDefinition } from "@earendil-works/pi-coding-agent";
 import {
     DEFAULT_MAX_BYTES,
     DEFAULT_MAX_LINES,
@@ -10,7 +10,12 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { auth, UnauthorizedError, type OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
 import type { OAuthClientInformationFull, OAuthTokens } from "@modelcontextprotocol/sdk/shared/auth.js";
-import type { Tool } from "@modelcontextprotocol/sdk/types.js";
+import {
+    CallToolResultSchema,
+    type CallToolResult,
+    type ContentBlock,
+    type Tool,
+} from "@modelcontextprotocol/sdk/types.js";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { createServer } from "node:http";
@@ -433,10 +438,11 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
     }
 }
 
-async function toPiContent(items: any[]) {
+async function toPiContent(items: ContentBlock[]) {
     const content = [];
+    const source = items.length ? items : ([{ type: "text", text: "" }] as ContentBlock[]);
 
-    for (const item of items?.length ? items : [{ type: "text", text: "" }]) {
+    for (const item of source) {
         if (item.type === "text") {
             const original = String(item.text ?? "");
             const truncated = truncateHead(original, {
@@ -504,7 +510,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
             parameters: (tool.inputSchema ?? {
                 type: "object",
                 properties: {},
-            }) as any,
+            }) as ToolDefinition["parameters"],
 
             renderCall(args, theme, context) {
                 const callArgs = context.args ?? args ?? {};
@@ -516,8 +522,8 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
             },
 
             renderResult(result, _options, theme) {
-                const text = ((result as any).content ?? [])
-                    .map((item: any) => (item.type === "text" ? String(item.text ?? "") : "[image]"))
+                const text = ((result as { content?: ContentBlock[] }).content ?? [])
+                    .map((item) => (item.type === "text" ? String(item.text ?? "") : "[image]"))
                     .join("\n");
 
                 const marker = text.match(/\n\n(\[Full output: [^\]]+\. Truncated: \d+ lines shown\])$/);
@@ -532,18 +538,18 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
             },
 
             async execute(_id, params, signal) {
-                const result: any = await conn.client.callTool(
-                    { name: tool.name, arguments: params as any },
-                    undefined,
+                const result = (await conn.client.callTool(
+                    { name: tool.name, arguments: params as Record<string, unknown> },
+                    CallToolResultSchema,
                     {
                         signal,
                         timeout: config.timeout ?? 60000,
                     },
-                );
+                )) as CallToolResult;
 
                 const content = await toPiContent(result.content);
                 if (result.isError) {
-                    throw new Error(content.map((item: any) => item.text ?? "[image]").join("\n"));
+                    throw new Error(content.map((item) => (item.type === "text" ? item.text : "[image]")).join("\n"));
                 }
 
                 return { content, details: undefined };
