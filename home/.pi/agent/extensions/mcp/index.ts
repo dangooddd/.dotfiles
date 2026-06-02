@@ -2,6 +2,7 @@ import { defineTool, type ExtensionAPI, type ToolDefinition } from "@earendil-wo
 import {
     DEFAULT_MAX_BYTES,
     DEFAULT_MAX_LINES,
+    keyHint,
     truncateHead,
     withFileMutationQueue,
 } from "@earendil-works/pi-coding-agent";
@@ -521,20 +522,38 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                 return new Text(`${theme.fg("toolTitle", theme.bold(toolName))}${renderedArgs}\n`, 0, 0);
             },
 
-            renderResult(result, _options, theme) {
+            renderResult(result, options, theme) {
                 const text = ((result as { content?: ContentBlock[] }).content ?? [])
                     .map((item) => (item.type === "text" ? String(item.text ?? "") : "[image]"))
                     .join("\n");
 
                 const marker = text.match(/\n\n(\[Full output: [^\]]+\. Truncated: \d+ lines shown\])$/);
                 const output = marker ? text.slice(0, marker.index).trimEnd() : text;
+                const renderedOutput = output
+                    .split("\n")
+                    .map((line) => theme.fg("toolOutput", line))
+                    .join("\n");
 
-                let rendered = output ? theme.fg("toolOutput", output) : "";
-                if (marker) {
-                    rendered += `${rendered ? "\n\n" : ""}${theme.fg("warning", marker[1])}`;
-                }
+                return {
+                    render(width: number) {
+                        const lines = renderedOutput ? new Text(renderedOutput, 0, 0).render(width) : [];
+                        const displayLines = options.expanded ? lines : lines.slice(0, 10);
+                        const remaining = lines.length - displayLines.length;
 
-                return new Text(rendered, 0, 0);
+                        if (remaining > 0) {
+                            displayLines.push(
+                                `${theme.fg("muted", `... (${remaining} more lines,`)} ${keyHint("app.tools.expand", "to expand")})`,
+                            );
+                        }
+
+                        if (marker) {
+                            displayLines.push(theme.fg("warning", marker[1]));
+                        }
+
+                        return displayLines;
+                    },
+                    invalidate() {},
+                };
             },
 
             async execute(_id, params, signal) {
