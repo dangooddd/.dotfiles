@@ -232,7 +232,7 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
     }
 
     const provider = new BrowserOAuthProvider(name, config, onRedirect);
-    const code = await new Promise<string>((resolve, reject) => {
+    const code = await new Promise<string | undefined>((resolve, reject) => {
         const timeout = setTimeout(() => finish(new Error("OAuth callback timeout")), OAUTH_CALLBACK_TIMEOUT);
         let settled = false;
 
@@ -243,7 +243,7 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
             try {
                 http.close();
             } catch {}
-            error ? reject(error) : resolve(code!);
+            error ? reject(error) : resolve(code);
         };
 
         const http = createServer((req, res) => {
@@ -283,21 +283,27 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
             provider.setRedirectUrl(`http://127.0.0.1:${port}/callback`);
 
             try {
-                await auth(provider, {
+                const result = await auth(provider, {
                     serverUrl: config.url!,
                     scope: config.oauth && config.oauth.scope ? config.oauth.scope : undefined,
                 });
+
+                if (result === "AUTHORIZED") {
+                    finish();
+                }
             } catch (e) {
                 finish(e);
             }
         });
     });
 
-    await auth(provider, {
-        serverUrl: config.url,
-        authorizationCode: code,
-        scope: config.oauth && config.oauth.scope ? config.oauth.scope : undefined,
-    });
+    if (code) {
+        await auth(provider, {
+            serverUrl: config.url,
+            authorizationCode: code,
+            scope: config.oauth && config.oauth.scope ? config.oauth.scope : undefined,
+        });
+    }
 }
 
 function expandConfig(config: ServerConfig): ServerConfig {
