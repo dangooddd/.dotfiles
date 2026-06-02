@@ -603,7 +603,15 @@ export default function mcp(pi: ExtensionAPI) {
 
             try {
                 await browserAuth(name, config, async (url) => {
-                    ctx.ui.notify(`Open this URL to authorize MCP server "${name}"\n${url}`, "info");
+                    ctx.ui.notify(`Open this URL to authorize MCP server "${name}":\n${url}`, "info");
+
+                    if (process.platform === "darwin") {
+                        await pi.exec("open", [url.toString()]).catch(() => undefined);
+                    } else if (process.platform === "win32") {
+                        await pi.exec("cmd", ["/c", "start", "", url.toString()]).catch(() => undefined);
+                    } else {
+                        await pi.exec("xdg-open", [url.toString()]).catch(() => undefined);
+                    }
                 });
             } catch (e: any) {
                 return ctx.ui.notify(`OAuth failed for MCP server "${name}": ${e?.message ?? e}`, "warning");
