@@ -9,6 +9,8 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { auth, UnauthorizedError, type OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
+import type { OAuthClientInformationFull, OAuthTokens } from "@modelcontextprotocol/sdk/shared/auth.js";
+import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { createServer } from "node:http";
@@ -50,7 +52,7 @@ type AuthStore = Record<
         serverName?: string;
         serverUrl?: string;
         tokens?: StoredTokens;
-        clientInformation?: any;
+        clientInformation?: OAuthClientInformationFull;
     }
 >;
 
@@ -60,7 +62,7 @@ type Connected = {
     config: ServerConfig;
     client: Client;
     transport: any;
-    tools: any[];
+    tools: Tool[];
 };
 
 const MAX_RENDERED_ARGS_CHARS = 1000;
@@ -154,7 +156,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
         }
     }
 
-    async saveClientInformation(clientInformation: any) {
+    async saveClientInformation(clientInformation: OAuthClientInformationFull) {
         const store = await readAuthStore();
         const serverUrl = this.config.url!;
         const key = authKey(this.name, serverUrl);
@@ -185,7 +187,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
         };
     }
 
-    async saveTokens(tokens: any) {
+    async saveTokens(tokens: OAuthTokens) {
         const store = await readAuthStore();
         const serverUrl = this.config.url!;
         const key = authKey(this.name, serverUrl);
@@ -344,7 +346,7 @@ async function loadConfig(cwd: string): Promise<Record<string, ServerConfig>> {
 }
 
 async function listTools(client: Client, timeout = 10000) {
-    const tools: any[] = [];
+    const tools: Tool[] = [];
 
     for (let cursor: string | undefined = undefined, pageCount = 0; pageCount < MAX_TOOLS_PAGES; pageCount++) {
         const page = await client.listTools(cursor ? { cursor } : undefined, {
@@ -459,7 +461,7 @@ function registeredToolCount(conn: Connected) {
     return conn.tools.filter((tool) => allow.has(tool.name)).length;
 }
 
-function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: any) {
+function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: Tool) {
     const config = conn.config;
     const existingToolNames = new Set(pi.getAllTools().map((tool) => tool.name));
     const baseToolName = sanitizeName(`${name}_${tool.name}`);
