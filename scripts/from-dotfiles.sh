@@ -3,15 +3,17 @@
 home="$(dirname "$(dirname "$(realpath "$0")")")/home"
 
 for arg in "$@"; do
-    src="$(realpath "$arg")"
+    dst="$(realpath "$arg")"
 
-    if [[ ! -e "$src" ]]; then
+    if [[ "$dst" == "$HOME"/* ]]; then
+        rel="${dst#"$HOME"/}"
+    else
         continue
     fi
 
-    if [[ "$src" == "$HOME"/* ]]; then
-        rel="${src#"$HOME"/}"
-    else
+    src="$home/$rel"
+
+    if [[ ! -e "$src" ]]; then
         continue
     fi
 
@@ -19,7 +21,7 @@ for arg in "$@"; do
         src="${src}/."
     fi
 
-    dst="$home/$rel"
     mkdir -p "$(dirname "$dst")"
     (set -x; cp -r "$src" "$dst")
 done
+
