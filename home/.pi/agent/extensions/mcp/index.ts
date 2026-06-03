@@ -1,23 +1,22 @@
 import {
+    DEFAULT_MAX_BYTES,
+    DEFAULT_MAX_LINES,
     defineTool,
+    formatSize,
     getAgentDir,
+    keyHint,
+    truncateHead,
+    withFileMutationQueue,
     type AgentToolResult,
     type ExtensionAPI,
     type ExtensionContext,
     type ToolDefinition,
 } from "@earendil-works/pi-coding-agent";
-import {
-    DEFAULT_MAX_BYTES,
-    DEFAULT_MAX_LINES,
-    formatSize,
-    keyHint,
-    truncateHead,
-    withFileMutationQueue,
-} from "@earendil-works/pi-coding-agent";
+import { Text } from "@earendil-works/pi-tui";
+import { auth, UnauthorizedError, type OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { auth, UnauthorizedError, type OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
 import type { OAuthClientInformationFull, OAuthTokens } from "@modelcontextprotocol/sdk/shared/auth.js";
 import {
     CallToolResultSchema,
@@ -25,12 +24,11 @@ import {
     type ContentBlock,
     type Tool,
 } from "@modelcontextprotocol/sdk/types.js";
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
-import { createServer } from "node:http";
 import { randomBytes } from "node:crypto";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { createServer } from "node:http";
 import { tmpdir } from "node:os";
-import { Text } from "@earendil-works/pi-tui";
+import { dirname, join } from "node:path";
 
 type ServerConfig = {
     type?: "stdio" | "http";
