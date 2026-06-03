@@ -39,14 +39,12 @@ type ServerConfig = {
     headers?: Record<string, string>;
     tools?: string[];
     timeout?: number;
-    oauth?:
-        | false
-        | {
-              clientId?: string;
-              clientSecret?: string;
-              scope?: string;
-              redirectUri?: string;
-          };
+    oauth?: {
+        clientId?: string;
+        clientSecret?: string;
+        scope?: string;
+        redirectUri?: string;
+    };
 };
 
 type StoredTokens = {
@@ -75,12 +73,13 @@ type Connected = {
 };
 
 type McpConfig = { mcpServers?: Record<string, ServerConfig> };
+type OAuthServerConfig = ServerConfig & { url: string; oauth: NonNullable<ServerConfig["oauth"]> };
 type McpTransport = StdioClientTransport | StreamableHTTPClientTransport;
 type McpToolDetails = { truncation: ReturnType<typeof truncateHead>; fullOutputPath: string };
 type McpAgentToolResult = AgentToolResult<McpToolDetails | undefined>;
 type PiToolContent = McpAgentToolResult["content"];
 
-const MAX_TOOLS_PAGES = 100;
+const DEFAULT_CLIENT_TIMEOUT = 60000;
 const OAUTH_CALLBACK_TIMEOUT = 300000;
 const connected: Connected[] = [];
 const authPath = join(getAgentDir(), "mcp-auth.json");
@@ -129,19 +128,14 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     constructor(
         private name: string,
-        private config: ServerConfig,
+        private config: OAuthServerConfig,
         private onRedirect?: (url: URL) => void | Promise<void>,
     ) {
-        this.redirect =
-            config.oauth && config.oauth.redirectUri ? config.oauth.redirectUri : "http://127.0.0.1:19876/callback";
+        this.redirect = config.oauth.redirectUri ?? "http://127.0.0.1:19876/callback";
     }
 
     get redirectUrl() {
         return this.redirect;
-    }
-
-    get expectedState() {
-        return this.oauthState;
     }
 
     async state() {
@@ -151,25 +145,24 @@ class BrowserOAuthProvider implements OAuthClientProvider {
     get clientMetadata() {
         return {
             redirect_uris: [this.redirect],
-            token_endpoint_auth_method:
-                this.config.oauth && this.config.oauth.clientSecret ? "client_secret_basic" : "none",
+            token_endpoint_auth_method: this.config.oauth.clientSecret ? "client_secret_basic" : "none",
             grant_types: ["authorization_code", "refresh_token"],
             response_types: ["code"],
             client_name: "Pi MCP",
-            scope: this.config.oauth && this.config.oauth.scope ? this.config.oauth.scope : undefined,
+            scope: this.config.oauth.scope,
         };
     }
 
     async clientInformation() {
         const store = await readAuthStore();
-        const serverUrl = this.config.url!;
+        const serverUrl = this.config.url;
         const saved = store[authKey(this.name, serverUrl)]?.clientInformation;
 
         if (saved) {
             return saved;
         }
 
-        if (this.config.oauth && this.config.oauth.clientId) {
+        if (this.config.oauth.clientId) {
             return {
                 client_id: this.config.oauth.clientId,
                 client_secret: this.config.oauth.clientSecret,
@@ -179,7 +172,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async saveClientInformation(clientInformation: OAuthClientInformationFull) {
         const store = await readAuthStore();
-        const serverUrl = this.config.url!;
+        const serverUrl = this.config.url;
         const key = authKey(this.name, serverUrl);
         store[key] = {
             ...(store[key] ?? {}),
@@ -192,7 +185,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async tokens() {
         const store = await readAuthStore();
-        const serverUrl = this.config.url!;
+        const serverUrl = this.config.url;
         const tokens = store[authKey(this.name, serverUrl)]?.tokens;
 
         if (!tokens) {
@@ -210,7 +203,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async saveTokens(tokens: OAuthTokens) {
         const store = await readAuthStore();
-        const serverUrl = this.config.url!;
+        const serverUrl = this.config.url;
         const key = authKey(this.name, serverUrl);
 
         store[key] = {
@@ -230,7 +223,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async redirectToAuthorization(authorizationUrl: URL) {
         if (!this.onRedirect) {
-            throw new UnauthorizedError("OAuth required, run /mcp-auth");
+            throw new UnauthorizedError("OAuth authentication required");
         }
 
         await this.onRedirect(authorizationUrl);
@@ -242,24 +235,26 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async codeVerifier() {
         if (!this.verifier) {
-            throw new Error(`No OAuth code verifier saved for MCP server: ${this.name}`);
+            throw new Error(`No OAuth code verifier saved`);
         }
 
         return this.verifier;
     }
 }
 
-function oauthServerNames(servers: Record<string, ServerConfig>) {
-    return Object.entries(servers)
-        .filter(([, config]) => config.url && config.oauth)
-        .map(([name]) => name);
-}
+function oauthServers(servers: Record<string, ServerConfig>) {
+    const out: Record<string, OAuthServerConfig> = {};
 
-async function browserAuth(name: string, config: ServerConfig, onRedirect: (url: URL) => void | Promise<void>) {
-    if (!config.url) {
-        throw new Error("browser OAuth requires http MCP server url");
+    for (const [name, config] of Object.entries(servers)) {
+        if (config.url && config.oauth) {
+            out[name] = { ...config, url: config.url, oauth: config.oauth };
+        }
     }
 
+    return out;
+}
+
+async function browserAuth(name: string, config: OAuthServerConfig, onRedirect: (url: URL) => void | Promise<void>) {
     const provider = new BrowserOAuthProvider(name, config, onRedirect);
     const code = await new Promise<string | undefined>((resolve, reject) => {
         const timeout = setTimeout(() => finish(new Error("OAuth callback timeout")), OAUTH_CALLBACK_TIMEOUT);
@@ -271,11 +266,11 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
             clearTimeout(timeout);
             try {
                 http.close();
-            } catch {}
+            } catch { }
             error ? reject(error) : resolve(code);
         };
 
-        const http = createServer((req, res) => {
+        const http = createServer(async (req, res) => {
             const url = new URL(req.url ?? "/", "http://127.0.0.1");
             const code = url.searchParams.get("code");
             const state = url.searchParams.get("state");
@@ -295,9 +290,9 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
                 return;
             }
 
-            if (state !== provider.expectedState) {
-                res.end("MCP auth failed: invalid OAuth state");
-                finish(new Error("invalid OAuth state"));
+            if (state !== (await provider.state())) {
+                res.end("MCP auth failed: OAuth state mismatch");
+                finish(new Error("OAuth state mismatch"));
                 return;
             }
 
@@ -312,8 +307,8 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
         http.listen(callbackPort, callbackUrl.hostname, async () => {
             try {
                 const result = await auth(provider, {
-                    serverUrl: config.url!,
-                    scope: config.oauth && config.oauth.scope ? config.oauth.scope : undefined,
+                    serverUrl: config.url,
+                    scope: config.oauth.scope,
                 });
 
                 if (result === "AUTHORIZED") {
@@ -329,7 +324,7 @@ async function browserAuth(name: string, config: ServerConfig, onRedirect: (url:
         await auth(provider, {
             serverUrl: config.url,
             authorizationCode: code,
-            scope: config.oauth && config.oauth.scope ? config.oauth.scope : undefined,
+            scope: config.oauth.scope,
         });
     }
 }
@@ -347,12 +342,12 @@ function expandConfig(config: ServerConfig): ServerConfig {
         headers: expandRecord(config.headers),
         oauth: config.oauth
             ? {
-                  clientId: config.oauth.clientId ? expandEnv(config.oauth.clientId) : undefined,
-                  clientSecret: config.oauth.clientSecret ? expandEnv(config.oauth.clientSecret) : undefined,
-                  scope: config.oauth.scope ? expandEnv(config.oauth.scope) : undefined,
-                  redirectUri: config.oauth.redirectUri ? expandEnv(config.oauth.redirectUri) : undefined,
-              }
-            : config.oauth,
+                clientId: config.oauth.clientId ? expandEnv(config.oauth.clientId) : undefined,
+                clientSecret: config.oauth.clientSecret ? expandEnv(config.oauth.clientSecret) : undefined,
+                scope: config.oauth.scope ? expandEnv(config.oauth.scope) : undefined,
+                redirectUri: config.oauth.redirectUri ? expandEnv(config.oauth.redirectUri) : undefined,
+            }
+            : undefined,
     };
 }
 
@@ -370,21 +365,21 @@ async function loadConfig(cwd: string): Promise<Record<string, ServerConfig>> {
     return Object.fromEntries(Object.entries(out).map(([name, config]) => [name, expandConfig(config)]));
 }
 
-async function listTools(client: Client, timeout = 10000) {
+async function listTools(client: Client, timeout = DEFAULT_CLIENT_TIMEOUT) {
     const tools: Tool[] = [];
+    let cursor: string | undefined;
 
-    for (let cursor: string | undefined = undefined, pageCount = 0; pageCount < MAX_TOOLS_PAGES; pageCount++) {
+    do {
         const page = await client.listTools(cursor ? { cursor } : undefined, {
             timeout,
         });
-
         tools.push(...(page.tools ?? []));
-        cursor = page.nextCursor;
 
-        if (!cursor) {
-            break;
+        if (page.nextCursor && page.nextCursor === cursor) {
+            throw new Error("tools/list returned duplicate cursor");
         }
-    }
+        cursor = page.nextCursor;
+    } while (cursor);
 
     return tools;
 }
@@ -425,7 +420,9 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
             throw new Error("http MCP server requires url");
         }
 
-        const authProvider = config.oauth ? new BrowserOAuthProvider(name, config) : undefined;
+        const authProvider = config.oauth
+            ? new BrowserOAuthProvider(name, { ...config, url: config.url, oauth: config.oauth })
+            : undefined;
         transport = new StreamableHTTPClientTransport(new URL(config.url), {
             requestInit: { headers: config.headers ?? {} },
             authProvider,
@@ -433,8 +430,9 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
     }
 
     try {
-        await client.connect(transport, { timeout: config.timeout ?? 10000 });
-        const tools = await listTools(client, config.timeout ?? 10000);
+        const timeout = config.timeout ?? DEFAULT_CLIENT_TIMEOUT;
+        await client.connect(transport, { timeout });
+        const tools = await listTools(client, timeout);
         return { name, config, client, transport, tools };
     } catch (error) {
         await closeServer({ client, transport });
@@ -568,8 +566,8 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                         const remaining = lines.length - displayLines.length;
 
                         if (remaining > 0) {
-                            const expand = keyHint("app.tools.expand", "to expand");
-                            const hint = theme.fg("muted", `... (${remaining} more lines,`) + ` ${expand})`;
+                            const expand = keyHint("app.tools.expand", "to expand)");
+                            const hint = `${theme.fg("muted", `... (${remaining} more lines,`)} ${expand}`;
                             displayLines.push(...new Text(hint, 0, 0).render(width));
                         }
 
@@ -581,7 +579,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
 
                         return displayLines;
                     },
-                    invalidate() {},
+                    invalidate() { },
                 };
             },
 
@@ -589,10 +587,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                 const result = (await conn.client.callTool(
                     { name: tool.name, arguments: params as Record<string, unknown> },
                     CallToolResultSchema,
-                    {
-                        signal,
-                        timeout: config.timeout ?? 60000,
-                    },
+                    { signal, timeout: config.timeout ?? DEFAULT_CLIENT_TIMEOUT },
                 )) as CallToolResult;
 
                 const { content, details } = await toPiContent(result.content);
@@ -601,7 +596,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                         content
                             .filter((item) => item.type === "text")
                             .map((item) => item.text)
-                            .join("\n"),
+                            .join("\n") || "Tool execution failed",
                     );
                 }
 
@@ -659,14 +654,15 @@ export default function mcp(pi: ExtensionAPI) {
                 return ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
             }
 
-            const names = oauthServerNames(servers);
+            const oauth = oauthServers(servers);
+            const names = Object.keys(oauth);
             if (!names.length) {
                 return ctx.ui.notify("No OAuth MCP servers configured", "info");
             }
 
             const name = await ctx.ui.select("Select MCP server to authorize:", names);
             if (!name) return;
-            const config = servers[name]!;
+            const config = oauth[name]!;
 
             try {
                 await browserAuth(name, config, async (url) => {
@@ -699,18 +695,19 @@ export default function mcp(pi: ExtensionAPI) {
                 return ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
             }
 
-            const names = oauthServerNames(servers);
+            const oauth = oauthServers(servers);
+            const names = Object.keys(oauth);
             if (!names.length) {
                 return ctx.ui.notify("No OAuth MCP servers configured", "info");
             }
 
             const name = await ctx.ui.select("Select MCP server to logout:", names);
             if (!name) return;
-            const config = servers[name]!;
+            const config = oauth[name]!;
 
             try {
                 const store = await readAuthStore();
-                delete store[authKey(name, config.url!)];
+                delete store[authKey(name, config.url)];
                 await writeAuthStore(store);
             } catch (e) {
                 return ctx.ui.notify(`Failed to update MCP auth store: ${errorMessage(e)}`, "warning");

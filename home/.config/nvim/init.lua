@@ -137,10 +137,9 @@ require("conform").setup({
     formatters_by_ft = {
         python = { "ruff_format", "ruff_organize_imports" },
         lua = { "stylua" },
-        typescript = { "biome" },
     },
-    format_after_save = function(bufnr)
-        if not vim.b[bufnr].conform_stop then
+    format_after_save = function()
+        if not vim.g.conform_stop then
             return { lsp_format = "fallback" }
         end
     end,
@@ -194,7 +193,7 @@ vim.keymap.set("n", "<leader>th", function()
 end)
 
 vim.api.nvim_create_user_command("ConformToggle", function()
-    vim.b.conform_stop = not vim.b.conform_stop
+    vim.g.conform_stop = not vim.g.conform_stop
 end, {})
 
 vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
@@ -334,7 +333,6 @@ vim.lsp.config("tinymist", {
         semanticTokens = "disable",
     },
 })
-
 
 vim.lsp.enable("ruff")
 vim.lsp.enable("ty")
