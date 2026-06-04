@@ -57,8 +57,6 @@ type StoredTokens = {
 type AuthStore = Record<
     string,
     {
-        serverName?: string;
-        serverUrl?: string;
         tokens?: StoredTokens;
         clientInformation?: OAuthClientInformationFull;
     }
@@ -155,8 +153,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async clientInformation() {
         const store = await readAuthStore();
-        const serverUrl = this.config.url;
-        const saved = store[authKey(this.name, serverUrl)]?.clientInformation;
+        const saved = store[authKey(this.name, this.config.url)]?.clientInformation;
 
         if (saved) {
             return saved;
@@ -172,12 +169,9 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async saveClientInformation(clientInformation: OAuthClientInformationFull) {
         const store = await readAuthStore();
-        const serverUrl = this.config.url;
-        const key = authKey(this.name, serverUrl);
+        const key = authKey(this.name, this.config.url);
         store[key] = {
             ...(store[key] ?? {}),
-            serverName: this.name,
-            serverUrl,
             clientInformation,
         };
         await writeAuthStore(store);
@@ -185,8 +179,7 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async tokens() {
         const store = await readAuthStore();
-        const serverUrl = this.config.url;
-        const tokens = store[authKey(this.name, serverUrl)]?.tokens;
+        const tokens = store[authKey(this.name, this.config.url)]?.tokens;
 
         if (!tokens) {
             return undefined;
@@ -203,13 +196,10 @@ class BrowserOAuthProvider implements OAuthClientProvider {
 
     async saveTokens(tokens: OAuthTokens) {
         const store = await readAuthStore();
-        const serverUrl = this.config.url;
-        const key = authKey(this.name, serverUrl);
+        const key = authKey(this.name, this.config.url);
 
         store[key] = {
             ...(store[key] ?? {}),
-            serverName: this.name,
-            serverUrl,
             tokens: {
                 accessToken: tokens.access_token,
                 refreshToken: tokens.refresh_token,
@@ -511,7 +501,6 @@ function registeredToolCount(conn: Connected) {
 }
 
 function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: Tool) {
-    const config = conn.config;
     const existingToolNames = new Set(pi.getAllTools().map((tool) => tool.name));
     const baseToolName = sanitizeName(`${name}_${tool.name}`);
     const promptSnippet = `Tool ${tool.name} from MCP server "${name}"`;
@@ -587,7 +576,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                 const result = (await conn.client.callTool(
                     { name: tool.name, arguments: params as Record<string, unknown> },
                     CallToolResultSchema,
-                    { signal, timeout: config.timeout ?? DEFAULT_CLIENT_TIMEOUT },
+                    { signal, timeout: conn.config.timeout ?? DEFAULT_CLIENT_TIMEOUT },
                 )) as CallToolResult;
 
                 const { content, details } = await toPiContent(result.content);
