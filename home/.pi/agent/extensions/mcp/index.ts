@@ -555,8 +555,11 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                         const remaining = lines.length - displayLines.length;
 
                         if (remaining > 0) {
-                            const expand = keyHint("app.tools.expand", "to expand)");
-                            const hint = `${theme.fg("muted", `... (${remaining} more lines,`)} ${expand}`;
+                            const hint =
+                                theme.fg("muted", `... (${remaining} more lines,`) +
+                                ` ${keyHint("app.tools.expand", "to expand")}` +
+                                theme.fg("muted", ")");
+
                             displayLines.push(...new Text(hint, 0, 0).render(width));
                         }
 
