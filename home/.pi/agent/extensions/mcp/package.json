@@ -7,12 +7,12 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@earendil-works/pi-tui": "^0.78.0",
     "@modelcontextprotocol/sdk": "^1.29.0"
   },
   "devDependencies": {
-    "@earendil-works/pi-coding-agent": "^0.78.0",
-    "@types/node": "^25.9.1"
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*",
+    "@types/node": "*"
   },
   "private": true
 }
