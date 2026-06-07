@@ -179,6 +179,7 @@ vim.keymap.set({ "n", "x" }, "<leader>P", '"+P')
 vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
 vim.keymap.set("n", "<leader>q", "<Cmd>copen<CR>")
+vim.keymap.set("n", "<leader>c", "<Cmd>cclose<CR>")
 
 vim.keymap.set("n", "<leader>d", function()
     vim.diagnostic.setqflist({ open = true })
