@@ -9,7 +9,7 @@ packages=(
     git python uv font-iosevka npm
     fzf nvim lazygit tree-sitter-cli
     bash bash-completion@2 imagemagick
-    ghostty google-chrome telegram
+    ghostty helium-browser telegram
 )
 
 brew install "${packages[@]}"

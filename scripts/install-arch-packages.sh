@@ -9,7 +9,7 @@ packages=(
     uv fzf tmux nvim lazygit
     flatpak npm ghostty wl-clipboard
     ttc-iosevka bash-completion imagemagick
-    tree-sitter-cli qbittorrent google-chrome
+    tree-sitter-cli helium-browser-bin
 )
 
 yay -S --needed --noconfirm "${packages[@]}"
