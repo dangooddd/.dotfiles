@@ -74,7 +74,7 @@ type McpConfig = { mcpServers?: Record<string, ServerConfig> };
 type OAuthServerConfig = ServerConfig & { url: string; oauth: NonNullable<ServerConfig["oauth"]> };
 type McpTransport = StdioClientTransport | StreamableHTTPClientTransport;
 type McpToolDetails = { truncation: ReturnType<typeof truncateHead>; fullOutputPath: string };
-type McpAgentToolResult = AgentToolResult<McpToolDetails | undefined>;
+type McpAgentToolResult = AgentToolResult<McpToolDetails | Record<string, never>>;
 type PiToolContent = McpAgentToolResult["content"];
 
 const DEFAULT_CLIENT_TIMEOUT = 60000;
@@ -430,6 +430,15 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
     }
 }
 
+function isMcpToolDetails(details: unknown): details is McpToolDetails {
+    return Boolean(
+        details &&
+        typeof details === "object" &&
+        "truncation" in details &&
+        "fullOutputPath" in details,
+    );
+}
+
 function truncationMarker(details: McpToolDetails) {
     const { truncation, fullOutputPath } = details;
     const warnings = [`Full output: ${fullOutputPath}`];
@@ -445,7 +454,7 @@ function truncationMarker(details: McpToolDetails) {
 }
 
 async function toPiContent(items: ContentBlock[]) {
-    let details: McpToolDetails | undefined;
+    let details: McpAgentToolResult["details"] = {};
     const content: PiToolContent = [];
     const source: ContentBlock[] = items.length ? items : [{ type: "text", text: "[Empty result]" }];
     const textBlocks: string[] = [];
@@ -512,7 +521,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
     }
 
     pi.registerTool(
-        defineTool<ToolDefinition["parameters"], McpToolDetails | undefined>({
+        defineTool<ToolDefinition["parameters"], McpAgentToolResult["details"]>({
             name: toolName,
             label: toolName,
             description: tool.description || promptSnippet,
@@ -530,12 +539,12 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
             },
 
             renderResult(result, options, theme) {
-                const details = result.details;
                 let output = result.content
                     .filter((item) => item.type === "text")
                     .map((item) => item.text)
                     .join("\n");
 
+                const details = isMcpToolDetails(result.details) ? result.details : undefined;
                 if (details && output.endsWith("]")) {
                     const footerStart = output.lastIndexOf("\n\n[");
                     if (footerStart !== -1 && output.slice(footerStart).includes(details.fullOutputPath)) {
