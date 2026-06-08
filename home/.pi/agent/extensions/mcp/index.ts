@@ -90,7 +90,7 @@ function expandEnv(s: string) {
 }
 
 function sanitizeName(s: string) {
-    return s.replace(/[^a-zA-Z0-9_]/g, "_").replace(/^_+|_+$/g, "") || "mcp";
+    return s.toLowerCase().replace(/[^a-z0-9_]/g, "_").replace(/^_+|_+$/g, "");
 }
 
 function errorMessage(error: unknown) {
@@ -430,15 +430,6 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
     }
 }
 
-function isMcpToolDetails(details: unknown): details is McpToolDetails {
-    return Boolean(
-        details &&
-        typeof details === "object" &&
-        "truncation" in details &&
-        "fullOutputPath" in details,
-    );
-}
-
 function truncationMarker(details: McpToolDetails) {
     const { truncation, fullOutputPath } = details;
     const warnings = [`Full output: ${fullOutputPath}`];
@@ -510,9 +501,15 @@ function registeredToolCount(conn: Connected) {
 }
 
 function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: Tool) {
-    const existingToolNames = new Set(pi.getAllTools().map((tool) => tool.name));
-    const baseToolName = sanitizeName(`${name}_${tool.name}`);
     const promptSnippet = `Tool ${tool.name} from MCP server "${name}"`;
+    const existingToolNames = new Set(pi.getAllTools().map((tool) => tool.name));
+    const sanitizedToolName = sanitizeName(tool.name);
+    const sanitizedServerName = sanitizeName(name);
+
+    const baseToolName = sanitizedToolName.includes(sanitizedServerName)
+        ? sanitizedToolName
+        : sanitizeName(`${name}_${tool.name}`);
+
     let toolName = baseToolName;
     let suffix = 2;
 
@@ -544,7 +541,10 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                     .map((item) => item.text)
                     .join("\n");
 
-                const details = isMcpToolDetails(result.details) ? result.details : undefined;
+                const details = result.details && "truncation" in result.details && "fullOutputPath" in result.details
+                    ? result.details as McpToolDetails
+                    : undefined;
+
                 if (details && output.endsWith("]")) {
                     const footerStart = output.lastIndexOf("\n\n[");
                     if (footerStart !== -1 && output.slice(footerStart).includes(details.fullOutputPath)) {
