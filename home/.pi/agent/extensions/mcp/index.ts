@@ -342,18 +342,27 @@ function expandConfig(config: ServerConfig): ServerConfig {
     };
 }
 
-async function loadConfig(cwd: string): Promise<Record<string, ServerConfig>> {
-    const files = [join(getAgentDir(), "mcp.json"), join(cwd, ".pi", "mcp.json")];
-    const out: Record<string, ServerConfig> = {};
+async function loadConfig(ctx: ExtensionContext): Promise<Record<string, ServerConfig>> {
+    const servers: Record<string, ServerConfig> = {};
+    const files = [join(getAgentDir(), "mcp.json")];
+
+    if (ctx.isProjectTrusted()) {
+        files.push(join(ctx.cwd, ".pi", "mcp.json"));
+    }
 
     for (const file of files) {
         const config = (await readJson(file)) as McpConfig;
-        if (config.mcpServers && typeof config.mcpServers === "object") {
-            Object.assign(out, config.mcpServers);
+
+        if (!config.mcpServers || typeof config.mcpServers !== "object") {
+            continue;
+        }
+
+        for (const [name, serverConfig] of Object.entries(config.mcpServers)) {
+            servers[name] = expandConfig(serverConfig);
         }
     }
 
-    return Object.fromEntries(Object.entries(out).map(([name, config]) => [name, expandConfig(config)]));
+    return servers;
 }
 
 async function listTools(client: Client, timeout = DEFAULT_CLIENT_TIMEOUT) {
@@ -607,7 +616,7 @@ async function connectAllServers(pi: ExtensionAPI, ctx: ExtensionContext) {
     let servers: Record<string, ServerConfig>;
 
     try {
-        servers = await loadConfig(ctx.cwd);
+        servers = await loadConfig(ctx);
     } catch (e) {
         ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
         return;
@@ -646,7 +655,7 @@ export default function mcp(pi: ExtensionAPI) {
             let servers: Record<string, ServerConfig>;
 
             try {
-                servers = await loadConfig(ctx.cwd);
+                servers = await loadConfig(ctx);
             } catch (e) {
                 return ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
             }
@@ -687,7 +696,7 @@ export default function mcp(pi: ExtensionAPI) {
             let servers: Record<string, ServerConfig>;
 
             try {
-                servers = await loadConfig(ctx.cwd);
+                servers = await loadConfig(ctx);
             } catch (e) {
                 return ctx.ui.notify(`Failed to load MCP config: ${errorMessage(e)}`, "warning");
             }
