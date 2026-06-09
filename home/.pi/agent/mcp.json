@@ -1,11 +1,9 @@
 {
   "mcpServers": {
-    "ddg": {
-      "command": "duckduckgo-mcp-server",
-      "args": [
-        "--fetch-backend",
-        "auto"
-      ]
+    "exa": {
+      "type": "http",
+      "url": "https://mcp.exa.ai/mcp",
+      "prefixTools": false
     }
   }
 }

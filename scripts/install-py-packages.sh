@@ -5,7 +5,7 @@ if ! command -v uv &> /dev/null; then
     exit
 fi
 
-packages=(jupytext ty ruff "duckduckgo-mcp-server[browser]" "markitdown[all]")
+packages=(jupytext ty ruff "markitdown[all]")
 
 for pkg in "${packages[@]}"; do
     uv tool install --upgrade "$pkg"

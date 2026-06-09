@@ -38,6 +38,7 @@ type ServerConfig = {
     url?: string;
     headers?: Record<string, string>;
     tools?: string[];
+    prefixTools?: boolean;
     timeout?: number;
     oauth?: {
         clientId?: string;
@@ -503,12 +504,7 @@ function registeredToolCount(conn: Connected) {
 function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: Tool) {
     const promptSnippet = `Tool ${tool.name} from MCP server "${name}"`;
     const existingToolNames = new Set(pi.getAllTools().map((tool) => tool.name));
-    const sanitizedToolName = sanitizeName(tool.name);
-    const sanitizedServerName = sanitizeName(name);
-
-    const baseToolName = sanitizedToolName.includes(sanitizedServerName)
-        ? sanitizedToolName
-        : sanitizeName(`${name}_${tool.name}`);
+    const baseToolName = sanitizeName(conn.config.prefixTools === false ? tool.name : `${name}_${tool.name}`);
 
     let toolName = baseToolName;
     let suffix = 2;
