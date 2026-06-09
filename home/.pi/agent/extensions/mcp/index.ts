@@ -80,6 +80,7 @@ type PiToolContent = McpAgentToolResult["content"];
 
 const DEFAULT_CLIENT_TIMEOUT = 60000;
 const OAUTH_CALLBACK_TIMEOUT = 300000;
+const CONNECT_CONCURRENCY = 8;
 const connected: Connected[] = [];
 const authPath = join(getAgentDir(), "mcp-auth.json");
 
@@ -96,6 +97,22 @@ function sanitizeName(s: string) {
 
 function errorMessage(error: unknown) {
     return error instanceof Error ? error.message : String(error);
+}
+
+async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+    limit = Math.max(1, limit);
+    const results: R[] = [];
+    let next = 0;
+
+    async function worker() {
+        while (next < items.length) {
+            const index = next++;
+            results[index] = await fn(items[index]!);
+        }
+    }
+
+    await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => worker()));
+    return results;
 }
 
 async function readJson(path: string) {
@@ -423,6 +440,7 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
         const authProvider = config.oauth
             ? new BrowserOAuthProvider(name, { ...config, url: config.url, oauth: config.oauth })
             : undefined;
+
         transport = new StreamableHTTPClientTransport(new URL(config.url), {
             requestInit: { headers: config.headers ?? {} },
             authProvider,
@@ -622,20 +640,28 @@ async function connectAllServers(pi: ExtensionAPI, ctx: ExtensionContext) {
         return;
     }
 
-    for (const [name, config] of Object.entries(servers)) {
+    const results = await mapLimit(Object.entries(servers), CONNECT_CONCURRENCY, async ([name, config]) => {
         try {
-            const allow = new Set(config.tools ?? []);
-            const conn = await connectServer(name, config);
-            connected.push(conn);
-
-            for (const tool of conn.tools) {
-                if (allow.size && !allow.has(tool.name)) {
-                    continue;
-                }
-                registerMcpTool(pi, conn, name, tool);
-            }
+            return { name, conn: await connectServer(name, config) };
         } catch (e) {
             ctx.ui.notify(`MCP server "${name}": ${errorMessage(e)}`, "warning");
+            return undefined;
+        }
+    });
+
+    for (const result of results) {
+        if (!result) {
+            continue;
+        }
+
+        connected.push(result.conn);
+        const allow = new Set(result.conn.config.tools ?? []);
+
+        for (const tool of result.conn.tools) {
+            if (allow.size && !allow.has(tool.name)) {
+                continue;
+            }
+            registerMcpTool(pi, result.conn, result.name, tool);
         }
     }
 }
