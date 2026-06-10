@@ -113,7 +113,7 @@ vim.pack.add({
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/ibhagwan/fzf-lua",
     "https://github.com/stevearc/oil.nvim",
-    "https://github.com/romus204/tree-sitter-manager.nvim",
+    "https://github.com/nvim-treesitter/nvim-treesitter",
 }, {
     confirm = false,
     load = true,
@@ -126,10 +126,7 @@ require("placeholders").setup()
 require("ipython").setup()
 require("jupytext").setup()
 require("mini.icons").setup()
-
-require("tree-sitter-manager").setup({
-    auto_install = true,
-})
+require("nvim-treesitter").setup()
 
 require("conform").setup({
     formatters_by_ft = {
@@ -218,6 +215,26 @@ vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").toggle_repl_focus)
 --------------------------------------------------------------------------------
 -- Hooks
 --------------------------------------------------------------------------------
+local langs = {}
+for _, value in ipairs(require("nvim-treesitter").get_available()) do
+    langs[value] = true
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "*",
+    callback = vim.schedule_wrap(function(event)
+        local lang = vim.treesitter.language.get_lang(event.match)
+        if not langs[lang] then
+            return
+        end
+
+        local ok, _ = pcall(vim.treesitter.start, event.buf)
+        if not ok then
+            require("nvim-treesitter").install(lang)
+        end
+    end),
+})
+
 local chars = {}
 for i = 32, 126 do
     chars[#chars + 1] = string.char(i)
