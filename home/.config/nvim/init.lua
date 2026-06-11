@@ -3,7 +3,6 @@
 --------------------------------------------------------------------------------
 vim.o.winborder = "single"
 vim.o.undofile = true -- save state of file on write
-vim.o.autoread = true -- read changes from other sources
 vim.o.wrap = false
 vim.o.splitright = true
 vim.o.splitbelow = true
@@ -30,7 +29,6 @@ vim.o.tabstop = 4 -- 1 tab represented as 4 spaces
 vim.o.expandtab = true -- <tab> key will create " " insead of "\t"
 vim.o.shiftwidth = 4 -- indent change after backspace and >> <<
 vim.o.softtabstop = 4 -- number of spaces instead of tab
-vim.o.autoindent = true
 
 vim.o.langmap = [[йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ъ],]]
     .. [[фa,ыs,вd,аf,пg,рh,оj,лk,дl,ж\;,э',]]
@@ -43,18 +41,7 @@ vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-vim.diagnostic.config({
-    virtual_text = true,
-    status = {
-        format = {
-            [vim.diagnostic.severity.ERROR] = "%#DiagnosticError#E",
-            [vim.diagnostic.severity.WARN] = "%#DiagnosticWarn#W",
-            [vim.diagnostic.severity.INFO] = "%#DiagnosticInfo#I",
-            [vim.diagnostic.severity.HINT] = "%#DiagnosticHint#H",
-        },
-    },
-})
-
+vim.diagnostic.config({ virtual_text = true })
 require("vim._core.ui2").enable({ enable = true })
 
 --------------------------------------------------------------------------------
