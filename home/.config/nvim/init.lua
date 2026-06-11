@@ -142,6 +142,7 @@ require("fzf-lua").setup({
 
 require("oil").setup({
     default_file_explorer = true,
+    watch_for_changes = true,
     columns = { { "icon", add_padding = false } },
     view_options = { show_hidden = true },
     float = {
