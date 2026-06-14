@@ -12,4 +12,4 @@ packages=(
     ghostty helium-browser telegram
 )
 
-brew install "${packages[@]}"
+brew install -y "${packages[@]}"

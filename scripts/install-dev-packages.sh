@@ -10,4 +10,4 @@ packages=(
     tree-sitter-cli npm imagemagick
 )
 
-brew install "${packages[@]}"
+brew install -y "${packages[@]}"
