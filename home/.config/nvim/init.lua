@@ -141,6 +141,7 @@ require("fzf-lua").setup({
 })
 
 require("oil").setup({
+    delete_to_trash = true,
     default_file_explorer = true,
     watch_for_changes = true,
     columns = { { "icon", add_padding = false } },
