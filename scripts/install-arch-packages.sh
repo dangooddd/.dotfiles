@@ -6,7 +6,7 @@ if ! command -v yay &> /dev/null; then
 fi
 
 packages=(
-    uv fzf tmux nvim lazygit
+    uv fzf tmux nvim lazygit opencode-bin
     flatpak npm ghostty wl-clipboard
     ttc-iosevka bash-completion imagemagick
     tree-sitter-cli helium-browser-bin

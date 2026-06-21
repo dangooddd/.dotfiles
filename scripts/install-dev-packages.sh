@@ -6,8 +6,9 @@ if ! command -v brew &> /dev/null; then
 fi
 
 packages=(
-    uv fzf tmux nvim lazygit
+    uv fzf tmux nvim lazygit 
     tree-sitter-cli npm imagemagick
+    "anomalyco/tap/opencode"
 )
 
 brew install -y "${packages[@]}"
