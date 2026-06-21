@@ -31,6 +31,7 @@ export PATH
 export LESS="--tilde -RFXS"
 export PAGER="less"
 export EDITOR="nvim"
+export OPENCODE_ENABLE_EXA=1
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export FZF_DEFAULT_OPTS="--color=16 --layout=reverse --height=15 --border=sharp --ansi"
 
