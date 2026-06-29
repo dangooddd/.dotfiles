@@ -5,6 +5,11 @@ if ! command -v yay &> /dev/null; then
     exit
 fi
 
+if [[ -n "$U" ]]; then
+    yay --noconfirm
+    exit
+fi
+
 packages=(
     uv fzf tmux nvim lazygit opencode-bin
     flatpak npm ghostty wl-clipboard

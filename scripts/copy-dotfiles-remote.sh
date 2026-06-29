@@ -5,9 +5,9 @@ if ! command -v rsync &> /dev/null; then
     exit
 fi
 
-script_dir="$(dirname "$(realpath "$0")")"
+scripts="$(dirname "$(realpath "$0")")"
 remote="$1"
-cd "$script_dir/../"
+cd "$scripts/../"
 
 rsync -avz \
     --exclude='*.jpg' \

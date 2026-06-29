@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [[ -n "$U" ]]; then
+    exit
+fi
+
 scripts="$(dirname "$(realpath "$0")")"
 cd "$scripts/../home"
 

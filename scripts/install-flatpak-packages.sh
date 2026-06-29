@@ -5,6 +5,11 @@ if ! command -v flatpak &> /dev/null; then
     exit
 fi
 
+if [[ -n "$U" ]]; then
+    flatpak update -y
+    exit
+fi
+
 packages=(
     org.telegram.desktop
     com.obsproject.Studio

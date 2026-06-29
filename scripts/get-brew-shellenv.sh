@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [[ -n "$U" ]]; then
+    exit
+fi
+
 if command -v brew &> /dev/null; then
     brew shellenv
     exit

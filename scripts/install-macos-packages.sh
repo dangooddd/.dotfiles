@@ -5,6 +5,11 @@ if ! command -v brew &> /dev/null; then
     exit
 fi
 
+if [[ -n "$U" ]]; then
+    brew upgrade -y
+    exit
+fi
+
 packages=(
     git python uv font-iosevka npm
     fzf nvim lazygit tree-sitter-cli

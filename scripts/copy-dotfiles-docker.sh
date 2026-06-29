@@ -5,9 +5,9 @@ if ! command -v docker &> /dev/null; then
     exit
 fi
 
-script_dir="$(dirname "$(realpath "$0")")"
+scripts="$(dirname "$(realpath "$0")")"
 container="$1"
-cd "$script_dir/../"
+cd "$scripts/../"
 
 docker cp "$PWD" "$container":/root/
 infocmp | docker exec -i "$container" tic -

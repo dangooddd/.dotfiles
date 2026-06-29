@@ -4,7 +4,7 @@ scripts="$(dirname "$(realpath "$0")")"
 cd "$scripts"
 
 ./sync-dotfiles.sh
-./create-aliases.sh
+./create-aliases.sh macos
 ./install-brew.sh
 eval "$(./get-brew-shellenv.sh)"
 ./install-macos-packages.sh

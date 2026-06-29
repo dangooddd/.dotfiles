@@ -5,6 +5,11 @@ if ! command -v brew &> /dev/null; then
     exit
 fi
 
+if [[ -n "$U" ]]; then
+    brew upgrade -y
+    exit
+fi
+
 packages=(
     uv fzf tmux nvim lazygit 
     tree-sitter-cli npm imagemagick
