@@ -11,7 +11,7 @@ if [[ -n "$U" ]]; then
 fi
 
 packages=(
-    uv fzf tmux nvim lazygit 
+    uv fzf tmux nvim lazygit git
     tree-sitter-cli npm imagemagick
     "anomalyco/tap/opencode"
 )
