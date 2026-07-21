@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "mcp"
+  ],
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*",
+    "@types/node": "*"
+  }
+}

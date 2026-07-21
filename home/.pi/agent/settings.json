@@ -1,0 +1,9 @@
+{
+  "theme": "jungle",
+  "quietStartup": true,
+  "editorPaddingX": 1,
+  "enableInstallTelemetry": false,
+  "treeFilterMode": "user-only",
+  "collapseChangelog": true,
+  "showHardwareCursor": true
+}

@@ -9,3 +9,4 @@ cd "$scripts"
 eval "$(./get-brew-shellenv.sh)"
 ./install-dev-packages.sh
 ./install-py-packages.sh
+./install-js-packages.sh

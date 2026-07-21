@@ -9,3 +9,4 @@ cd "$scripts"
 ./install-arch-packages.sh
 ./install-flatpak-packages.sh
 ./install-py-packages.sh
+./install-js-packages.sh

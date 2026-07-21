@@ -1,0 +1,22 @@
+{
+  "tui.select.up": [
+    "up",
+    "ctrl+p"
+  ],
+  "tui.select.down": [
+    "down",
+    "ctrl+n"
+  ],
+  "app.model.cycleForward": [
+    "alt+n"
+  ],
+  "app.model.cycleBackward": [
+    "alt+p"
+  ],
+  "app.session.toggleNamedFilter": [
+    "ctrl+f"
+  ],
+  "app.session.togglePath": [
+    "ctrl+t"
+  ]
+}
