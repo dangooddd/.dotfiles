@@ -15,7 +15,6 @@ packages=(
     fzf nvim lazygit tree-sitter-cli
     bash bash-completion@2 imagemagick
     ghostty helium-browser telegram
-    "anomalyco/tap/opencode"
 )
 
 brew install -y "${packages[@]}"

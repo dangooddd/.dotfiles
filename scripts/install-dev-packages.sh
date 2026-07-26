@@ -13,7 +13,6 @@ fi
 packages=(
     uv fzf tmux nvim lazygit git
     tree-sitter-cli npm imagemagick
-    "anomalyco/tap/opencode"
 )
 
 brew install -y "${packages[@]}"
