@@ -493,7 +493,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
                 const callArgs = context.args ?? args ?? {};
                 const argsText = JSON.stringify(callArgs, null, 2);
                 const call = argsText === "{}" ? toolName : `${toolName} ${argsText}`;
-                return new Text(`${theme.fg("toolTitle", theme.bold(call))}\n`, 0, 0);
+                return new Text(`${theme.fg("toolTitle", theme.bold(call))}`, 0, 0);
             },
 
             renderResult(result, options, theme) {
@@ -518,7 +518,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
 
                 return {
                     render(width: number) {
-                        const lines = renderedOutput ? new Text(renderedOutput, 0, 0).render(width) : [];
+                        const lines = renderedOutput ? new Text(`\n${renderedOutput}`, 0, 0).render(width) : [];
                         const displayLines = options.expanded ? lines : lines.slice(0, 10);
                         const remaining = lines.length - displayLines.length;
 

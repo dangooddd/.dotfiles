@@ -172,11 +172,13 @@ function createSubagentTool() {
                     let aborted = false;
                     let killTimer: NodeJS.Timeout | undefined;
 
-                    const update = () =>
+                    const update = () => {
+                        const output = lastOutput(details.messages);
                         onUpdate?.({
-                            content: [{ type: "text", text: lastOutput(details.messages) || "(running...)" }],
+                            content: [{ type: "text", text: output || "(running...)" }],
                             details,
                         });
+                    };
 
                     const processLine = (line: string) => {
                         if (!line.trim()) return;
@@ -250,10 +252,10 @@ function createSubagentTool() {
         },
 
         renderCall(args, theme) {
-            const task = args.task.length > 80 ? `${args.task.slice(0, 80)}…` : args.task;
+            const task = args.task.length > 120 ? `${args.task.slice(0, 120)}...` : args.task;
             const title = theme.fg("toolTitle", theme.bold("subagent "));
             const agent = theme.fg("accent", args.agent);
-            return new Text(`${title}${agent}\n${theme.fg("dim", task)}`, 0, 0);
+            return new Text(`${title}${agent}\n${theme.fg("muted", task)}`, 0, 0);
         },
 
         renderResult(result, options, theme) {
@@ -278,7 +280,7 @@ function createSubagentTool() {
 
             return {
                 render(width: number) {
-                    const lines = renderedOutput ? new Text(renderedOutput, 0, 0).render(width) : [];
+                    const lines = renderedOutput ? new Text(`\n${renderedOutput}`, 0, 0).render(width) : [];
                     const displayLines = options.expanded ? lines : lines.slice(0, 10);
                     const remaining = lines.length - displayLines.length;
 
@@ -299,7 +301,7 @@ function createSubagentTool() {
 
                     if (details) {
                         const usage = `${details.usage.turns} turn(s), $${details.usage.cost.toFixed(4)}`;
-                        displayLines.push(...new Text(theme.fg("dim", usage), 0, 0).render(width));
+                        displayLines.push(...new Text(`\n${theme.fg("muted", usage)}`, 0, 0).render(width));
                     }
 
                     return displayLines;
