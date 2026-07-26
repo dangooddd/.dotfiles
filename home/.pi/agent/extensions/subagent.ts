@@ -1,24 +1,21 @@
 import { spawn } from "node:child_process";
-import { randomBytes } from "node:crypto";
 import { access, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import type { Message } from "@earendil-works/pi-ai";
 import {
     CONFIG_DIR_NAME,
-    DEFAULT_MAX_BYTES,
-    DEFAULT_MAX_LINES,
-    formatSize,
+    defineTool,
     getAgentDir,
     keyHint,
     parseFrontmatter,
-    truncateHead,
-    withFileMutationQueue,
     type ExtensionAPI,
     type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
+import type { TruncationDetails } from "./shared/types.ts";
+import { errorMessage, truncateOutput, truncationMarker } from "./shared/utils.ts";
 
 type Agent = {
     name: string;
@@ -26,10 +23,9 @@ type Agent = {
     tools?: string[];
     model?: string;
     systemPrompt: string;
-    source: "user" | "project";
 };
 
-type Usage = {
+type SubagentUsage = {
     input: number;
     output: number;
     cacheRead: number;
@@ -38,14 +34,11 @@ type Usage = {
     turns: number;
 };
 
-type TruncationDetails = ReturnType<typeof truncateHead> & { fullOutputPath: string };
-
-type Details = {
+type SubagentToolDetails = {
     agent: string;
-    source?: Agent["source"];
     task: string;
     messages: Message[];
-    usage: Usage;
+    usage: SubagentUsage;
     exitCode?: number;
     stderr?: string;
     truncation?: TruncationDetails;
@@ -53,7 +46,7 @@ type Details = {
 
 const agents = new Map<string, Agent>();
 
-async function loadAgentsFromDir(dir: string, source: Agent["source"]): Promise<Agent[]> {
+async function loadAgentsFromDir(dir: string): Promise<Agent[]> {
     const agents: Agent[] = [];
     let entries;
 
@@ -78,22 +71,21 @@ async function loadAgentsFromDir(dir: string, source: Agent["source"]): Promise<
                 tools: tools?.length ? tools : undefined,
                 model: frontmatter.model,
                 systemPrompt: body,
-                source,
             });
         } catch { }
     }
+
     return agents;
 }
 
 async function loadAgents(ctx: ExtensionContext) {
     agents.clear();
 
-    const userAgents = await loadAgentsFromDir(join(getAgentDir(), "agents"), "user");
-    for (const agent of userAgents) agents.set(agent.name, agent);
+    const dirs = [join(getAgentDir(), "agents")];
+    if (ctx.isProjectTrusted()) dirs.push(join(ctx.cwd, CONFIG_DIR_NAME, "agents"));
 
-    if (ctx.isProjectTrusted()) {
-        const projectAgents = await loadAgentsFromDir(join(ctx.cwd, CONFIG_DIR_NAME, "agents"), "project");
-        for (const agent of projectAgents) agents.set(agent.name, agent);
+    for (const dir of dirs) {
+        for (const agent of await loadAgentsFromDir(dir)) agents.set(agent.name, agent);
     }
 }
 
@@ -107,13 +99,14 @@ async function piInvocation(args: string[]) {
             if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
         }
     }
+
     const executable = basename(process.execPath).toLowerCase();
     return /^(node|bun)(\.exe)?$/.test(executable)
         ? { command: "pi", args }
         : { command: process.execPath, args };
 }
 
-function finalOutput(messages: Message[]) {
+function lastOutput(messages: Message[]) {
     for (let i = messages.length - 1; i >= 0; i--) {
         const message = messages[i];
         if (message.role !== "assistant") continue;
@@ -123,36 +116,15 @@ function finalOutput(messages: Message[]) {
     return "";
 }
 
-function errorMessage(error: unknown) {
-    return error instanceof Error ? error.message : String(error);
-}
+function createSubagentTool() {
+    const availableAgents = [...agents.values()]
+        .map((agent) => `${agent.name}: ${agent.description}`)
+        .join("; ") || "none";
 
-function truncationMarker(truncation: TruncationDetails) {
-    const warnings = [`Full output: ${truncation.fullOutputPath}`];
-
-    if (truncation.truncatedBy === "lines") {
-        warnings.push(`Truncated: showing ${truncation.outputLines} of ${truncation.totalLines} lines`);
-    } else {
-        const limit = formatSize(truncation.maxBytes ?? DEFAULT_MAX_BYTES);
-        warnings.push(`Truncated: ${truncation.outputLines} lines shown (${limit} limit)`);
-    }
-
-    return `[${warnings.join(". ")}]`;
-}
-
-export default function subagent(pi: ExtensionAPI) {
-    pi.on("session_start", (_event, ctx) => {
-        void loadAgents(ctx);
-    });
-
-    pi.registerTool({
+    return defineTool({
         name: "subagent",
         label: "Subagent",
-        description: [
-            "Run one specialized agent in an isolated Pi process.",
-            `Agents come from ${join(getAgentDir(), "agents")} and, only for trusted projects,`,
-            `${CONFIG_DIR_NAME}/agents.`,
-        ].join(" "),
+        description: `Run one specialized agent in an isolated Pi process. Available agents: ${availableAgents}`,
         promptSnippet: "Delegate one focused task to a specialized agent",
         parameters: Type.Object({
             agent: Type.String({ description: "Agent name" }),
@@ -164,16 +136,11 @@ export default function subagent(pi: ExtensionAPI) {
             const agent = agents.get(params.agent);
 
             if (!agent) {
-                const available = [...agents.values()]
-                    .map((candidate) => `${candidate.name} (${candidate.source}): ${candidate.description}`)
-                    .join("; ") || "none";
-
-                throw new Error(`Unknown agent "${params.agent}". Available agents: ${available}`);
+                throw new Error(`Unknown agent "${params.agent}". Available agents: ${availableAgents}`);
             }
 
-            const details: Details = {
+            const details: SubagentToolDetails = {
                 agent: agent.name,
-                source: agent.source,
                 task: params.task,
                 messages: [],
                 usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0, turns: 0 },
@@ -188,9 +155,7 @@ export default function subagent(pi: ExtensionAPI) {
                 if (agent.systemPrompt.trim()) {
                     promptDir = await mkdtemp(join(tmpdir(), "pi-subagent-"));
                     const promptPath = join(promptDir, "prompt.md");
-                    await withFileMutationQueue(promptPath, () =>
-                        writeFile(promptPath, agent.systemPrompt, { encoding: "utf8", mode: 0o600 }),
-                    );
+                    await writeFile(promptPath, agent.systemPrompt, { encoding: "utf8", mode: 0o600 });
                     args.push("--append-system-prompt", promptPath);
                 }
 
@@ -209,9 +174,10 @@ export default function subagent(pi: ExtensionAPI) {
 
                     const update = () =>
                         onUpdate?.({
-                            content: [{ type: "text", text: finalOutput(details.messages) || "(running...)" }],
+                            content: [{ type: "text", text: lastOutput(details.messages) || "(running...)" }],
                             details,
                         });
+
                     const processLine = (line: string) => {
                         if (!line.trim()) return;
                         try {
@@ -232,6 +198,7 @@ export default function subagent(pi: ExtensionAPI) {
                             }
                         } catch { }
                     };
+
                     const abort = () => {
                         aborted = true;
                         child.kill("SIGTERM");
@@ -257,35 +224,23 @@ export default function subagent(pi: ExtensionAPI) {
                         if (aborted) reject(new Error("Subagent was aborted"));
                         else resolve();
                     });
+
                     if (signal?.aborted) abort();
                     else signal?.addEventListener("abort", abort, { once: true });
                 });
 
-                const output = finalOutput(details.messages);
+                const output = lastOutput(details.messages);
 
                 if (details.exitCode !== 0) {
                     throw new Error(details.stderr || output || `Subagent exited with code ${details.exitCode}`);
                 }
 
-                if (!output) throw new Error(details.stderr || "Subagent produced no output");
-
-                const truncated = truncateHead(output, {
-                    maxBytes: DEFAULT_MAX_BYTES,
-                    maxLines: DEFAULT_MAX_LINES,
-                });
-                let text = truncated.content;
-
-                if (truncated.truncated) {
-                    const fullOutputPath = join(tmpdir(), `pi-subagent-${randomBytes(8).toString("hex")}.md`);
-
-                    await withFileMutationQueue(fullOutputPath, () =>
-                        writeFile(fullOutputPath, output, { encoding: "utf8", mode: 0o600 }),
-                    );
-
-                    details.truncation = { ...truncated, fullOutputPath };
-                    text += `\n\n${truncationMarker(details.truncation)}`;
+                if (!output) {
+                    throw new Error(details.stderr || "Subagent produced no output");
                 }
 
+                const { text, truncation } = await truncateOutput(output, "pi-subagent-", "output.md");
+                details.truncation = truncation;
                 return { content: [{ type: "text", text }], details };
             } catch (error) {
                 throw new Error(`Subagent ${agent.name} failed: ${errorMessage(error)}`);
@@ -298,12 +253,11 @@ export default function subagent(pi: ExtensionAPI) {
             const task = args.task.length > 80 ? `${args.task.slice(0, 80)}…` : args.task;
             const title = theme.fg("toolTitle", theme.bold("subagent "));
             const agent = theme.fg("accent", args.agent);
-
             return new Text(`${title}${agent}\n${theme.fg("dim", task)}`, 0, 0);
         },
 
         renderResult(result, options, theme) {
-            const details = result.details as Details | undefined;
+            const details = result.details as SubagentToolDetails | undefined;
             const truncation = details?.truncation;
             let output = result.content
                 .filter((part) => part.type === "text")
@@ -345,9 +299,7 @@ export default function subagent(pi: ExtensionAPI) {
 
                     if (details) {
                         const usage = `${details.usage.turns} turn(s), $${details.usage.cost.toFixed(4)}`;
-                        displayLines.push(
-                            ...new Text(theme.fg("dim", `${usage}, ${details.source ?? "unknown"}`), 0, 0).render(width),
-                        );
+                        displayLines.push(...new Text(theme.fg("dim", usage), 0, 0).render(width));
                     }
 
                     return displayLines;
@@ -355,5 +307,11 @@ export default function subagent(pi: ExtensionAPI) {
                 invalidate() { },
             };
         },
+    });
+}
+
+export default function subagent(pi: ExtensionAPI) {
+    pi.on("session_start", (_event, ctx) => {
+        void loadAgents(ctx).then(() => pi.registerTool(createSubagentTool()));
     });
 }

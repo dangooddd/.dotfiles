@@ -1,13 +1,8 @@
 import {
     CONFIG_DIR_NAME,
-    DEFAULT_MAX_BYTES,
-    DEFAULT_MAX_LINES,
     defineTool,
-    formatSize,
     getAgentDir,
     keyHint,
-    truncateHead,
-    withFileMutationQueue,
     type AgentToolResult,
     type ExtensionAPI,
     type ExtensionContext,
@@ -25,11 +20,12 @@ import {
     type ContentBlock,
     type Tool,
 } from "@modelcontextprotocol/sdk/types.js";
-import { randomBytes } from "node:crypto";
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { randomBytes, randomUUID } from "node:crypto";
+import { mkdir, rename, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
-import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import type { TruncationDetails } from "../shared/types.ts";
+import { errorMessage, expandEnv, mapLimit, readJson, truncateOutput, truncationMarker } from "../shared/utils.ts";
 
 type ServerConfig = {
     type?: "stdio" | "http";
@@ -75,10 +71,9 @@ type Connected = {
 type McpConfig = { mcpServers?: Record<string, ServerConfig> };
 type OAuthServerConfig = ServerConfig & { url: string; oauth: NonNullable<ServerConfig["oauth"]> };
 type McpTransport = StdioClientTransport | StreamableHTTPClientTransport;
-type McpTruncationDetails = ReturnType<typeof truncateHead> & { fullOutputPath: string };
-type McpToolDetails = { truncation?: McpTruncationDetails };
-type McpAgentToolResult = AgentToolResult<McpToolDetails>;
-type PiToolContent = McpAgentToolResult["content"];
+type McpToolDetails = { truncation?: TruncationDetails };
+type McpToolResult = AgentToolResult<McpToolDetails>;
+type PiToolContent = McpToolResult["content"];
 
 const DEFAULT_CLIENT_TIMEOUT = 60000;
 const OAUTH_CALLBACK_TIMEOUT = 300000;
@@ -87,50 +82,14 @@ const connected: Connected[] = [];
 const configs = new Map<string, ServerConfig>();
 const authPath = join(getAgentDir(), "mcp-auth.json");
 
-function expandEnv(s: string) {
-    return s.replace(
-        /\{env:([A-Z0-9_]+)\}|\$\{([A-Z0-9_]+)\}|\$([A-Z0-9_]+)/gi,
-        (_, a, b, c) => process.env[a || b || c] ?? "",
-    );
-}
-
 function sanitizeName(s: string) {
     return s.toLowerCase().replace(/[^a-z0-9_]/g, "_").replace(/^_+|_+$/g, "");
-}
-
-function errorMessage(error: unknown) {
-    return error instanceof Error ? error.message : String(error);
-}
-
-async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
-    limit = Math.max(1, limit);
-    const results: R[] = [];
-    let next = 0;
-
-    async function worker() {
-        while (next < items.length) {
-            const index = next++;
-            results[index] = await fn(items[index]!);
-        }
-    }
-
-    await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => worker()));
-    return results;
-}
-
-async function readJson(path: string) {
-    try {
-        return JSON.parse(await readFile(path, "utf8"));
-    } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === "ENOENT") return {};
-        throw error;
-    }
 }
 
 const readAuthStore = async () => (await readJson(authPath)) as AuthStore;
 
 async function writeAuthStore(store: AuthStore) {
-    const tempPath = `${authPath}.${process.pid}.${Date.now()}.tmp`;
+    const tempPath = `${authPath}.${process.pid}.${randomUUID()}.tmp`;
     await mkdir(dirname(authPath), { recursive: true });
     await writeFile(tempPath, JSON.stringify(store, null, 2), { encoding: "utf8", mode: 0o600 });
     await rename(tempPath, authPath);
@@ -466,21 +425,8 @@ async function connectServer(name: string, config: ServerConfig): Promise<Connec
     }
 }
 
-function truncationMarker(truncation: McpTruncationDetails) {
-    const warnings = [`Full output: ${truncation.fullOutputPath}`];
-
-    if (truncation.truncatedBy === "lines") {
-        warnings.push(`Truncated: showing ${truncation.outputLines} of ${truncation.totalLines} lines`);
-    } else {
-        const limit = formatSize(truncation.maxBytes ?? DEFAULT_MAX_BYTES);
-        warnings.push(`Truncated: ${truncation.outputLines} lines shown (${limit} limit)`);
-    }
-
-    return `[${warnings.join(". ")}]`;
-}
-
 async function toPiContent(items: ContentBlock[]) {
-    let details: McpAgentToolResult["details"] = {};
+    let details: McpToolResult["details"] = {};
     const content: PiToolContent = [];
     const source: ContentBlock[] = items.length ? items : [{ type: "text", text: "[Empty result]" }];
     const textBlocks: string[] = [];
@@ -501,25 +447,10 @@ async function toPiContent(items: ContentBlock[]) {
     }
 
     if (textBlocks.length) {
-        const text = textBlocks.join("\n");
-        const truncated = truncateHead(text, {
-            maxBytes: DEFAULT_MAX_BYTES,
-            maxLines: DEFAULT_MAX_LINES,
-        });
-
-        let output = truncated.content;
-        if (truncated.truncated) {
-            const fullOutputPath = join(tmpdir(), `pi-mcp-${randomBytes(8).toString("hex")}.txt`);
-
-            await withFileMutationQueue(fullOutputPath, async () => {
-                await writeFile(fullOutputPath, text, { encoding: "utf8", mode: 0o600 });
-            });
-
-            details.truncation = { ...truncated, fullOutputPath };
-            output += `\n\n${truncationMarker(details.truncation)}`;
-        }
-
-        content.push({ type: "text", text: output });
+        const output = textBlocks.join("\n");
+        const { text, truncation } = await truncateOutput(output, "pi-mcp-", "output.txt");
+        details.truncation = truncation;
+        content.push({ type: "text", text });
     }
 
     return { content, details };
@@ -548,7 +479,7 @@ function registerMcpTool(pi: ExtensionAPI, conn: Connected, name: string, tool: 
     }
 
     pi.registerTool(
-        defineTool<ToolDefinition["parameters"], McpAgentToolResult["details"]>({
+        defineTool<ToolDefinition["parameters"], McpToolResult["details"]>({
             name: toolName,
             label: toolName,
             description: tool.description || promptSnippet,
