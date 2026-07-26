@@ -100,7 +100,7 @@ vim.pack.add({
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/ibhagwan/fzf-lua",
     "https://github.com/stevearc/oil.nvim",
-    "https://github.com/romus204/tree-sitter-manager.nvim",
+    "https://github.com/nvim-treesitter/nvim-treesitter",
 }, {
     confirm = false,
     load = true,
@@ -113,12 +113,7 @@ require("placeholders").setup()
 require("ipython").setup()
 require("jupytext").setup()
 require("mini.icons").setup()
-
-require("tree-sitter-manager").setup({
-    auto_install = true,
-    nerdfont = false,
-    border = vim.o.winborder,
-})
+require("nvim-treesitter").setup()
 
 require("conform").setup({
     formatters_by_ft = {
@@ -187,7 +182,6 @@ vim.api.nvim_create_user_command("ConformToggle", function()
 end, {})
 
 vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
-
 vim.keymap.set("n", "<leader>je", require("jupytext").export_to_notebook)
 
 vim.keymap.set("n", "<leader>ff", require("fzf-lua").files)
@@ -209,6 +203,27 @@ vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").toggle_repl_focus)
 --------------------------------------------------------------------------------
 -- Hooks
 --------------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "*",
+    callback = vim.schedule_wrap(function(event)
+        local lang = vim.treesitter.language.get_lang(event.match)
+        local buf = event.buf
+
+        if not require("nvim-treesitter.parsers")[lang] then
+            return
+        end
+
+        local ok = pcall(vim.treesitter.start, buf, lang)
+        if not ok then
+            require("nvim-treesitter").install(lang):await(function(err, done)
+                if not err and done and vim.api.nvim_buf_is_valid(buf) then
+                    pcall(vim.treesitter.start, buf, lang)
+                end
+            end)
+        end
+    end),
+})
+
 local chars = {}
 for i = 32, 126 do
     chars[#chars + 1] = string.char(i)
