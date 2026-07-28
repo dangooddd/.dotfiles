@@ -111,6 +111,7 @@ vim.cmd("packadd nvim.undotree")
 
 require("placeholders").setup()
 require("ipython").setup()
+require("pi").setup()
 require("jupytext").setup()
 require("mini.icons").setup()
 require("nvim-treesitter").setup()
@@ -199,6 +200,15 @@ vim.keymap.set("n", "<leader>ji", require("ipython").open_history)
 vim.keymap.set("v", "<leader>jv", require("ipython").send_visual)
 vim.keymap.set("n", "<leader>js", require("ipython").install_packages)
 vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").toggle_repl_focus)
+
+vim.keymap.set("n", "<leader>po", require("pi").toggle)
+vim.keymap.set("n", "<leader>pc", require("pi").close)
+vim.keymap.set({ "n", "t" }, "<C-p>", require("pi").focus)
+
+vim.keymap.set("n", "<C-l>", function()
+    require("pi").send()
+    require("pi").focus()
+end)
 
 --------------------------------------------------------------------------------
 -- Hooks
