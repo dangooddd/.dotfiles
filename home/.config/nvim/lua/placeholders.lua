@@ -168,18 +168,20 @@ function Image:delete()
 end
 
 ---@param img_base64 string
----@return PlaceholdersImage|nil
-function M.create(img_base64)
+---@return PlaceholdersImage
+function M.new(img_base64)
+    vim.validate("img_base64", img_base64, "string")
     local image = setmetatable({}, Image)
     image.id = get_image_id()
     upload_image(image.id, img_base64)
     return image
 end
 
+---@param path string
 function M.image_preview(path)
+    vim.validate("path", path, "string")
     local result = file_to_png_base64(path)
-    local image = M.create(result)
-    assert(image)
+    local image = M.new(result)
 
     local ratio = 0.8
     local width = vim.o.columns

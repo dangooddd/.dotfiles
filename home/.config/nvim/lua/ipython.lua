@@ -1,17 +1,12 @@
 local M = {}
 
 local placeholders = require("placeholders")
+local Terminal = require("terminal")
+local utils = require("utils")
 local group = vim.api.nvim_create_augroup("IPython", { clear = true })
 local ns = vim.api.nvim_create_namespace("IPython")
 
----@class IPythonState
----@field closing boolean
----@field hiding boolean
----@field chan integer
----@field buf integer
----@field win integer|nil
-
----@type IPythonState|nil
+---@type Terminal|nil
 local repl = nil
 
 ---@class IPythonImages
@@ -71,65 +66,9 @@ end
 -- REPL
 --------------------------------------------------------------------------------
 
----@param buf integer
----@return integer
-local function create_repl_win(buf)
-    return vim.api.nvim_open_win(buf, false, {
-        win = -1,
-        style = "minimal",
-        width = math.floor(vim.o.columns * 0.5),
-        split = "right",
-    })
-end
-
-local function setup_repl_buf_autocmds()
-    if not repl then
-        return
-    end
-
-    vim.api.nvim_clear_autocmds({
-        event = { "BufWipeout", "BufDelete" },
-        group = group,
-        buffer = repl.buf,
-    })
-
-    vim.api.nvim_create_autocmd({ "BufWipeout", "BufDelete" }, {
-        group = group,
-        buffer = repl.buf,
-        callback = function()
-            M.close_repl()
-        end,
-        once = true,
-    })
-end
-
-local function setup_repl_win_autocmds()
-    if not (repl and repl.win) then
-        return
-    end
-
-    vim.api.nvim_clear_autocmds({
-        event = "WinClosed",
-        group = group,
-        pattern = tostring(repl.win),
-    })
-
-    vim.api.nvim_create_autocmd("WinClosed", {
-        group = group,
-        pattern = tostring(repl.win),
-        callback = function()
-            M.hide_repl()
-        end,
-        once = true,
-    })
-end
-
 function M.open_repl()
     if repl then
-        if not repl.win then
-            repl.win = create_repl_win(repl.buf)
-            setup_repl_win_autocmds()
-        end
+        repl:open()
         return
     end
 
@@ -147,10 +86,6 @@ function M.open_repl()
         end
     end
 
-    local buf = vim.api.nvim_create_buf(false, true)
-    local win = create_repl_win(buf)
-    vim.bo[buf].bufhidden = "hide"
-
     local cmd = vim.list_extend(python.run, {
         "-m",
         "IPython",
@@ -160,91 +95,41 @@ function M.open_repl()
         vim.api.nvim_get_runtime_file("runtime/startup.py", false)[1],
     })
 
-    local chan = 0
-    vim.api.nvim_buf_call(buf, function()
-        chan = vim.fn.jobstart(cmd, {
-            term = true,
-            env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
-            on_exit = function()
-                vim.on_key(function()
-                    vim.on_key(nil, ns)
-                    M.close_repl()
-                end, ns)
-            end,
-        })
-    end)
-
-    repl = {
-        buf = buf,
-        win = win,
-        chan = chan,
-        closing = false,
-        hiding = false,
-    }
-
-    if chan == 0 or chan == -1 then
-        M.close_repl()
-        error("[ipython] failed to start: unknown error", 0)
-    end
-
-    setup_repl_buf_autocmds()
-    setup_repl_win_autocmds()
-end
-
-local function scroll_repl()
-    if repl and repl.win then
-        vim.api.nvim_win_call(repl.win, function()
-            vim.cmd.normal({ "G", bang = true })
-        end)
-    end
+    repl = Terminal.new({
+        cmd = cmd,
+        env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
+        on_exit = function()
+            vim.on_key(function()
+                vim.on_key(nil, ns)
+                M.close_repl()
+            end, ns)
+        end,
+    })
+    repl:open()
 end
 
 function M.toggle_repl_focus()
-    if not repl then
-        return
-    end
-
-    M.open_repl()
-    assert(repl.win)
-
-    if vim.api.nvim_get_current_win() == repl.win then
-        vim.cmd.stopinsert()
-        vim.cmd.wincmd("p")
-    else
-        vim.api.nvim_set_current_win(repl.win)
-        vim.cmd.startinsert()
+    if repl then
+        repl:focus()
     end
 end
 
 function M.hide_repl()
-    if not repl or repl.hiding then
-        return
-    end
-
-    if repl.win then
-        repl.hiding = true
-        pcall(vim.api.nvim_win_close, repl.win, true)
-        repl.win = nil
-        repl.hiding = false
+    if repl then
+        repl:hide()
     end
 end
 
 function M.close_repl()
-    if not repl or repl.closing then
-        return
+    if repl then
+        repl:close()
+        repl = nil
     end
-
-    repl.closing = true
-    M.hide_repl()
-    vim.fn.jobstop(repl.chan)
-    pcall(vim.cmd.bdelete, { repl.buf, bang = true })
-
-    repl = nil
 end
 
 function M.toggle_repl()
-    if repl and repl.win then
-        M.hide_repl()
+    if repl then
+        repl:toggle()
     else
         M.open_repl()
     end
@@ -291,7 +176,7 @@ local function push_history(img_base64)
     if #history.images >= 10 then
         pop_history(1)
     end
-    table.insert(history.images, placeholders.create(img_base64))
+    table.insert(history.images, placeholders.new(img_base64))
 end
 
 local function setup_history_buf_autocmds()
@@ -525,14 +410,18 @@ local function normalize_python_message(message)
     return table.concat(out, "\n")
 end
 
----@param chan integer
----@param message string
-local raw_send_message = vim.schedule_wrap(function(chan, message)
-    -- bracketed paste
-    local prefix = "\x1b[200~"
-    local suffix = "\x1b[201~"
-    local normalized = normalize_python_message(message)
-    vim.api.nvim_chan_send(chan, prefix .. normalized .. suffix .. "\n")
+---@param terminal Terminal
+---@param start_idx integer
+---@param end_idx integer
+local send_range = vim.schedule_wrap(function(terminal, start_idx, end_idx)
+    if start_idx > end_idx then
+        start_idx, end_idx = end_idx, start_idx
+    end
+
+    local lines = vim.api.nvim_buf_get_lines(0, start_idx - 1, end_idx, false)
+    local normalized = normalize_python_message(table.concat(lines, "\n"))
+    terminal:send(utils.wrap_bracketed(normalized) .. "\n")
+    terminal:scroll()
 end)
 
 function M.send_visual()
@@ -542,14 +431,7 @@ function M.send_visual()
 
     local start_idx = vim.fn.line("v")
     local end_idx = vim.fn.line(".")
-
-    if start_idx > end_idx then
-        start_idx, end_idx = end_idx, start_idx
-    end
-
-    local lines = vim.api.nvim_buf_get_lines(0, start_idx - 1, end_idx, false)
-    raw_send_message(repl.chan, table.concat(lines, "\n"))
-    scroll_repl()
+    send_range(repl, start_idx, end_idx)
     vim.api.nvim_input([[<C-\><C-N>]])
 end
 

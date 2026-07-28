@@ -11,6 +11,12 @@ function M.wrap_tmux(sequence)
     return esc .. "Ptmux;" .. sequence:gsub(esc, esc .. esc) .. esc .. "\\"
 end
 
+---@param text string
+---@return string
+function M.wrap_bracketed(text)
+    return esc .. "[200~" .. text .. esc .. "[201~"
+end
+
 ---@return boolean
 function M.detect_tmux()
     if tmux_detected ~= nil then
