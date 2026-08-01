@@ -9,14 +9,12 @@ local ns = vim.api.nvim_create_namespace("IPython")
 ---@type Terminal|nil
 local repl = nil
 
----@class IPythonImages
+---@class IPythonHistory
 ---@field closing boolean
 ---@field images PlaceholdersImage[]
 ---@field idx integer
 ---@field buf integer|nil
 ---@field win integer|nil
-
----@type IPythonImages
 local history = {
     images = {},
     closing = false,
@@ -53,7 +51,7 @@ local function resolve_python_commands()
     elseif vim.fn.executable("python3") == 1 then
         return { pip = { "python3", "-m", "pip" }, run = { "python3" } }
     else
-        error("[ipython] neither `python3`, nor `uv` executable was found")
+        error("[ipython] neither `python3`, nor `uv` executable was found", 0)
     end
 end
 
@@ -98,12 +96,6 @@ function M.open_repl()
     repl = Terminal.new({
         cmd = cmd,
         env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
-        on_exit = function()
-            vim.on_key(function()
-                vim.on_key(nil, ns)
-                M.close_repl()
-            end, ns)
-        end,
     })
     repl:open()
 end
@@ -141,7 +133,7 @@ end
 
 ---@param buf integer
 ---@return integer
-local function open_history_win(buf)
+function history:_open_win(buf)
     local width = vim.o.columns
     local height = vim.o.lines
 
@@ -163,183 +155,187 @@ local function open_history_win(buf)
 end
 
 ---@param idx integer
-local function pop_history(idx)
-    if history.images[idx] then
-        history.images[idx]:delete()
-        table.remove(history.images, idx)
-        history.idx = math.min(history.idx, #history.images)
+function history:pop(idx)
+    if self.images[idx] then
+        self.images[idx]:delete()
+        table.remove(self.images, idx)
+        self.idx = math.min(self.idx, #self.images)
     end
 end
 
 ---@param img_base64 string
-local function push_history(img_base64)
-    if #history.images >= 10 then
-        pop_history(1)
+function history:push(img_base64)
+    if #self.images >= 10 then
+        self:pop(1)
     end
-    table.insert(history.images, placeholders.new(img_base64))
+    table.insert(self.images, placeholders.new(img_base64))
 end
 
-local function setup_history_buf_autocmds()
-    if not history.buf then
+function history:_setup_buf_autocmds()
+    if not self.buf then
         return
     end
 
     vim.api.nvim_clear_autocmds({
         event = { "BufWipeout", "BufDelete" },
         group = group,
-        buffer = history.buf,
+        buffer = self.buf,
     })
 
     vim.api.nvim_create_autocmd({ "BufWipeout", "BufDelete" }, {
         group = group,
-        buffer = history.buf,
+        buffer = self.buf,
         callback = function()
-            M.close_history()
+            self:close()
         end,
         once = true,
     })
 end
 
-local function setup_history_win_autocmds()
-    if not history.win then
+function history:_setup_win_autocmds()
+    if not self.win then
         return
     end
 
     vim.api.nvim_clear_autocmds({
         event = "WinClosed",
         group = group,
-        pattern = tostring(history.win),
+        pattern = tostring(self.win),
     })
 
     vim.api.nvim_create_autocmd("WinClosed", {
         group = group,
-        pattern = tostring(history.win),
+        pattern = tostring(self.win),
         callback = function()
-            M.close_history()
+            self:close()
         end,
         once = true,
     })
 end
 
-local function setup_history_keybinds()
-    if not history.buf then
+function history:_setup_keybinds()
+    if not self.buf then
         return
     end
 
-    local opts = { noremap = true, silent = true, nowait = true, buffer = history.buf }
+    local opts = {
+        noremap = true,
+        silent = true,
+        nowait = true,
+        buffer = self.buf,
+    }
 
-    -- show previous image
-    vim.keymap.set("n", "j", function()
-        if history.idx > 1 then
-            M.open_history(history.idx - 1, true)
+    local function show_previous()
+        if self.idx > 1 then
+            self:open(self.idx - 1, true)
         end
-    end, opts)
+    end
 
-    vim.keymap.set("n", "h", function()
-        if history.idx > 1 then
-            M.open_history(history.idx - 1, true)
+    local function show_next()
+        if self.idx < #self.images then
+            self:open(self.idx + 1, true)
         end
-    end, opts)
+    end
 
-    -- show next image
-    vim.keymap.set("n", "k", function()
-        if history.idx < #history.images then
-            M.open_history(history.idx + 1, true)
-        end
-    end, opts)
+    vim.keymap.set("n", "j", show_previous, opts)
+    vim.keymap.set("n", "h", show_previous, opts)
+    vim.keymap.set("n", "k", show_next, opts)
+    vim.keymap.set("n", "l", show_next, opts)
 
-    vim.keymap.set("n", "l", function()
-        if history.idx < #history.images then
-            M.open_history(history.idx + 1, true)
-        end
-    end, opts)
-
-    -- delete image
     vim.keymap.set("n", "dd", function()
-        pop_history(history.idx)
-        if #history.images == 0 then
+        self:pop(self.idx)
+        if #self.images == 0 then
             vim.cmd(":q")
         else
-            M.open_history(history.idx)
+            self:open(self.idx)
         end
     end, opts)
 
-    -- exit image
     vim.keymap.set("n", "q", "<Cmd>:q<CR>", opts)
     vim.keymap.set("n", "<Esc>", "<Cmd>:q<CR>", opts)
 end
 
-function M.close_history()
-    if history.closing then
+function history:close()
+    if self.closing then
         return
     end
 
-    history.closing = true
+    self.closing = true
     vim.on_key(nil, ns)
 
-    if history.images[history.idx] then
-        history.images[history.idx]:clear()
+    if self.images[self.idx] then
+        self.images[self.idx]:clear()
     end
 
-    if history.buf then
-        pcall(vim.cmd.bdelete, history.buf)
-        history.buf = nil
+    if self.buf then
+        pcall(vim.cmd.bdelete, self.buf)
+        self.buf = nil
     end
 
-    if history.win then
-        pcall(vim.api.nvim_win_close, history.win, true)
-        history.win = nil
+    if self.win then
+        pcall(vim.api.nvim_win_close, self.win, true)
+        self.win = nil
     end
 
-    history.closing = false
+    self.closing = false
+end
+
+---@param idx? integer
+---@param focus? boolean defaults to true
+function history:open(idx, focus)
+    if #self.images == 0 then
+        vim.notify("[ipython] no image history available", vim.log.levels.WARN)
+        return
+    end
+
+    if self.images[self.idx] then
+        self.images[self.idx]:clear()
+    end
+    self.idx = math.max(1, math.min(idx or self.idx, #self.images))
+
+    if not self.buf then
+        self.buf = vim.api.nvim_create_buf(false, true)
+        self:_setup_buf_autocmds()
+        self:_setup_keybinds()
+    end
+
+    if not self.win then
+        self.win = self:_open_win(self.buf)
+        self:_setup_win_autocmds()
+    else
+        vim.api.nvim_win_set_buf(self.win, self.buf)
+    end
+
+    local title = string.format(" History %d/%d ", self.idx, #self.images)
+    vim.api.nvim_win_set_config(self.win, { title = title, title_pos = "center" })
+
+    if focus or focus == nil then
+        vim.on_key(nil, ns)
+        vim.api.nvim_set_current_win(self.win)
+    else
+        vim.on_key(function()
+            vim.on_key(nil, ns)
+            self:close()
+        end, ns)
+    end
+
+    self.images[self.idx]:render(self.buf, self.win)
+end
+
+function M.close_history()
+    history:close()
 end
 
 ---@param idx? integer
 ---@param focus? boolean defaults to true
 function M.open_history(idx, focus)
-    if #history.images == 0 then
-        vim.notify("[ipython] no image history available", vim.log.levels.WARN)
-        return
-    end
-
-    if history.images[history.idx] then
-        history.images[history.idx]:clear()
-    end
-    history.idx = math.max(1, math.min(idx or history.idx, #history.images))
-
-    if not history.buf then
-        history.buf = vim.api.nvim_create_buf(false, true)
-        setup_history_buf_autocmds()
-        setup_history_keybinds()
-    end
-
-    if not history.win then
-        history.win = open_history_win(history.buf)
-        setup_history_win_autocmds()
-    else
-        vim.api.nvim_win_set_buf(history.win, history.buf)
-    end
-
-    local title = string.format(" History %d/%d ", history.idx, #history.images)
-    vim.api.nvim_win_set_config(history.win, { title = title, title_pos = "center" })
-
-    if focus or focus == nil then
-        vim.on_key(nil, ns)
-        vim.api.nvim_set_current_win(history.win)
-    else
-        vim.on_key(function()
-            vim.on_key(nil, ns)
-            M.close_history()
-        end, ns)
-    end
-
-    history.images[history.idx]:render(history.buf, history.win)
+    history:open(idx, focus)
 end
 
 ---@param img_base64 string
 function M.image_handler(img_base64)
-    push_history(img_base64)
-    M.open_history(#history.images, false)
+    history:push(img_base64)
+    history:open(#history.images, false)
 end
 
 --------------------------------------------------------------------------------
@@ -459,7 +455,7 @@ function M.setup()
         elseif o.args == "history" then
             M.open_history()
         else
-            error("[ipython] unknown command: " .. o.args)
+            error("[ipython] unknown command: " .. o.args, 0)
         end
     end, { nargs = 1, complete = complete })
 end

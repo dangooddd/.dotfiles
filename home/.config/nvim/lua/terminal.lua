@@ -10,12 +10,13 @@
 ---@field env? table<string, string|integer>
 ---@field cwd? string
 ---@field open_win fun(buf: integer): integer
----@field on_exit? fun(terminal: Terminal, code: integer, event: string)
+---@field on_exit fun(terminal: Terminal, code: integer, event: string)
 ---@field chan integer|nil
 ---@field buf integer|nil
 ---@field win integer|nil
 ---@field closing boolean
----@field private group integer
+---@field group integer
+---@field ns integer
 local Terminal = {}
 Terminal.__index = Terminal
 
@@ -30,6 +31,14 @@ local function default_open_win(buf)
         width = math.floor(vim.o.columns * 0.5),
         split = "right",
     })
+end
+
+---@param terminal Terminal
+local function default_on_exit(terminal, _, _)
+    vim.on_key(function()
+        vim.on_key(nil, terminal.ns)
+        terminal:close()
+    end, terminal.ns)
 end
 
 ---@param open_win fun(buf: integer): integer
@@ -61,12 +70,13 @@ function Terminal.new(opts)
         env = opts.env,
         cwd = opts.cwd,
         open_win = wrap_open_win(opts.open_win or default_open_win),
-        on_exit = opts.on_exit,
+        on_exit = opts.on_exit or default_on_exit,
         chan = nil,
         buf = nil,
         win = nil,
         closing = false,
         group = vim.api.nvim_create_augroup("Terminal" .. next_id, { clear = true }),
+        ns = vim.api.nvim_create_namespace("Terminal" .. next_id),
     }, Terminal)
 end
 
@@ -123,15 +133,9 @@ function Terminal:open()
             term = true,
             env = terminal.env,
             cwd = terminal.cwd,
-            on_exit = function(_, code, event)
-                vim.schedule(function()
-                    if terminal.on_exit then
-                        terminal.on_exit(terminal, code, event)
-                    else
-                        terminal:close()
-                    end
-                end)
-            end,
+            on_exit = vim.schedule_wrap(function(_, code, event)
+                terminal:on_exit(code, event)
+            end),
         })
     end)
 
