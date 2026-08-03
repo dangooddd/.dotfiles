@@ -205,7 +205,7 @@ vim.keymap.set("n", "<leader>po", require("pi").toggle)
 vim.keymap.set("n", "<leader>pc", require("pi").close)
 vim.keymap.set({ "n", "t" }, "<C-p>", require("pi").focus)
 
-vim.keymap.set("n", "<C-l>", function()
+vim.keymap.set({ "n", "v" }, "<C-l>", function()
     require("pi").send()
     require("pi").focus()
 end)

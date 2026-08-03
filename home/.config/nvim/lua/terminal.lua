@@ -179,14 +179,6 @@ function Terminal:close()
     self.closing = false
 end
 
-function Terminal:toggle()
-    if self.win and vim.api.nvim_win_is_valid(self.win) then
-        self:hide()
-    else
-        self:open()
-    end
-end
-
 function Terminal:focus()
     if not self.buf then
         return

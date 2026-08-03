@@ -7,12 +7,20 @@ function M.open()
     pi:open()
 end
 
+function M.hide()
+    pi:hide()
+end
+
 function M.close()
     pi:close()
 end
 
 function M.toggle()
-    pi:toggle()
+    if pi.win and vim.api.nvim_win_is_valid(pi.win) then
+        M.hide()
+    else
+        M.open()
+    end
 end
 
 function M.focus()
@@ -25,8 +33,17 @@ function M.send()
         error("[pi] current buffer has no file path", 0)
     end
 
-    local line = vim.api.nvim_win_get_cursor(0)[1]
-    local location = string.format("%s:%d", vim.fn.fnamemodify(path, ":p"), line)
+    local start_line = vim.fn.line("v")
+    local end_line = vim.fn.line(".")
+
+    if start_line > end_line then
+        start_line, end_line = end_line, start_line
+    end
+
+    local location = string.format("%s#L%d", vim.fn.fnamemodify(path, ":p"), start_line)
+    if end_line ~= start_line then
+        location = string.format("%s-L%d", location, end_line)
+    end
 
     pi:open()
     pi:send(utils.wrap_bracketed(location))

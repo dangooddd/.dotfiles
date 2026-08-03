@@ -120,8 +120,8 @@ function M.close_repl()
 end
 
 function M.toggle_repl()
-    if repl then
-        repl:toggle()
+    if repl and repl.win and vim.api.nvim_win_is_valid(repl.win) then
+        M.hide_repl()
     else
         M.open_repl()
     end
