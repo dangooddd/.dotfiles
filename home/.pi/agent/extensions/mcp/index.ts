@@ -68,7 +68,7 @@ type Connected = {
     tools: Tool[];
 };
 
-type McpConfig = { mcpServers?: Record<string, ServerConfig> };
+type McpConfig = { mcp?: Record<string, ServerConfig> };
 type OAuthServerConfig = ServerConfig & { url: string; oauth: NonNullable<ServerConfig["oauth"]> };
 type McpTransport = StdioClientTransport | StreamableHTTPClientTransport;
 type McpToolDetails = { truncation?: TruncationDetails };
@@ -339,11 +339,11 @@ async function loadConfigs(ctx: ExtensionContext) {
             continue;
         }
 
-        if (!config.mcpServers || typeof config.mcpServers !== "object") {
+        if (!config.mcp || typeof config.mcp !== "object") {
             continue;
         }
 
-        for (const [name, serverConfig] of Object.entries(config.mcpServers)) {
+        for (const [name, serverConfig] of Object.entries(config.mcp)) {
             configs.set(name, expandConfig(serverConfig));
         }
     }
