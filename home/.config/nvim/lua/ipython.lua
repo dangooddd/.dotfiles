@@ -6,8 +6,21 @@ local utils = require("utils")
 local group = vim.api.nvim_create_augroup("IPython", { clear = true })
 local ns = vim.api.nvim_create_namespace("IPython")
 
----@type Terminal|nil
-local repl = nil
+local packages = { "ipython", "pynvim" }
+local pip = { "python3", "-m", "pip" }
+local args = {
+    "-m",
+    "IPython",
+    "--TerminalInteractiveShell.true_color",
+    vim.o.termguicolors and "True" or "False",
+    "--InteractiveShellApp.exec_files",
+    vim.api.nvim_get_runtime_file("runtime/ipython.py", false)[1],
+}
+
+local repl = Terminal.new({
+    cmd = vim.list_extend({ "python3" }, args),
+    env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
+})
 
 ---@class IPythonHistory
 ---@field closing boolean
@@ -38,25 +51,7 @@ local compound_top_level_nodes = {
     with_statement = true,
 }
 
-local packages = { "ipython", "pynvim" }
-
----@class PythonCommands
----@field pip string[]
----@field run string[]
-
----@return PythonCommands
-local function resolve_python_commands()
-    if vim.fn.executable("uv") == 1 then
-        return { pip = { "uv", "pip" }, run = { "uv", "run" } }
-    elseif vim.fn.executable("python3") == 1 then
-        return { pip = { "python3", "-m", "pip" }, run = { "python3" } }
-    else
-        error("[ipython] neither `python3`, nor `uv` executable was found", 0)
-    end
-end
-
 function M.install_packages()
-    local pip = resolve_python_commands().pip
     vim.cmd(string.format("!%s install %s", table.concat(pip, " "), table.concat(packages, " ")))
 end
 
@@ -65,18 +60,10 @@ end
 --------------------------------------------------------------------------------
 
 function M.open_repl()
-    if repl then
-        repl:open()
-        return
-    end
-
-    local python = resolve_python_commands()
-    local show = vim.list_extend(python.pip, { "show" })
-
     for _, pkg in ipairs(packages) do
         local ok, installed = pcall(function()
-            local cmd = vim.list_extend({}, show)
-            return vim.system(vim.list_extend(cmd, { pkg })):wait().code == 0
+            local cmd = vim.list_extend(vim.list_extend({}, pip), { "show", pkg })
+            return vim.system(cmd):wait().code == 0
         end)
 
         if not ok or not installed then
@@ -84,43 +71,23 @@ function M.open_repl()
         end
     end
 
-    local cmd = vim.list_extend(python.run, {
-        "-m",
-        "IPython",
-        "--TerminalInteractiveShell.true_color",
-        vim.o.termguicolors and "True" or "False",
-        "--InteractiveShellApp.exec_files",
-        vim.api.nvim_get_runtime_file("runtime/startup.py", false)[1],
-    })
-
-    repl = Terminal.new({
-        cmd = cmd,
-        env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
-    })
     repl:open()
 end
 
 function M.toggle_repl_focus()
-    if repl then
-        repl:focus()
-    end
+    repl:focus()
 end
 
 function M.hide_repl()
-    if repl then
-        repl:hide()
-    end
+    repl:hide()
 end
 
 function M.close_repl()
-    if repl then
-        repl:close()
-        repl = nil
-    end
+    repl:close()
 end
 
 function M.toggle_repl()
-    if repl and repl.win and vim.api.nvim_win_is_valid(repl.win) then
+    if repl.win and vim.api.nvim_win_is_valid(repl.win) then
         M.hide_repl()
     else
         M.open_repl()
@@ -421,10 +388,6 @@ local send_range = vim.schedule_wrap(function(terminal, start_idx, end_idx)
 end)
 
 function M.send_visual()
-    if not repl then
-        return
-    end
-
     local start_idx = vim.fn.line("v")
     local end_idx = vim.fn.line(".")
     send_range(repl, start_idx, end_idx)
@@ -436,6 +399,11 @@ end
 --------------------------------------------------------------------------------
 
 function M.setup()
+    if vim.fn.executable("uv") == 1 then
+        pip = { "uv", "pip" }
+        repl.cmd = vim.list_extend({ "uv", "run" }, args)
+    end
+
     local complete = function(arglead)
         local items = { "open", "close", "toggle", "install", "history" }
         return vim.tbl_filter(function(item)
