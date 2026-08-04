@@ -1,9 +1,13 @@
 {
   "mcp": {
-    "exa": {
-      "type": "http",
-      "url": "https://mcp.exa.ai/mcp",
-      "prefixTools": false
+    "ddg": {
+      "type": "stdio",
+      "command": "duckduckgo-mcp-server",
+      "args": [
+        "--allow-private-urls",
+        "--search-backend",
+        "auto"
+      ]
     }
   }
 }
