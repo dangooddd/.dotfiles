@@ -1,7 +1,6 @@
 local M = {}
 
 local placeholders = require("placeholders")
-local Terminal = require("terminal")
 local utils = require("utils")
 local group = vim.api.nvim_create_augroup("IPython", { clear = true })
 local ns = vim.api.nvim_create_namespace("IPython")
@@ -17,7 +16,7 @@ local args = {
     vim.api.nvim_get_runtime_file("runtime/ipython.py", false)[1],
 }
 
-local repl = Terminal.new({
+local repl = require("terminal").new({
     cmd = vim.list_extend({ "python3" }, args),
     env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
 })
