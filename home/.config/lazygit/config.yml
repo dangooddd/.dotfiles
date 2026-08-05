@@ -4,6 +4,9 @@ disableStartupPopups: true
 promptToReturnFromSubprocess: false
 notARepository: skip
 
+os:
+  editPreset: nvim-remote
+
 gui:
   theme:
     activeBorderColor:
