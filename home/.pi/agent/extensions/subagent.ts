@@ -251,11 +251,31 @@ function createSubagentTool() {
             }
         },
 
-        renderCall(args, theme) {
-            const task = args.task.length > 120 ? `${args.task.slice(0, 120)}...` : args.task;
-            const title = theme.fg("toolTitle", theme.bold("subagent "));
-            const agent = theme.fg("accent", args.agent);
-            return new Text(`${title}${agent}\n${theme.fg("muted", task)}`, 0, 0);
+        renderCall(args, theme, context) {
+            return {
+                render(width: number) {
+                    const title = new Text(
+                        theme.bold(theme.fg("toolTitle", "subagent ") + theme.fg("accent", args.agent)),
+                        0,
+                        0,
+                    ).render(width);
+                    const lines = new Text(theme.fg("muted", args.task), 0, 0).render(width);
+                    const displayLines = context.expanded ? lines : lines.slice(0, 3);
+                    const remaining = lines.length - displayLines.length;
+
+                    if (remaining > 0) {
+                        const hint =
+                            theme.fg("muted", `... (${remaining} more lines,`) +
+                            ` ${keyHint("app.tools.expand", "to expand")}` +
+                            theme.fg("muted", ")");
+
+                        displayLines.push(...new Text(hint, 0, 0).render(width));
+                    }
+
+                    return [...title, ...displayLines];
+                },
+                invalidate() { },
+            };
         },
 
         renderResult(result, options, theme) {
