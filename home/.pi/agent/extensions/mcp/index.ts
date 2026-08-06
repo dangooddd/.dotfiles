@@ -598,8 +598,9 @@ async function connectAllServers(
 }
 
 export default function mcp(pi: ExtensionAPI) {
-    pi.on("session_start", (_event, ctx) => {
-        void loadConfigs(ctx).then(() => connectAllServers(pi, ctx, configs));
+    pi.on("session_start", async (_event, ctx) => {
+        await loadConfigs(ctx);
+        await connectAllServers(pi, ctx, configs);
     });
 
     pi.on("session_shutdown", async () => {

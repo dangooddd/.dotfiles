@@ -333,7 +333,8 @@ function createSubagentTool() {
 }
 
 export default function subagent(pi: ExtensionAPI) {
-    pi.on("session_start", (_event, ctx) => {
-        void loadAgents(ctx).then(() => pi.registerTool(createSubagentTool()));
+    pi.on("session_start", async (_event, ctx) => {
+        await loadAgents(ctx);
+        pi.registerTool(createSubagentTool());
     });
 }
