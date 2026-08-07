@@ -1,0 +1,18 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "ddg": {
+      "type": "local",
+      "command": [
+        "duckduckgo-mcp-server",
+        "--allow-private-urls",
+        "--search-backend",
+        "auto"
+      ]
+    }
+  },
+  "permission": {
+    "ddg_fetch_content": "deny",
+    "ddg_search": "allow"
+  }
+}

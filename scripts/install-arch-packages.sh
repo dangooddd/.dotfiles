@@ -11,10 +11,10 @@ if [[ -n "$U" ]]; then
 fi
 
 packages=(
-    uv fzf tmux nvim lazygit
+    uv fzf tmux nvim lazygit tree-sitter-cli
     flatpak npm ghostty wl-clipboard
     ttc-iosevka bash-completion imagemagick
-    tree-sitter-cli helium-browser-bin
+    opencode-bin helium-browser-bin
 )
 
 yay -S --needed --noconfirm "${packages[@]}"
