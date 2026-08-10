@@ -111,7 +111,7 @@ vim.cmd("packadd nvim.undotree")
 
 require("placeholders").setup()
 require("ipython").setup()
-require("pi").setup()
+require("opencode").setup()
 require("lazygit").setup()
 require("jupytext").setup()
 require("mini.icons").setup()
@@ -205,13 +205,13 @@ vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").toggle_repl_focus)
 vim.keymap.set({ "n", "t" }, "<C-l>", require("lazygit").toggle)
 vim.keymap.set("n", "<leader>lc", require("lazygit").close)
 
-vim.keymap.set("n", "<leader>ko", require("pi").toggle)
-vim.keymap.set("n", "<leader>kc", require("pi").close)
-vim.keymap.set({ "n", "t" }, "<C-k>", require("pi").focus)
+vim.keymap.set("n", "<leader>ko", require("opencode").toggle)
+vim.keymap.set("n", "<leader>kc", require("opencode").close)
+vim.keymap.set({ "n", "t" }, "<C-k>", require("opencode").focus)
 
 vim.keymap.set({ "n", "v" }, "<leader>kk", function()
-    require("pi").send()
-    require("pi").focus()
+    require("opencode").send()
+    require("opencode").focus()
 end)
 
 --------------------------------------------------------------------------------

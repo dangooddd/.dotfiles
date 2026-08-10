@@ -3,6 +3,7 @@
   "theme": "jungle",
   "scroll_speed": 1,
   "cursor": {
-    "style": "default",
+    "style": "block",
+    "blinking": false
   }
 }

@@ -1,22 +1,22 @@
 local M = {}
 
 local utils = require("utils")
-local pi = require("terminal").new({ cmd = "pi" })
+local opencode = require("terminal").new({ cmd = "opencode" })
 
 function M.open()
-    pi:open()
+    opencode:open()
 end
 
 function M.hide()
-    pi:hide()
+    opencode:hide()
 end
 
 function M.close()
-    pi:close()
+    opencode:close()
 end
 
 function M.toggle()
-    if pi.win and vim.api.nvim_win_is_valid(pi.win) then
+    if opencode.win and vim.api.nvim_win_is_valid(opencode.win) then
         M.hide()
     else
         M.open()
@@ -24,13 +24,13 @@ function M.toggle()
 end
 
 function M.focus()
-    pi:focus()
+    opencode:focus()
 end
 
 function M.send()
     local path = vim.api.nvim_buf_get_name(0)
     if path == "" then
-        error("[pi] current buffer has no file path", 0)
+        error("[opencode] current buffer has no file path", 0)
     end
 
     local start_line = vim.fn.line("v")
@@ -45,9 +45,9 @@ function M.send()
         location = string.format("%s-L%d", location, end_line)
     end
 
-    pi:open()
-    pi:send(utils.wrap_bracketed(location))
-    pi:scroll()
+    opencode:open()
+    opencode:send(utils.wrap_bracketed(location))
+    opencode:scroll()
 end
 
 function M.setup()
@@ -58,7 +58,7 @@ function M.setup()
         end, items)
     end
 
-    vim.api.nvim_create_user_command("Pi", function(o)
+    vim.api.nvim_create_user_command("Opencode", function(o)
         if o.args == "open" then
             M.open()
         elseif o.args == "close" then
@@ -70,7 +70,7 @@ function M.setup()
         elseif o.args == "send" then
             M.send()
         else
-            error("[pi] unknown command: " .. o.args)
+            error("[opencode] unknown command: " .. o.args)
         end
     end, { nargs = 1, complete = complete })
 end
