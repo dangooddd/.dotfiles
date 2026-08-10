@@ -33,6 +33,9 @@ function M.send()
         error("[opencode] current buffer has no file path", 0)
     end
 
+    local absolute_path = vim.fn.fnamemodify(path, ":p")
+    local relative_path = vim.fs.relpath(opencode.cwd or vim.fn.getcwd(), absolute_path)
+
     local start_line = vim.fn.line("v")
     local end_line = vim.fn.line(".")
 
@@ -40,7 +43,7 @@ function M.send()
         start_line, end_line = end_line, start_line
     end
 
-    local location = string.format("%s#L%d", vim.fn.fnamemodify(path, ":p"), start_line)
+    local location = string.format("%s#L%d", relative_path or absolute_path, start_line)
     if end_line ~= start_line then
         location = string.format("%s-L%d", location, end_line)
     end
