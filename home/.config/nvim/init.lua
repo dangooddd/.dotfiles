@@ -148,6 +148,7 @@ require("oil").setup({
     watch_for_changes = true,
     columns = { { "icon", add_padding = false } },
     view_options = { show_hidden = true },
+    keymaps = { ["<C-l>"] = false },
     float = {
         max_width = 0.8,
         preview_split = "right",
@@ -202,8 +203,8 @@ vim.keymap.set("v", "<leader>jv", require("ipython").send_visual)
 vim.keymap.set("n", "<leader>js", require("ipython").install_packages)
 vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").toggle_repl_focus)
 
-vim.keymap.set({ "n", "t" }, "<C-h>", require("lazygit").toggle)
-vim.keymap.set("n", "<leader>hc", require("lazygit").close)
+vim.keymap.set({ "n", "t" }, "<C-l>", require("lazygit").toggle)
+vim.keymap.set("n", "<leader>lc", require("lazygit").close)
 
 vim.keymap.set("n", "<leader>ko", require("opencode").toggle)
 vim.keymap.set("n", "<leader>kc", require("opencode").close)
