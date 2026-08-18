@@ -1,0 +1,15 @@
+{
+  "theme": {
+    "name": "jungle"
+  },
+  "scroll": {
+    "speed": 1
+  },
+  "cursor": {
+    "style": "block",
+    "blinking": false
+  },
+  "session": {
+    "scrollbar": true
+  }
+}
