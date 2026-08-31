@@ -11,7 +11,7 @@ if [[ -n "$U" ]]; then
 fi
 
 packages=(
-    git python uv font-iosevka npm
+    git python uv font-iosevka npm btop
     fzf nvim lazygit tree-sitter-cli
     bash bash-completion@2 imagemagick
     ghostty helium-browser telegram

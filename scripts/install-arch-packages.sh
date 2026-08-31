@@ -12,7 +12,7 @@ fi
 
 packages=(
     uv fzf tmux nvim lazygit tree-sitter-cli
-    flatpak npm ghostty wl-clipboard
+    flatpak npm ghostty wl-clipboard btop
     ttc-iosevka bash-completion imagemagick
     helium-browser-bin
 )
