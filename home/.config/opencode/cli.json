@@ -1,4 +1,7 @@
 {
+  "keybinds": {
+    "session.background": "<leader>b"
+  },
   "theme": {
     "name": "jungle"
   },
