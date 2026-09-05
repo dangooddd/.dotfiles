@@ -6,7 +6,7 @@ if ! command -v npm &> /dev/null; then
 fi
 
 if [[ -n "$U" ]]; then
-    npm install -g --allow-scripts=@opencode-ai/cli @opencode-ai/cli@beta
+    opencode2 upgrade
     exit
 fi
 
