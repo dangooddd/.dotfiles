@@ -1,0 +1,53 @@
+# Interface
+theme[main_bg]="#131914"
+theme[main_fg]="#D4DCC2"
+theme[title]="#97BACC"
+theme[hi_fg]="#63AFA0"
+theme[selected_bg]="#2D382E"
+theme[selected_fg]="#D4DCC2"
+theme[inactive_fg]="#87967F"
+theme[graph_text]="#D4DCC2"
+theme[meter_bg]="#2D382E"
+theme[proc_misc]="#63AFA0"
+
+# Borders
+theme[cpu_box]="#556753"
+theme[mem_box]="#556753"
+theme[net_box]="#556753"
+theme[proc_box]="#556753"
+theme[div_line]="#556753"
+
+# Temperature and CPU usage
+theme[temp_start]="#84B87E"
+theme[temp_mid]="#DAC05B"
+theme[temp_end]="#DF867A"
+theme[cpu_start]="#84B87E"
+theme[cpu_mid]="#DAC05B"
+theme[cpu_end]="#DF867A"
+
+# Memory and disk meters
+theme[free_start]="#DF867A"
+theme[free_mid]="#DAC05B"
+theme[free_end]="#84B87E"
+theme[cached_start]="#97BACC"
+theme[cached_mid]="#63AFA0"
+theme[cached_end]="#84B87E"
+theme[available_start]="#DF867A"
+theme[available_mid]="#DAC05B"
+theme[available_end]="#84B87E"
+theme[used_start]="#84B87E"
+theme[used_mid]="#DAC05B"
+theme[used_end]="#DF867A"
+
+# Network traffic
+theme[download_start]="#84B87E"
+theme[download_mid]="#63AFA0"
+theme[download_end]="#97BACC"
+theme[upload_start]="#97BACC"
+theme[upload_mid]="#A8ABC7"
+theme[upload_end]="#B89CC1"
+
+# Process usage
+theme[process_start]="#84B87E"
+theme[process_mid]="#DAC05B"
+theme[process_end]="#DF867A"
