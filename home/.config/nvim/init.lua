@@ -9,8 +9,8 @@ vim.o.splitbelow = true
 vim.o.scrolloff = 3
 vim.o.hlsearch = false
 vim.o.mouse = "a"
-vim.o.fillchars = "eob: ,diff:/"
-vim.o.diffopt = vim.o.diffopt .. ",algorithm:histogram"
+vim.o.fillchars = "eob: ,diff: "
+vim.o.diffopt = vim.o.diffopt .. ",algorithm:histogram,inline:char"
 vim.o.guicursor = "n-v-c-ci:block,i-ve:ver25,r-cr-o:hor20,t:block-TermCursor"
 
 vim.o.number = true

@@ -7,6 +7,24 @@ notARepository: skip
 os:
   editPreset: nvim-remote
 
+customCommands:
+  - key: '<c-d>'
+    context: files
+    description: 'Diff in Neovim'
+    output: terminal
+    command: >-
+      f={{.SelectedFile.Name | quote}};
+      tmp=$(mktemp -d);
+      old="$tmp/$(basename "$f")";
+      git show ":$f" > "$old" || exit 1;
+      if [ -n "$NVIM" ]; then
+        nvim --server "$NVIM" --remote-tab "$PWD/$f";
+        nvim --server "$NVIM" --remote-expr \
+          "execute('leftabove vertical diffsplit ' . fnameescape('$old') . ' | wincmd l')";
+      else
+        nvim -d "$old" "$f";
+      fi
+
 gui:
   theme:
     activeBorderColor:
