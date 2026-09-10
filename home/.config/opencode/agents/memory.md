@@ -1,6 +1,7 @@
 ---
 description: Daily memory consolidation and extreme compression
 mode: all
+hidden: true
 permissions:
   - action: "*"
     resource: "*"
