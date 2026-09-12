@@ -1,9 +1,9 @@
 import base64
 import io
 import os
+import shutil
+import sys
 from collections.abc import Callable
-from queue import Queue
-from threading import Event, Thread
 from typing import Any
 
 import pynvim
@@ -42,23 +42,6 @@ def jpg_handler(data: str) -> str | None:
         return None
 
 
-def image_worker(queue: Queue[str], dead: Event, nvim: pynvim.Nvim):
-    try:
-        while True:
-            data = queue.get()
-
-            try:
-                nvim.exec_lua("require('ipython').image_handler(...)", data)
-            except Exception as e:
-                print(f"Failed to display image: {e}")
-            finally:
-                queue.task_done()
-
-    except Exception as e:
-        print(f"Image worker died: {e}")
-        dead.set()
-
-
 def register_mime_renderer(
     shell: TerminalInteractiveShell,
     mime: str,
@@ -73,13 +56,31 @@ def register_mime_renderer(
     shell.mime_renderers[mime] = renderer
 
 
-def register_image_renderers(shell: TerminalInteractiveShell, queue: Queue[str]):
+def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim):
     def image_renderer(handler: Callable[[Any], str | None]):
         def wrapper(data: Any, metadata: dict[str, Any] | None):
             _ = metadata
             payload = handler(data)
+
             if payload is not None:
-                queue.put(payload)
+                try:
+                    size = shutil.get_terminal_size()
+                    cols = max(1, min(size.columns - 3, 80))
+                    rows = max(1, min(size.lines // 2, 20))
+                    sys.stdout.flush()
+
+                    text = nvim.exec_lua(
+                        "return require('ipython').prepare_image(...)",
+                        payload,
+                        cols,
+                        rows,
+                    )
+
+                    sys.stdout.write(text)
+                    sys.stdout.flush()
+
+                except Exception as e:
+                    print(f"Failed to display image: {e}")
 
         return wrapper
 
@@ -108,13 +109,9 @@ def startup():
     assert path is not None
 
     nvim = pynvim.attach("socket", path=path)
-    queue: Queue[str] = Queue()
-    dead = Event()
-    thread = Thread(target=image_worker, args=(queue, dead, nvim), daemon=True)
 
-    register_image_renderers(shell, queue)
+    register_image_renderers(shell, nvim)
     enable_matplotlib_integration(shell)
-    thread.start()
 
 
 startup()

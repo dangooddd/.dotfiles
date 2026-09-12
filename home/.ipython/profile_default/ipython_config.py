@@ -24,8 +24,8 @@ c = get_config()
 c.TerminalInteractiveShell.enable_tip = False
 c.TerminalInteractiveShell.true_color = True
 c.TerminalInteractiveShell.highlighting_style_overrides = {
-    Token.Text: f"fg:{BASE05} bg:{BASE00}",
-    Token.Whitespace: f"fg:{BASE05} bg:{BASE00}",
+    Token.Text: f"fg:{BASE05}",
+    Token.Whitespace: f"fg:{BASE05}",
     Token.Error: f"fg:{BASE00} bg:{BASE08}",
     Token.Comment: f"fg:{BASE03}",
     Token.Comment.Preproc: f"fg:{BASE08}",
@@ -38,7 +38,7 @@ c.TerminalInteractiveShell.highlighting_style_overrides = {
     Token.Operator: f"fg:{BASE05}",
     Token.Operator.Word: f"fg:{BASE05}",
     Token.Punctuation: f"fg:{BASE0F}",
-    Token.Name: f"fg:{BASE05} bg:{BASE00}",
+    Token.Name: f"fg:{BASE05}",
     Token.Name.Attribute: f"fg:{BASE0C}",
     Token.Name.Builtin: f"fg:{BASE09}",
     Token.Name.Builtin.Pseudo: f"fg:{BASE09}",

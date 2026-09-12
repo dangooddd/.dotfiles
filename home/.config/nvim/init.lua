@@ -198,7 +198,6 @@ vim.keymap.set("n", "<leader>fr", require("fzf-lua").resume)
 
 vim.keymap.set("n", "<leader>jo", require("ipython").toggle_repl)
 vim.keymap.set("n", "<leader>jc", require("ipython").close_repl)
-vim.keymap.set("n", "<leader>ji", require("ipython").open_history)
 vim.keymap.set("v", "<leader>jv", require("ipython").send_visual)
 vim.keymap.set("n", "<leader>js", require("ipython").install_packages)
 vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").toggle_repl_focus)
