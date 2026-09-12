@@ -7,10 +7,10 @@ permissions:
     resource: "*"
     effect: deny
   - action: edit
-    resource: "~/.opencode/memory/**"
+    resource: "*"
     effect: allow
   - action: read
-    resource: "~/.opencode/memory/**"
+    resource: "*"
     effect: allow
   - action: shell
     resource: "*"
