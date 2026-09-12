@@ -1,9 +1,30 @@
+import { readdir } from "node:fs/promises"
 import { homedir } from "node:os"
 
 export default {
   id: "memory",
 
   async setup(ctx) {
+    await ctx.session.hook("context", async (event) => {
+      if (event.agent !== "memory") return
+
+      const files = await readdir(`${homedir()}/.opencode/memory`)
+        .catch((error) => {
+          if (error.code === "ENOENT") return []
+          throw error
+        })
+
+      const listing = files
+        .filter((name) => name.endsWith(".md"))
+        .sort()
+        .map((name) => `- \`${name}\``)
+        .join("\n")
+
+      event.system.push({
+        text: `Memory files (\`~/.opencode/memory/\`):\n${listing || "(empty)"}`,
+      })
+    })
+
     let starting = false
 
     await ctx.session.hook("prompt", async (event) => {

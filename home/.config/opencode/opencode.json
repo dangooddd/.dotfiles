@@ -1,5 +1,12 @@
 {
   "websearch": {
     "provider": "tavily"
-  }
+  },
+  "permissions": [
+    {
+      "action": "external_directory",
+      "resource": "~/.opencode/memory/*",
+      "effect": "allow"
+    }
+  ]
 }
