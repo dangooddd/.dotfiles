@@ -6,8 +6,6 @@ export default {
 
   async setup(ctx) {
     await ctx.session.hook("context", async (event) => {
-      if (event.agent !== "memory") return
-
       const files = await readdir(`${homedir()}/.opencode/memory`)
         .catch((error) => {
           if (error.code === "ENOENT") return []
@@ -21,6 +19,7 @@ export default {
         .join("\n")
 
       event.system.push({
+        type: "text",
         text: `Memory files (\`~/.opencode/memory/\`):\n${listing || "(empty)"}`,
       })
     })
