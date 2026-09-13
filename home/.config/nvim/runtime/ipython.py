@@ -15,6 +15,12 @@ PLACEHOLDER = "\U0010eeee"
 DIACRITICS = (
     "\u0305\u030d\u030e\u0310\u0312\u033d\u033e\u033f\u0346\u034a"
     "\u034b\u034c\u0350\u0351\u0352\u0357\u035b\u0363\u0364\u0365"
+    "\u0366\u0367\u0368\u0369\u036a\u036b\u036c\u036d\u036e\u036f"
+    "\u0483\u0484\u0485\u0486\u0487\u0592\u0593\u0594\u0595\u0597"
+    "\u0598\u0599\u059c\u059d\u059e\u059f\u05a0\u05a1\u05a8\u05a9"
+    "\u05ab\u05ac\u05af\u05c4\u0610\u0611\u0612\u0613\u0614\u0615"
+    "\u0616\u0617\u0657\u0658\u0659\u065a\u065b\u065d\u065e\u06d6"
+    "\u06d7\u06d8\u06d9\u06da\u06db\u06dc\u06df\u06e0\u06e1\u06e2"
 )
 
 
@@ -79,7 +85,7 @@ def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim)
         next_id = next_id % 255 + 1
         size = shutil.get_terminal_size()
         cols = max(1, min(size.columns - 3, 80))
-        rows = max(1, min(size.lines // 2, len(DIACRITICS)))
+        rows = max(1, min(size.lines // 2, 20))
 
         commands = []
         for offset in range(0, len(payload), 4096):
@@ -94,11 +100,13 @@ def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim)
         else:
             color = f"{ESC}[38;5;{image_id}m"
 
-        tail = PLACEHOLDER * (cols - 1)
-        lines = [
-            f"  {ESC}[0m{color}{PLACEHOLDER}{DIACRITICS[row]}{tail}{ESC}[0m"
-            for row in range(rows)
-        ]
+        lines = []
+        for row in range(rows):
+            cells = "".join(
+                f"{PLACEHOLDER}{DIACRITICS[row]}{DIACRITICS[col]}"
+                for col in range(cols)
+            )
+            lines.append(f"  {ESC}[0m{color}{cells}{ESC}[0m")
 
         sys.stdout.flush()
         nvim.api.ui_send("".join(commands))
