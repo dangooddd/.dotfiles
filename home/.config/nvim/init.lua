@@ -109,7 +109,6 @@ vim.pack.add({
 vim.cmd("packadd nvim.difftool")
 vim.cmd("packadd nvim.undotree")
 
-require("placeholders").setup()
 require("ipython").setup()
 require("opencode").setup()
 require("lazygit").setup()

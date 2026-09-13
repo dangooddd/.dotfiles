@@ -1,8 +1,6 @@
 local M = {}
 
-local placeholders = require("placeholders")
 local utils = require("utils")
-local group = vim.api.nvim_create_augroup("IPython", { clear = true })
 
 local packages = { "ipython", "pynvim" }
 local pip = { "python3", "-m", "pip" }
@@ -20,25 +18,7 @@ local repl = require("terminal").new({
     env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
 })
 
----@type PlaceholdersImage[]
-local images = {}
-
-local function clear_images()
-    for _, image in ipairs(images) do
-        image:clear()
-    end
-    images = {}
-end
-
-vim.api.nvim_create_autocmd("VimLeavePre", {
-    group = group,
-    callback = clear_images,
-})
-
 local compound_top_level_nodes = {
-    async_for_statement = true,
-    async_function_definition = true,
-    async_with_statement = true,
     class_definition = true,
     decorated_definition = true,
     for_statement = true,
@@ -91,38 +71,6 @@ function M.toggle_repl()
     else
         M.open_repl()
     end
-end
-
---------------------------------------------------------------------------------
--- Inline images
---------------------------------------------------------------------------------
-
----@param img_base64 string
----@param cols integer
----@param rows integer
----@return string
-function M.prepare_image(img_base64, cols, rows)
-    local buf = repl.buf
-    assert(buf and vim.api.nvim_buf_is_valid(buf), "[ipython] REPL buffer is unavailable")
-
-    local image = placeholders.new(img_base64)
-    local ok, text = pcall(image.text, image, cols, rows)
-    if not ok then
-        image:clear()
-        error(text, 0)
-    end
-
-    if #images == 0 then
-        vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
-            group = group,
-            buffer = buf,
-            once = true,
-            callback = clear_images,
-        })
-    end
-
-    table.insert(images, image)
-    return text
 end
 
 --------------------------------------------------------------------------------

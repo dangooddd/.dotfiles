@@ -10,6 +10,13 @@ import pynvim
 from IPython import get_ipython
 from IPython.terminal.ipapp import TerminalInteractiveShell
 
+ESC = "\x1b"
+PLACEHOLDER = "\U0010eeee"
+DIACRITICS = (
+    "\u0305\u030d\u030e\u0310\u0312\u033d\u033e\u033f\u0346\u034a"
+    "\u034b\u034c\u0350\u0351\u0352\u0357\u035b\u0363\u0364\u0365"
+)
+
 
 def png_handler(data: str) -> str:
     return data
@@ -57,6 +64,47 @@ def register_mime_renderer(
 
 
 def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim):
+    next_id = 1
+    tmux = nvim.exec_lua("return require('utils').detect_tmux()")
+
+    def graphics(body: str) -> str:
+        sequence = f"{ESC}_G{body}{ESC}\\"
+        if tmux:
+            sequence = f"{ESC}Ptmux;" + sequence.replace(ESC, ESC * 2) + f"{ESC}\\"
+        return sequence
+
+    def render_image(payload: str):
+        nonlocal next_id
+        image_id = next_id
+        next_id = next_id % 255 + 1
+        size = shutil.get_terminal_size()
+        cols = max(1, min(size.columns - 3, 80))
+        rows = max(1, min(size.lines // 2, len(DIACRITICS)))
+
+        commands = []
+        for offset in range(0, len(payload), 4096):
+            chunk = payload[offset : offset + 4096]
+            more = int(offset + 4096 < len(payload))
+            header = f"f=100,t=d,i={image_id},q=2," if offset == 0 else ""
+            commands.append(graphics(f"{header}m={more};{chunk}"))
+        commands.append(graphics(f"a=p,U=1,i={image_id},c={cols},r={rows},C=1,q=2"))
+
+        if nvim.options["termguicolors"]:
+            color = f"{ESC}[38;2;0;0;{image_id}m"
+        else:
+            color = f"{ESC}[38;5;{image_id}m"
+
+        tail = PLACEHOLDER * (cols - 1)
+        lines = [
+            f"  {ESC}[0m{color}{PLACEHOLDER}{DIACRITICS[row]}{tail}{ESC}[0m"
+            for row in range(rows)
+        ]
+
+        sys.stdout.flush()
+        nvim.api.ui_send("".join(commands))
+        sys.stdout.write("\r\n".join(lines) + "\r\n")
+        sys.stdout.flush()
+
     def image_renderer(handler: Callable[[Any], str | None]):
         def wrapper(data: Any, metadata: dict[str, Any] | None):
             _ = metadata
@@ -64,21 +112,7 @@ def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim)
 
             if payload is not None:
                 try:
-                    size = shutil.get_terminal_size()
-                    cols = max(1, min(size.columns - 3, 80))
-                    rows = max(1, min(size.lines // 2, 20))
-                    sys.stdout.flush()
-
-                    text = nvim.exec_lua(
-                        "return require('ipython').prepare_image(...)",
-                        payload,
-                        cols,
-                        rows,
-                    )
-
-                    sys.stdout.write(text)
-                    sys.stdout.flush()
-
+                    render_image(payload)
                 except Exception as e:
                     print(f"Failed to display image: {e}")
 
@@ -109,7 +143,6 @@ def startup():
     assert path is not None
 
     nvim = pynvim.attach("socket", path=path)
-
     register_image_renderers(shell, nvim)
     enable_matplotlib_integration(shell)
 
