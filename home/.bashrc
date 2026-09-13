@@ -53,7 +53,7 @@ fi
 for git_prompt in \
     /usr/share/git/completion/git-prompt.sh \
     /usr/lib/git-core/git-sh-prompt \
-    ${HOMEBREW_PREFIX}/etc/bash_completion.d/git-completion.bash
+    ${HOMEBREW_PREFIX}/etc/bash_completion.d/git-prompt.sh
 do
     if [[ -r $git_prompt ]]; then
         source "$git_prompt"

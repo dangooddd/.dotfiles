@@ -11,8 +11,8 @@ if [[ -n "$U" ]]; then
 fi
 
 packages=(
-    uv fzf tmux nvim lazygit git btop
-    tree-sitter-cli npm imagemagick
+    uv fzf tmux nvim lazygit git
+    tree-sitter-cli npm btop
 )
 
 brew install -y "${packages[@]}"

@@ -1,12 +1,10 @@
 [credential]
     helper = store
+    username = dangooddd
 
 [user]
     email = dangoodds@gmail.com
     name = dangooddd
-
-[credentials]
-    username = dangooddd
 
 [alias]
     dt = difftool --dir-diff
