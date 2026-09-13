@@ -52,23 +52,4 @@ function M.close()
     lazygit:close()
 end
 
-function M.setup()
-    local complete = function(arglead)
-        local items = { "toggle", "close" }
-        return vim.tbl_filter(function(item)
-            return vim.startswith(item, arglead)
-        end, items)
-    end
-
-    vim.api.nvim_create_user_command("Lazygit", function(o)
-        if o.args == "toggle" then
-            M.toggle()
-        elseif o.args == "close" then
-            M.close()
-        else
-            error("[lazygit] unknown command: " .. o.args)
-        end
-    end, { nargs = 1, complete = complete })
-end
-
 return M

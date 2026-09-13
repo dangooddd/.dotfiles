@@ -1,5 +1,4 @@
 local M = {}
-
 local utils = require("utils")
 
 local packages = { "ipython", "pynvim" }
@@ -13,7 +12,7 @@ local args = {
     vim.api.nvim_get_runtime_file("runtime/ipython.py", false)[1],
 }
 
-local repl = require("terminal").new({
+local ipython = require("terminal").new({
     cmd = vim.list_extend({ "python3" }, args),
     env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
 })
@@ -30,7 +29,7 @@ local compound_top_level_nodes = {
     with_statement = true,
 }
 
-function M.install_packages()
+function M.install()
     vim.cmd(string.format("!%s install %s", table.concat(pip, " "), table.concat(packages, " ")))
 end
 
@@ -38,7 +37,7 @@ end
 -- REPL
 --------------------------------------------------------------------------------
 
-function M.open_repl()
+function M.open()
     for _, pkg in ipairs(packages) do
         local ok, installed = pcall(function()
             local cmd = vim.list_extend(vim.list_extend({}, pip), { "show", pkg })
@@ -50,26 +49,26 @@ function M.open_repl()
         end
     end
 
-    repl:open()
+    ipython:open()
 end
 
-function M.toggle_repl_focus()
-    repl:focus()
+function M.focus()
+    ipython:focus()
 end
 
-function M.hide_repl()
-    repl:hide()
+function M.hide()
+    ipython:hide()
 end
 
-function M.close_repl()
-    repl:close()
+function M.close()
+    ipython:close()
 end
 
-function M.toggle_repl()
-    if repl.win and vim.api.nvim_win_is_valid(repl.win) then
-        M.hide_repl()
+function M.toggle()
+    if ipython.win and vim.api.nvim_win_is_valid(ipython.win) then
+        M.hide()
     else
-        M.open_repl()
+        M.open()
     end
 end
 
@@ -78,7 +77,7 @@ end
 --------------------------------------------------------------------------------
 
 ---@param message string
-local function normalize_python_message(message)
+local function normalize_python(message)
     local lines = vim.split(message, "\n", { plain = true, trimempty = false })
     if #lines <= 1 then
         return message
@@ -141,25 +140,20 @@ local function normalize_python_message(message)
     return table.concat(out, "\n")
 end
 
----@param terminal Terminal
----@param start_idx integer
----@param end_idx integer
-local send_range = vim.schedule_wrap(function(terminal, start_idx, end_idx)
+function M.send()
+    local start_idx = vim.fn.line("v")
+    local end_idx = vim.fn.line(".")
+
     if start_idx > end_idx then
         start_idx, end_idx = end_idx, start_idx
     end
 
     local lines = vim.api.nvim_buf_get_lines(0, start_idx - 1, end_idx, false)
-    local normalized = normalize_python_message(table.concat(lines, "\n"))
-    terminal:send(utils.wrap_bracketed(normalized) .. "\n")
-    terminal:scroll()
-end)
+    local normalized = normalize_python(table.concat(lines, "\n"))
 
-function M.send_visual()
-    local start_idx = vim.fn.line("v")
-    local end_idx = vim.fn.line(".")
-    send_range(repl, start_idx, end_idx)
-    vim.api.nvim_input([[<C-\><C-N>]])
+    ipython:send(utils.wrap_bracketed(normalized) .. "\n")
+    ipython:scroll()
+    vim.cmd.normal({ vim.keycode([[<C-\><C-N>]]), bang = true })
 end
 
 --------------------------------------------------------------------------------
@@ -169,29 +163,8 @@ end
 function M.setup()
     if vim.fn.executable("uv") == 1 then
         pip = { "uv", "pip" }
-        repl.cmd = vim.list_extend({ "uv", "run" }, args)
+        ipython.cmd = vim.list_extend({ "uv", "run" }, args)
     end
-
-    local complete = function(arglead)
-        local items = { "open", "close", "toggle", "install" }
-        return vim.tbl_filter(function(item)
-            return vim.startswith(item, arglead)
-        end, items)
-    end
-
-    vim.api.nvim_create_user_command("IPython", function(o)
-        if o.args == "open" then
-            M.open_repl()
-        elseif o.args == "close" then
-            M.close_repl()
-        elseif o.args == "toggle" then
-            M.toggle_repl()
-        elseif o.args == "install" then
-            M.install_packages()
-        else
-            error("[ipython] unknown command: " .. o.args, 0)
-        end
-    end, { nargs = 1, complete = complete })
 end
 
 return M

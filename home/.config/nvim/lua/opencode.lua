@@ -3,23 +3,15 @@ local M = {}
 local utils = require("utils")
 local opencode = require("terminal").new({ cmd = "opencode2" })
 
-function M.open()
-    opencode:open()
-end
-
-function M.hide()
-    opencode:hide()
-end
-
 function M.close()
     opencode:close()
 end
 
 function M.toggle()
     if opencode.win and vim.api.nvim_win_is_valid(opencode.win) then
-        M.hide()
+        opencode:hide()
     else
-        M.open()
+        opencode:open()
     end
 end
 
@@ -29,10 +21,6 @@ end
 
 function M.send()
     local path = vim.api.nvim_buf_get_name(0)
-    if path == "" then
-        error("[opencode] current buffer has no file path", 0)
-    end
-
     local absolute_path = vim.fn.fnamemodify(path, ":p")
     local relative_path = vim.fs.relpath(opencode.cwd or vim.fn.getcwd(), absolute_path)
 
@@ -51,31 +39,6 @@ function M.send()
     opencode:open()
     opencode:send(utils.wrap_bracketed(location))
     opencode:scroll()
-end
-
-function M.setup()
-    local complete = function(arglead)
-        local items = { "open", "close", "toggle", "focus", "send" }
-        return vim.tbl_filter(function(item)
-            return vim.startswith(item, arglead)
-        end, items)
-    end
-
-    vim.api.nvim_create_user_command("Opencode", function(o)
-        if o.args == "open" then
-            M.open()
-        elseif o.args == "close" then
-            M.close()
-        elseif o.args == "toggle" then
-            M.toggle()
-        elseif o.args == "focus" then
-            M.focus()
-        elseif o.args == "send" then
-            M.send()
-        else
-            error("[opencode] unknown command: " .. o.args)
-        end
-    end, { nargs = 1, complete = complete })
 end
 
 return M
