@@ -23,16 +23,16 @@ local repl = require("terminal").new({
 ---@type PlaceholdersImage[]
 local images = {}
 
-local function delete_images()
+local function clear_images()
     for _, image in ipairs(images) do
-        image:delete()
+        image:clear()
     end
     images = {}
 end
 
 vim.api.nvim_create_autocmd("VimLeavePre", {
     group = group,
-    callback = delete_images,
+    callback = clear_images,
 })
 
 local compound_top_level_nodes = {
@@ -108,7 +108,7 @@ function M.prepare_image(img_base64, cols, rows)
     local image = placeholders.new(img_base64)
     local ok, text = pcall(image.text, image, cols, rows)
     if not ok then
-        image:delete()
+        image:clear()
         error(text, 0)
     end
 
@@ -117,7 +117,7 @@ function M.prepare_image(img_base64, cols, rows)
             group = group,
             buffer = buf,
             once = true,
-            callback = delete_images,
+            callback = clear_images,
         })
     end
 

@@ -1,6 +1,8 @@
 local M = {}
 
 ---@class PlaceholdersImage
+---@field id integer
+---@field buf? integer
 local Image = {}
 Image.__index = Image
 
@@ -103,11 +105,6 @@ local function clear_image(img_id)
 end
 
 ---@param img_id integer
-local function delete_image(img_id)
-    send_apc(("a=d,d=I,i=%d,q=2"):format(img_id))
-end
-
----@param img_id integer
 ---@param cols integer
 ---@param rows integer
 local function create_placement(img_id, cols, rows)
@@ -123,24 +120,29 @@ end
 
 ---@param cols integer
 ---@param rows integer
+---@return string[] lines
+local function create_placeholders(cols, rows)
+    local lines = {}
+
+    for r = 1, rows do
+        lines[r] = placeholder .. diac[r] .. string.rep(placeholder, cols - 1)
+    end
+
+    return lines
+end
+
+---@param cols integer
+---@param rows integer
 ---@return string
 function Image:text(cols, rows)
-    assert(self.id, "[placeholders] image has been deleted")
-    cols = math.max(1, math.min(math.floor(cols), #diac))
-    rows = math.max(1, math.min(math.floor(rows), #diac))
-
+    local lines = create_placeholders(cols, rows)
     create_placement(self.id, cols, rows)
 
     local color = vim.o.termguicolors and ("%s[0m%s[38;2;0;0;%dm"):format(esc, esc, self.id)
         or ("%s[0m%s[38;5;%dm"):format(esc, esc, self.id)
-    local lines = {}
 
-    for r = 1, rows do
-        local cells = {}
-        for c = 1, cols do
-            cells[c] = placeholder .. diac[r] .. diac[c]
-        end
-        lines[r] = "  " .. color .. table.concat(cells) .. esc .. "[0m"
+    for r, line in ipairs(lines) do
+        lines[r] = "  " .. color .. line .. esc .. "[0m"
     end
 
     return table.concat(lines, "\r\n") .. "\r\n"
@@ -149,7 +151,7 @@ end
 ---@param buf integer
 ---@param win integer
 function Image:render(buf, win)
-    if not (vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_win_is_valid(win) and self.id) then
+    if not (vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_win_is_valid(win)) then
         return
     end
 
@@ -165,35 +167,18 @@ function Image:render(buf, win)
     local hl = "PlaceholdersImage" .. self.id
     vim.api.nvim_set_hl(0, hl, { fg = self.id, ctermfg = self.id })
 
-    local lines = {}
-    for r = 1, rows do
-        lines[#lines + 1] = placeholder .. diac[r] .. string.rep(placeholder, cols - 1)
-    end
-
+    local lines = create_placeholders(cols, rows)
+    create_placement(self.id, cols, rows)
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
     vim.hl.range(buf, ns, hl, { 0, 0 }, { rows, #lines[#lines] }, {})
-
-    vim.defer_fn(function()
-        create_placement(self.id, cols, rows)
-    end, 25)
 end
 
 function Image:clear()
-    if self.id then
-        clear_image(self.id)
-        if self.buf and vim.api.nvim_buf_is_valid(self.buf) then
-            vim.api.nvim_buf_clear_namespace(self.buf, ns, 0, -1)
-        end
-        self.buf = nil
+    clear_image(self.id)
+    if self.buf and vim.api.nvim_buf_is_valid(self.buf) then
+        vim.api.nvim_buf_clear_namespace(self.buf, ns, 0, -1)
     end
-end
-
-function Image:delete()
-    if self.id then
-        self:clear()
-        delete_image(self.id)
-        self.id = nil
-    end
+    self.buf = nil
 end
 
 ---@param img_base64 string
@@ -234,7 +219,7 @@ function M.image_preview(path)
         buffer = buf,
         group = group,
         callback = vim.schedule_wrap(function()
-            image:delete()
+            image:clear()
             pcall(vim.api.nvim_win_close, win, false)
             vim.cmd.bdelete(buf)
         end),
