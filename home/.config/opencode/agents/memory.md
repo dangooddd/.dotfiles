@@ -27,4 +27,4 @@ Work only in `~/.opencode/memory/`. Your tasks:
    Keep the **absolute bare minimum** of useful, long-lived facts.
    Remove filler, duplication, and temporary information. Do not invent facts.
 
-3) Run git add and commit with the message "memory: consolidate" if changes remain.
+3) Run git add and create new commit with the message "memory: consolidate" if changes remain.
