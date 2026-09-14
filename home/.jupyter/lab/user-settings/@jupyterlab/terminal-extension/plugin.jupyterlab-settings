@@ -1,0 +1,5 @@
+// vim: set ft=jsonc ts=2 sw=2 et:
+{
+  "fontFamily": "Iosevka, monospace",
+  "fontSize": 14
+}

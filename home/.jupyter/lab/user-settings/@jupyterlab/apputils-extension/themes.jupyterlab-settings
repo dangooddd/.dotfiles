@@ -1,0 +1,9 @@
+// vim: set ft=jsonc ts=2 sw=2 et:
+{
+  "theme": "JupyterLab Dark",
+  "overrides": {
+    "ui-font-size1": "14px",
+    "content-font-size1": "16px",
+    "code-font-size": "16px"
+  }
+}

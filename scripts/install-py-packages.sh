@@ -10,3 +10,9 @@ packages=(jupytext ty ruff)
 for pkg in "${packages[@]}"; do
     uv tool install --upgrade "$pkg"
 done
+
+uv tool install \
+    --upgrade \
+    --with "tornado==6.5.8" \
+    --with jupyterlab-vim \
+    notebook

@@ -1,0 +1,395 @@
+:root:root {{
+    color-scheme: dark;
+
+    /* Typography */
+    --jp-ui-font-family: "Iosevka", monospace;
+    --jp-content-font-family: "Iosevka", monospace;
+    --jp-code-font-family-default: "Iosevka", monospace;
+    --jp-datagrid-font-family: var(--jp-code-font-family);
+
+    /* Text and surfaces */
+    --jp-ui-font-color0: #{base06};
+    --jp-ui-font-color1: #{base05};
+    --jp-ui-font-color2: #{base04};
+    --jp-ui-font-color3: #{base03};
+    --jp-ui-inverse-font-color0: #{base00};
+    --jp-ui-inverse-font-color1: #{base00};
+    --jp-ui-inverse-font-color2: #{base01};
+    --jp-ui-inverse-font-color3: #{base00}4D;
+    --jp-content-font-color0: #{base06};
+    --jp-content-font-color1: #{base05};
+    --jp-content-font-color2: #{base04};
+    --jp-content-font-color3: #{base03};
+    --jp-content-link-color: #{base0D};
+    --jp-content-link-visited-color: #{base0E};
+    --jp-content-link-hover-color: #{base0C};
+    --jp-layout-color0: #{base00};
+    --jp-layout-color1: #{base01};
+    --jp-layout-color2: #{base02};
+    --jp-layout-color3: #{mix(base02, base03, 0.25)};
+    --jp-layout-color4: #{base03};
+    --jp-inverse-layout-color0: #{base07};
+    --jp-inverse-layout-color1: #{base06};
+    --jp-inverse-layout-color2: #{base05};
+    --jp-inverse-layout-color3: #{base04};
+    --jp-inverse-layout-color4: #{base03};
+    --jp-border-color0: #{base03};
+    --jp-border-color1: #{base02};
+    --jp-border-color2: #{base02};
+    --jp-border-color3: #{base01};
+    --jp-inverse-border-color: #{base03};
+    --jp-border-radius: 0;
+
+    /* Accents and semantic states */
+    --jp-brand-color0: #{mix(base0C, base07, 0.15)};
+    --jp-brand-color1: #{base0C};
+    --jp-brand-color2: #{base0D};
+    --jp-brand-color3: #{mix(base00, base0C, 0.22)};
+    --jp-brand-color4: #{mix(base00, base0C, 0.10)};
+    --jp-accent-color0: #{mix(base0B, base07, 0.15)};
+    --jp-accent-color1: #{base0B};
+    --jp-accent-color2: #{mix(base00, base0B, 0.45)};
+    --jp-accent-color3: #{mix(base00, base0B, 0.14)};
+    --jp-warn-color0: #{base0A};
+    --jp-warn-color1: #{base0A};
+    --jp-warn-color2: #{mix(base00, base0A, 0.45)};
+    --jp-warn-color3: #{mix(base00, base0A, 0.14)};
+    --jp-error-color0: #{base08};
+    --jp-error-color1: #{base08};
+    --jp-error-color2: #{mix(base00, base08, 0.45)};
+    --jp-error-color3: #{mix(base00, base08, 0.14)};
+    --jp-success-color0: #{base0B};
+    --jp-success-color1: #{base0B};
+    --jp-success-color2: #{mix(base00, base0B, 0.45)};
+    --jp-success-color3: #{mix(base00, base0B, 0.14)};
+    --jp-info-color0: #{base0D};
+    --jp-info-color1: #{base0D};
+    --jp-info-color2: #{mix(base00, base0D, 0.45)};
+    --jp-info-color3: #{mix(base00, base0D, 0.14)};
+
+    /* Input fields and buttons */
+    --jp-input-background: #{base01};
+    --jp-input-hover-background: #{base02};
+    --jp-input-active-background: #{base00};
+    --jp-input-border-color: #{base03};
+    --jp-input-active-border-color: #{base0D};
+    --jp-input-active-box-shadow-color: #{base0D}26;
+    --jp-input-box-shadow: 0 0 0 2px #{base0D}26;
+    --jp-focus-outline-color: #{base0D};
+    --jp-accept-color-normal: #{base0C};
+    --jp-accept-color-hover: #{mix(base0C, base07, 0.15)};
+    --jp-accept-color-active: #{mix(base0C, base00, 0.15)};
+    --jp-warn-color-normal: #{base08};
+    --jp-warn-color-hover: #{mix(base08, base07, 0.15)};
+    --jp-warn-color-active: #{mix(base08, base00, 0.15)};
+    --jp-reject-color-normal: #{base02};
+    --jp-reject-color-hover: #{mix(base02, base03, 0.5)};
+    --jp-reject-color-active: #{base03};
+    --jp-switch-color: #{base04};
+    --jp-switch-true-position-color: #{base0C};
+    --jp-shortcuts-button-background: #{base02};
+    --jp-shortcuts-button-hover-background: #{base03};
+
+    /* Cells, prompts and selections */
+    --jp-cell-editor-background: #{base00};
+    --jp-cell-editor-border-color: #{base02};
+    --jp-cell-editor-active-background: #{base00};
+    --jp-cell-editor-active-border-color: #{base0B};
+    --jp-cell-editor-box-shadow: 0 0 0 1px #{base0B}26;
+    --jp-cell-prompt-font-family: var(--jp-code-font-family);
+    --jp-cell-prompt-not-active-font-color: #{base04};
+    --jp-cell-inprompt-font-color: #{base0C};
+    --jp-cell-outprompt-font-color: #{base09};
+    --jp-notebook-multiselected-color: #{mix(base00, base0D, 0.14)};
+    --jp-private-notebook-selected-color: #{base0B};
+    --jp-editor-selected-background: #{base02};
+    --jp-editor-selected-focused-background: #{base02};
+    --jp-editor-cursor-color: #{base05};
+    --jp-search-selected-match-background-color: #{base09};
+    --jp-search-selected-match-color: #{base00};
+    --jp-search-unselected-match-background-color: #{mix(base00, base0A, 0.30)};
+    --jp-search-unselected-match-color: #{base05};
+
+    /* Syntax */
+    --jp-mirror-editor-keyword-color: #{base0E};
+    --jp-mirror-editor-atom-color: #{base0A};
+    --jp-mirror-editor-number-color: #{base09};
+    --jp-mirror-editor-def-color: #{base0D};
+    --jp-mirror-editor-variable-color: #{base05};
+    --jp-mirror-editor-variable-2-color: #{base0C};
+    --jp-mirror-editor-variable-3-color: #{base0A};
+    --jp-mirror-editor-punctuation-color: #{base0F};
+    --jp-mirror-editor-property-color: #{base0C};
+    --jp-mirror-editor-operator-color: #{base05};
+    --jp-mirror-editor-comment-color: #{base03};
+    --jp-mirror-editor-string-color: #{base0B};
+    --jp-mirror-editor-string-2-color: #{base0F};
+    --jp-mirror-editor-meta-color: #{base0E};
+    --jp-mirror-editor-builtin-color: #{base0A};
+    --jp-mirror-editor-qualifier-color: #{base0C};
+    --jp-mirror-editor-bracket-color: #{base0F};
+    --jp-mirror-editor-tag-color: #{base0A};
+    --jp-mirror-editor-attribute-color: #{base0C};
+    --jp-mirror-editor-header-color: #{base09};
+    --jp-mirror-editor-hr-color: #{base03};
+    --jp-mirror-editor-quote-color: #{base04};
+    --jp-mirror-editor-link-color: #{base0D};
+    --jp-mirror-editor-error-color: #{base08};
+
+    /* Outputs, application chrome and shadows */
+    --jp-rendermime-error-background: #{mix(base00, base08, 0.12)};
+    --jp-rendermime-table-row-background: #{base01};
+    --jp-rendermime-table-row-hover-background: #{base02};
+    --jp-vega-background: #{base00};
+    --jp-toolbar-background: #{base01};
+    --jp-toolbar-border-color: #{base02};
+    --jp-toolbar-box-shadow: 0 1px 0 #{base02};
+    --jp-dialog-background: #{base00}B3;
+    --jp-shadow-umbra-color: #{base00}66;
+    --jp-shadow-penumbra-color: #{base00}40;
+    --jp-shadow-ambient-color: #{base00}26;
+
+    /* Scrollbars */
+    --jp-scrollbar-thumb-color: {", ".join("%d" % channel for channel in b"".fromhex(base03))};
+    --jp-scrollbar-background-color: #{base00};
+
+    /* Icons and shared cursors */
+    --jp-icon-contrast-color0: #{base0E};
+    --jp-icon-contrast-color1: #{base0B};
+    --jp-icon-contrast-color2: #{base08};
+    --jp-icon-contrast-color3: #{base0D};
+    --jp-jupyter-icon-color: #{base09};
+    --jp-notebook-icon-color: #{base09};
+    --jp-json-icon-color: #{base0A};
+    --jp-console-icon-background-color: #{base0D};
+    --jp-console-icon-color: #{base00};
+    --jp-terminal-icon-background-color: #{base04};
+    --jp-terminal-icon-color: #{base00};
+    --jp-text-editor-icon-color: #{base0C};
+    --jp-inspector-icon-color: #{base0D};
+    --jp-collaborator-color1: #{base09};
+    --jp-collaborator-color2: #{base0A};
+    --jp-collaborator-color3: #{base0B};
+    --jp-collaborator-color4: #{base0C};
+    --jp-collaborator-color5: #{base0D};
+    --jp-collaborator-color6: #{base0E};
+    --jp-collaborator-color7: #{base08};
+}}
+
+/* Native controls and browser selection */
+body {{
+    background: var(--jp-layout-color0);
+    color: var(--jp-ui-font-color1);
+    font-family: var(--jp-ui-font-family);
+    accent-color: var(--jp-brand-color1);
+}}
+
+.jp-ThemedContainer :is(tt, code, kbd, samp, pre) {{
+    font-family: var(--jp-code-font-family);
+    font-size: var(--jp-code-font-size);
+    line-height: var(--jp-code-line-height);
+}}
+
+::selection {{ background: #{base02}; }}
+
+/* Notebook title */
+#jp-title h1,
+.jp-NotebookCheckpoint {{
+    font-size: var(--jp-ui-font-size1);
+}}
+
+/* Cells */
+.jp-Notebook {{
+    --jp-focus-outline-color: #{base0B};
+}}
+
+.jp-Notebook .jp-Cell.jp-mod-active:not(.jp-mod-dirty) .jp-Collapser {{
+    background: #{base0B};
+}}
+
+.jp-Notebook .jp-InputArea-editor:hover {{ border-color: #{base03}; }}
+
+.jp-Notebook.jp-mod-commandMode .jp-Cell.jp-mod-active:focus-visible {{
+    border-radius: 0;
+}}
+
+/* CodeMirror chrome */
+.jp-CodeMirrorEditor .cm-cursorLayer {{
+    animation: none !important;
+}}
+
+.jp-CodeMirrorEditor .cm-scroller {{
+    line-height: var(--jp-code-line-height);
+}}
+
+.jp-CodeMirrorEditor .cm-content {{
+    padding-block: var(--jp-code-padding);
+}}
+
+.jp-CodeMirrorEditor .cm-gutters,
+.jp-CodeMirrorEditor .cm-gutter {{
+    background: #{base01};
+    border-color: #{base02};
+}}
+
+.jp-CodeMirrorEditor .cm-lineNumbers {{ color: #{base03}; }}
+.jp-CodeMirrorEditor .cm-activeLine {{ background: #{base01}; }}
+.jp-CodeMirrorEditor .cm-activeLineGutter {{ background: #{base02}; color: #{base04}; }}
+
+.jp-CodeMirrorEditor .cm-matchingBracket {{
+    color: #{base0A};
+    background: #{base02};
+    outline: 1px solid #{base03};
+}}
+
+.jp-CodeMirrorEditor .cm-nonmatchingBracket {{
+    color: #{base08};
+    background: #{mix(base00, base08, 0.22)};
+}}
+
+.jp-CodeMirrorEditor .cm-selectionMatch {{ background: #{mix(base00, base0C, 0.18)}; }}
+
+.jp-CodeMirrorEditor .cm-foldPlaceholder {{
+    color: #{base0C};
+    background: #{base01};
+    border-color: #{base02};
+}}
+
+.jp-CodeMirrorEditor .cm-tooltip {{
+    color: #{base05};
+    background: #{base01};
+    border: 1px solid #{base02};
+    font-family: var(--jp-code-font-family);
+}}
+
+.jp-CodeMirrorEditor .cm-tooltip-autocomplete > ul > li[aria-selected] {{
+    color: #{base05};
+    background: #{base02};
+}}
+
+.jp-CodeMirrorEditor .cm-panels {{ color: #{base05}; background: #{base01}; }}
+.jp-CodeMirrorEditor .cm-textfield {{ background: #{base00}; border-color: #{base03}; }}
+
+.jp-CodeMirrorEditor .cm-editor.cm-focused .cm-fat-cursor {{
+    background: #{base05};
+    color: #{base00} !important;
+}}
+
+.jp-CodeMirrorEditor .cm-editor:not(.cm-focused) .cm-fat-cursor {{ outline-color: #{base05}; }}
+
+/* Completion */
+.jp-Completer {{
+    --jp-completer-type-background0: transparent;
+    --jp-completer-type-background1: #{mix(base00, base0D, 0.30)};
+    --jp-completer-type-background2: #{mix(base00, base09, 0.30)};
+    --jp-completer-type-background3: #{mix(base00, base0B, 0.30)};
+    --jp-completer-type-background4: #{mix(base00, base08, 0.30)};
+    --jp-completer-type-background5: #{mix(base00, base0E, 0.30)};
+    --jp-completer-type-background6: #{mix(base00, base0F, 0.30)};
+    --jp-completer-type-background7: #{mix(base00, base0E, 0.30)};
+    --jp-completer-type-background8: #{base02};
+    --jp-completer-type-background9: #{mix(base00, base0A, 0.30)};
+    --jp-completer-type-background10: #{mix(base00, base0C, 0.30)};
+}}
+
+.jp-Completer-item:hover,
+.jp-Completer-item.jp-mod-active {{ background: #{base02}; color: #{base05}; opacity: 1; }}
+.jp-Completer-item .jp-Completer-monogram {{ color: #{base05}; }}
+.jp-Completer-item .jp-Completer-match mark {{ color: #{base0D}; }}
+.jp-Completer-item.jp-mod-active .jp-Completer-typeExtended {{ color: #{base04}; }}
+
+/* Dialogs */
+button.jp-mod-styled.jp-mod-accept,
+button.jp-mod-styled.jp-mod-warn {{ color: #{base00}; }}
+button.jp-mod-styled.jp-mod-reject {{ color: #{base05}; }}
+
+/* Navigation */
+.jp-DirListing-item.jp-mod-selected {{ background: #{base02}; color: #{base05}; }}
+.jp-DirListing-item.jp-mod-selected .jp-icon-selectable[fill] {{ fill: #{base0C}; }}
+.jp-DirListing-item.jp-mod-selected .jp-icon-selectable-inverse[fill] {{ fill: #{base00}; }}
+.lm-Menu-item.lm-mod-active {{ background: #{base02}; color: #{base05}; }}
+.lm-Menu-item.lm-mod-active .lm-Menu-itemShortcut {{ color: #{base04}; }}
+.lm-MenuBar-item.lm-mod-active {{ background: #{base02}; color: #{base05}; }}
+.lm-CommandPalette-item.lm-mod-active {{ background: #{base02}; color: #{base05}; }}
+
+/* Rendered Markdown and HTML */
+.jp-RenderedHTMLCommon h1 {{ color: #{base09}; }}
+.jp-RenderedHTMLCommon h2 {{ color: #{base0A}; }}
+.jp-RenderedHTMLCommon h3 {{ color: #{base0B}; }}
+.jp-RenderedHTMLCommon h4 {{ color: #{base0C}; }}
+.jp-RenderedHTMLCommon h5 {{ color: #{base0D}; }}
+.jp-RenderedHTMLCommon h6 {{ color: #{base0F}; }}
+.jp-RenderedHTMLCommon strong {{ color: #{base09}; }}
+.jp-RenderedHTMLCommon em {{ color: #{base0A}; }}
+.jp-RenderedHTMLCommon li::marker {{ color: #{base0C}; }}
+
+.jp-RenderedHTMLCommon a.jp-InternalAnchorLink {{ color: #{base03}; }}
+
+.jp-ThemedContainer .jp-RenderedHTMLCommon :not(pre) > code {{
+    color: #{base0A};
+    background: #{base01};
+}}
+
+.jp-ThemedContainer .jp-RenderedHTMLCommon pre {{
+    background: #{base01};
+}}
+
+.jp-ThemedContainer .jp-RenderedHTMLCommon pre code {{
+    background: transparent;
+    color: inherit;
+}}
+
+.jp-RenderedHTMLCommon blockquote {{
+    color: #{base04};
+}}
+
+.jp-RenderedHTMLCommon hr {{ background: #{base02}; border-color: #{base02}; }}
+
+.jp-RenderedHTMLCommon kbd {{
+    color: #{base05};
+    background: #{base02};
+}}
+
+.jp-RenderedHTMLCommon thead {{ background: #{base01}; }}
+.jp-RenderedHTMLCommon th {{ color: #{base0C}; font-weight: 600; }}
+
+/* Streams and tracebacks */
+.jp-RenderedText pre .ansi-black-fg {{ color: #{base00}; }}
+.jp-RenderedText pre .ansi-black-intense-fg {{ color: #{base03}; }}
+.jp-RenderedText pre :is(.ansi-red-fg, .ansi-red-intense-fg) {{ color: #{base08}; }}
+.jp-RenderedText pre :is(.ansi-green-fg, .ansi-green-intense-fg) {{ color: #{base0B}; }}
+.jp-RenderedText pre :is(.ansi-yellow-fg, .ansi-yellow-intense-fg) {{ color: #{base0A}; }}
+.jp-RenderedText pre :is(.ansi-blue-fg, .ansi-blue-intense-fg) {{ color: #{base0D}; }}
+.jp-RenderedText pre :is(.ansi-magenta-fg, .ansi-magenta-intense-fg) {{ color: #{base0E}; }}
+.jp-RenderedText pre :is(.ansi-cyan-fg, .ansi-cyan-intense-fg) {{ color: #{base0C}; }}
+.jp-RenderedText pre .ansi-white-fg {{ color: #{base05}; }}
+.jp-RenderedText pre .ansi-white-intense-fg {{ color: #{base07}; }}
+.jp-RenderedText pre .ansi-black-bg {{ background: #{base00}; }}
+.jp-RenderedText pre .ansi-black-intense-bg {{ background: #{base03}; }}
+.jp-RenderedText pre :is(.ansi-red-bg, .ansi-red-intense-bg) {{ background: #{base08}; }}
+.jp-RenderedText pre :is(.ansi-green-bg, .ansi-green-intense-bg) {{ background: #{base0B}; }}
+.jp-RenderedText pre :is(.ansi-yellow-bg, .ansi-yellow-intense-bg) {{ background: #{base0A}; }}
+.jp-RenderedText pre :is(.ansi-blue-bg, .ansi-blue-intense-bg) {{ background: #{base0D}; }}
+.jp-RenderedText pre :is(.ansi-magenta-bg, .ansi-magenta-intense-bg) {{ background: #{base0E}; }}
+.jp-RenderedText pre :is(.ansi-cyan-bg, .ansi-cyan-intense-bg) {{ background: #{base0C}; }}
+.jp-RenderedText pre .ansi-white-bg {{ background: #{base05}; }}
+.jp-RenderedText pre .ansi-white-intense-bg {{ background: #{base07}; }}
+.jp-RenderedText pre .ansi-default-inverse-fg {{ color: #{base00}; }}
+.jp-RenderedText pre .ansi-default-inverse-bg {{ background: #{base05}; }}
+
+/* ANSI highlights */
+.jp-RenderedText pre :is(.ansi-red-bg, .ansi-red-intense-bg, .ansi-green-bg, .ansi-green-intense-bg,
+    .ansi-yellow-bg, .ansi-yellow-intense-bg, .ansi-blue-bg, .ansi-blue-intense-bg,
+    .ansi-magenta-bg, .ansi-magenta-intense-bg, .ansi-cyan-bg, .ansi-cyan-intense-bg,
+    .ansi-white-bg, .ansi-white-intense-bg):not([class*="-fg"]):not([style*="color:"]) {{
+    color: #{base00};
+}}
+
+/* Widgets */
+.jupyter-widgets {{
+    font-family: var(--jp-ui-font-family);
+    --jp-widgets-label-color: #{base04};
+    --jp-widgets-input-border-color: #{base03};
+}}
+
+.jupyter-widgets :is(input, select, textarea, button) {{ font-family: var(--jp-ui-font-family); }}

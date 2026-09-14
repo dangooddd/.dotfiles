@@ -1,0 +1,395 @@
+:root:root {
+    color-scheme: dark;
+
+    /* Typography */
+    --jp-ui-font-family: "Iosevka", monospace;
+    --jp-content-font-family: "Iosevka", monospace;
+    --jp-code-font-family-default: "Iosevka", monospace;
+    --jp-datagrid-font-family: var(--jp-code-font-family);
+
+    /* Text and surfaces */
+    --jp-ui-font-color0: #E7EED3;
+    --jp-ui-font-color1: #D4DCC2;
+    --jp-ui-font-color2: #87967F;
+    --jp-ui-font-color3: #556753;
+    --jp-ui-inverse-font-color0: #131914;
+    --jp-ui-inverse-font-color1: #131914;
+    --jp-ui-inverse-font-color2: #1D261F;
+    --jp-ui-inverse-font-color3: #1319144D;
+    --jp-content-font-color0: #E7EED3;
+    --jp-content-font-color1: #D4DCC2;
+    --jp-content-font-color2: #87967F;
+    --jp-content-font-color3: #556753;
+    --jp-content-link-color: #97BACC;
+    --jp-content-link-visited-color: #B89CC1;
+    --jp-content-link-hover-color: #63AFA0;
+    --jp-layout-color0: #131914;
+    --jp-layout-color1: #1D261F;
+    --jp-layout-color2: #2D382E;
+    --jp-layout-color3: #374437;
+    --jp-layout-color4: #556753;
+    --jp-inverse-layout-color0: #F5F9EA;
+    --jp-inverse-layout-color1: #E7EED3;
+    --jp-inverse-layout-color2: #D4DCC2;
+    --jp-inverse-layout-color3: #87967F;
+    --jp-inverse-layout-color4: #556753;
+    --jp-border-color0: #556753;
+    --jp-border-color1: #2D382E;
+    --jp-border-color2: #2D382E;
+    --jp-border-color3: #1D261F;
+    --jp-inverse-border-color: #556753;
+    --jp-border-radius: 0;
+
+    /* Accents and semantic states */
+    --jp-brand-color0: #79BAAB;
+    --jp-brand-color1: #63AFA0;
+    --jp-brand-color2: #97BACC;
+    --jp-brand-color3: #253A33;
+    --jp-brand-color4: #1B2822;
+    --jp-accent-color0: #95C28E;
+    --jp-accent-color1: #84B87E;
+    --jp-accent-color2: #466144;
+    --jp-accent-color3: #232F23;
+    --jp-warn-color0: #DAC05B;
+    --jp-warn-color1: #DAC05B;
+    --jp-warn-color2: #6D6434;
+    --jp-warn-color3: #2F301E;
+    --jp-error-color0: #DF867A;
+    --jp-error-color1: #DF867A;
+    --jp-error-color2: #6F4A42;
+    --jp-error-color3: #302822;
+    --jp-success-color0: #84B87E;
+    --jp-success-color1: #84B87E;
+    --jp-success-color2: #466144;
+    --jp-success-color3: #232F23;
+    --jp-info-color0: #97BACC;
+    --jp-info-color1: #97BACC;
+    --jp-info-color2: #4E6167;
+    --jp-info-color3: #25302E;
+
+    /* Input fields and buttons */
+    --jp-input-background: #1D261F;
+    --jp-input-hover-background: #2D382E;
+    --jp-input-active-background: #131914;
+    --jp-input-border-color: #556753;
+    --jp-input-active-border-color: #97BACC;
+    --jp-input-active-box-shadow-color: #97BACC26;
+    --jp-input-box-shadow: 0 0 0 2px #97BACC26;
+    --jp-focus-outline-color: #97BACC;
+    --jp-accept-color-normal: #63AFA0;
+    --jp-accept-color-hover: #79BAAB;
+    --jp-accept-color-active: #57998B;
+    --jp-warn-color-normal: #DF867A;
+    --jp-warn-color-hover: #E2978B;
+    --jp-warn-color-active: #C0766B;
+    --jp-reject-color-normal: #2D382E;
+    --jp-reject-color-hover: #415041;
+    --jp-reject-color-active: #556753;
+    --jp-switch-color: #87967F;
+    --jp-switch-true-position-color: #63AFA0;
+    --jp-shortcuts-button-background: #2D382E;
+    --jp-shortcuts-button-hover-background: #556753;
+
+    /* Cells, prompts and selections */
+    --jp-cell-editor-background: #131914;
+    --jp-cell-editor-border-color: #2D382E;
+    --jp-cell-editor-active-background: #131914;
+    --jp-cell-editor-active-border-color: #84B87E;
+    --jp-cell-editor-box-shadow: 0 0 0 1px #84B87E26;
+    --jp-cell-prompt-font-family: var(--jp-code-font-family);
+    --jp-cell-prompt-not-active-font-color: #87967F;
+    --jp-cell-inprompt-font-color: #63AFA0;
+    --jp-cell-outprompt-font-color: #EDA665;
+    --jp-notebook-multiselected-color: #25302E;
+    --jp-private-notebook-selected-color: #84B87E;
+    --jp-editor-selected-background: #2D382E;
+    --jp-editor-selected-focused-background: #2D382E;
+    --jp-editor-cursor-color: #D4DCC2;
+    --jp-search-selected-match-background-color: #EDA665;
+    --jp-search-selected-match-color: #131914;
+    --jp-search-unselected-match-background-color: #4F4B29;
+    --jp-search-unselected-match-color: #D4DCC2;
+
+    /* Syntax */
+    --jp-mirror-editor-keyword-color: #B89CC1;
+    --jp-mirror-editor-atom-color: #DAC05B;
+    --jp-mirror-editor-number-color: #EDA665;
+    --jp-mirror-editor-def-color: #97BACC;
+    --jp-mirror-editor-variable-color: #D4DCC2;
+    --jp-mirror-editor-variable-2-color: #63AFA0;
+    --jp-mirror-editor-variable-3-color: #DAC05B;
+    --jp-mirror-editor-punctuation-color: #AA7466;
+    --jp-mirror-editor-property-color: #63AFA0;
+    --jp-mirror-editor-operator-color: #D4DCC2;
+    --jp-mirror-editor-comment-color: #556753;
+    --jp-mirror-editor-string-color: #84B87E;
+    --jp-mirror-editor-string-2-color: #AA7466;
+    --jp-mirror-editor-meta-color: #B89CC1;
+    --jp-mirror-editor-builtin-color: #DAC05B;
+    --jp-mirror-editor-qualifier-color: #63AFA0;
+    --jp-mirror-editor-bracket-color: #AA7466;
+    --jp-mirror-editor-tag-color: #DAC05B;
+    --jp-mirror-editor-attribute-color: #63AFA0;
+    --jp-mirror-editor-header-color: #EDA665;
+    --jp-mirror-editor-hr-color: #556753;
+    --jp-mirror-editor-quote-color: #87967F;
+    --jp-mirror-editor-link-color: #97BACC;
+    --jp-mirror-editor-error-color: #DF867A;
+
+    /* Outputs, application chrome and shadows */
+    --jp-rendermime-error-background: #2B2620;
+    --jp-rendermime-table-row-background: #1D261F;
+    --jp-rendermime-table-row-hover-background: #2D382E;
+    --jp-vega-background: #131914;
+    --jp-toolbar-background: #1D261F;
+    --jp-toolbar-border-color: #2D382E;
+    --jp-toolbar-box-shadow: 0 1px 0 #2D382E;
+    --jp-dialog-background: #131914B3;
+    --jp-shadow-umbra-color: #13191466;
+    --jp-shadow-penumbra-color: #13191440;
+    --jp-shadow-ambient-color: #13191426;
+
+    /* Scrollbars */
+    --jp-scrollbar-thumb-color: 85, 103, 83;
+    --jp-scrollbar-background-color: #131914;
+
+    /* Icons and shared cursors */
+    --jp-icon-contrast-color0: #B89CC1;
+    --jp-icon-contrast-color1: #84B87E;
+    --jp-icon-contrast-color2: #DF867A;
+    --jp-icon-contrast-color3: #97BACC;
+    --jp-jupyter-icon-color: #EDA665;
+    --jp-notebook-icon-color: #EDA665;
+    --jp-json-icon-color: #DAC05B;
+    --jp-console-icon-background-color: #97BACC;
+    --jp-console-icon-color: #131914;
+    --jp-terminal-icon-background-color: #87967F;
+    --jp-terminal-icon-color: #131914;
+    --jp-text-editor-icon-color: #63AFA0;
+    --jp-inspector-icon-color: #97BACC;
+    --jp-collaborator-color1: #EDA665;
+    --jp-collaborator-color2: #DAC05B;
+    --jp-collaborator-color3: #84B87E;
+    --jp-collaborator-color4: #63AFA0;
+    --jp-collaborator-color5: #97BACC;
+    --jp-collaborator-color6: #B89CC1;
+    --jp-collaborator-color7: #DF867A;
+}
+
+/* Native controls and browser selection */
+body {
+    background: var(--jp-layout-color0);
+    color: var(--jp-ui-font-color1);
+    font-family: var(--jp-ui-font-family);
+    accent-color: var(--jp-brand-color1);
+}
+
+.jp-ThemedContainer :is(tt, code, kbd, samp, pre) {
+    font-family: var(--jp-code-font-family);
+    font-size: var(--jp-code-font-size);
+    line-height: var(--jp-code-line-height);
+}
+
+::selection { background: #2D382E; }
+
+/* Notebook title */
+#jp-title h1,
+.jp-NotebookCheckpoint {
+    font-size: var(--jp-ui-font-size1);
+}
+
+/* Cells */
+.jp-Notebook {
+    --jp-focus-outline-color: #84B87E;
+}
+
+.jp-Notebook .jp-Cell.jp-mod-active:not(.jp-mod-dirty) .jp-Collapser {
+    background: #84B87E;
+}
+
+.jp-Notebook .jp-InputArea-editor:hover { border-color: #556753; }
+
+.jp-Notebook.jp-mod-commandMode .jp-Cell.jp-mod-active:focus-visible {
+    border-radius: 0;
+}
+
+/* CodeMirror chrome */
+.jp-CodeMirrorEditor .cm-cursorLayer {
+    animation: none !important;
+}
+
+.jp-CodeMirrorEditor .cm-scroller {
+    line-height: var(--jp-code-line-height);
+}
+
+.jp-CodeMirrorEditor .cm-content {
+    padding-block: var(--jp-code-padding);
+}
+
+.jp-CodeMirrorEditor .cm-gutters,
+.jp-CodeMirrorEditor .cm-gutter {
+    background: #1D261F;
+    border-color: #2D382E;
+}
+
+.jp-CodeMirrorEditor .cm-lineNumbers { color: #556753; }
+.jp-CodeMirrorEditor .cm-activeLine { background: #1D261F; }
+.jp-CodeMirrorEditor .cm-activeLineGutter { background: #2D382E; color: #87967F; }
+
+.jp-CodeMirrorEditor .cm-matchingBracket {
+    color: #DAC05B;
+    background: #2D382E;
+    outline: 1px solid #556753;
+}
+
+.jp-CodeMirrorEditor .cm-nonmatchingBracket {
+    color: #DF867A;
+    background: #40312A;
+}
+
+.jp-CodeMirrorEditor .cm-selectionMatch { background: #21342D; }
+
+.jp-CodeMirrorEditor .cm-foldPlaceholder {
+    color: #63AFA0;
+    background: #1D261F;
+    border-color: #2D382E;
+}
+
+.jp-CodeMirrorEditor .cm-tooltip {
+    color: #D4DCC2;
+    background: #1D261F;
+    border: 1px solid #2D382E;
+    font-family: var(--jp-code-font-family);
+}
+
+.jp-CodeMirrorEditor .cm-tooltip-autocomplete > ul > li[aria-selected] {
+    color: #D4DCC2;
+    background: #2D382E;
+}
+
+.jp-CodeMirrorEditor .cm-panels { color: #D4DCC2; background: #1D261F; }
+.jp-CodeMirrorEditor .cm-textfield { background: #131914; border-color: #556753; }
+
+.jp-CodeMirrorEditor .cm-editor.cm-focused .cm-fat-cursor {
+    background: #D4DCC2;
+    color: #131914 !important;
+}
+
+.jp-CodeMirrorEditor .cm-editor:not(.cm-focused) .cm-fat-cursor { outline-color: #D4DCC2; }
+
+/* Completion */
+.jp-Completer {
+    --jp-completer-type-background0: transparent;
+    --jp-completer-type-background1: #3B494B;
+    --jp-completer-type-background2: #54432C;
+    --jp-completer-type-background3: #354934;
+    --jp-completer-type-background4: #503A33;
+    --jp-completer-type-background5: #454048;
+    --jp-completer-type-background6: #40342D;
+    --jp-completer-type-background7: #454048;
+    --jp-completer-type-background8: #2D382E;
+    --jp-completer-type-background9: #4F4B29;
+    --jp-completer-type-background10: #2B463E;
+}
+
+.jp-Completer-item:hover,
+.jp-Completer-item.jp-mod-active { background: #2D382E; color: #D4DCC2; opacity: 1; }
+.jp-Completer-item .jp-Completer-monogram { color: #D4DCC2; }
+.jp-Completer-item .jp-Completer-match mark { color: #97BACC; }
+.jp-Completer-item.jp-mod-active .jp-Completer-typeExtended { color: #87967F; }
+
+/* Dialogs */
+button.jp-mod-styled.jp-mod-accept,
+button.jp-mod-styled.jp-mod-warn { color: #131914; }
+button.jp-mod-styled.jp-mod-reject { color: #D4DCC2; }
+
+/* Navigation */
+.jp-DirListing-item.jp-mod-selected { background: #2D382E; color: #D4DCC2; }
+.jp-DirListing-item.jp-mod-selected .jp-icon-selectable[fill] { fill: #63AFA0; }
+.jp-DirListing-item.jp-mod-selected .jp-icon-selectable-inverse[fill] { fill: #131914; }
+.lm-Menu-item.lm-mod-active { background: #2D382E; color: #D4DCC2; }
+.lm-Menu-item.lm-mod-active .lm-Menu-itemShortcut { color: #87967F; }
+.lm-MenuBar-item.lm-mod-active { background: #2D382E; color: #D4DCC2; }
+.lm-CommandPalette-item.lm-mod-active { background: #2D382E; color: #D4DCC2; }
+
+/* Rendered Markdown and HTML */
+.jp-RenderedHTMLCommon h1 { color: #EDA665; }
+.jp-RenderedHTMLCommon h2 { color: #DAC05B; }
+.jp-RenderedHTMLCommon h3 { color: #84B87E; }
+.jp-RenderedHTMLCommon h4 { color: #63AFA0; }
+.jp-RenderedHTMLCommon h5 { color: #97BACC; }
+.jp-RenderedHTMLCommon h6 { color: #AA7466; }
+.jp-RenderedHTMLCommon strong { color: #EDA665; }
+.jp-RenderedHTMLCommon em { color: #DAC05B; }
+.jp-RenderedHTMLCommon li::marker { color: #63AFA0; }
+
+.jp-RenderedHTMLCommon a.jp-InternalAnchorLink { color: #556753; }
+
+.jp-ThemedContainer .jp-RenderedHTMLCommon :not(pre) > code {
+    color: #DAC05B;
+    background: #1D261F;
+}
+
+.jp-ThemedContainer .jp-RenderedHTMLCommon pre {
+    background: #1D261F;
+}
+
+.jp-ThemedContainer .jp-RenderedHTMLCommon pre code {
+    background: transparent;
+    color: inherit;
+}
+
+.jp-RenderedHTMLCommon blockquote {
+    color: #87967F;
+}
+
+.jp-RenderedHTMLCommon hr { background: #2D382E; border-color: #2D382E; }
+
+.jp-RenderedHTMLCommon kbd {
+    color: #D4DCC2;
+    background: #2D382E;
+}
+
+.jp-RenderedHTMLCommon thead { background: #1D261F; }
+.jp-RenderedHTMLCommon th { color: #63AFA0; font-weight: 600; }
+
+/* Streams and tracebacks */
+.jp-RenderedText pre .ansi-black-fg { color: #131914; }
+.jp-RenderedText pre .ansi-black-intense-fg { color: #556753; }
+.jp-RenderedText pre :is(.ansi-red-fg, .ansi-red-intense-fg) { color: #DF867A; }
+.jp-RenderedText pre :is(.ansi-green-fg, .ansi-green-intense-fg) { color: #84B87E; }
+.jp-RenderedText pre :is(.ansi-yellow-fg, .ansi-yellow-intense-fg) { color: #DAC05B; }
+.jp-RenderedText pre :is(.ansi-blue-fg, .ansi-blue-intense-fg) { color: #97BACC; }
+.jp-RenderedText pre :is(.ansi-magenta-fg, .ansi-magenta-intense-fg) { color: #B89CC1; }
+.jp-RenderedText pre :is(.ansi-cyan-fg, .ansi-cyan-intense-fg) { color: #63AFA0; }
+.jp-RenderedText pre .ansi-white-fg { color: #D4DCC2; }
+.jp-RenderedText pre .ansi-white-intense-fg { color: #F5F9EA; }
+.jp-RenderedText pre .ansi-black-bg { background: #131914; }
+.jp-RenderedText pre .ansi-black-intense-bg { background: #556753; }
+.jp-RenderedText pre :is(.ansi-red-bg, .ansi-red-intense-bg) { background: #DF867A; }
+.jp-RenderedText pre :is(.ansi-green-bg, .ansi-green-intense-bg) { background: #84B87E; }
+.jp-RenderedText pre :is(.ansi-yellow-bg, .ansi-yellow-intense-bg) { background: #DAC05B; }
+.jp-RenderedText pre :is(.ansi-blue-bg, .ansi-blue-intense-bg) { background: #97BACC; }
+.jp-RenderedText pre :is(.ansi-magenta-bg, .ansi-magenta-intense-bg) { background: #B89CC1; }
+.jp-RenderedText pre :is(.ansi-cyan-bg, .ansi-cyan-intense-bg) { background: #63AFA0; }
+.jp-RenderedText pre .ansi-white-bg { background: #D4DCC2; }
+.jp-RenderedText pre .ansi-white-intense-bg { background: #F5F9EA; }
+.jp-RenderedText pre .ansi-default-inverse-fg { color: #131914; }
+.jp-RenderedText pre .ansi-default-inverse-bg { background: #D4DCC2; }
+
+/* ANSI highlights */
+.jp-RenderedText pre :is(.ansi-red-bg, .ansi-red-intense-bg, .ansi-green-bg, .ansi-green-intense-bg,
+    .ansi-yellow-bg, .ansi-yellow-intense-bg, .ansi-blue-bg, .ansi-blue-intense-bg,
+    .ansi-magenta-bg, .ansi-magenta-intense-bg, .ansi-cyan-bg, .ansi-cyan-intense-bg,
+    .ansi-white-bg, .ansi-white-intense-bg):not([class*="-fg"]):not([style*="color:"]) {
+    color: #131914;
+}
+
+/* Widgets */
+.jupyter-widgets {
+    font-family: var(--jp-ui-font-family);
+    --jp-widgets-label-color: #87967F;
+    --jp-widgets-input-border-color: #556753;
+}
+
+.jupyter-widgets :is(input, select, textarea, button) { font-family: var(--jp-ui-font-family); }
