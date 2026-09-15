@@ -38,7 +38,6 @@
     --jp-border-color2: #2D382E;
     --jp-border-color3: #1D261F;
     --jp-inverse-border-color: #556753;
-    --jp-border-radius: 0;
 
     /* Accents and semantic states */
     --jp-brand-color0: #79BAAB;
@@ -74,7 +73,6 @@
     --jp-input-border-color: #556753;
     --jp-input-active-border-color: #97BACC;
     --jp-input-active-box-shadow-color: #97BACC26;
-    --jp-input-box-shadow: 0 0 0 2px #97BACC26;
     --jp-focus-outline-color: #97BACC;
     --jp-accept-color-normal: #63AFA0;
     --jp-accept-color-hover: #79BAAB;
@@ -95,7 +93,6 @@
     --jp-cell-editor-border-color: #2D382E;
     --jp-cell-editor-active-background: #131914;
     --jp-cell-editor-active-border-color: #84B87E;
-    --jp-cell-editor-box-shadow: 0 0 0 1px #84B87E26;
     --jp-cell-prompt-font-family: var(--jp-code-font-family);
     --jp-cell-prompt-not-active-font-color: #87967F;
     --jp-cell-inprompt-font-color: #63AFA0;
@@ -143,7 +140,6 @@
     --jp-vega-background: #131914;
     --jp-toolbar-background: #1D261F;
     --jp-toolbar-border-color: #2D382E;
-    --jp-toolbar-box-shadow: 0 1px 0 #2D382E;
     --jp-dialog-background: #131914B3;
     --jp-shadow-umbra-color: #13191466;
     --jp-shadow-penumbra-color: #13191440;
@@ -209,27 +205,33 @@ body {
 
 .jp-Notebook .jp-InputArea-editor:hover { border-color: #556753; }
 
-.jp-Notebook.jp-mod-commandMode .jp-Cell.jp-mod-active:focus-visible {
-    border-radius: 0;
-}
-
 /* CodeMirror chrome */
 .jp-CodeMirrorEditor .cm-cursorLayer {
     animation: none !important;
 }
 
-.jp-CodeMirrorEditor .cm-scroller {
-    line-height: var(--jp-code-line-height);
+.jp-CodeMirrorEditor .cm-vim-panel,
+.jp-CodeMirrorEditor .cm-vim-panel input {
+    font-family: var(--jp-code-font-family);
+    font-size: var(--jp-code-font-size);
+    color: var(--jp-content-font-color1);
 }
 
-.jp-CodeMirrorEditor .cm-content {
-    padding-block: var(--jp-code-padding);
+.jp-CodeMirrorEditor .cm-editor:has(.cm-vim-panel:focus-within) .cm-vimCursorLayer {
+    visibility: hidden;
+}
+
+.jp-CodeMirrorEditor .cm-vim-panel input {
+    caret-animation: manual;
+}
+
+.jp-CodeMirrorEditor .cm-vim-panel span[style] {
+    font-family: var(--jp-code-font-family) !important;
 }
 
 .jp-CodeMirrorEditor .cm-gutters,
 .jp-CodeMirrorEditor .cm-gutter {
     background: #1D261F;
-    border-color: #2D382E;
 }
 
 .jp-CodeMirrorEditor .cm-lineNumbers { color: #556753; }
@@ -257,8 +259,6 @@ body {
 
 .jp-CodeMirrorEditor .cm-tooltip {
     color: #D4DCC2;
-    background: #1D261F;
-    border: 1px solid #2D382E;
     font-family: var(--jp-code-font-family);
 }
 
@@ -304,12 +304,16 @@ button.jp-mod-styled.jp-mod-warn { color: #131914; }
 button.jp-mod-styled.jp-mod-reject { color: #D4DCC2; }
 
 /* Navigation */
+:root .lm-Menu-item[data-type='separator'] > div::after {
+    mix-blend-mode: normal;
+}
+
 .jp-DirListing-item.jp-mod-selected { background: #2D382E; color: #D4DCC2; }
 .jp-DirListing-item.jp-mod-selected .jp-icon-selectable[fill] { fill: #63AFA0; }
 .jp-DirListing-item.jp-mod-selected .jp-icon-selectable-inverse[fill] { fill: #131914; }
-.lm-Menu-item.lm-mod-active { background: #2D382E; color: #D4DCC2; }
+.lm-Menu-item.lm-mod-active { color: #D4DCC2; }
 .lm-Menu-item.lm-mod-active .lm-Menu-itemShortcut { color: #87967F; }
-.lm-MenuBar-item.lm-mod-active { background: #2D382E; color: #D4DCC2; }
+.lm-MenuBar-item.lm-mod-active { color: #D4DCC2; }
 .lm-CommandPalette-item.lm-mod-active { background: #2D382E; color: #D4DCC2; }
 
 /* Rendered Markdown and HTML */
@@ -343,7 +347,7 @@ button.jp-mod-styled.jp-mod-reject { color: #D4DCC2; }
     color: #87967F;
 }
 
-.jp-RenderedHTMLCommon hr { background: #2D382E; border-color: #2D382E; }
+.jp-RenderedHTMLCommon hr { border-color: #2D382E; }
 
 .jp-RenderedHTMLCommon kbd {
     color: #D4DCC2;

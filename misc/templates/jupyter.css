@@ -38,7 +38,6 @@
     --jp-border-color2: #{base02};
     --jp-border-color3: #{base01};
     --jp-inverse-border-color: #{base03};
-    --jp-border-radius: 0;
 
     /* Accents and semantic states */
     --jp-brand-color0: #{mix(base0C, base07, 0.15)};
@@ -74,7 +73,6 @@
     --jp-input-border-color: #{base03};
     --jp-input-active-border-color: #{base0D};
     --jp-input-active-box-shadow-color: #{base0D}26;
-    --jp-input-box-shadow: 0 0 0 2px #{base0D}26;
     --jp-focus-outline-color: #{base0D};
     --jp-accept-color-normal: #{base0C};
     --jp-accept-color-hover: #{mix(base0C, base07, 0.15)};
@@ -95,7 +93,6 @@
     --jp-cell-editor-border-color: #{base02};
     --jp-cell-editor-active-background: #{base00};
     --jp-cell-editor-active-border-color: #{base0B};
-    --jp-cell-editor-box-shadow: 0 0 0 1px #{base0B}26;
     --jp-cell-prompt-font-family: var(--jp-code-font-family);
     --jp-cell-prompt-not-active-font-color: #{base04};
     --jp-cell-inprompt-font-color: #{base0C};
@@ -143,7 +140,6 @@
     --jp-vega-background: #{base00};
     --jp-toolbar-background: #{base01};
     --jp-toolbar-border-color: #{base02};
-    --jp-toolbar-box-shadow: 0 1px 0 #{base02};
     --jp-dialog-background: #{base00}B3;
     --jp-shadow-umbra-color: #{base00}66;
     --jp-shadow-penumbra-color: #{base00}40;
@@ -209,27 +205,33 @@ body {{
 
 .jp-Notebook .jp-InputArea-editor:hover {{ border-color: #{base03}; }}
 
-.jp-Notebook.jp-mod-commandMode .jp-Cell.jp-mod-active:focus-visible {{
-    border-radius: 0;
-}}
-
 /* CodeMirror chrome */
 .jp-CodeMirrorEditor .cm-cursorLayer {{
     animation: none !important;
 }}
 
-.jp-CodeMirrorEditor .cm-scroller {{
-    line-height: var(--jp-code-line-height);
+.jp-CodeMirrorEditor .cm-vim-panel,
+.jp-CodeMirrorEditor .cm-vim-panel input {{
+    font-family: var(--jp-code-font-family);
+    font-size: var(--jp-code-font-size);
+    color: var(--jp-content-font-color1);
 }}
 
-.jp-CodeMirrorEditor .cm-content {{
-    padding-block: var(--jp-code-padding);
+.jp-CodeMirrorEditor .cm-editor:has(.cm-vim-panel:focus-within) .cm-vimCursorLayer {{
+    visibility: hidden;
+}}
+
+.jp-CodeMirrorEditor .cm-vim-panel input {{
+    caret-animation: manual;
+}}
+
+.jp-CodeMirrorEditor .cm-vim-panel span[style] {{
+    font-family: var(--jp-code-font-family) !important;
 }}
 
 .jp-CodeMirrorEditor .cm-gutters,
 .jp-CodeMirrorEditor .cm-gutter {{
     background: #{base01};
-    border-color: #{base02};
 }}
 
 .jp-CodeMirrorEditor .cm-lineNumbers {{ color: #{base03}; }}
@@ -257,8 +259,6 @@ body {{
 
 .jp-CodeMirrorEditor .cm-tooltip {{
     color: #{base05};
-    background: #{base01};
-    border: 1px solid #{base02};
     font-family: var(--jp-code-font-family);
 }}
 
@@ -304,12 +304,16 @@ button.jp-mod-styled.jp-mod-warn {{ color: #{base00}; }}
 button.jp-mod-styled.jp-mod-reject {{ color: #{base05}; }}
 
 /* Navigation */
+:root .lm-Menu-item[data-type='separator'] > div::after {{
+    mix-blend-mode: normal;
+}}
+
 .jp-DirListing-item.jp-mod-selected {{ background: #{base02}; color: #{base05}; }}
 .jp-DirListing-item.jp-mod-selected .jp-icon-selectable[fill] {{ fill: #{base0C}; }}
 .jp-DirListing-item.jp-mod-selected .jp-icon-selectable-inverse[fill] {{ fill: #{base00}; }}
-.lm-Menu-item.lm-mod-active {{ background: #{base02}; color: #{base05}; }}
+.lm-Menu-item.lm-mod-active {{ color: #{base05}; }}
 .lm-Menu-item.lm-mod-active .lm-Menu-itemShortcut {{ color: #{base04}; }}
-.lm-MenuBar-item.lm-mod-active {{ background: #{base02}; color: #{base05}; }}
+.lm-MenuBar-item.lm-mod-active {{ color: #{base05}; }}
 .lm-CommandPalette-item.lm-mod-active {{ background: #{base02}; color: #{base05}; }}
 
 /* Rendered Markdown and HTML */
@@ -343,7 +347,7 @@ button.jp-mod-styled.jp-mod-reject {{ color: #{base05}; }}
     color: #{base04};
 }}
 
-.jp-RenderedHTMLCommon hr {{ background: #{base02}; border-color: #{base02}; }}
+.jp-RenderedHTMLCommon hr {{ border-color: #{base02}; }}
 
 .jp-RenderedHTMLCommon kbd {{
     color: #{base05};
