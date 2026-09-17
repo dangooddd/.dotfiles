@@ -13,7 +13,6 @@ done
 
 uv tool install \
     --upgrade \
-    --with "tornado==6.5.8" \
     --with jupyterlab-vim \
     --with jupyterlab-lsp \
-    notebook
+    jupyter-core

@@ -1,3 +1,5 @@
+@import url("./local.css");
+
 :root:root {{
     color-scheme: dark;
 
@@ -68,9 +70,6 @@
 
     /* Input fields and buttons */
     --jp-input-background: #{base01};
-    --jp-input-hover-background: #{base02};
-    --jp-input-active-background: #{base00};
-    --jp-input-border-color: #{base03};
     --jp-input-active-border-color: #{base0D};
     --jp-input-active-box-shadow-color: #{base0D}26;
     --jp-focus-outline-color: #{base0D};
@@ -91,7 +90,6 @@
     /* Cells, prompts and selections */
     --jp-cell-editor-background: #{base00};
     --jp-cell-editor-border-color: #{base02};
-    --jp-cell-editor-active-background: #{base00};
     --jp-cell-editor-active-border-color: #{base0B};
     --jp-cell-prompt-font-family: var(--jp-code-font-family);
     --jp-cell-prompt-not-active-font-color: #{base04};
@@ -99,7 +97,6 @@
     --jp-cell-outprompt-font-color: #{base09};
     --jp-notebook-multiselected-color: #{mix(base00, base0D, 0.14)};
     --jp-private-notebook-selected-color: #{base0B};
-    --jp-editor-selected-background: #{base02};
     --jp-editor-selected-focused-background: #{base02};
     --jp-editor-cursor-color: #{base05};
     --jp-search-selected-match-background-color: #{base09};
@@ -138,8 +135,6 @@
     --jp-rendermime-table-row-background: #{base01};
     --jp-rendermime-table-row-hover-background: #{base02};
     --jp-vega-background: #{base00};
-    --jp-toolbar-background: #{base01};
-    --jp-toolbar-border-color: #{base02};
     --jp-dialog-background: #{base00}B3;
     --jp-shadow-umbra-color: #{base00}66;
     --jp-shadow-penumbra-color: #{base00}40;
@@ -180,10 +175,8 @@ body {{
     accent-color: var(--jp-brand-color1);
 }}
 
-.jp-ThemedContainer :is(tt, code, kbd, samp, pre) {{
-    font-family: var(--jp-code-font-family);
-    font-size: var(--jp-code-font-size);
-    line-height: var(--jp-code-line-height);
+.jp-ThemedContainer select.jp-mod-styled {{
+    font-family: var(--jp-ui-font-family);
 }}
 
 ::selection {{ background: #{base02}; }}
@@ -279,7 +272,6 @@ body {{
 
 /* Completion */
 .jp-Completer {{
-    --jp-completer-type-background0: transparent;
     --jp-completer-type-background1: #{mix(base00, base0D, 0.30)};
     --jp-completer-type-background2: #{mix(base00, base09, 0.30)};
     --jp-completer-type-background3: #{mix(base00, base0B, 0.30)};
@@ -348,11 +340,6 @@ button.jp-mod-styled.jp-mod-reject {{ color: #{base05}; }}
 }}
 
 .jp-RenderedHTMLCommon hr {{ border-color: #{base02}; }}
-
-.jp-RenderedHTMLCommon kbd {{
-    color: #{base05};
-    background: #{base02};
-}}
 
 .jp-RenderedHTMLCommon thead {{ background: #{base01}; }}
 .jp-RenderedHTMLCommon th {{ color: #{base0C}; font-weight: 600; }}

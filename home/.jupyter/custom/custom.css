@@ -1,3 +1,5 @@
+@import url("./local.css");
+
 :root:root {
     color-scheme: dark;
 
@@ -68,9 +70,6 @@
 
     /* Input fields and buttons */
     --jp-input-background: #1D261F;
-    --jp-input-hover-background: #2D382E;
-    --jp-input-active-background: #131914;
-    --jp-input-border-color: #556753;
     --jp-input-active-border-color: #97BACC;
     --jp-input-active-box-shadow-color: #97BACC26;
     --jp-focus-outline-color: #97BACC;
@@ -91,7 +90,6 @@
     /* Cells, prompts and selections */
     --jp-cell-editor-background: #131914;
     --jp-cell-editor-border-color: #2D382E;
-    --jp-cell-editor-active-background: #131914;
     --jp-cell-editor-active-border-color: #84B87E;
     --jp-cell-prompt-font-family: var(--jp-code-font-family);
     --jp-cell-prompt-not-active-font-color: #87967F;
@@ -99,7 +97,6 @@
     --jp-cell-outprompt-font-color: #EDA665;
     --jp-notebook-multiselected-color: #25302E;
     --jp-private-notebook-selected-color: #84B87E;
-    --jp-editor-selected-background: #2D382E;
     --jp-editor-selected-focused-background: #2D382E;
     --jp-editor-cursor-color: #D4DCC2;
     --jp-search-selected-match-background-color: #EDA665;
@@ -138,8 +135,6 @@
     --jp-rendermime-table-row-background: #1D261F;
     --jp-rendermime-table-row-hover-background: #2D382E;
     --jp-vega-background: #131914;
-    --jp-toolbar-background: #1D261F;
-    --jp-toolbar-border-color: #2D382E;
     --jp-dialog-background: #131914B3;
     --jp-shadow-umbra-color: #13191466;
     --jp-shadow-penumbra-color: #13191440;
@@ -180,10 +175,8 @@ body {
     accent-color: var(--jp-brand-color1);
 }
 
-.jp-ThemedContainer :is(tt, code, kbd, samp, pre) {
-    font-family: var(--jp-code-font-family);
-    font-size: var(--jp-code-font-size);
-    line-height: var(--jp-code-line-height);
+.jp-ThemedContainer select.jp-mod-styled {
+    font-family: var(--jp-ui-font-family);
 }
 
 ::selection { background: #2D382E; }
@@ -279,7 +272,6 @@ body {
 
 /* Completion */
 .jp-Completer {
-    --jp-completer-type-background0: transparent;
     --jp-completer-type-background1: #3B494B;
     --jp-completer-type-background2: #54432C;
     --jp-completer-type-background3: #354934;
@@ -348,11 +340,6 @@ button.jp-mod-styled.jp-mod-reject { color: #D4DCC2; }
 }
 
 .jp-RenderedHTMLCommon hr { border-color: #2D382E; }
-
-.jp-RenderedHTMLCommon kbd {
-    color: #D4DCC2;
-    background: #2D382E;
-}
 
 .jp-RenderedHTMLCommon thead { background: #1D261F; }
 .jp-RenderedHTMLCommon th { color: #63AFA0; font-weight: 600; }
