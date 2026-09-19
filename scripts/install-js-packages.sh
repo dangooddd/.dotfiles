@@ -6,10 +6,10 @@ if ! command -v npm &> /dev/null; then
 fi
 
 if [[ -n "$U" ]]; then
-    opencode2 upgrade
+    opencode upgrade
     exit
 fi
 
 npm config set prefix "${HOME}/.local"
 npm config set fund false
-npm install -g --allow-scripts=@opencode-ai/cli @opencode-ai/cli@beta
+npm install -g --allow-scripts=@opencode/cli @opencode-ai/cli
