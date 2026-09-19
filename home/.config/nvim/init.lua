@@ -95,7 +95,6 @@ vim.o.statusline = "%!v:lua.Statusline()"
 -- Plugins
 --------------------------------------------------------------------------------
 vim.pack.add({
-    "https://github.com/stevearc/conform.nvim",
     "https://github.com/nvim-mini/mini.icons",
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/ibhagwan/fzf-lua",
@@ -113,18 +112,6 @@ require("ipython").setup()
 require("jupytext").setup()
 require("mini.icons").setup()
 require("nvim-treesitter").setup()
-
-require("conform").setup({
-    formatters_by_ft = {
-        python = { "ruff_format", "ruff_organize_imports" },
-        lua = { "stylua" },
-    },
-    format_after_save = function()
-        if not vim.g.conform_stop then
-            return { lsp_format = "fallback" }
-        end
-    end,
-})
 
 require("fzf-lua").setup({
     winopts = {
@@ -164,6 +151,7 @@ vim.keymap.set({ "i", "c" }, "<C-b>", "<Left>")
 vim.keymap.set({ "i", "c" }, "<C-f>", "<Right>")
 vim.keymap.set("n", "<leader>q", "<Cmd>copen<CR>")
 vim.keymap.set("n", "<leader>c", "<Cmd>cclose<CR>")
+vim.keymap.set("n", "<leader>r", vim.lsp.buf.format)
 
 vim.keymap.set("n", "<leader>d", function()
     vim.diagnostic.setqflist({ open = true })
@@ -176,10 +164,6 @@ end)
 vim.keymap.set("n", "<leader>th", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end)
-
-vim.api.nvim_create_user_command("ConformToggle", function()
-    vim.g.conform_stop = not vim.g.conform_stop
-end, {})
 
 vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
 vim.keymap.set("n", "<leader>je", require("jupytext").transform_python)
@@ -266,17 +250,6 @@ end
 --------------------------------------------------------------------------------
 -- LSP
 --------------------------------------------------------------------------------
-vim.lsp.config("rust_analyzer", {
-    settings = {
-        ["rust-analyzer"] = {
-            diagnostics = {
-                enable = true,
-                experimental = { enable = true },
-            },
-        },
-    },
-})
-
 vim.lsp.config("lua_ls", {
     settings = {
         Lua = {
@@ -322,21 +295,11 @@ vim.lsp.config("bashls", {
     },
 })
 
-vim.lsp.config("tinymist", {
-    settings = {
-        formatterMode = "typstyle",
-        exportPdf = "onSave",
-        semanticTokens = "disable",
-    },
-})
-
 vim.lsp.enable("ruff")
 vim.lsp.enable("ty")
-vim.lsp.enable("lua_ls")
 vim.lsp.enable("clangd")
 vim.lsp.enable("texlab")
 vim.lsp.enable("bashls")
-vim.lsp.enable("tinymist")
 vim.lsp.enable("jsonls")
-vim.lsp.enable("rust_analyzer")
+vim.lsp.enable("lua_ls")
 vim.lsp.enable("ts_ls")
