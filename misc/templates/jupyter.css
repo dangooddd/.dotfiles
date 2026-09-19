@@ -181,12 +181,6 @@ body {{
 
 ::selection {{ background: #{base02}; }}
 
-/* Notebook title */
-#jp-title h1,
-.jp-NotebookCheckpoint {{
-    font-size: var(--jp-ui-font-size1);
-}}
-
 /* Cells */
 .jp-Notebook {{
     --jp-focus-outline-color: #{base0B};
@@ -270,6 +264,15 @@ body {{
 
 .jp-CodeMirrorEditor .cm-editor:not(.cm-focused) .cm-fat-cursor {{ outline-color: #{base05}; }}
 
+/* LSP hover */
+.jp-Tooltip.lsp-hover .jp-RenderedHTMLCommon :is(pre, code) {{
+    background: #{base02};
+}}
+
+.jp-Tooltip.lsp-hover .jp-RenderedHTMLCommon pre {{
+    padding: 4px 8px;
+}}
+
 /* Completion */
 .jp-Completer {{
     --jp-completer-type-background1: #{mix(base00, base0D, 0.30)};
@@ -307,6 +310,30 @@ button.jp-mod-styled.jp-mod-reject {{ color: #{base05}; }}
 .lm-Menu-item.lm-mod-active .lm-Menu-itemShortcut {{ color: #{base04}; }}
 .lm-MenuBar-item.lm-mod-active {{ color: #{base05}; }}
 .lm-CommandPalette-item.lm-mod-active {{ background: #{base02}; color: #{base05}; }}
+
+/* Table of contents */
+.jp-TableOfContents .jp-tocItem,
+.jp-TableOfContents .jp-tocItem::part(positioning-region) {{
+    color: #{base05};
+    background: var(--jp-layout-color1);
+}}
+
+.jp-TableOfContents .jp-tocItem::part(positioning-region):hover {{
+    background: #{base02};
+}}
+
+.jp-TableOfContents .jp-tocItem[selected]::part(positioning-region) {{
+    color: #{base00};
+    background: #{base0C};
+}}
+
+.jp-TableOfContents .jp-tocItem::part(expand-collapse-button) {{
+    color: inherit;
+}}
+
+.jp-TableOfContents .jp-tocItem[selected]::part(expand-collapse-button):hover {{
+    background: #{mix(base0C, base00, 0.25)};
+}}
 
 /* Rendered Markdown and HTML */
 .jp-RenderedHTMLCommon h1 {{ color: #{base09}; }}

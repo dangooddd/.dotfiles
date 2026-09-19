@@ -15,4 +15,4 @@ uv tool install \
     --upgrade \
     --with jupyterlab-vim \
     --with jupyterlab-lsp \
-    jupyter-core
+    jupyterlab
