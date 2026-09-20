@@ -1,5 +1,17 @@
+import shutil
+from pathlib import Path
+
 c.LabApp.custom_css = True
 c.JupyterNotebookApp.custom_css = True
+
+c.ServerApp.terminado_settings = {
+    "shell_command": [
+        shutil.which("bash"),
+        "--rcfile",
+        str(Path.home() / ".jupyter/terminal.sh"),
+        "-i",
+    ],
+}
 
 c.LanguageServerManager.language_servers = {
     "ty": {

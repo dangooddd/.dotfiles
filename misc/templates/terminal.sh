@@ -1,0 +1,21 @@
+# Terminal
+printf '\033]10;#{base05}\033\\'
+printf '\033]11;#{base00}\033\\'
+
+# ANSI
+printf '\033]4;0;#{base00}\033\\'
+printf '\033]4;1;#{base08}\033\\'
+printf '\033]4;2;#{base0B}\033\\'
+printf '\033]4;3;#{base0A}\033\\'
+printf '\033]4;4;#{base0D}\033\\'
+printf '\033]4;5;#{base0E}\033\\'
+printf '\033]4;6;#{base0C}\033\\'
+printf '\033]4;7;#{base05}\033\\'
+printf '\033]4;8;#{base03}\033\\'
+printf '\033]4;9;#{base08}\033\\'
+printf '\033]4;10;#{base0B}\033\\'
+printf '\033]4;11;#{base0A}\033\\'
+printf '\033]4;12;#{base0D}\033\\'
+printf '\033]4;13;#{base0E}\033\\'
+printf '\033]4;14;#{base0C}\033\\'
+printf '\033]4;15;#{base07}\033\\'
