@@ -1,6 +1,6 @@
 {
   "websearch": {
-    "provider": "tavily"
+    "provider": "exa"
   },
   "permissions": [
     {

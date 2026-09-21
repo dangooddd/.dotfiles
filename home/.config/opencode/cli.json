@@ -1,4 +1,5 @@
 {
+  "$schema": "https://opencode.ai/v2/cli.json",
   "keybinds": {
     "session.background": "<leader>b"
   },
