@@ -1,8 +1,6 @@
 local M = {}
 
 local debounce = 50
-local max_width = 60
-local max_height = 10
 local dpi = 576
 local scale = 1.5
 local padding_x = 2
@@ -308,13 +306,15 @@ local function schedule()
     end
 
     local hl = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = false })
+    local tabline = vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr("$") > 1)
+    local editor_height = bottom() - (tabline and 1 or 0)
     local request = {
         formula = target.formula,
         source = target.source,
         data = target.data,
         fg = string.format("%06X", hl.fg or 0xD4DCC2),
-        max_width = math.min(max_width, vim.o.columns - 2) - 2 * padding_x,
-        max_height = math.min(max_height, bottom() - 2),
+        max_width = math.floor(vim.o.columns / 2) - 2 - 2 * padding_x,
+        max_height = math.floor(editor_height / 2) - 2,
     }
     if request.max_width < 2 or request.max_height < 2 then
         M.close()

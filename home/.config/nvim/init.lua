@@ -102,6 +102,7 @@ vim.pack.add({
     "https://github.com/ibhagwan/fzf-lua",
     "https://github.com/stevearc/oil.nvim",
     "https://github.com/nvim-treesitter/nvim-treesitter",
+    "https://github.com/jmbuhr/otter.nvim",
 }, {
     confirm = false,
     load = true,
@@ -115,6 +116,20 @@ require("jupytext").setup()
 require("markdown").setup()
 require("mini.icons").setup()
 require("nvim-treesitter").setup()
+require("otter").setup()
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "markdown",
+    callback = vim.schedule_wrap(function(event)
+        if vim.api.nvim_buf_is_valid(event.buf)
+            and vim.bo[event.buf].buftype == ""
+            and vim.api.nvim_buf_get_name(event.buf) ~= "" then
+            vim.api.nvim_buf_call(event.buf, function()
+                require("otter").activate()
+            end)
+        end
+    end),
+})
 
 require("fzf-lua").setup({
     winopts = {
@@ -253,6 +268,12 @@ end
 --------------------------------------------------------------------------------
 -- LSP
 --------------------------------------------------------------------------------
+vim.lsp.config("ruff", {
+    on_init = function(client)
+        client.server_capabilities.hoverProvider = false
+    end,
+})
+
 vim.lsp.config("lua_ls", {
     settings = {
         Lua = {
