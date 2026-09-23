@@ -133,6 +133,17 @@ local function show(entry)
         return
     end
 
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    local pos = vim.fn.screenpos(0, cursor[1], cursor[2] + 1)
+    if pos.row > row and pos.row <= row + entry.height + 2
+        and pos.curscol > col and pos.curscol <= col + width + 2 then
+        M.close()
+        return
+    end
+    if displayed == entry then
+        return
+    end
+
     local opts = {
         relative = "editor",
         row = row,
@@ -162,14 +173,10 @@ local function show(entry)
         height = entry.height,
         zindex = 75,
     }
-    if image and displayed == entry then
-        vim.ui.img.set(image, position)
-    else
-        local previous = image
-        image = vim.ui.img.set(entry.png, position)
-        if previous then
-            vim.ui.img.del(previous)
-        end
+    local previous = image
+    image = vim.ui.img.set(entry.png, position)
+    if previous then
+        vim.ui.img.del(previous)
     end
     displayed = entry
 end
@@ -332,7 +339,7 @@ local function update()
     }, "\n")
     if pending and pending.key == request.key then
         local entry = cache[request.key]
-        if entry and displayed ~= entry then
+        if entry then
             show(entry)
         end
         return
