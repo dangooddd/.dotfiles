@@ -3,7 +3,6 @@ local M = {}
 local debounce = 50
 local dpi = 576
 local scale = 1.5
-local padding_x = 2
 local cache_size = 64
 
 local template = [[
@@ -20,11 +19,13 @@ $\displaystyle %s$
 
 local cache, order = {}, {}
 local pending
+local scheduled
 local running = false
 local win, buf, image, displayed
 
 function M.close()
     pending = nil
+    scheduled = nil
 
     if image then
         vim.ui.img.del(image)
@@ -125,7 +126,7 @@ local function bottom()
 end
 
 local function show(entry)
-    local width = entry.width + 2 * padding_x
+    local width = entry.width + 2
     local row = bottom() - entry.height - 2
     local col = vim.o.columns - width - 2
     if row < 0 or col < 0 then
@@ -143,6 +144,7 @@ local function show(entry)
         focusable = false,
         mouse = false,
         zindex = 50,
+        noautocmd = true,
     }
     if win and vim.api.nvim_win_is_valid(win) then
         vim.api.nvim_win_set_config(win, opts)
@@ -155,7 +157,7 @@ local function show(entry)
 
     local position = {
         row = row + 2,
-        col = col + 2 + padding_x,
+        col = col + 3,
         width = entry.width,
         height = entry.height,
         zindex = 75,
@@ -215,7 +217,7 @@ local function render(request, dir)
         })
     end
 
-    local png = vim.fn.readblob(dir .. "/raw.png")
+    local png = vim.fn.readblob(dir .. "/raw.png", 0, 24)
     local function u32(offset)
         local a, b, c, d = png:byte(offset, offset + 3)
         return ((a * 256 + b) * 256 + c) * 256 + d
@@ -284,14 +286,16 @@ local function render_next()
                 if #order > cache_size then
                     cache[table.remove(order, 1)] = nil
                 end
-                show(entry)
+                if not scheduled then
+                    show(entry)
+                end
             end
         end
         render_next()
     end))
 end
 
-local function schedule()
+local function update()
     local target = target_at_cursor()
     if not target then
         M.close()
@@ -313,7 +317,7 @@ local function schedule()
         source = target.source,
         data = target.data,
         fg = string.format("%06X", hl.fg or 0xD4DCC2),
-        max_width = math.floor(vim.o.columns / 2) - 2 - 2 * padding_x,
+        max_width = math.floor(vim.o.columns / 2) - 4,
         max_height = math.floor(editor_height / 2) - 2,
     }
     if request.max_width < 2 or request.max_height < 2 then
@@ -327,6 +331,10 @@ local function schedule()
         request.max_height,
     }, "\n")
     if pending and pending.key == request.key then
+        local entry = cache[request.key]
+        if entry and displayed ~= entry then
+            show(entry)
+        end
         return
     end
 
@@ -337,10 +345,22 @@ local function schedule()
         return
     end
 
+    request.ready = true
+    render_next()
+end
+
+local function schedule()
+    if vim.bo.filetype ~= "markdown" then
+        M.close()
+        return
+    end
+
+    local ticket = {}
+    scheduled = ticket
     vim.defer_fn(function()
-        if pending == request then
-            request.ready = true
-            render_next()
+        if scheduled == ticket then
+            scheduled = nil
+            update()
         end
     end, debounce)
 end

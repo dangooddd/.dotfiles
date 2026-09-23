@@ -54,21 +54,24 @@ local diac = {
     "\u{20D1}", "\u{20D4}", "\u{20D5}",
 }
 
-local function send(body)
-    local sequence = esc .. "_G" .. body .. esc .. "\\"
+local function wrap_apc(body)
+    local data = esc .. "_G" .. body .. esc .. "\\"
     if tmux then
-        sequence = require("utils").wrap_tmux(sequence)
+        data = require("utils").wrap_tmux(data)
     end
-    vim.api.nvim_ui_send(sequence)
+    return data
 end
 
 local function upload(id, png)
     local data = vim.base64.encode(png)
+    local chunks = {}
     for pos = 1, #data, 4096 do
         local header = pos == 1 and string.format("a=t,f=100,t=d,i=%d,", id) or ""
         local more = pos + 4096 <= #data and 1 or 0
-        send(header .. string.format("q=2,m=%d;%s", more, data:sub(pos, pos + 4095)))
+        local body = header .. string.format("q=2,m=%d;%s", more, data:sub(pos, pos + 4095))
+        chunks[#chunks + 1] = wrap_apc(body)
     end
+    vim.api.nvim_ui_send(table.concat(chunks))
 end
 
 function M.set(data_or_id, opts)
@@ -81,6 +84,9 @@ function M.set(data_or_id, opts)
         image = images[data_or_id]
         assert(image, "invalid image id: " .. tostring(data_or_id))
         opts = vim.tbl_extend("force", image.opts, opts)
+        if image.win and vim.api.nvim_win_is_valid(image.win) and vim.deep_equal(opts, image.opts) then
+            return image.id
+        end
     else
         opts = vim.deepcopy(opts)
     end
@@ -116,7 +122,9 @@ function M.set(data_or_id, opts)
             end_row = #lines,
             hl_group = "PlaceholdersImage" .. image.id,
         })
-        send(string.format("a=p,U=1,i=%d,p=1,c=%d,r=%d,q=2", image.id, opts.width, opts.height))
+        local body = string.format("a=p,U=1,i=%d,p=1,c=%d,r=%d,q=2",
+            image.id, opts.width, opts.height)
+        vim.api.nvim_ui_send(wrap_apc(body))
     end
 
     local config = {
@@ -131,7 +139,6 @@ function M.set(data_or_id, opts)
         mouse = false,
         zindex = opts.zindex or 50,
     }
-
     if image.win and vim.api.nvim_win_is_valid(image.win) then
         vim.api.nvim_win_set_config(image.win, config)
     else
@@ -141,7 +148,6 @@ function M.set(data_or_id, opts)
         vim.wo[image.win].winblend = 0
         vim.wo[image.win].winhighlight = "Normal:NormalFloat"
     end
-
     image.opts = opts
     return image.id
 end
@@ -165,17 +171,14 @@ function M.del(id)
     if not image then
         return false
     end
-
     images[id] = nil
     if image.win and vim.api.nvim_win_is_valid(image.win) then
         vim.api.nvim_win_close(image.win, true)
     end
-
     if vim.api.nvim_buf_is_valid(image.buf) then
         vim.api.nvim_buf_delete(image.buf, { force = true })
     end
-
-    send(string.format("a=d,d=I,i=%d,q=2", id))
+    vim.api.nvim_ui_send(wrap_apc(string.format("a=d,d=I,i=%d,q=2", id)))
     vim.api.nvim_set_hl(0, "PlaceholdersImage" .. id, {})
     return true
 end
@@ -193,7 +196,6 @@ function M.setup()
             M.del(math.huge)
         end,
     })
-
     vim.api.nvim_create_autocmd("ColorScheme", {
         group = group,
         callback = function()
