@@ -1,6 +1,6 @@
 local M = {}
 
-local pattern = [[^\s*#\s*%%]]
+local pattern = [[^```\+\s*python\>]]
 local template = [[
 {
   "cells": [
@@ -21,12 +21,6 @@ local template = [[
 ]]
 
 ---@param buf integer
-local function get_buf_text(buf)
-    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-    return table.concat(lines, "\n")
-end
-
----@param buf integer
 ---@param ext string
 local function get_bufname_with_ext(buf, ext)
     local name = vim.api.nvim_buf_get_name(buf)
@@ -36,7 +30,6 @@ end
 ---@param inner boolean
 local function select_cell(inner)
     local first = vim.fn.search(pattern, "bcnW")
-    local last = vim.fn.search(pattern, "nW")
 
     if vim.fn.mode():match("[vV\022]") then
         vim.cmd.normal({ vim.keycode([[<C-\><C-N>]]), bang = true })
@@ -46,8 +39,10 @@ local function select_cell(inner)
         return
     end
 
+    local fence = vim.fn.getline(first):match("^(`+)")
+    local last = vim.fn.search([[^]] .. fence .. [[\s*$]], "nW")
     first = first + (inner and 1 or 0)
-    last = last == 0 and vim.fn.line("$") or last - 1
+    last = last == 0 and vim.fn.line("$") or last - (inner and 1 or 0)
     if first > last then
         return
     end
@@ -65,64 +60,33 @@ local function jump_cell(backward)
     end
 end
 
----@param text string
----@param name string
----@param notebook boolean
-local function transform_text(text, name, notebook)
-    assert(name ~= "", "[jupytext] notebook name cannot be empty")
-    assert(vim.fn.executable("jupytext") == 1, "[jupytext] executable not found")
+local function transform_notebook(buf)
+    local markdown = get_bufname_with_ext(buf, "md")
 
-    local cmd = { "jupytext", "--output", name }
-    local format = "py:percent"
-
-    if notebook then
-        vim.list_extend(cmd, { "--update", "--from", format, "--to", "ipynb", "-" })
-    else
-        vim.list_extend(cmd, { "--to", format, "-" })
-    end
-
-    local result = vim.system(cmd, { text = true, stdin = text }):wait()
-    if result.code ~= 0 then
-        error("[jupytext] failed to convert text: " .. (result.stderr or "unknown error"), 0)
-    end
-end
-
-function M.transform_notebook()
-    local name = get_bufname_with_ext(0, "py")
-    local stat = vim.uv.fs_stat(name)
-    local choices = { "convert" }
-
-    if stat and stat.type == "file" then
-        choices[#choices + 1] = "open existing file"
-    end
-
-    vim.ui.select(choices, {
-        prompt = string.format('Convert notebook to "%s"?', name),
-    }, function(_, idx)
-        if idx == nil then
-            return
+    vim.async.run(function()
+        if vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] == "" then
+            vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(vim.trim(template), "\n"))
         end
 
-        if idx == 1 then
-            local text = get_buf_text(0)
-            if #text == 0 then
-                text = template
-            end
-            transform_text(text, name, false)
-        end
-
-        local relative = vim.fn.fnamemodify(name, ":.")
-        vim.cmd.edit(vim.fn.fnameescape(relative))
+        vim.async.await(M.sync())
+        vim.async.await(vim.schedule)
+        vim.cmd.edit(vim.fn.fnameescape(markdown))
     end)
 end
 
-function M.transform_python()
-    local name = get_bufname_with_ext(0, "ipynb")
-    local text = get_buf_text(0)
+function M.sync()
+    local buf = vim.api.nvim_get_current_buf()
+    local name = vim.api.nvim_buf_get_name(buf)
 
-    vim.schedule(function()
-        transform_text(text, name, true)
-        print(string.format('[jupytext] script exported to "%s"', name))
+    return vim.async.run(function()
+        vim.api.nvim_buf_call(buf, function()
+            vim.cmd.update()
+        end)
+
+        local result = vim.async.await(3, vim.system, { "jupytext", "--sync", name }, { text = true })
+        if result.code ~= 0 then
+            error("[jupytext] " .. (result.stderr or "sync failed"), 0)
+        end
     end)
 end
 
@@ -130,7 +94,7 @@ function M.setup()
     local group = vim.api.nvim_create_augroup("Jupytext", { clear = true })
     vim.api.nvim_create_autocmd("FileType", {
         group = group,
-        pattern = "python",
+        pattern = "markdown",
         callback = function(o)
             for key, inner in pairs({ ij = true, aj = false }) do
                 vim.keymap.set({ "o", "x" }, key, function()
@@ -146,13 +110,15 @@ function M.setup()
         end,
     })
 
-    if vim.fn.executable("jupytext") == 1 then
-        vim.api.nvim_create_autocmd("BufReadPost", {
-            group = group,
-            pattern = "*.ipynb",
-            callback = vim.schedule_wrap(M.transform_notebook),
-        })
-    end
+    vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+        group = group,
+        pattern = "*.ipynb",
+        callback = function(o)
+            vim.schedule(function()
+                transform_notebook(o.buf)
+            end)
+        end,
+    })
 end
 
 return M

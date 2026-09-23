@@ -7,6 +7,8 @@ vim.o.wrap = false
 vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.scrolloff = 3
+vim.o.synmaxcol = 500
+vim.o.maxmempattern = 20000
 vim.o.hlsearch = false
 vim.o.mouse = "a"
 vim.o.fillchars = "eob: ,diff: "
@@ -166,7 +168,7 @@ vim.keymap.set("n", "<leader>th", function()
 end)
 
 vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
-vim.keymap.set("n", "<leader>je", require("jupytext").transform_python)
+vim.keymap.set("n", "<leader>je", require("jupytext").sync)
 
 vim.keymap.set("n", "<leader>ff", require("fzf-lua").files)
 vim.keymap.set("n", "<leader>fh", require("fzf-lua").helptags)
