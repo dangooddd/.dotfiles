@@ -40,7 +40,7 @@ function M.close()
     win, buf, image, displayed = nil, nil, nil, nil
 end
 
-local function target_at_cursor()
+local function target_at_cursor(ticket)
     if vim.bo.filetype ~= "markdown" or vim.api.nvim_win_get_config(0).relative ~= "" then
         return
     end
@@ -53,7 +53,13 @@ local function target_at_cursor()
         return
     end
 
-    parser:parse({ row, row + 1 })
+    local err = vim.async.await(3, parser.parse, parser, { row, row + 1 })
+    if scheduled ~= ticket then
+        return
+    end
+    if err then
+        error(err, 0)
+    end
     local inline = parser:children().markdown_inline
     local node = inline and inline:named_node_for_range({ row, col, row, col })
     while node and node:type() ~= "image" and node:type() ~= "latex_block" do
@@ -247,13 +253,13 @@ local function render(request, dir)
     }
     local size = string.format(
         "%dx%d",
-        math.max(1, math.floor(width * scale)),
-        math.max(1, math.floor(height * scale))
+        math.max(1, math.floor(width * scale / 2)),
+        math.max(1, math.floor(height * scale / 2))
     )
     local extent = string.format(
         "%dx%d",
-        math.floor(entry.width * cell_w),
-        math.floor(entry.height * cell_h)
+        math.floor(entry.width * cell_w / 2),
+        math.floor(entry.height * cell_h / 2)
     )
     run({
         "magick",
@@ -263,7 +269,7 @@ local function render(request, dir)
         "-background", "none",
         "-gravity", "Center",
         "-extent", extent,
-        "preview.png",
+        "PNG32:preview.png",
     })
     entry.png = vim.fn.readblob(dir .. "/preview.png")
     return entry
@@ -302,8 +308,12 @@ local function render_next()
     end))
 end
 
-local function update()
-    local target = target_at_cursor()
+local function update(ticket)
+    local target = target_at_cursor(ticket)
+    if scheduled ~= ticket then
+        return
+    end
+    scheduled = nil
     if not target then
         M.close()
         return
@@ -366,8 +376,14 @@ local function schedule()
     scheduled = ticket
     vim.defer_fn(function()
         if scheduled == ticket then
-            scheduled = nil
-            update()
+            vim.async.run(function()
+                update(ticket)
+            end):on_complete(vim.schedule_wrap(function(err)
+                if err and scheduled == ticket then
+                    scheduled = nil
+                    M.last_error = tostring(err)
+                end
+            end))
         end
     end, debounce)
 end
