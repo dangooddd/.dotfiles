@@ -265,6 +265,16 @@ if require("utils").detect_container() then
     vim.g.clipboard = "osc52"
 end
 
+if require("utils").detect_tmux() then
+    local ui_send = vim.api.nvim_ui_send
+    vim.api.nvim_ui_send = function(data)
+        local wrapped = data:gsub("\27_G.-\27\\", function(apc)
+            return require("utils").wrap_tmux(apc)
+        end)
+        return ui_send(wrapped)
+    end
+end
+
 --------------------------------------------------------------------------------
 -- LSP
 --------------------------------------------------------------------------------
@@ -286,6 +296,7 @@ vim.lsp.config("lua_ls", {
             diagnostics = {
                 disable = {
                     "missing-fields",
+                    "duplicate-set-field",
                 },
             },
         },
