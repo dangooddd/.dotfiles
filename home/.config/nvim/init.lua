@@ -113,6 +113,7 @@ vim.cmd("packadd nvim.undotree")
 
 require("ipython").setup()
 require("jupytext").setup()
+require("placeholders").setup()
 require("markdown").setup()
 require("mini.icons").setup()
 require("nvim-treesitter").setup()
@@ -263,16 +264,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 if require("utils").detect_container() then
     vim.g.clipboard = "osc52"
-end
-
-if require("utils").detect_tmux() then
-    local ui_send = vim.api.nvim_ui_send
-    vim.api.nvim_ui_send = function(data)
-        local wrapped = data:gsub("\27_G.-\27\\", function(apc)
-            return require("utils").wrap_tmux(apc)
-        end)
-        return ui_send(wrapped)
-    end
 end
 
 --------------------------------------------------------------------------------

@@ -158,7 +158,7 @@ local function show(entry)
         col = col + 2 + padding_x,
         width = entry.width,
         height = entry.height,
-        zindex = 50,
+        zindex = 75,
     }
     if image and displayed == entry then
         vim.ui.img.set(image, position)
