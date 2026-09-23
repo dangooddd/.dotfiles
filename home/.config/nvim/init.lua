@@ -112,6 +112,7 @@ vim.cmd("packadd nvim.undotree")
 
 require("ipython").setup()
 require("jupytext").setup()
+require("markdown").setup()
 require("mini.icons").setup()
 require("nvim-treesitter").setup()
 

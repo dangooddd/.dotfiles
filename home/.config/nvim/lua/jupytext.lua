@@ -20,13 +20,6 @@ local template = [[
 }
 ]]
 
----@param buf integer
----@param ext string
-local function get_bufname_with_ext(buf, ext)
-    local name = vim.api.nvim_buf_get_name(buf)
-    return vim.fn.fnamemodify(name, ":r") .. "." .. ext
-end
-
 ---@param inner boolean
 local function select_cell(inner)
     local first = vim.fn.search(pattern, "bcnW")
@@ -61,7 +54,7 @@ local function jump_cell(backward)
 end
 
 local function transform_notebook(buf)
-    local markdown = get_bufname_with_ext(buf, "md")
+    local markdown = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":r") .. ".md"
 
     vim.async.run(function()
         if vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] == "" then
