@@ -199,8 +199,8 @@ vim.keymap.set("v", "<leader>jv", require("ipython").send)
 vim.keymap.set("n", "<leader>js", require("ipython").install)
 vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").focus)
 
-vim.keymap.set({ "n", "t" }, "<C-l>", require("lazygit").toggle)
-vim.keymap.set("n", "<leader>lc", require("lazygit").close)
+vim.keymap.set({ "n", "t" }, "<C-g>", require("lazygit").toggle)
+vim.keymap.set("n", "<leader>gc", require("lazygit").close)
 
 vim.keymap.set("n", "<leader>ko", require("opencode").toggle)
 vim.keymap.set("n", "<leader>kc", require("opencode").close)
