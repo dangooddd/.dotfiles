@@ -346,9 +346,10 @@ local function update(ticket)
     end
 
     local tabline = vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr("$") > 1)
-    local editor_height = bottom() - (tabline and 1 or 0)
-    local max_width = math.min(297, math.floor(vim.o.columns / 2) - 4)
-    local max_height = math.min(297, math.floor(editor_height / 2) - 2)
+    local editor_width = vim.o.columns
+    local editor_height = bottom() - (tabline and 1 or 0) - 2
+    local max_width = math.min(297, math.floor(editor_width / 2) - 4)
+    local max_height = math.min(297, editor_height)
 
     if max_width < 2 or max_height < 2 then
         M.close()

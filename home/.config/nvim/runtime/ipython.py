@@ -1,6 +1,7 @@
 import base64
 import io
 import os
+import secrets
 import shutil
 import sys
 from collections.abc import Callable
@@ -70,7 +71,7 @@ def register_mime_renderer(
 
 
 def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim):
-    next_id = 1
+    next_id = secrets.randbelow(0xFFFFFF) + 1
     tmux = nvim.exec_lua("return require('utils').detect_tmux()")
 
     def graphics(body: str) -> str:
@@ -82,7 +83,10 @@ def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim)
     def render_image(payload: str):
         nonlocal next_id
         image_id = next_id
-        next_id = next_id % 255 + 1
+        next_id = next_id % 0xFFFFFF + 1
+        r, g, b = (image_id >> 16) & 255, (image_id >> 8) & 255, image_id & 255
+        color = f"{ESC}[38;2;{r};{g};{b}m"
+
         size = shutil.get_terminal_size()
         cols = max(1, min(size.columns - 3, 80))
         rows = max(1, min(size.lines // 2, 20))
@@ -95,11 +99,6 @@ def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim)
             commands.append(graphics(f"{header}m={more};{chunk}"))
         commands.append(graphics(f"a=p,U=1,i={image_id},c={cols},r={rows},C=1,q=2"))
 
-        if nvim.options["termguicolors"]:
-            color = f"{ESC}[38;2;0;0;{image_id}m"
-        else:
-            color = f"{ESC}[38;5;{image_id}m"
-
         lines = []
         for row in range(rows):
             cells = "".join(
@@ -110,7 +109,7 @@ def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim)
 
         sys.stdout.flush()
         nvim.api.ui_send("".join(commands))
-        sys.stdout.write("\r\n".join(lines) + "\r\n")
+        sys.stdout.write("\r\n" + "\r\n".join(lines) + "\r\n")
         sys.stdout.flush()
 
     def image_renderer(handler: Callable[[Any], str | None]):
