@@ -1,16 +1,16 @@
----@class TerminalOptions
+---@class terminal.Opts
 ---@field cmd string|string[] Command passed to `jobstart`.
 ---@field env? table<string, string|integer>
 ---@field cwd? string
 ---@field open_win? fun(buf: integer): integer
----@field on_exit? fun(terminal: Terminal, code: integer, event: string)
+---@field on_exit? fun(terminal: terminal.Terminal, code: integer, event: string)
 
----@class Terminal
+---@class terminal.Terminal
 ---@field cmd string|string[]
 ---@field env? table<string, string|integer>
 ---@field cwd? string
 ---@field open_win fun(buf: integer): integer
----@field on_exit fun(terminal: Terminal, code: integer, event: string)
+---@field on_exit fun(terminal: terminal.Terminal, code: integer, event: string)
 ---@field chan integer|nil
 ---@field buf integer|nil
 ---@field win integer|nil
@@ -33,7 +33,7 @@ local function default_open_win(buf)
     })
 end
 
----@param terminal Terminal
+---@param terminal terminal.Terminal
 local function default_on_exit(terminal, _, _)
     vim.on_key(function()
         vim.on_key(nil, terminal.ns)
@@ -53,8 +53,8 @@ local function wrap_open_win(open_win)
     end
 end
 
----@param opts TerminalOptions
----@return Terminal
+---@param opts terminal.Opts
+---@return terminal.Terminal
 function Terminal.new(opts)
     vim.validate({
         opts = { opts, "table" },
