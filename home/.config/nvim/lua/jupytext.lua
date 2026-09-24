@@ -98,7 +98,13 @@ function M.setup()
             end
 
             for key, backward in pairs({ ["]j"] = false, ["[j"] = true }) do
-                vim.keymap.set({ "n", "x", "o" }, key, function()
+                vim.keymap.set("n", key, function()
+                    M._repeat = function() jump_cell(backward) end
+                    vim.go.operatorfunc = "v:lua.require'jupytext'._repeat"
+                    return "g@l"
+                end, { buffer = o.buf, expr = true })
+
+                vim.keymap.set({ "x", "o" }, key, function()
                     jump_cell(backward)
                 end, { buffer = o.buf })
             end
