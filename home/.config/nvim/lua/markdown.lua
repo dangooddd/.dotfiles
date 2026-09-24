@@ -1,9 +1,10 @@
 local M = {}
+local images = require("placeholders")
 
 local debounce = 50
 local dpi = 576
 local scale = 1.5
-local cache_size = 64
+local cache_size = 32
 
 local template = [[
 \documentclass[border=1pt]{standalone}
@@ -17,114 +18,28 @@ $\displaystyle %s$
 \end{document}
 ]]
 
-local cache, order = {}, {}
-local pending
-local scheduled
-local running = false
-local win, buf, image, displayed
+local cache = {}
+local current, scheduled, rendering, displayed
 
 function M.close()
-    pending = nil
-    scheduled = nil
-
-    if image then
-        vim.ui.img.del(image)
-    end
-    if win and vim.api.nvim_win_is_valid(win) then
-        vim.api.nvim_win_close(win, true)
-    end
-    if buf and vim.api.nvim_buf_is_valid(buf) then
-        vim.api.nvim_buf_delete(buf, { force = true })
-    end
-
-    win, buf, image, displayed = nil, nil, nil, nil
-end
-
-local function target_at_cursor(ticket)
-    if vim.bo.filetype ~= "markdown" or vim.api.nvim_win_get_config(0).relative ~= "" then
-        return
-    end
-
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    row = row - 1
-    local ok, parser = pcall(vim.treesitter.get_parser, 0, "markdown")
-    if not ok then
-        M.last_error = tostring(parser)
-        return
-    end
-
-    local err = vim.async.await(3, parser.parse, parser, { row, row + 1 })
-    if scheduled ~= ticket then
-        return
-    end
-    if err then
-        error(err, 0)
-    end
-    local inline = parser:children().markdown_inline
-    local node = inline and inline:named_node_for_range({ row, col, row, col })
-    while node and node:type() ~= "image" and node:type() ~= "latex_block" do
-        node = node:parent()
-    end
-    if not node then
-        return
-    end
-
-    if node:type() == "image" then
-        for child in node:iter_children() do
-            if child:type() == "link_destination" then
-                local source = vim.treesitter.get_node_text(child, 0)
-                source = (source:match("^<(.*)>$") or source):gsub("\\(%p)", "%1")
-                return { source = source }
-            end
-        end
-        return
-    end
-
-    local first, last
-    for child in node:iter_children() do
-        if child:type() == "latex_span_delimiter" then
-            if not first then
-                first = child
-            end
-            last = child
-        end
-    end
-    if first and last and first ~= last then
-        local start_row, start_col = first:end_()
-        local end_row, end_col = last:start()
-        local lines = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
-        local formula = vim.trim(table.concat(lines, "\n"))
-        if formula ~= "" then
-            return { formula = formula }
-        end
+    current, scheduled = nil, nil
+    if displayed then
+        images.del(displayed.image)
+        displayed = nil
     end
 end
 
-local function resolve_source(target)
-    if target.formula then
-        return "formula:" .. target.formula
-    end
+local function clear()
+    M.close()
+    cache = {}
+end
 
-    local source = target.source
-    if source:match("^data:image/") then
-        target.data = source:match("^data:image/[^,]+;base64,(.+)$")
-        if not target.data then
-            return nil, "Expected a base64 data:image URI"
+local function cached(key)
+    for _, entry in ipairs(cache) do
+        if entry.key == key then
+            return entry
         end
-        return "image:" .. vim.fn.sha256(source)
     end
-    if source:match("^%a[%w+.-]*:") then
-        return nil, "Image preview supports local files and base64 data:image URIs"
-    end
-
-    local name = vim.api.nvim_buf_get_name(0)
-    local dir = name ~= "" and vim.fs.dirname(name) or vim.fn.getcwd()
-    target.source = vim.fs.normalize(vim.fs.abspath(vim.uri_decode(source), { cwd = dir }))
-    local stat = vim.uv.fs_stat(target.source)
-    if not stat or stat.type ~= "file" then
-        return nil, "Image not found: " .. target.source
-    end
-    return table.concat({ "image", target.source, stat.size, stat.mtime.sec, stat.mtime.nsec }, ":")
 end
 
 local function bottom()
@@ -141,8 +56,12 @@ local function show(entry)
 
     local cursor = vim.api.nvim_win_get_cursor(0)
     local pos = vim.fn.screenpos(0, cursor[1], cursor[2] + 1)
-    if pos.row > row and pos.row <= row + entry.height + 2
-        and pos.curscol > col and pos.curscol <= col + width + 2 then
+    if
+        pos.row > row
+        and pos.row <= row + entry.height + 2
+        and pos.curscol > col
+        and pos.curscol <= col + width + 2
+    then
         M.close()
         return
     end
@@ -150,45 +69,159 @@ local function show(entry)
         return
     end
 
-    local opts = {
-        relative = "editor",
-        row = row,
-        col = col,
-        width = width,
-        height = entry.height,
-        style = "minimal",
-        border = "solid",
-        focusable = false,
-        mouse = false,
-        zindex = 50,
-        noautocmd = true,
-    }
-    if win and vim.api.nvim_win_is_valid(win) then
-        vim.api.nvim_win_set_config(win, opts)
-    else
-        buf = vim.api.nvim_create_buf(false, true)
-        win = vim.api.nvim_open_win(buf, false, opts)
-        vim.wo[win].winblend = 0
-        vim.wo[win].winhighlight = "FloatBorder:NormalFloat"
-    end
-
-    local position = {
+    entry.image = images.set(entry.image or entry.png, {
         row = row + 2,
         col = col + 3,
         width = entry.width,
         height = entry.height,
+        border = "solid",
+        padding = { x = 1, y = 0 },
         zindex = 75,
-    }
-    local previous = image
-    image = vim.ui.img.set(entry.png, position)
-    if previous then
-        vim.ui.img.del(previous)
+    })
+    if displayed then
+        images.del(displayed.image)
     end
     displayed = entry
 end
 
-local function render(request, dir)
-    local function run(cmd, stdin)
+local function target_at_cursor(ticket)
+    if vim.bo.filetype ~= "markdown" or vim.api.nvim_win_get_config(0).relative ~= "" then
+        return
+    end
+
+    local buf = vim.api.nvim_get_current_buf()
+    local tick = vim.api.nvim_buf_get_changedtick(buf)
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    row = row - 1
+    if
+        current
+        and current.buf == buf
+        and current.tick == tick
+        and vim.treesitter.is_in_node_range(current.node, row, col)
+    then
+        return current
+    end
+
+    local parser = vim.treesitter.get_parser(buf, "markdown")
+    local err = vim.async.await(3, parser.parse, parser, { row, row + 1 })
+    if
+        scheduled ~= ticket
+        or not vim.api.nvim_buf_is_valid(buf)
+        or vim.api.nvim_buf_get_changedtick(buf) ~= tick
+    then
+        return
+    end
+    if err then
+        error(err, 0)
+    end
+
+    local inline = parser:children().markdown_inline
+    local node = inline and inline:named_node_for_range({ row, col, row, col })
+    while node and node:type() ~= "image" and node:type() ~= "latex_block" do
+        node = node:parent()
+    end
+    if not node then
+        return
+    end
+
+    local target = { buf = buf, tick = tick, node = node }
+    if node:type() == "image" then
+        for child in node:iter_children() do
+            if child:type() == "link_destination" then
+                local source = vim.treesitter.get_node_text(child, buf)
+                target.source = (source:match("^<(.*)>$") or source):gsub("\\(%p)", "%1")
+                break
+            end
+        end
+        if not target.source then
+            return
+        end
+
+        if target.source:match("^data:image/") then
+            target.data = target.source:match("^data:image/[^,]+;base64,(.+)$")
+            if not target.data then
+                error("Expected a base64 data:image URI", 0)
+            end
+            target.key = "image:" .. vim.fn.sha256(target.source)
+        else
+            if target.source:match("^%a[%w+.-]*:") then
+                error("Image preview supports local files and base64 data:image URIs", 0)
+            end
+            local name = vim.api.nvim_buf_get_name(buf)
+            local dir = name ~= "" and vim.fs.dirname(name) or vim.fn.getcwd()
+            target.source = vim.fs.normalize(
+                vim.fs.abspath(vim.uri_decode(target.source), { cwd = dir })
+            )
+            target.key = "image:" .. target.source
+        end
+    else
+        local first = node:child(0)
+        local last = node:child(node:child_count() - 1)
+        if
+            not first
+            or not last
+            or first == last
+            or first:type() ~= "latex_span_delimiter"
+            or last:type() ~= "latex_span_delimiter"
+        then
+            return
+        end
+
+        local start_row, start_col = first:end_()
+        local end_row, end_col = last:start()
+        local lines = vim.api.nvim_buf_get_text(
+            buf, start_row, start_col, end_row, end_col, {}
+        )
+        target.formula = vim.trim(table.concat(lines, "\n"))
+        if target.formula == "" then
+            return
+        end
+        target.key = "formula:" .. target.formula
+    end
+
+    return target
+end
+
+local function render(target, dir)
+    vim.fn.mkdir(dir, "p")
+    local commands, stdin
+
+    if target.source then
+        local source = target.data and "-" or target.source
+        stdin = target.data and vim.base64.decode((target.data:gsub("%s", "")))
+        commands = {
+            {
+                "magick",
+                source .. "[0]",
+                "-auto-orient",
+                "-strip",
+                "PNG32:preview.png",
+            },
+        }
+    else
+        local document = string.format(template, target.fg, target.formula)
+        vim.fn.writefile(vim.split(document, "\n", { plain = true }), dir .. "/formula.tex")
+        commands = {
+            {
+                "latex",
+                "-interaction=nonstopmode",
+                "-halt-on-error",
+                "-no-shell-escape",
+                "formula.tex",
+            },
+            {
+                "dvipng",
+                "-q",
+                "-T", "tight",
+                "-D", tostring(dpi),
+                "-bg", "Transparent",
+                "-o", "preview.png",
+                "formula.dvi",
+            },
+        }
+    end
+
+    for _, cmd in ipairs(commands) do
         local result = vim.async.await(3, vim.system, cmd, {
             cwd = dir,
             text = true,
@@ -196,115 +229,61 @@ local function render(request, dir)
             stdin = stdin,
         })
         vim.async.await(vim.schedule)
-        if pending ~= request then
-            error("Preview changed", 0)
+        if current ~= target then
+            return
         end
         if result.code ~= 0 then
-            error(cmd[1] .. ": " .. (result.stdout or "") .. (result.stderr or ""), 0)
+            error(
+                cmd[1] .. ": " .. (result.stdout or "") .. (result.stderr or ""),
+                0
+            )
         end
     end
 
-    if request.source then
-        local source = request.data and "-" or request.source
-        local data = request.data and vim.base64.decode((request.data:gsub("%s", "")))
-        run({ "magick", source .. "[0]", "-auto-orient", "-strip", "PNG32:raw.png" }, data)
-    else
-        local document = string.format(template, request.fg, request.formula)
-        vim.fn.writefile(vim.split(document, "\n", { plain = true }), dir .. "/formula.tex")
-        run({
-            "latex",
-            "-interaction=nonstopmode",
-            "-halt-on-error",
-            "-no-shell-escape",
-            "formula.tex",
-        })
+    local png = vim.fn.readblob(dir .. "/preview.png")
 
-        run({
-            "dvipng",
-            "-q",
-            "-T", "tight",
-            "-D", tostring(dpi),
-            "-bg", "Transparent",
-            "-o", "raw.png",
-            "formula.dvi",
-        })
-    end
-
-    local png = vim.fn.readblob(dir .. "/raw.png", 0, 24)
     local function u32(offset)
         local a, b, c, d = png:byte(offset, offset + 3)
         return ((a * 256 + b) * 256 + c) * 256 + d
     end
 
-    local width, height = u32(17), u32(21)
-    local cell_w, cell_h = dpi / 12, dpi / 6
-    local padding = math.ceil(dpi / 72)
-    local max_scale = request.formula and scale or dpi / 144
-    local scale = math.min(
-        max_scale,
-        (request.max_width * cell_w - 2 * padding) / width,
-        (request.max_height * cell_h - 2 * padding) / height
-    )
-    local cols = math.ceil((width * scale + 2 * padding) / cell_w)
-    local rows = math.ceil((height * scale + 2 * padding) / cell_h)
-    local entry = {
-        width = math.min(request.max_width, math.max(2, cols)),
-        height = math.min(request.max_height, math.max(3, rows)),
+    local cell_width = target.formula and dpi / (12 * scale) or 12
+    local cols, rows = u32(17) / cell_width, u32(21) / (2 * cell_width)
+    local fit = math.min(1, target.max_width / cols, target.max_height / rows)
+    return {
+        key = target.key,
+        png = png,
+        width = math.min(target.max_width, math.max(2, math.ceil(cols * fit))),
+        height = math.min(target.max_height, math.max(3, math.ceil(rows * fit))),
     }
-    local size = string.format(
-        "%dx%d",
-        math.max(1, math.floor(width * scale / 2)),
-        math.max(1, math.floor(height * scale / 2))
-    )
-    local extent = string.format(
-        "%dx%d",
-        math.floor(entry.width * cell_w / 2),
-        math.floor(entry.height * cell_h / 2)
-    )
-    run({
-        "magick",
-        "raw.png",
-        "-filter", "Lanczos",
-        "-resize", size,
-        "-background", "none",
-        "-gravity", "Center",
-        "-extent", extent,
-        "PNG32:preview.png",
-    })
-    entry.png = vim.fn.readblob(dir .. "/preview.png")
-    return entry
 end
 
 local function render_next()
-    if running or not pending or not pending.ready then
+    if rendering or not current or cached(current.key) then
         return
     end
 
-    local request = pending
+    local target = current
     local dir = vim.fn.tempname()
-    request.ready = false
-    running = true
-
-    vim.async.run(function()
-        vim.fn.mkdir(dir, "p")
-        return render(request, dir)
-    end):on_complete(vim.schedule_wrap(function(err, entry)
+    rendering = vim.async.run(render, target, dir):detach()
+    rendering:on_complete(vim.schedule_wrap(function(err, entry)
+        rendering = nil
         vim.fn.delete(dir, "rf")
-        running = false
-        if pending == request then
-            M.last_error = err and tostring(err) or nil
-            if entry then
-                cache[request.key] = entry
-                order[#order + 1] = request.key
-                if #order > cache_size then
-                    cache[table.remove(order, 1)] = nil
-                end
-                if not scheduled then
-                    show(entry)
-                end
+        if current ~= target then
+            render_next()
+            return
+        end
+
+        M.last_error = err and tostring(err) or nil
+        if entry then
+            cache[#cache + 1] = entry
+            if #cache > cache_size then
+                table.remove(cache, cache[1] == displayed and 2 or 1)
+            end
+            if not scheduled then
+                show(entry)
             end
         end
-        render_next()
     end))
 end
 
@@ -313,57 +292,37 @@ local function update(ticket)
     if scheduled ~= ticket then
         return
     end
-    scheduled = nil
     if not target then
         M.close()
         return
     end
 
-    local identity, err = resolve_source(target)
-    if not identity then
-        pending = nil
-        M.last_error = err
-        return
-    end
-
-    local hl = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = false })
-    local tabline = vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr("$") > 1)
+    local tabline = vim.o.showtabline == 2
+        or (vim.o.showtabline == 1 and vim.fn.tabpagenr("$") > 1)
     local editor_height = bottom() - (tabline and 1 or 0)
-    local request = {
-        formula = target.formula,
-        source = target.source,
-        data = target.data,
-        fg = string.format("%06X", hl.fg or 0xD4DCC2),
-        max_width = math.floor(vim.o.columns / 2) - 4,
-        max_height = math.floor(editor_height / 2) - 2,
-    }
-    if request.max_width < 2 or request.max_height < 2 then
+    local max_width = math.min(297, math.floor(vim.o.columns / 2) - 4)
+    local max_height = math.min(297, math.floor(editor_height / 2) - 2)
+    if max_width < 2 or max_height < 2 then
         M.close()
         return
     end
-    request.key = table.concat({
-        identity,
-        request.fg,
-        request.max_width,
-        request.max_height,
-    }, "\n")
-    if pending and pending.key == request.key then
-        local entry = cache[request.key]
-        if entry then
-            show(entry)
-        end
-        return
+
+    if current and current.key == target.key then
+        current.buf, current.tick, current.node = target.buf, target.tick, target.node
+    else
+        local hl = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = false })
+        target.fg = string.format("%06X", hl.fg or 0xD4DCC2)
+        target.max_width, target.max_height = max_width, max_height
+        current = target
+        M.last_error = nil
+        render_next()
     end
 
-    pending = request
-    M.last_error = nil
-    if cache[request.key] then
-        show(cache[request.key])
-        return
+    local entry = cached(target.key)
+    if entry then
+        show(entry)
     end
-
-    request.ready = true
-    render_next()
+    scheduled = nil
 end
 
 local function schedule()
@@ -376,11 +335,9 @@ local function schedule()
     scheduled = ticket
     vim.defer_fn(function()
         if scheduled == ticket then
-            vim.async.run(function()
-                update(ticket)
-            end):on_complete(vim.schedule_wrap(function(err)
+            vim.async.run(update, ticket):on_complete(vim.schedule_wrap(function(err)
                 if err and scheduled == ticket then
-                    scheduled = nil
+                    current, scheduled = nil, nil
                     M.last_error = tostring(err)
                 end
             end))
@@ -389,8 +346,7 @@ local function schedule()
 end
 
 function M.setup()
-    M.close()
-    cache, order = {}, {}
+    clear()
 
     local group = vim.api.nvim_create_augroup("MarkdownPreview", { clear = true })
     for _, executable in ipairs({ "latex", "dvipng", "magick" }) do
@@ -413,14 +369,21 @@ function M.setup()
         group = group,
         callback = schedule,
     })
-    vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "VimLeavePre", "VimSuspend" }, {
+
+    vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "VimSuspend" }, {
         group = group,
         callback = M.close,
     })
-    vim.api.nvim_create_autocmd({ "VimResized", "ColorScheme", "VimResume" }, {
+
+    vim.api.nvim_create_autocmd("VimLeavePre", {
+        group = group,
+        callback = clear,
+    })
+
+    vim.api.nvim_create_autocmd({ "VimResized", "ColorScheme", "VimResume", "BufFilePost" }, {
         group = group,
         callback = function()
-            M.close()
+            clear()
             schedule()
         end,
     })
