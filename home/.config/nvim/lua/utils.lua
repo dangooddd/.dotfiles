@@ -28,34 +28,21 @@ function M.detect_tmux()
         return tmux_detected
     end
 
-    local autocmd
-    autocmd = vim.api.nvim_create_autocmd("TermResponse", {
-        callback = function(args)
-            local sequence = args.data.sequence
+    vim.tty.request(M.wrap_tmux(esc .. "[c"), {
+        timeout = timeout_ms,
+        on_timeout = function() tmux_detected = false end,
+    }, function(sequence)
+        if sequence:match("^" .. esc .. "%[%?[%d;]*c$") then
+            tmux_detected = true
+            return true
+        end
+    end)
 
-            if type(sequence) ~= "string" then
-                return
-            end
-
-            if sequence:find(esc .. "%[%?[%d;]*c") then
-                tmux_detected = true
-                pcall(vim.api.nvim_del_autocmd, autocmd)
-            end
-        end,
-    })
-
-    vim.api.nvim_ui_send(M.wrap_tmux(esc .. "[c"))
-
-    vim.wait(timeout_ms, function()
-        return tmux_detected or false
+    vim.wait(timeout_ms + 50, function()
+        return tmux_detected ~= nil
     end, 5)
-    pcall(vim.api.nvim_del_autocmd, autocmd)
 
-    if not tmux_detected then
-        tmux_detected = false
-    end
-
-    return tmux_detected
+    return tmux_detected == true
 end
 
 ---@return boolean
