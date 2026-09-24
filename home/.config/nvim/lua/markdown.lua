@@ -292,7 +292,7 @@ local function render(target, dir)
     local png = vim.fn.readblob(dir .. "/preview.png")
     local cell_width = target.formula and dpi / (12 * scale) or 12
     local cols = u32be(png, 17) / cell_width
-    local rows = u32be(png, 21) / (2 * cell_width)
+    local rows = u32be(png, 21) / (2.5 * cell_width)
     local fit = math.min(1, target.max_width / cols, target.max_height / rows)
 
     return {
