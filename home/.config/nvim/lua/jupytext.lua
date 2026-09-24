@@ -62,6 +62,8 @@ local function transform_notebook(buf)
         end
 
         vim.async.await(M.sync())
+        local script = vim.api.nvim_get_runtime_file("runtime/jupytext.py", false)[1]
+        vim.async.await(3, vim.system, { "python3", script, markdown }, { text = true })
         vim.async.await(vim.schedule)
         vim.cmd.edit(vim.fn.fnameescape(markdown))
     end)
