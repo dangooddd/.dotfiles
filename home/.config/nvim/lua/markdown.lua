@@ -1,3 +1,22 @@
+---@class markdown.Entry
+---@field key string
+---@field png string
+---@field width integer
+---@field height integer
+---@field image? integer
+
+---@class markdown.Target
+---@field buf integer
+---@field tick integer
+---@field node TSNode
+---@field key string
+---@field source? string
+---@field data? string
+---@field formula? string
+---@field fg? string
+---@field max_width? integer
+---@field max_height? integer
+
 local M = {}
 local images = require("placeholders")
 
@@ -18,8 +37,23 @@ $\displaystyle %s$
 \end{document}
 ]]
 
+---@type markdown.Entry[]
 local cache = {}
-local current, scheduled, rendering, displayed
+---@type markdown.Entry?
+local displayed
+---@type markdown.Target?
+local current
+---@type table?
+local scheduled
+local rendering
+
+---@param data string
+---@param offset integer
+---@return integer
+local function u32be(data, offset)
+    local a, b, c, d = data:byte(offset, offset + 3)
+    return ((a * 256 + b) * 256 + c) * 256 + d
+end
 
 function M.close()
     current, scheduled = nil, nil
@@ -34,6 +68,8 @@ local function clear()
     cache = {}
 end
 
+---@param key string
+---@return markdown.Entry?
 local function cached(key)
     for _, entry in ipairs(cache) do
         if entry.key == key then
@@ -46,6 +82,7 @@ local function bottom()
     return vim.o.lines - vim.o.cmdheight - (vim.o.laststatus == 0 and 0 or 1)
 end
 
+---@param entry markdown.Entry
 local function show(entry)
     local width = entry.width + 2
     local row = bottom() - entry.height - 2
@@ -56,6 +93,7 @@ local function show(entry)
 
     local cursor = vim.api.nvim_win_get_cursor(0)
     local pos = vim.fn.screenpos(0, cursor[1], cursor[2] + 1)
+
     if
         pos.row > row
         and pos.row <= row + entry.height + 2
@@ -65,6 +103,7 @@ local function show(entry)
         M.close()
         return
     end
+
     if displayed == entry then
         return
     end
@@ -78,12 +117,15 @@ local function show(entry)
         padding = { x = 1, y = 0 },
         zindex = 75,
     })
+
     if displayed then
         images.del(displayed.image)
     end
     displayed = entry
 end
 
+---@param ticket table
+---@return markdown.Target?
 local function target_at_cursor(ticket)
     if vim.bo.filetype ~= "markdown" or vim.api.nvim_win_get_config(0).relative ~= "" then
         return
@@ -93,6 +135,7 @@ local function target_at_cursor(ticket)
     local tick = vim.api.nvim_buf_get_changedtick(buf)
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     row = row - 1
+
     if
         current
         and current.buf == buf
@@ -104,6 +147,7 @@ local function target_at_cursor(ticket)
 
     local parser = vim.treesitter.get_parser(buf, "markdown")
     local err = vim.async.await(3, parser.parse, parser, { row, row + 1 })
+
     if
         scheduled ~= ticket
         or not vim.api.nvim_buf_is_valid(buf)
@@ -111,6 +155,7 @@ local function target_at_cursor(ticket)
     then
         return
     end
+
     if err then
         error(err, 0)
     end
@@ -120,10 +165,12 @@ local function target_at_cursor(ticket)
     while node and node:type() ~= "image" and node:type() ~= "latex_block" do
         node = node:parent()
     end
+
     if not node then
         return
     end
 
+    ---@type markdown.Target
     local target = { buf = buf, tick = tick, node = node }
     if node:type() == "image" then
         for child in node:iter_children() do
@@ -133,6 +180,7 @@ local function target_at_cursor(ticket)
                 break
             end
         end
+
         if not target.source then
             return
         end
@@ -147,16 +195,16 @@ local function target_at_cursor(ticket)
             if target.source:match("^%a[%w+.-]*:") then
                 error("Image preview supports local files and base64 data:image URIs", 0)
             end
+
             local name = vim.api.nvim_buf_get_name(buf)
             local dir = name ~= "" and vim.fs.dirname(name) or vim.fn.getcwd()
-            target.source = vim.fs.normalize(
-                vim.fs.abspath(vim.uri_decode(target.source), { cwd = dir })
-            )
+            target.source = vim.fs.normalize(vim.fs.abspath(vim.uri_decode(target.source), { cwd = dir }))
             target.key = "image:" .. target.source
         end
     else
         local first = node:child(0)
         local last = node:child(node:child_count() - 1)
+
         if
             not first
             or not last
@@ -169,10 +217,9 @@ local function target_at_cursor(ticket)
 
         local start_row, start_col = first:end_()
         local end_row, end_col = last:start()
-        local lines = vim.api.nvim_buf_get_text(
-            buf, start_row, start_col, end_row, end_col, {}
-        )
+        local lines = vim.api.nvim_buf_get_text(buf, start_row, start_col, end_row, end_col, {})
         target.formula = vim.trim(table.concat(lines, "\n"))
+
         if target.formula == "" then
             return
         end
@@ -182,6 +229,9 @@ local function target_at_cursor(ticket)
     return target
 end
 
+---@param target markdown.Target
+---@param dir string
+---@return markdown.Entry?
 local function render(target, dir)
     vim.fn.mkdir(dir, "p")
     local commands, stdin
@@ -229,27 +279,22 @@ local function render(target, dir)
             stdin = stdin,
         })
         vim.async.await(vim.schedule)
+
         if current ~= target then
             return
         end
+
         if result.code ~= 0 then
-            error(
-                cmd[1] .. ": " .. (result.stdout or "") .. (result.stderr or ""),
-                0
-            )
+            error(cmd[1] .. ": " .. (result.stdout or "") .. (result.stderr or ""), 0)
         end
     end
 
     local png = vim.fn.readblob(dir .. "/preview.png")
-
-    local function u32(offset)
-        local a, b, c, d = png:byte(offset, offset + 3)
-        return ((a * 256 + b) * 256 + c) * 256 + d
-    end
-
     local cell_width = target.formula and dpi / (12 * scale) or 12
-    local cols, rows = u32(17) / cell_width, u32(21) / (2 * cell_width)
+    local cols = u32be(png, 17) / cell_width
+    local rows = u32be(png, 21) / (2 * cell_width)
     local fit = math.min(1, target.max_width / cols, target.max_height / rows)
+
     return {
         key = target.key,
         png = png,
@@ -266,15 +311,16 @@ local function render_next()
     local target = current
     local dir = vim.fn.tempname()
     rendering = vim.async.run(render, target, dir):detach()
-    rendering:on_complete(vim.schedule_wrap(function(err, entry)
+
+    rendering:on_complete(vim.schedule_wrap(function(_, entry)
         rendering = nil
         vim.fn.delete(dir, "rf")
+
         if current ~= target then
             render_next()
             return
         end
 
-        M.last_error = err and tostring(err) or nil
         if entry then
             cache[#cache + 1] = entry
             if #cache > cache_size then
@@ -287,21 +333,23 @@ local function render_next()
     end))
 end
 
+---@param ticket table
 local function update(ticket)
     local target = target_at_cursor(ticket)
     if scheduled ~= ticket then
         return
     end
+
     if not target then
         M.close()
         return
     end
 
-    local tabline = vim.o.showtabline == 2
-        or (vim.o.showtabline == 1 and vim.fn.tabpagenr("$") > 1)
+    local tabline = vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr("$") > 1)
     local editor_height = bottom() - (tabline and 1 or 0)
     local max_width = math.min(297, math.floor(vim.o.columns / 2) - 4)
     local max_height = math.min(297, math.floor(editor_height / 2) - 2)
+
     if max_width < 2 or max_height < 2 then
         M.close()
         return
@@ -314,14 +362,11 @@ local function update(ticket)
         target.fg = string.format("%06X", hl.fg or 0xD4DCC2)
         target.max_width, target.max_height = max_width, max_height
         current = target
-        M.last_error = nil
         render_next()
     end
 
     local entry = cached(target.key)
-    if entry then
-        show(entry)
-    end
+    if entry then show(entry) end
     scheduled = nil
 end
 
@@ -338,7 +383,6 @@ local function schedule()
             vim.async.run(update, ticket):on_complete(vim.schedule_wrap(function(err)
                 if err and scheduled == ticket then
                     current, scheduled = nil, nil
-                    M.last_error = tostring(err)
                 end
             end))
         end
@@ -347,40 +391,61 @@ end
 
 function M.setup()
     clear()
-
     local group = vim.api.nvim_create_augroup("MarkdownPreview", { clear = true })
+
     for _, executable in ipairs({ "latex", "dvipng", "magick" }) do
         if vim.fn.executable(executable) ~= 1 then
-            M.last_error = "executable not found: " .. executable
             return
         end
     end
-    M.last_error = nil
 
-    vim.api.nvim_create_autocmd({
-        "FileType",
-        "BufEnter",
-        "WinEnter",
-        "CursorMoved",
-        "CursorMovedI",
-        "TextChanged",
-        "TextChangedI",
-    }, {
+    ---@param buf integer
+    local function attach(buf)
+        vim.api.nvim_clear_autocmds({ group = group, buffer = buf })
+        vim.api.nvim_create_autocmd({
+            "BufEnter",
+            "WinEnter",
+            "CursorMoved",
+            "CursorMovedI",
+            "TextChanged",
+            "TextChangedI",
+        }, {
+            group = group,
+            buffer = buf,
+            callback = schedule,
+        })
+
+        vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave" }, {
+            group = group,
+            buffer = buf,
+            callback = M.close,
+        })
+
+        vim.api.nvim_create_autocmd("BufFilePost", {
+            group = group,
+            buffer = buf,
+            callback = function()
+                clear()
+                schedule()
+            end,
+        })
+    end
+
+    vim.api.nvim_create_autocmd("FileType", {
         group = group,
-        callback = schedule,
+        pattern = "markdown",
+        callback = function(event)
+            attach(event.buf)
+            schedule()
+        end,
     })
 
-    vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "VimSuspend" }, {
+    vim.api.nvim_create_autocmd("VimSuspend", {
         group = group,
         callback = M.close,
     })
 
-    vim.api.nvim_create_autocmd("VimLeavePre", {
-        group = group,
-        callback = clear,
-    })
-
-    vim.api.nvim_create_autocmd({ "VimResized", "ColorScheme", "VimResume", "BufFilePost" }, {
+    vim.api.nvim_create_autocmd({ "VimResized", "ColorScheme", "VimResume" }, {
         group = group,
         callback = function()
             clear()
@@ -388,6 +453,11 @@ function M.setup()
         end,
     })
 
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.bo[buf].filetype == "markdown" then
+            attach(buf)
+        end
+    end
     schedule()
 end
 

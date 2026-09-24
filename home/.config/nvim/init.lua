@@ -66,9 +66,7 @@ function _G.Tabline()
         s = s .. "%" .. i .. "T"
     end
 
-    s = s .. "%#TabLineFill#%T"
-
-    return s
+    return s .. "%#TabLineFill#%T"
 end
 
 function _G.Statusline()
@@ -84,8 +82,7 @@ function _G.Statusline()
         s = s .. " " .. diagnostic
     end
 
-    s = s .. " %l:%c %p%% "
-    return s
+    return s .. " %l:%c %p%% "
 end
 
 vim.cmd("colorscheme jungle")
