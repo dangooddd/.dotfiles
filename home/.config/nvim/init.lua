@@ -193,6 +193,8 @@ vim.keymap.set("n", "<leader>jc", require("ipython").close)
 vim.keymap.set("v", "<leader>jv", require("ipython").send)
 vim.keymap.set("n", "<leader>js", require("ipython").install)
 vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").focus)
+vim.keymap.set("n", "<C-x>", "vij<leader>jv", { remap = true })
+vim.keymap.set("n", "<C-s>", "<C-x>]j", { remap = true })
 
 vim.keymap.set({ "n", "t" }, "<C-g>", require("lazygit").toggle)
 vim.keymap.set("n", "<leader>gc", require("lazygit").close)
