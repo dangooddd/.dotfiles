@@ -114,19 +114,14 @@ require("placeholders").setup()
 require("markdown").setup()
 require("mini.icons").setup()
 require("nvim-treesitter").setup()
-require("otter").setup()
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "markdown",
-    callback = vim.schedule_wrap(function(event)
-        if vim.api.nvim_buf_is_valid(event.buf)
-            and vim.bo[event.buf].buftype == ""
-            and vim.api.nvim_buf_get_name(event.buf) ~= "" then
-            vim.api.nvim_buf_call(event.buf, function()
-                require("otter").activate()
-            end)
-        end
-    end),
+require("otter").setup({
+    lsp = {
+        diagnostic_update_events = {
+            "BufWritePost",
+            "InsertLeave",
+        },
+    },
 })
 
 require("fzf-lua").setup({
@@ -215,20 +210,43 @@ end)
 -- Hooks
 --------------------------------------------------------------------------------
 vim.api.nvim_create_autocmd("FileType", {
+    pattern = "markdown",
+    callback = vim.schedule_wrap(function(event)
+        if
+            vim.api.nvim_buf_is_valid(event.buf)
+            and vim.bo[event.buf].buftype == ""
+            and vim.api.nvim_buf_get_name(event.buf) ~= ""
+        then
+            vim.api.nvim_buf_call(event.buf, function()
+                require("otter").activate()
+            end)
+        end
+    end),
+})
+
+vim.api.nvim_create_autocmd("FileType", {
     pattern = "*",
     callback = vim.schedule_wrap(function(event)
         local lang = vim.treesitter.language.get_lang(event.match)
         local buf = event.buf
 
-        if not require("nvim-treesitter.parsers")[lang] then
+        if not lang or not require("nvim-treesitter.parsers")[lang] then
             return
         end
 
-        local ok = pcall(vim.treesitter.start, buf, lang)
-        if not ok then
+        local start = function()
+            if pcall(vim.treesitter.start, buf, lang) then
+                if vim.treesitter.query.get(lang, "indents") then
+                    vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter.indent'.get_indent(v:lnum)"
+                end
+                return true
+            end
+        end
+
+        if not start() then
             require("nvim-treesitter").install(lang):await(function(err, done)
                 if not err and done and vim.api.nvim_buf_is_valid(buf) then
-                    pcall(vim.treesitter.start, buf, lang)
+                    start()
                 end
             end)
         end
