@@ -26,14 +26,15 @@ local scale = 1.5
 local cache_size = 32
 
 local template = [[
-\documentclass[border=1pt]{standalone}
+\documentclass{article}
+\pagestyle{empty}
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[english,russian]{babel}
 \usepackage{amsmath,amssymb,xcolor}
 \definecolor{fg}{HTML}{%s}
 \begin{document}\color{fg}
-$\displaystyle %s$
+%s
 \end{document}
 ]]
 
@@ -249,7 +250,23 @@ local function render(target, dir)
             },
         }
     else
-        local document = string.format(template, target.fg, target.formula)
+        local formula = target.formula
+        local env = formula:match("^\\begin%s*{([%a]+)%*?}")
+        local display = {
+            align = true,
+            alignat = true,
+            flalign = true,
+            gather = true,
+            multline = true,
+            equation = true,
+            displaymath = true,
+        }
+
+        if not (env and display[env]) then
+            formula = "$\\displaystyle " .. formula .. "$"
+        end
+
+        local document = string.format(template, target.fg, formula)
         vim.fn.writefile(vim.split(document, "\n", { plain = true }), dir .. "/formula.tex")
         commands = {
             {
