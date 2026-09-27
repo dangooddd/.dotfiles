@@ -12,7 +12,7 @@ fi
 
 packages=(
     git python uv font-iosevka npm btop
-    fzf nvim lazygit tree-sitter-cli
+    fzf nvim lazygit tree-sitter-cli pandoc
     bash bash-completion@2 ghostty
     helium-browser telegram
 )

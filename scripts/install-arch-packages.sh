@@ -11,7 +11,7 @@ if [[ -n "$U" ]]; then
 fi
 
 packages=(
-    uv fzf tmux nvim lazygit tree-sitter-cli
+    uv fzf tmux nvim lazygit tree-sitter-cli pandoc
     flatpak npm ghostty wl-clipboard btop
     ttc-iosevka bash-completion helium-browser-bin
 )

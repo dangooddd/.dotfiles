@@ -109,7 +109,7 @@ vim.cmd("packadd nvim.difftool")
 vim.cmd("packadd nvim.undotree")
 
 require("ipython").setup()
-require("jupytext").setup()
+require("pandoc").setup()
 require("placeholders").setup()
 require("markdown").setup()
 require("mini.icons").setup()
@@ -177,7 +177,7 @@ vim.keymap.set("n", "<leader>th", function()
 end)
 
 vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
-vim.keymap.set("n", "<leader>je", require("jupytext").sync)
+vim.keymap.set("n", "<leader>je", require("pandoc").export)
 
 vim.keymap.set("n", "<leader>ff", require("fzf-lua").files)
 vim.keymap.set("n", "<leader>fh", require("fzf-lua").helptags)

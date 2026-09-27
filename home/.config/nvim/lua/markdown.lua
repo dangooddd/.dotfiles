@@ -114,7 +114,7 @@ local function show(entry)
         col = col + 3,
         width = entry.width,
         height = entry.height,
-        border = "solid",
+        border = vim.o.winborder,
         padding = { x = 1, y = 0 },
         zindex = 75,
     })
