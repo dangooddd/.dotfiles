@@ -1,8 +1,18 @@
 local M = {}
 local utils = require("utils")
 
+local pip
+local python
+
+if vim.fn.executable("uv") == 1 then
+    pip = { "uv", "pip" }
+    python = { "uv", "run" }
+else
+    pip = { "python3", "-m", "pip" }
+    python = { "python3" }
+end
+
 local packages = { "ipython", "pynvim" }
-local pip = { "python3", "-m", "pip" }
 local args = {
     "-m",
     "IPython",
@@ -11,7 +21,7 @@ local args = {
 }
 
 local ipython = require("terminal").new({
-    cmd = vim.list_extend({ "python3" }, args),
+    cmd = vim.list_extend(python, args),
     env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
 })
 
@@ -68,13 +78,6 @@ function M.send()
     ipython:send(utils.wrap_bracketed(text) .. "\n")
     ipython:scroll()
     vim.cmd.normal({ vim.keycode([[<C-\><C-N>]]), bang = true })
-end
-
-function M.setup()
-    if vim.fn.executable("uv") == 1 then
-        pip = { "uv", "pip" }
-        ipython.cmd = vim.list_extend({ "uv", "run" }, args)
-    end
 end
 
 return M

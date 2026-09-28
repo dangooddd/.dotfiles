@@ -107,49 +107,38 @@ function M.set(data_or_id, opts)
     vim.validate("data_or_id", data_or_id, { "string", "number" })
     vim.validate("opts", opts, "table")
 
-    local image
-    if type(data_or_id) == "number" then
-        assert(
-            data_or_id % 1 == 0
-                and data_or_id > first_id
-                and data_or_id <= first_id + 16384,
-            "invalid image id: " .. tostring(data_or_id)
-        )
-        image = images[data_or_id]
-    end
-
-    opts = vim.tbl_extend("force", image and image.opts or {}, opts)
     for _, name in ipairs({ "width", "height" }) do
         local value = opts[name]
-        assert(
-            type(value) == "number"
-                and value % 1 == 0
-                and value >= 1
-                and value <= #diac,
-            name .. " must be an integer between 1 and " .. #diac
-        )
-    end
-
-    if image and image.win and vim.api.nvim_win_is_valid(image.win)
-        and vim.deep_equal(opts, image.opts) then
-        return image.id
-    end
-
-    if not image then
-        local id
-
-        if type(data_or_id) == "string" then
-            offset_id = offset_id % 16384 + 1
-            id = first_id + offset_id
-            upload(id, data_or_id)
-        else
-            id = data_or_id
+        if value ~= nil or type(data_or_id) == "string" then
+            assert(
+                type(value) == "number"
+                    and value % 1 == 0
+                    and value >= 1
+                    and value <= #diac,
+                name .. " must be an integer between 1 and " .. #diac
+            )
         end
+    end
+
+    local image
+    if type(data_or_id) == "string" then
+        offset_id = offset_id % 16384 + 1
+        local id = first_id + offset_id
+        upload(id, data_or_id)
 
         image = { id = id, buf = vim.api.nvim_create_buf(false, true) }
         images[id] = image
         vim.bo[image.buf].undolevels = -1
         vim.api.nvim_set_hl(0, hl .. id, { fg = id })
+    else
+        image = images[data_or_id]
+        assert(image, "invalid image id: " .. tostring(data_or_id))
+        opts = vim.tbl_extend("force", image.opts, opts)
+
+        if image.win and vim.api.nvim_win_is_valid(image.win)
+            and vim.deep_equal(opts, image.opts) then
+            return image.id
+        end
     end
 
     local offset = opts.border and opts.border ~= "none" and 1 or 0

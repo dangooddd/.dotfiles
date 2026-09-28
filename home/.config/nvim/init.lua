@@ -109,10 +109,9 @@ vim.pack.add({
 vim.cmd("packadd nvim.difftool")
 vim.cmd("packadd nvim.undotree")
 
-require("ipython").setup()
 require("pandoc").setup()
 require("placeholders").setup()
-require("markdown").setup()
+require("preview").setup()
 require("mini.icons").setup()
 require("nvim-treesitter").setup()
 
@@ -210,24 +209,24 @@ vim.keymap.set("n", "<leader>fl", require("fzf-lua").live_grep)
 vim.keymap.set("n", "<leader>fz", require("fzf-lua").builtin)
 vim.keymap.set("n", "<leader>fr", require("fzf-lua").resume)
 
-vim.keymap.set("n", "<leader>jo", require("ipython").toggle)
-vim.keymap.set("n", "<leader>jc", require("ipython").close)
-vim.keymap.set("v", "<leader>jv", require("ipython").send)
-vim.keymap.set("n", "<leader>js", require("ipython").install)
-vim.keymap.set({ "n", "t" }, "<C-j>", require("ipython").focus)
+vim.keymap.set("n", "<leader>jo", require("terminal.ipython").toggle)
+vim.keymap.set("n", "<leader>jc", require("terminal.ipython").close)
+vim.keymap.set("v", "<leader>jv", require("terminal.ipython").send)
+vim.keymap.set("n", "<leader>js", require("terminal.ipython").install)
+vim.keymap.set({ "n", "t" }, "<C-j>", require("terminal.ipython").focus)
 vim.keymap.set("n", "<C-x>", "vij<leader>jv", { remap = true })
 vim.keymap.set("n", "<C-s>", "<C-x>]j", { remap = true })
 
-vim.keymap.set({ "n", "t" }, "<C-g>", require("lazygit").toggle)
-vim.keymap.set("n", "<leader>gc", require("lazygit").close)
+vim.keymap.set({ "n", "t" }, "<C-g>", require("terminal.lazygit").toggle)
+vim.keymap.set("n", "<leader>gc", require("terminal.lazygit").close)
 
-vim.keymap.set("n", "<leader>ko", require("opencode").toggle)
-vim.keymap.set("n", "<leader>kc", require("opencode").close)
-vim.keymap.set({ "n", "t" }, "<C-k>", require("opencode").focus)
+vim.keymap.set("n", "<leader>ko", require("terminal.opencode").toggle)
+vim.keymap.set("n", "<leader>kc", require("terminal.opencode").close)
+vim.keymap.set({ "n", "t" }, "<C-k>", require("terminal.opencode").focus)
 
 vim.keymap.set({ "n", "v" }, "<leader>kk", function()
-    require("opencode").send()
-    require("opencode").focus()
+    require("terminal.opencode").send()
+    require("terminal.opencode").focus()
 end)
 
 --------------------------------------------------------------------------------
@@ -317,6 +316,7 @@ vim.lsp.config("ruff", {
 vim.lsp.config("lua_ls", {
     settings = {
         Lua = {
+            runtime = { version = "LuaJIT" },
             workspace = {
                 library = {
                     vim.env.VIMRUNTIME,

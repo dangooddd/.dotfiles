@@ -70,4 +70,14 @@ function M.insert(lines, cursor)
     vim.api.nvim_win_set_cursor(0, { row + cursor, 0 })
 end
 
+---@param cmd string[]
+---@param opts? vim.SystemOpts
+function M.run(cmd, opts)
+    local result = vim.async.await(3, vim.system, cmd, opts)
+    vim.async.await(vim.schedule)
+    if result.code ~= 0 then
+        error(cmd[1] .. ": " .. (result.stdout or "") .. (result.stderr or ""), 0)
+    end
+end
+
 return M

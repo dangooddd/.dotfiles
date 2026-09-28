@@ -59,8 +59,8 @@ end
 local function draw(entry)
     local bottom = vim.o.lines - vim.o.cmdheight - (vim.o.laststatus == 0 and 0 or 1)
     local tabline = vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr("$") > 1)
-    local max_width = math.min(297, math.floor(vim.o.columns / 2) - 4)
-    local max_height = math.min(297, bottom - (tabline and 1 or 0) - 2)
+    local max_width = math.min(250, math.floor(vim.o.columns / 2) - 4)
+    local max_height = math.min(250, bottom - (tabline and 1 or 0) - 2)
 
     if max_width < 2 or max_height < 3 then
         M.close()
@@ -93,7 +93,7 @@ local function draw(entry)
         height = height,
         border = vim.o.winborder,
         padding = { x = 1, y = 0 },
-        zindex = 75,
+        zindex = 50,
     })
 
     if image and image ~= id then
@@ -158,18 +158,23 @@ function M.schedule(resolve)
     scheduled, current = ticket, nil
 
     vim.defer_fn(function()
-        if scheduled ~= ticket then return end
+        if scheduled ~= ticket then
+            return
+        end
 
         vim.async.run(resolve):on_complete(vim.schedule_wrap(function(err, request)
             if scheduled ~= ticket then
                 return
             end
 
-            if err or not request then
+            if err then
                 M.close()
-                if err then
-                    vim.notify("[preview] " .. tostring(err), vim.log.levels.ERROR)
-                end
+                vim.notify("[preview] " .. tostring(err), vim.log.levels.ERROR)
+                return
+            end
+
+            if not request then
+                M.close()
                 return
             end
 
@@ -185,23 +190,27 @@ function M.schedule(resolve)
     end, debounce)
 end
 
-local group = vim.api.nvim_create_augroup("Preview", { clear = true })
+function M.setup()
+    local group = vim.api.nvim_create_augroup("Preview", { clear = true })
 
-vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "VimSuspend" }, {
-    group = group,
-    callback = M.close,
-})
+    vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "VimSuspend" }, {
+        group = group,
+        callback = M.close,
+    })
 
-vim.api.nvim_create_autocmd("ColorScheme", {
-    group = group,
-    callback = M.clear,
-})
+    vim.api.nvim_create_autocmd("ColorScheme", {
+        group = group,
+        callback = M.clear,
+    })
 
-vim.api.nvim_create_autocmd("VimResized", {
-    group = group,
-    callback = function()
-        if displayed then draw(displayed) end
-    end,
-})
+    vim.api.nvim_create_autocmd("VimResized", {
+        group = group,
+        callback = function()
+            if displayed then draw(displayed) end
+        end,
+    })
+
+    require("preview.markdown").setup()
+end
 
 return M

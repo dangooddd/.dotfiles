@@ -63,27 +63,26 @@ function M.parse(ctx)
         return marks
     end
 
-    local width = vim.api.nvim_win_get_width(0) - vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff
-    local separator = string.rep("─", width - 2)
-    local inside
+    local opened
+    local width = vim.api.nvim_win_get_width(0)
+        - vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff
 
     for i, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
-        local row = i - 1
         local boundary
 
-        if inside and line:match("^:::+%s*$") then
-            inside = false
-            boundary = "└" .. separator .. "┘"
+        if opened and line:match("^:::+%s*$") then
+            opened = false
+            boundary = "└" .. string.rep("─", width - 2) .. "┘"
         elseif line:match("^:::+") then
-            inside = true
             local label = line:match("%.markdown") and " markdown " or line:match("%.code") and " code " or ""
+            opened = true
             boundary = "┌" .. label .. string.rep("─", width - #label - 2) .. "┐"
         end
 
         if boundary then
             marks[#marks + 1] = {
                 conceal = true,
-                start_row = row,
+                start_row = i - 1,
                 start_col = 0,
                 opts = {
                     end_col = #line,
