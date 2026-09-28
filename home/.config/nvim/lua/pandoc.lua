@@ -71,14 +71,13 @@ function M.parse(ctx)
         local row = i - 1
         local boundary
 
-        local attributes = line:match("^:::+%s*(%b{})%s*$")
-        if attributes and attributes:match("%.cell[%s}]") then
-            local label = attributes:match("%.markdown[%s}]") and "markdown" or "code"
-            inside = true
-            boundary = "┌ " .. label .. " " .. string.rep("─", width - #label - 4) .. "┐"
-        elseif inside and line:match("^:::+%s*$") then
+        if inside and line:match("^:::+%s*$") then
             inside = false
             boundary = "└" .. separator .. "┘"
+        elseif line:match("^:::+") then
+            inside = true
+            local label = line:match("%.markdown") and " markdown " or line:match("%.code") and " code " or ""
+            boundary = "┌" .. label .. string.rep("─", width - #label - 2) .. "┐"
         end
 
         if boundary then
