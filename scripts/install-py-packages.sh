@@ -5,7 +5,7 @@ if ! command -v uv &> /dev/null; then
     exit
 fi
 
-packages=(ty ruff)
+packages=(ty ruff pylatexenc)
 
 for pkg in "${packages[@]}"; do
     uv tool install --upgrade "$pkg"

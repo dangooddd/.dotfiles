@@ -119,6 +119,7 @@ require("nvim-treesitter").setup()
 require("render-markdown").setup({
     preset = "obsidian",
     sign = { enabled = false },
+    latex = { block = false },
     code = { border = "thick" },
     custom_handlers = {
         markdown = {
