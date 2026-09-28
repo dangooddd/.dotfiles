@@ -58,15 +58,15 @@ local function jump_cell(backward)
 end
 
 ---@param buf integer
-local function update_markers(buf)
+local function update(buf)
     local rows = {}
-    local code_fence, cell_fence
+    local code_fence, in_cell
 
     for i, line in ipairs(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) do
         local row = i - 1
         local fence = line:match("^%s*(```+)") or line:match("^%s*(~~~+)")
 
-        if cell_fence then
+        if in_cell then
             rows[row] = false
         end
 
@@ -77,13 +77,13 @@ local function update_markers(buf)
         elseif fence then
             code_fence = fence
         else
-            local div, attributes = line:match("^(:+)%s*(%b{})%s*$")
-            if div and #div >= 3 and attributes:match("%.cell[%s}]") then
-                cell_fence = div
+            local attributes = line:match("^:::+%s*(%b{})%s*$")
+            if attributes and attributes:match("%.cell[%s}]") then
+                in_cell = true
                 rows[row] = attributes:match("%.markdown[%s}]") and "markdown" or "code"
-            elseif cell_fence and line:match("^" .. cell_fence .. "%s*$") then
+            elseif in_cell and line:match("^:::+%s*$") then
                 rows[row] = ""
-                cell_fence = nil
+                in_cell = false
             end
         end
     end
@@ -132,7 +132,7 @@ function M.import(buf)
     local name = vim.api.nvim_buf_get_name(buf)
     local output = vim.fn.fnamemodify(name, ":r") .. ".md"
     local source = table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
-    local filter = vim.api.nvim_get_runtime_file("runtime/pandoc.lua", false)[1]
+    local filter = vim.api.nvim_get_runtime_file("runtime/pandoc-import.lua", false)[1]
     local cmd = {
         "pandoc", "-", "--wrap=preserve", "-o", output,
         "-f", "ipynb+fancy_lists+tex_math_single_backslash",
@@ -164,10 +164,12 @@ function M.export(buf)
     local name = vim.api.nvim_buf_get_name(buf)
     local output = vim.fn.fnamemodify(name, ":r") .. ".ipynb"
     local source = table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    local filter = vim.api.nvim_get_runtime_file("runtime/pandoc-export.lua", false)[1]
     local cmd = {
         "pandoc", "-", "--wrap=preserve", "-o", output,
         "-f", "markdown+fenced_divs-smart-implicit_figures",
         "-t", "ipynb",
+        "--lua-filter=" .. filter,
     }
 
     return vim.async.run(function()
@@ -194,7 +196,7 @@ function M.setup()
         group = group,
         pattern = "*.md",
         callback = function(o)
-            update_markers(o.buf)
+            update(o.buf)
         end,
     })
 
@@ -209,7 +211,7 @@ function M.setup()
         group = group,
         pattern = "markdown",
         callback = function(o)
-            update_markers(o.buf)
+            update(o.buf)
 
             for key, inner in pairs({ ij = true, aj = false }) do
                 vim.keymap.set({ "o", "x" }, key, function()
