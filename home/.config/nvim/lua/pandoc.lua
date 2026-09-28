@@ -1,8 +1,5 @@
 local M = {}
 
----@type table<integer, table<integer, string|false>>
-local markers = {}
-local ns = vim.api.nvim_create_namespace("Pandoc")
 local pattern = [[^```\+\s*python\>]]
 local template = [[
 {
@@ -57,18 +54,23 @@ local function jump_cell(backward)
     end
 end
 
----@param buf integer
-local function update(buf)
-    local rows = {}
-    local code_fence, in_cell
+---@param ctx render.md.handler.Context
+---@return render.md.Mark[]
+function M.parse(ctx)
+    local marks = {}
 
-    for i, line in ipairs(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) do
+    if not ctx.last then
+        return marks
+    end
+
+    local width = vim.api.nvim_win_get_width(0) - vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff
+    local separator = string.rep("─", math.max(0, width - 2))
+    local code_fence, inside
+
+    for i, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
         local row = i - 1
         local fence = line:match("^%s*(```+)") or line:match("^%s*(~~~+)")
-
-        if in_cell then
-            rows[row] = false
-        end
+        local boundary
 
         if code_fence then
             if line:match("^%s*" .. code_fence .. code_fence:sub(1, 1) .. "*%s*$") then
@@ -79,52 +81,31 @@ local function update(buf)
         else
             local attributes = line:match("^:::+%s*(%b{})%s*$")
             if attributes and attributes:match("%.cell[%s}]") then
-                in_cell = true
-                rows[row] = attributes:match("%.markdown[%s}]") and "markdown" or "code"
-            elseif in_cell and line:match("^:::+%s*$") then
-                rows[row] = ""
-                in_cell = false
+                local label = attributes:match("%.markdown[%s}]") and "markdown" or "code"
+                inside = true
+                boundary = "┌ " .. label .. " " .. string.rep("─", math.max(0, width - #label - 4)) .. "┐"
+            elseif inside and line:match("^:::+%s*$") then
+                inside = false
+                boundary = "└" .. separator .. "┘"
             end
         end
-    end
 
-    markers[buf] = rows
-end
-
----@param win integer
----@param buf integer
----@param first integer
----@param last integer
-local function decorate(_, win, buf, first, last)
-    local rows = markers[buf]
-    if not rows then return false end
-    local width = vim.api.nvim_win_get_width(win) - vim.fn.getwininfo(win)[1].textoff
-    local cursor = vim.api.nvim_win_get_cursor(win)[1] - 1
-
-    for row = first, last do
-        local label = rows[row]
-
-        if label ~= nil then
-            vim.api.nvim_buf_set_extmark(buf, ns, row, 0, {
-                ephemeral = true,
-                end_row = row + 1,
-                end_col = 0,
-                hl_group = "ColorColumn",
-                hl_eol = true,
-                priority = 90,
-            })
-        end
-
-        if label and row ~= cursor then
-            local text = string.rep(" ", width - vim.fn.strdisplaywidth(label) - 1) .. label .. " "
-            vim.api.nvim_buf_set_extmark(buf, ns, row, 0, {
-                ephemeral = true,
-                virt_text = { { text, { "ColorColumn", "Comment" } } },
-                virt_text_win_col = 0,
-                priority = 200,
-            })
+        if boundary then
+            marks[#marks + 1] = {
+                conceal = true,
+                start_row = row,
+                start_col = 0,
+                opts = {
+                    end_col = #line,
+                    conceal = "",
+                    virt_text = { { boundary, "Comment" } },
+                    virt_text_pos = "overlay",
+                },
+            }
         end
     end
+
+    return marks
 end
 
 ---@param buf integer
@@ -136,7 +117,7 @@ function M.import(buf)
     local cmd = {
         "pandoc", "-", "--wrap=preserve", "-o", output,
         "-f", "ipynb+fancy_lists+tex_math_single_backslash",
-        "-t", "markdown+fenced_divs-header_attributes-raw_attribute-smart",
+        "-t", "markdown+fenced_divs-header_attributes-raw_attribute-smart-simple_tables",
         "--ipynb-output=none",
         "--lua-filter=" .. filter,
         "--extract-media=.pandoc/" .. vim.fn.fnamemodify(name, ":t:r"),
@@ -190,29 +171,11 @@ end
 
 function M.setup()
     local group = vim.api.nvim_create_augroup("Pandoc", { clear = true })
-    vim.api.nvim_set_decoration_provider(ns, { on_win = decorate })
-
-    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "BufWinEnter" }, {
-        group = group,
-        pattern = "*.md",
-        callback = function(o)
-            update(o.buf)
-        end,
-    })
-
-    vim.api.nvim_create_autocmd("BufWipeout", {
-        group = group,
-        callback = function(o)
-            markers[o.buf] = nil
-        end,
-    })
 
     vim.api.nvim_create_autocmd("FileType", {
         group = group,
         pattern = "markdown",
         callback = function(o)
-            update(o.buf)
-
             for key, inner in pairs({ ij = true, aj = false }) do
                 vim.keymap.set({ "o", "x" }, key, function()
                     select_cell(inner)
@@ -239,7 +202,9 @@ function M.setup()
         group = group,
         pattern = "*.ipynb",
         callback = vim.schedule_wrap(function(o)
-            M.import(o.buf)
+            if vim.api.nvim_get_current_buf() == o.buf then
+                M.import(o.buf)
+            end
         end),
     })
 end

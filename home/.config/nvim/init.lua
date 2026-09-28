@@ -99,6 +99,7 @@ vim.pack.add({
     "https://github.com/ibhagwan/fzf-lua",
     "https://github.com/stevearc/oil.nvim",
     "https://github.com/nvim-treesitter/nvim-treesitter",
+    "https://github.com/MeanderingProgrammer/render-markdown.nvim",
     "https://github.com/jmbuhr/otter.nvim",
 }, {
     confirm = false,
@@ -114,6 +115,17 @@ require("placeholders").setup()
 require("markdown").setup()
 require("mini.icons").setup()
 require("nvim-treesitter").setup()
+
+require("render-markdown").setup({
+    preset = "obsidian",
+    sign = { enabled = false },
+    custom_handlers = {
+        markdown = {
+            extends = true,
+            parse = require("pandoc").parse
+        },
+    },
+})
 
 require("otter").setup({
     lsp = {
