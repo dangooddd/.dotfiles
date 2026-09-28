@@ -64,30 +64,21 @@ function M.parse(ctx)
     end
 
     local width = vim.api.nvim_win_get_width(0) - vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff
-    local separator = string.rep("─", math.max(0, width - 2))
-    local code_fence, inside
+    local separator = string.rep("─", width - 2)
+    local inside
 
     for i, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
         local row = i - 1
-        local fence = line:match("^%s*(```+)") or line:match("^%s*(~~~+)")
         local boundary
 
-        if code_fence then
-            if line:match("^%s*" .. code_fence .. code_fence:sub(1, 1) .. "*%s*$") then
-                code_fence = nil
-            end
-        elseif fence then
-            code_fence = fence
-        else
-            local attributes = line:match("^:::+%s*(%b{})%s*$")
-            if attributes and attributes:match("%.cell[%s}]") then
-                local label = attributes:match("%.markdown[%s}]") and "markdown" or "code"
-                inside = true
-                boundary = "┌ " .. label .. " " .. string.rep("─", math.max(0, width - #label - 4)) .. "┐"
-            elseif inside and line:match("^:::+%s*$") then
-                inside = false
-                boundary = "└" .. separator .. "┘"
-            end
+        local attributes = line:match("^:::+%s*(%b{})%s*$")
+        if attributes and attributes:match("%.cell[%s}]") then
+            local label = attributes:match("%.markdown[%s}]") and "markdown" or "code"
+            inside = true
+            boundary = "┌ " .. label .. " " .. string.rep("─", width - #label - 4) .. "┐"
+        elseif inside and line:match("^:::+%s*$") then
+            inside = false
+            boundary = "└" .. separator .. "┘"
         end
 
         if boundary then

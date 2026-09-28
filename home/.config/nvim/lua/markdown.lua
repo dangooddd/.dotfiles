@@ -53,9 +53,11 @@ local function resolve()
     if not node then return end
 
     if node:type() == "image" then
-        if vim.fn.executable("magick") ~= 1 then return end
-        local source
+        if vim.fn.executable("magick") ~= 1 then
+            return
+        end
 
+        local source
         for child in node:iter_children() do
             if child:type() == "link_destination" then
                 source = vim.treesitter.get_node_text(child, buf)
@@ -71,13 +73,13 @@ local function resolve()
         if source:match("^data:image/") then
             local data = source:match("^data:image/[^,]+;base64,(.+)$")
             if not data then
-                error("Expected a base64 data:image URI", 0)
+                error("expected a base64 data:image URI", 0)
             end
             return { key = "image:" .. vim.fn.sha256(source), data = data }
         end
 
         if source:match("^%a[%w+.-]*:") then
-            error("Image preview supports local files and base64 data:image URIs", 0)
+            error("image preview supports local files and base64 data:image URIs", 0)
         end
 
         local name = vim.api.nvim_buf_get_name(buf)
@@ -118,7 +120,7 @@ local function resolve()
     end
 
     local hl = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = false })
-    local fg = string.format("%06X", hl.fg or 0xD4DCC2)
+    local fg = string.format("%06X", hl.fg)
     return { key = "formula:" .. fg .. ":" .. formula, formula = formula, fg = fg }
 end
 
