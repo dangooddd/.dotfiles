@@ -60,4 +60,14 @@ function M.detect_container()
     return container_detected
 end
 
+
+---@param lines string[]
+---@param cursor integer
+function M.insert(lines, cursor)
+    local buf = vim.api.nvim_get_current_buf()
+    local row = vim.api.nvim_win_get_cursor(0)[1]
+    vim.api.nvim_buf_set_lines(buf, row, row, false, lines)
+    vim.api.nvim_win_set_cursor(0, { row + cursor, 0 })
+end
+
 return M

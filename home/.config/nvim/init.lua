@@ -119,6 +119,7 @@ require("nvim-treesitter").setup()
 require("render-markdown").setup({
     preset = "obsidian",
     sign = { enabled = false },
+    code = { border = "thick" },
     custom_handlers = {
         markdown = {
             extends = true,
@@ -186,6 +187,14 @@ end)
 
 vim.keymap.set("n", "<leader>th", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end)
+
+vim.keymap.set("n", "<leader>jm", function()
+    require("utils").insert({ "::: {.cell .markdown}", ":::" }, 1)
+end)
+
+vim.keymap.set("n", "<leader>jy", function()
+    require("utils").insert({ "::: {.cell .code}", "```python", "```", ":::" }, 2)
 end)
 
 vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
