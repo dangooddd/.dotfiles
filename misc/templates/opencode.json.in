@@ -149,6 +149,9 @@
     "@dialog": {{
       "background": {{
         "base": "$background.raised.base",
+        "formfield": {{
+          "$focused": "transparent"
+        }},
         "action": {{
           "primary": {{
             "$hovered": "$background.raised.high"
