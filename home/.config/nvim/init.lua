@@ -120,6 +120,7 @@ require("render-markdown").setup({
     sign = { enabled = false },
     latex = { block = false },
     code = { border = "thick" },
+    pipe_table = { border_virtual = true },
     custom_handlers = {
         markdown = {
             extends = true,

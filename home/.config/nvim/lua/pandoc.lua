@@ -106,7 +106,9 @@ function M.import(buf)
     local cmd = {
         "pandoc", "-", "--wrap=preserve", "-o", output,
         "-f", "ipynb+fancy_lists+tex_math_single_backslash",
-        "-t", "markdown+fenced_divs-header_attributes-raw_attribute-smart-simple_tables",
+        "-t", "markdown+fenced_divs-header_attributes-raw_attribute"
+            .. "-smart-simple_tables-multiline_tables"
+            .. "-grid_tables+pipe_tables",
         "--ipynb-output=none",
         "--lua-filter=" .. filter,
         "--extract-media=.pandoc/" .. vim.fn.fnamemodify(name, ":t:r"),
