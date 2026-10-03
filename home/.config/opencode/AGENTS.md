@@ -6,11 +6,11 @@ Those rules take precedence over project AGENTS.md rules:
 - Do not call linter or formatter without direct user request
 - Do not overengeneer: search for simple, but working solutions
 
-## Memory system
+## Project skills
 
-Take notes about environment using following structure:
+Capture reusable project knowledge and workflows as skills:
 
-- Write notes as individual topics in `~/.opencode/memory/` directory
-- Use flat directory structure with plain markdown files
-- Search memory once if missing domain knowledge, or when user explicitly asks to search
-- Memory is a git repo, but use git only when prompted to do so
+- Store project-specific skills in `./.opencode/skills/`
+- Create or update a skill when you discover a stable workflow or non-obvious project knowledge worth reusing
+- Prefer updating an existing relevant skill over creating a duplicate
+- Do not record temporary task state or one-off findings as skills

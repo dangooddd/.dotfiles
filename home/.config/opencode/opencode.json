@@ -1,12 +1,5 @@
 {
   "websearch": {
     "provider": "exa"
-  },
-  "permissions": [
-    {
-      "action": "external_directory",
-      "resource": "~/.opencode/memory/*",
-      "effect": "allow"
-    }
-  ]
+  }
 }
