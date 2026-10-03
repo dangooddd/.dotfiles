@@ -21,5 +21,4 @@ scripts/setup-arch.sh
 
 ## TODO
 
-- [ ] Get rid of placeholders neovim module after [this PR](https://github.com/neovim/neovim/pull/39496)
-- [ ] Fix select in opencode colorscheme template
+- Get rid of placeholders neovim module after [this PR](https://github.com/neovim/neovim/pull/39496)
