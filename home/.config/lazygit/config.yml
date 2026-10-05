@@ -23,6 +23,9 @@ gui:
     optionsTextColor:
       - "#63AFA0"
 
+    selectedLineFgColor:
+      - default
+
     selectedLineBgColor:
       - "#2D382E"
 
@@ -48,7 +51,7 @@ gui:
     defaultFgColor:
       - "#D4DCC2"
 
-  authorColors:
-    "*": "#63AFA0"
+    authorColors:
+      "*": "#63AFA0"
 
   border: single

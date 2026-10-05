@@ -14,6 +14,9 @@ gui:
     optionsTextColor:
       - "#{base0C}"
 
+    selectedLineFgColor:
+      - default
+
     selectedLineBgColor:
       - "#{base02}"
 
@@ -39,5 +42,5 @@ gui:
     defaultFgColor:
       - "#{base05}"
 
-  authorColors:
-    "*": "#{base0C}"
+    authorColors:
+      "*": "#{base0C}"

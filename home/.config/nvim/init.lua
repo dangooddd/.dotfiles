@@ -344,6 +344,7 @@ vim.lsp.config("texlab", {
                     "-lualatex",
                     "-interaction=nonstopmode",
                     "-outdir=build",
+                    "%f",
                 },
                 onSave = true,
             },
