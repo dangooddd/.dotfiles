@@ -1,13 +1,4 @@
 {
-  "providers": {
-    "openai": {
-      "settings": {
-        "compaction": {
-          "type": "native"
-        }
-      }
-    }
-  },
   "websearch": {
     "provider": "exa"
   }

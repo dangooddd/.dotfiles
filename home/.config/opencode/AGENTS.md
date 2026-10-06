@@ -2,6 +2,7 @@
 
 Those rules take precedence over project AGENTS.md rules:
 
+- Do not commit or push changes without direct user request
 - Do not write tests without direct user request
 - Do not call linter or formatter without direct user request
 - Do not overengeneer: search for simple, but working solutions
