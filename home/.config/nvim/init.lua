@@ -12,7 +12,7 @@ vim.o.maxmempattern = 20000
 vim.o.hlsearch = false
 vim.o.mouse = "a"
 vim.o.fillchars = "eob: ,diff: "
-vim.o.diffopt = vim.o.diffopt .. ",algorithm:histogram,inline:char"
+vim.o.diffopt = vim.o.diffopt .. ",algorithm:histogram"
 vim.o.guicursor = "n-v-c-ci:block,i-ve:ver25,r-cr-o:hor20,t:block-TermCursor"
 
 vim.o.number = true
@@ -23,7 +23,7 @@ vim.o.cursorlineopt = "number"
 
 vim.o.pumheight = 10
 vim.o.pumborder = vim.o.winborder
-vim.o.completeopt = "menu,menuone,noselect,noinsert,fuzzy"
+vim.o.completeopt = "menuone,noselect,fuzzy"
 vim.o.wildmode = "longest:full"
 vim.o.shortmess = vim.o.shortmess .. "c" -- remove completion messages
 
@@ -44,7 +44,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 vim.diagnostic.config({ virtual_text = true })
-require("vim._core.ui2").enable({ enable = true })
+require("vim._core.ui2").enable()
 
 --------------------------------------------------------------------------------
 -- Theme
