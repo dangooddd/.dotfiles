@@ -1,7 +1,12 @@
 {
   "$schema": "https://opencode.ai/v2/cli.json",
   "keybinds": {
-    "session.background": "<leader>b"
+    "session.background": "<leader>b",
+    "session.new": "<leader>c",
+    "session.tab.close": "<leader>x",
+    "session.export": "<leader>e",
+    "session.compact": "<leader>w",
+    "prompt.editor": "<leader>n"
   },
   "theme": {
     "name": "jungle"
