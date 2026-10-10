@@ -17,6 +17,14 @@
 
 [difftool]
     prompt = true
+    trustExitCode = true
+
+[difftool "nvimdiff"]
+    cmd = "if [ -n \"$NVIM\" ]; then \
+        nvim -l \"$HOME/.config/nvim/lua/diff.lua\" \"$LOCAL\" \"$REMOTE\"; \
+    else \
+        nvim -d -- \"$LOCAL\" \"$REMOTE\"; \
+    fi"
 
 [merge]
     tool = nvimdiff

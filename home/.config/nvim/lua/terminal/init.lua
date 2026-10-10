@@ -84,6 +84,14 @@ end
 function Terminal:_setup_buf_autocmds()
     assert(self.buf)
 
+    vim.api.nvim_create_autocmd("BufEnter", {
+        group = self.group,
+        buffer = self.buf,
+        callback = function()
+            vim.cmd.startinsert()
+        end,
+    })
+
     vim.api.nvim_create_autocmd({ "BufWipeout", "BufDelete" }, {
         group = self.group,
         buffer = self.buf,
@@ -98,11 +106,6 @@ end
 ---@private
 function Terminal:_setup_win_autocmds()
     assert(self.win)
-
-    vim.api.nvim_clear_autocmds({
-        event = "WinClosed",
-        group = self.group,
-    })
 
     vim.api.nvim_create_autocmd("WinClosed", {
         group = self.group,
@@ -188,11 +191,10 @@ function Terminal:focus()
     assert(self.win)
 
     if vim.api.nvim_get_current_win() == self.win then
-        vim.cmd.stopinsert()
-        vim.cmd.wincmd("p")
+        local prev = vim.fn.win_getid(vim.fn.winnr("#"))
+        vim.cmd.wincmd(prev ~= 0 and prev ~= self.win and "p" or "w")
     else
         vim.api.nvim_set_current_win(self.win)
-        vim.cmd.startinsert()
     end
 end
 
