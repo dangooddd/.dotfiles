@@ -130,20 +130,28 @@ def register_image_renderers(shell: TerminalInteractiveShell, nvim: pynvim.Nvim)
     register_mime_renderer(shell, "image/svg+xml", image_renderer(svg_handler))
 
 
-def enable_matplotlib_integration(shell: TerminalInteractiveShell):
+def configure_matplotlib(shell: TerminalInteractiveShell):
     try:
         import matplotlib
         from matplotlib_inline.backend_inline import configure_inline_support
+    except ImportError:
+        return
 
-        backend = "module://matplotlib_inline.backend_inline"
-        matplotlib.use(backend, force=True)
-        configure_inline_support(shell, backend)
-
-    except Exception:
-        pass
+    backend = "module://matplotlib_inline.backend_inline"
+    matplotlib.use(backend, force=True)
+    configure_inline_support(shell, backend)
 
 
-def startup():
+def configure_plotly():
+    try:
+        import plotly.io as pio
+    except ImportError:
+        return
+
+    pio.renderers.default = "png"
+
+
+def main():
     path = os.environ.get("NVIM")
     shell = get_ipython()
     assert shell is not None
@@ -151,7 +159,8 @@ def startup():
 
     nvim = pynvim.attach("socket", path=path)
     register_image_renderers(shell, nvim)
-    enable_matplotlib_integration(shell)
+    configure_matplotlib(shell)
+    configure_plotly()
 
 
-startup()
+main()
