@@ -1,7 +1,3 @@
-# **dangooddd's** dotfiles
-
-> Unix systems only!
-
 ## Installation
 
 Clone repository:
