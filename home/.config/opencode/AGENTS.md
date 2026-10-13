@@ -1,4 +1,4 @@
-## User rules
+## Rules
 
 Those rules take precedence over project AGENTS.md rules:
 
@@ -13,12 +13,3 @@ Additionally, do not overengineer:
 - Remove unnecessary code; don't add abstractions, wrappers, settings or dependencies unless needed
 - Write clear code that handles possible edge cases, even if it takes a few more lines
 - Avoid unnecessary defensive code
-
-## Project skills
-
-Capture reusable project knowledge and workflows as skills:
-
-- Store project-specific skills in `./.opencode/skills/`
-- Create or update a skill when you discover a stable workflow or non-obvious project knowledge worth reusing
-- Prefer updating an existing relevant skill over creating a duplicate
-- Do not record temporary task state or one-off findings as skills
