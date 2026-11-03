@@ -42,9 +42,7 @@ vim.o.langmap = [[йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ъ],]]
 vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
 vim.diagnostic.config({ virtual_text = true })
-require("vim._core.ui2").enable()
 
 --------------------------------------------------------------------------------
 -- Theme
@@ -244,6 +242,13 @@ end)
 --------------------------------------------------------------------------------
 -- Hooks
 --------------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("UIEnter", {
+    once = true,
+    callback = function()
+        require("vim._core.ui2").enable()
+    end,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "markdown",
     callback = vim.schedule_wrap(function(event)
