@@ -5,6 +5,12 @@ local tmux_detected = nil
 local container_detected = nil
 local esc = "\x1b"
 
+vim.api.nvim_create_autocmd("UIEnter", {
+    callback = function()
+        tmux_detected = nil
+    end,
+})
+
 ---@param sequence string
 ---@return string
 function M.wrap_tmux(sequence)

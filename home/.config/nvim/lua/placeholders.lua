@@ -19,7 +19,6 @@ local ns = vim.api.nvim_create_namespace("Placeholders")
 local hl = "PlaceholdersImage"
 local first_id = (vim.fn.getpid() % 1024) * 16384
 local offset_id = 0
-local tmux = false
 local placeholder = "\u{10EEEE}"
 local esc = "\x1b"
 
@@ -77,7 +76,7 @@ end
 
 ---@param data string
 local function send(data)
-    vim.api.nvim_ui_send(tmux and utils.wrap_tmux(data) or data)
+    vim.api.nvim_ui_send(utils.detect_tmux() and utils.wrap_tmux(data) or data)
 end
 
 ---@param id integer
@@ -250,7 +249,6 @@ end
 
 function M.setup()
     M.del(math.huge)
-    tmux = utils.detect_tmux()
     vim.o.termguicolors = true
     vim.ui.img = { set = M.set, get = M.get, del = M.del }
 
