@@ -7,20 +7,16 @@ fi
 
 remote="$1"
 path="${2//\'/\'\\\'\'}"
-local_addr="127.0.0.1:1973"
-remote_addr="127.0.0.1:1973"
-
-if nc -z 127.0.0.1 1973 &> /dev/null; then
-    echo "$(basename "$0"): port 1973 is already in use"
-    exit 1
-fi
+dir="$(mktemp -d "${TMPDIR:-/tmp}/nvim.XXXXXXXXXX")" || exit 1
+local_addr="$dir/socket"
+remote_addr="/tmp/${dir##*/}.sock"
 
 ssh -o ExitOnForwardFailure=yes \
     -L "$local_addr:$remote_addr" \
     "$remote" "cd -- '$path' && exec nvim --headless --listen $remote_addr" &> /dev/null &
 
 pid=$!
-trap 'kill "$pid" &> /dev/null; wait "$pid" &> /dev/null' EXIT
+trap 'kill "$pid" &> /dev/null; wait "$pid" &> /dev/null; rm -rf "$dir"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
