@@ -168,6 +168,15 @@ require("oil").setup({
 --------------------------------------------------------------------------------
 -- Keybinds / Commands
 --------------------------------------------------------------------------------
+vim.api.nvim_create_user_command("Venv", function(opts)
+    require("utils").venv(opts.fargs[1])
+end, { nargs = 1, complete = "dir" })
+
+vim.api.nvim_create_user_command("Update", function()
+    require("nvim-treesitter").update()
+    vim.pack.update()
+end, {})
+
 vim.keymap.set({ "n", "x" }, "<leader>y", '"+y')
 vim.keymap.set({ "n", "x" }, "<leader>p", '"+p')
 vim.keymap.set({ "n", "x" }, "<leader>P", '"+P')

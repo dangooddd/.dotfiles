@@ -82,6 +82,7 @@ end
 
 ---@param path string
 function M.venv(path)
+    path = vim.fn.fnamemodify(path, ":p")
     vim.env.VIRTUAL_ENV = path
     vim.env.PATH = path .. "/bin:" .. vim.env.PATH
 end
