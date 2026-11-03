@@ -31,15 +31,16 @@ function M.detect_tmux()
 
     if vim.env.TMUX or vim.env.TERM == "tmux-256color" then
         tmux_detected = true
-        return tmux_detected
+        return true
     end
 
-    vim.tty.request(M.wrap_tmux(esc .. "[c"), {
+    vim.tty.request(esc .. "[>0q", {
         timeout = timeout_ms,
         on_timeout = function() tmux_detected = false end,
     }, function(sequence)
-        if sequence:match("^" .. esc .. "%[%?[%d;]*c$") then
-            tmux_detected = true
+        local name = sequence:match("^" .. esc .. "P>|(.*)")
+        if name then
+            tmux_detected = name:match("^tmux%s") ~= nil
             return true
         end
     end)
