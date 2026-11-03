@@ -22,6 +22,7 @@ alias from-dotfiles=\"${scripts}/from-dotfiles.sh\"
 alias to-dotfiles=\"${scripts}/to-dotfiles.sh\"
 alias copy-dotfiles-remote=\"${scripts}/copy-dotfiles-remote.sh\"
 alias copy-dotfiles-docker=\"${scripts}/copy-dotfiles-docker.sh\"
+alias remote-nvim=\"${scripts}/remote-nvim.sh\"
 alias update=\"$update\"
 complete -F _docker_container_completion copy-dotfiles-docker
 $(cat "$file")" > "$file"
