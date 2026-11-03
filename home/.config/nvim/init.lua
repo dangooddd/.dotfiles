@@ -211,6 +211,10 @@ vim.keymap.set("n", "<leader>fl", require("fzf-lua").live_grep)
 vim.keymap.set("n", "<leader>fz", require("fzf-lua").builtin)
 vim.keymap.set("n", "<leader>fr", require("fzf-lua").resume)
 
+vim.keymap.set({ "n", "t" }, "<C-t>", require("terminal.floaterm").toggle)
+vim.keymap.set({ "n", "t" }, "<C-g>", require("terminal.lazygit").toggle)
+vim.keymap.set("n", "<leader>gc", require("terminal.lazygit").close)
+
 vim.keymap.set("n", "<leader>jo", require("terminal.ipython").toggle)
 vim.keymap.set("n", "<leader>jc", require("terminal.ipython").close)
 vim.keymap.set("v", "<leader>jv", require("terminal.ipython").send)
@@ -218,9 +222,6 @@ vim.keymap.set("n", "<leader>js", require("terminal.ipython").install)
 vim.keymap.set({ "n", "t" }, "<C-j>", require("terminal.ipython").focus)
 vim.keymap.set("n", "<C-x>", "vij<leader>jv", { remap = true })
 vim.keymap.set("n", "<C-s>", "<C-x>]j", { remap = true })
-
-vim.keymap.set({ "n", "t" }, "<C-g>", require("terminal.lazygit").toggle)
-vim.keymap.set("n", "<leader>gc", require("terminal.lazygit").close)
 
 vim.keymap.set("n", "<leader>ko", require("terminal.opencode").toggle)
 vim.keymap.set("n", "<leader>kc", require("terminal.opencode").close)

@@ -22,17 +22,6 @@ Terminal.__index = Terminal
 
 local next_id = 0
 
----@param buf integer
----@return integer
-local function default_open_win(buf)
-    return vim.api.nvim_open_win(buf, false, {
-        win = -1,
-        style = "minimal",
-        width = math.floor(vim.o.columns * 0.5),
-        split = "right",
-    })
-end
-
 ---@param terminal terminal.Terminal
 local function default_on_exit(terminal, _, _)
     vim.on_key(function()
@@ -69,7 +58,7 @@ function Terminal.new(opts)
         cmd = opts.cmd,
         env = opts.env,
         cwd = opts.cwd,
-        open_win = wrap_open_win(opts.open_win or default_open_win),
+        open_win = wrap_open_win(opts.open_win or require("utils").open_split_win),
         on_exit = opts.on_exit or default_on_exit,
         chan = nil,
         buf = nil,
