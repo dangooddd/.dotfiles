@@ -80,4 +80,10 @@ function M.run(cmd, opts)
     end
 end
 
+---@param path string
+function M.venv(path)
+    vim.env.VIRTUAL_ENV = path
+    vim.env.PATH = path .. "/bin:" .. vim.env.PATH
+end
+
 return M
