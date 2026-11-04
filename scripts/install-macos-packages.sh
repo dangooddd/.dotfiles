@@ -11,10 +11,9 @@ if [[ -n "$U" ]]; then
 fi
 
 packages=(
-    git python uv font-iosevka npm btop
-    fzf nvim lazygit tree-sitter-cli pandoc
-    bash bash-completion@2 ghostty
-    helium-browser telegram
+    git python uv ty ruff btop fzf nvim opencode lazygit
+    pandoc tree-sitter-cli bash bash-completion@2 ghostty
+    helium-browser telegram font-iosevka
 )
 
 brew install -y "${packages[@]}"
