@@ -1,9 +1,11 @@
 ---
-name: Experiments
+name: Experiment
 description: Use this skill for any question about the methodology of machine learning experiments, including data leakage, evaluation and comparison of models, statistical validity, and reproducibility. Also use it when explaining or reviewing an ML experiment, assessing leakage risk, interpreting results, planning a methodology, or preparing a paper or review.
 ---
 
 # Methodology of Machine Learning Experiments: Leakage, Evaluation, and Reproducibility
+
+## Abstract
 
 This skill presents a detailed exposition of two complementary bodies of work. The first is Kapoor and Narayanan's "Leakage and the reproducibility crisis in machine-learning-based science" (arXiv:2207.07048), which systematises data leakage and proposes a reporting instrument for detecting it. The second is Lones's "How to avoid machine learning pitfalls: a guide for academic researchers" (arXiv:2108.02497), which surveys errors across the entire research pipeline, from planning to publication.
 
@@ -11,27 +13,27 @@ The skill is explanatory rather than prescriptive. It does not impose a fixed pr
 
 Where the skill is used to analyse experiments that have already been conducted, it should identify the errors found in accordance with the two papers, provided that such errors are present and materially affect the results.
 
-## Part I. Data Leakage as a Systemic Cause of Irreproducibility
+## 1. Data Leakage as a Systemic Cause of Irreproducibility
 
-### 1. Scope and framing
+### 1.1. Scope and Framing
 
 The first body of work concerns the class of studies that Kapoor and Narayanan call ML-based science: research in which a scientific claim is supported by the measured performance of a predictive model. This distinguishes it from four other domains of ML practice - methods research, research on ethical implications, engineering applications, and prediction competitions. The criteria of validity differ across these domains, and consequently the remedies for leakage cannot be transferred mechanically from one to another.
 
 The authors adopt a broad definition of reproducibility: a finding is reproducible if the code and data used to obtain it are available and the data have been analysed correctly. This is wider than computational reproducibility, which requires only that the published numbers can be reproduced with the authors' code and dataset. The broader definition matters because it treats as an error not only the inability to run someone else's code, but also correctly executing code that leads to a false conclusion.
 
-### 2. Scale of the problem
+### 1.2. Scale of the Problem
 
 The survey covers 20 review papers documenting methodological errors in 17 scientific fields; together they concern 329 papers. Leakage is found in every one of these fields. The authors stress that this figure is a lower bound rather than a precise estimate of prevalence: most reviews examine only the text of papers, without consulting the accompanying code and data, and errors in code are often invisible on reading. In addition, different disciplines use different terminology for the same defects, which impedes systematic search.
 
 Other defects are recorded alongside leakage: insufficient computational reproducibility, problems of data quality (small samples, missing values, a weak proxy for the phenomenon under study), inappropriate metric choice, and errors that arise even when standard datasets are used, owing to the absence of standard protocols for splitting and evaluation.
 
-### 3. Definition of leakage
+### 1.3. Definition of Leakage
 
 Data leakage is defined as a spurious relationship between the independent variables and the target variable that arises as an artefact of data collection, sampling, or preprocessing. Because that relationship is absent from the distribution about which the scientific claim is made, leakage generally produces an inflated estimate of model performance.
 
 This definition is more useful than a mere catalogue of technical errors, because it supplies a general criterion: any information that is available when the model is built but unavailable when the model is applied to data from the target distribution constitutes leakage. It follows that the same practice may be valid in one study and invalid in another, depending on the claim being made and the distribution over which it is asserted.
 
-### 4. Why recipes do not transfer
+### 1.4. Why Recipes Do Not Transfer
 
 The authors explain separately why practices accepted in competitions and engineering applications do not solve the problem in science.
 
@@ -41,39 +43,39 @@ In engineering applications, a common recommendation is to deploy the model at a
 
 It follows that transferring anti-leakage practice from competitions or engineering to science requires an explicit reformulation: the task is not merely to obtain high performance on held-out data, but to justify that the measured performance pertains to the distribution and the task about which the substantive claim is made.
 
-### 5. A taxonomy of eight types of leakage
+### 1.5. A Taxonomy of Eight Types of Leakage
 
 The authors propose a taxonomy that spans data collection, preprocessing, modelling, and evaluation. The eight types fall into three families: L1, failure to separate training and test data; L2, use of illegitimate features; and L3, a test set that does not correspond to the distribution of scientific interest. Each type is described below in terms of mechanism, illustration, consequence, and remedy.
 
-#### L1. Failure to separate training and test data
+#### L1. Failure to Separate Training and Test Data
 
 The general mechanism is that the model receives information from the test set before its performance is measured. As a result, it learns relationships that will not be present in new data from the target distribution, and the estimate ceases to reflect generalisation.
 
-**L1.1. No test set.** Training and evaluation are conducted on the same data. This is the textbook case of overfitting: a sufficiently complex model can memorise the data and achieve high performance without learning any generalisable regularity. The remedy is to set aside a test set before modelling begins and to exclude it from every stage of model selection.
+**L1.1. No Test Set.** Training and evaluation are conducted on the same data. This is the textbook case of overfitting: a sufficiently complex model can memorise the data and achieve high performance without learning any generalisable regularity. The remedy is to set aside a test set before modelling begins and to exclude it from every stage of model selection.
 
-**L1.2. Preprocessing on combined data.** Imputation, scaling, normalisation, variance-based feature selection, and over- or undersampling are performed before splitting. The parameters of the transformation are therefore estimated with the test observations, and synthetic examples generated from training objects may enter the test set. Oversampling before splitting is especially dangerous: copies or synthetic variants of training examples appear in the test set, and the estimate becomes optimistic by construction. The remedy is to estimate every transformation statistic on the training portion only and to apply it to the test portion without re-estimation; under cross-validation, preprocessing must be performed inside each fold.
+**L1.2. Preprocessing on Combined Data.** Imputation, scaling, normalisation, variance-based feature selection, and over- or undersampling are performed before splitting. The parameters of the transformation are therefore estimated with the test observations, and synthetic examples generated from training objects may enter the test set. Oversampling before splitting is especially dangerous: copies or synthetic variants of training examples appear in the test set, and the estimate becomes optimistic by construction. The remedy is to estimate every transformation statistic on the training portion only and to apply it to the test portion without re-estimation; under cross-validation, preprocessing must be performed inside each fold.
 
-**L1.3. Feature selection on combined data.** If features are selected on the full dataset, the decision to include a feature depends on how well it performs on the test set. This already uses the test labels, even if the model is formally trained only on the training portion. The remedy is to treat feature selection as part of model training and to conduct it exclusively on training data, separately for each cross-validation fold.
+**L1.3. Feature Selection on Combined Data.** If features are selected on the full dataset, the decision to include a feature depends on how well it performs on the test set. This already uses the test labels, even if the model is formally trained only on the training portion. The remedy is to treat feature selection as part of model training and to conduct it exclusively on training data, separately for each cross-validation fold.
 
-**L1.4. Duplicates in the dataset.** When records are duplicated, the same object may appear in both training and test data. A model that has memorised the object will perform well on its copy. The remedy is to identify and remove duplicates before splitting, including near-duplicates and overlaps between data sources.
+**L1.4. Duplicates in the Dataset.** When records are duplicated, the same object may appear in both training and test data. A model that has memorised the object will perform well on its copy. The remedy is to identify and remove duplicates before splitting, including near-duplicates and overlaps between data sources.
 
-#### L2. Use of illegitimate features
+#### L2. Use of Illegitimate Features
 
 The model is given features that should not be available for the task. A typical case is a feature that acts as a proxy for the target variable. In a study predicting hypertension, for example, the use of antihypertensive medication was included as a feature. Such a feature is unavailable when predicting for a new patient, and if it is known, the prediction becomes trivial. Other variants include information that arises after the target event and administrative fields that encode the outcome.
 
 The judgement of whether a feature is legitimate requires domain expertise and cannot be reduced to a statistical criterion. The remedy is to state explicitly, for each feature or homogeneous group of features, why it will be available at prediction time and why its association with the target is substantive rather than artefactual.
 
-#### L3. The test set does not correspond to the distribution of scientific interest
+#### L3. The Test Set Does Not Correspond to the Distribution of Scientific Interest
 
 The general mechanism is that the distribution on which performance is measured differs from the distribution about which the claim is made. Even a split that is perfectly clean with respect to L1 will not help if measurement is performed on the wrong population.
 
-**L3.1. Temporal leakage.** When a model predicts a future event, the test set must not contain data earlier than the training data. Otherwise the model is built on information "from the future" that it will not have in real use. A classical source is a random split of a time series or ordinary k-fold cross-validation, in which most iterations place later observations in the training folds than in the test fold. The remedy is to split by time and to use cross-validation schemes that respect the ordering of observations, such as blocked cross-validation.
+**L3.1. Temporal Leakage.** When a model predicts a future event, the test set must not contain data earlier than the training data. Otherwise the model is built on information "from the future" that it will not have in real use. A classical source is a random split of a time series or ordinary k-fold cross-validation, in which most iterations place later observations in the training folds than in the test fold. The remedy is to split by time and to use cross-validation schemes that respect the ordering of observations, such as blocked cross-validation.
 
-**L3.2. Dependence between training and test observations.** If observations in training and test come from the same units - patients, participants, protein families, devices - they are not independent. In the extreme but common case, different records of the same patient appear in both training and test. The claim is then about new patients, but it is tested on data from old ones. The remedy is group splitting: all observations belonging to one unit remain in the same fold; for spatially or structurally dependent data, block schemes are used.
+**L3.2. Dependence Between Training and Test Observations.** If observations in training and test come from the same units - patients, participants, protein families, devices - they are not independent. In the extreme but common case, different records of the same patient appear in both training and test. The claim is then about new patients, but it is tested on data from old ones. The remedy is group splitting: all observations belonging to one unit remain in the same fold; for spatially or structurally dependent data, block schemes are used.
 
-**L3.3. Sampling bias in the test distribution.** A test set may be unrepresentative in spatial, temporal, or selective terms. Examples include training and testing on images from a single hospital while making claims about hospitals in general; excluding borderline cases of a disease, which are precisely the most difficult and most important; and collecting test data in one geographical region while generalising to others. The bias may be subtle: differences in imaging protocols between hospitals are sufficient to prevent transfer. The remedy is to define the target distribution explicitly and to verify that the test set is drawn from it; where this is impossible, the claim must be restricted to the distribution actually measured.
+**L3.3. Sampling Bias in the Test Distribution.** A test set may be unrepresentative in spatial, temporal, or selective terms. Examples include training and testing on images from a single hospital while making claims about hospitals in general; excluding borderline cases of a disease, which are precisely the most difficult and most important; and collecting test data in one geographical region while generalising to others. The bias may be subtle: differences in imaging protocols between hospitals are sufficient to prevent transfer. The remedy is to define the target distribution explicitly and to verify that the test set is drawn from it; where this is impossible, the claim must be restricted to the distribution actually measured.
 
-### 6. Other defects identified in the survey
+### 1.6. Other Defects Identified in the Survey
 
 Beyond leakage, the authors identify four classes of problem.
 
@@ -85,7 +87,7 @@ Beyond leakage, the authors identify four classes of problem.
 
 **Use of standard datasets.** The existence of a widely used dataset does not guarantee correctness: in the absence of a standard split, metric, and evaluation protocol, the same errors are reproduced in new work.
 
-### 7. Model info sheets as an instrument for detecting leakage
+### 1.7. Model Info Sheets as an Instrument for Detecting Leakage
 
 The authors propose a supplementary document - a model info sheet - in which the researcher must set out precise arguments for the absence of leakage. The template contains 21 questions organised around three central arguments.
 
@@ -97,7 +99,7 @@ The authors propose a supplementary document - a model info sheet - in which the
 
 Model info sheets differ from model cards and ordinary checklists in that they are directed specifically at leakage and require argument rather than description. They can serve two purposes: as a means of self-examination during the preparation of a study, and as a basis for discussion between authors and reviewers. The authors also acknowledge limitations: without accessible code and data, the correctness of a completed sheet cannot be verified; incorrect statements in the sheet may create false assurance; completing and assessing it requires expertise that may be absent on both sides; and, finally, understanding of leakage evolves, so the template is versioned.
 
-### 8. Case study: predicting civil war
+### 1.8. Case Study: Predicting Civil War
 
 To test these ideas empirically, the authors conduct a reproducibility study in the prediction of civil war, a subfield of political science in which complex ML models were believed to outperform logistic regression substantially. A systematic search identified 124 papers; of these, 12 were selected because they predicted the onset of civil war, used a training/test split, and provided complete code and data.
 
@@ -105,7 +107,7 @@ Errors were found in 4 of the 12 papers - precisely those four that claimed supe
 
 It was further found that 9 of the 12 papers reported neither significance tests nor any quantification of uncertainty when comparing classifiers. In the study by Blair and Sambanis, the test set contained only 11 onsets of civil war, and the reported smoothed AUC of 0.85 had a bootstrapped 95% confidence interval of [0.66, 0.95]. The point estimate thus concealed enough uncertainty to make the claim of superiority doubtful.
 
-### 9. Five diagnoses and five recommendations
+### 1.9. Five Diagnoses and Five Recommendations
 
 The authors move beyond leakage to formulate five causes of reproducibility failure, each paired with a recommendation.
 
@@ -119,11 +121,11 @@ The authors move beyond leakage to formulate five causes of reproducibility fail
 
 **D5. Absence of computational reproducibility.** Without code, data, and environment, independent verification is impossible. Recommendation R5: ensure computational reproducibility, including through containerised platforms that recreate the original environment.
 
-## Part II. A Stage-by-Stage Guide to Sound Practice
+## 2. A Stage-by-Stage Guide to Sound Practice
 
 The second body of work complements the taxonomy by following the research process from planning to publication. Lones organises the guidance into five stages: preparation, model building, evaluation, comparison, and reporting. The recommendations below preserve the substance of that guide while presenting it in continuous prose.
 
-### 1. Before model building
+### 2.1. Before Model Building
 
 **Planning the use of data.** Data serve two distinct purposes - training and verification - but this does not necessarily imply a single split into two parts. Model development involves experimentation, which requires a separate validation set. The more comparisons are made on validation data, the more the validation set is overfitted through the multiplicity effect; in complex projects it may therefore be advisable to reserve several validation sets. A test set drawn from the same source as the training data inherits its biases and may not permit a measurement of generalisation; more than one test set may be required. Under cross-validation, an additional hold-out set is often needed to evaluate the final model instance.
 
@@ -137,7 +139,7 @@ The second body of work complements the taxonomy by following the research proce
 
 **Research context.** Domain experts help to identify a useful problem, meaningful features, an appropriate model, and a suitable venue for publication. A review of the literature prevents repetition of work already done and allows the study to build on prior results. Finally, it is useful to consider deployment in advance: constraints on memory, latency, energy consumption, and operating cost influence the choice of model.
 
-### 2. Reliable model building
+### 2.2. Reliable Model Building
 
 **Preventing leakage.** This is the central recommendation. Information from the test set must not enter the configuration, training, or selection of models. In addition to the cases already described - scaling and imputation over the full dataset, feature selection before splitting, augmentation before splitting, repeated use of the test set - there are specific forms: temporal dependencies, duplicates, and dependent observations. The most reliable measure is to set aside an independent test set at the outset and to use it once, at the end, to evaluate a single final model.
 
@@ -153,7 +155,7 @@ The second body of work complements the taxonomy by following the research proce
 
 **Spurious correlations.** A model may rely on features that correlate with the target but carry no substantive meaning. The classic illustration is the tank problem: images of tanks and non-tanks differed in weather and background, and the model learned to recognise the background rather than the object. Complex data contain more such correlations, and complex models have a greater capacity to learn them. Regularisation and augmentation reduce the risk, but the principal measure is to inspect the trained model and determine which features it responds to.
 
-### 3. Robust evaluation
+### 2.3. Robust Evaluation
 
 **An appropriate test set.** Performance on the training set is almost meaningless: a sufficiently complex model can memorise it without learning a generalisable regularity. The test set must not overlap with training and must be representative of the wider population. If training and test data are collected under identical conditions - in the same weather, on the same equipment - independence is violated, and the model may learn characteristics of the equipment that do not transfer to other conditions; such a defect will not be detected on that test set. "Frankenstein datasets", assembled from other public datasets, warrant caution because of possible overlap with training data. When several observations belong to one subject, they must not be distributed across different parts of the split. The COVID-19 pandemic is instructive: a substantial proportion of diagnostic models failed to transfer beyond their own test sets precisely because of such defects.
 
@@ -171,7 +173,7 @@ The second body of work complements the taxonomy by following the research proce
 
 **Temporal dependencies.** The order of observations in a time series is significant. The most characteristic error is look-ahead bias: the model is trained on data that are later than the test data and thus acquires knowledge of the future. Ordinary cross-validation on time series systematically creates this situation. The remedy is splitting by time and blocked cross-validation; whether special schemes are necessary depends in part on whether the series is stationary. Look-ahead bias also arises from preprocessing before splitting: scaling the entire series to [0, 1] before separating the test set, for example, allows the model to infer the future range of values. Data must be split before any operation that depends on their distribution.
 
-### 4. Fair comparison
+### 2.4. Fair Comparison
 
 **A larger number does not imply a better model.** Claims of the form "previous work reported 94% accuracy; our model achieves 95% and is therefore better" are invalid for several reasons: the models may have been trained and evaluated on different splits; the datasets may have differed in class imbalance; entirely different datasets may have been used; and the models may have been optimised to different degrees. Comparisons based on published figures therefore require caution. A fair comparison requires independent implementation of all models, equal optimisation of hyperparameters, repeated evaluation, and statistical testing of differences. A further complication arises with foundation models: their training data are often unknown, so independence of the test set from training cannot be guaranteed.
 
@@ -185,7 +187,7 @@ The second body of work complements the taxonomy by following the research proce
 
 **Model composition.** ML does not always reduce to the choice of a single model; compositions can compensate for the weaknesses of components. When stacking and embeddings are used, however, care must be taken that test data do not participate in the training of any component. Components trained on overlapping data create leakage. An independent test set is desirable for evaluating a composite model.
 
-### 5. Reporting
+### 2.5. Reporting
 
 **Transparency.** Code, experiment scripts, and descriptions of the computational environment should be published. This permits replication, facilitates fair comparison, and disciplines the authors. Requirements for reproducibility are becoming more stringent in the community; experiment-tracking systems and checklists are useful.
 
@@ -199,11 +201,11 @@ The second body of work complements the taxonomy by following the research proce
 
 **Checklists.** A checklist helps to traverse the whole pipeline and to document how decisions support a substantive conclusion. It is especially useful at the planning stage. Lones recommends REFORMS, a consensus checklist for ML-based science developed in part by Kapoor.
 
-### 6. Concluding remarks
+### 2.6. Concluding Remarks
 
 The practice of ML is young, and the errors that allow a model to appear sound are numerous. Publishing such results misleads, and deploying them may cause harm. The guidance describes common errors and the measures that prevent them, and it also touches on broader questions of good practice: fairness, transparency, and bias. Because new approaches generate new risks, the theory of sound practice lags behind practice, and what is considered correct today may change tomorrow; vigilance is therefore necessary.
 
-## Part III. A Synthesis: From Symptom to Remedy
+## 3. A Synthesis: From Symptom to Remedy
 
 | Symptom | Probable mechanism | Remedy |
 | --- | --- | --- |
@@ -216,7 +218,7 @@ The practice of ML is young, and the errors that allow a model to appear sound a
 | The result does not reproduce | No code, data, or environment | Publish artefacts, containerise, use a checklist |
 | The claim extends beyond the population studied | Test set does not match the target distribution | Define the population explicitly; restrict the claim |
 
-### A minimal protocol for sound experimental design
+### 3.1. A Minimal Protocol for Sound Experimental Design
 
 1. State the scientific claim and the target distribution to which it applies.
 2. Set aside a test set before any data-dependent operation, and fix it.

@@ -1,5 +1,5 @@
 ---
-name: Tuning
+name: Tune
 description: Use this skill for any question about tuning the prompts and tool descriptions of an agent harness, including regularized iterative improvement, overfitting to a development sample, pruning instructions that do not earn their place, and controlling the token cost of a change. Also use it when assessing whether a measured improvement is real, when reviewing a proposed prompt or tool-description edit, or when planning a tuning loop over several rounds.
 ---
 
