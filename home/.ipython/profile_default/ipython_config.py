@@ -1,6 +1,4 @@
-from IPython.utils.PyColorize import Theme, theme_table
 from prompt_toolkit.styles import defaults as ptk_defaults
-from pygments.token import Token
 from traitlets.config import get_config
 
 BASE00 = "#131914"
@@ -20,81 +18,10 @@ BASE0D = "#97BACC"
 BASE0E = "#B89CC1"
 BASE0F = "#AA7466"
 
-theme = Theme(
-    "custom",
-    None,
-    {
-        Token.Text: BASE05,
-        Token.Whitespace: BASE05,
-        Token.Error: f"{BASE00} bg:{BASE08}",
-        Token.Comment: BASE03,
-        Token.Comment.Preproc: BASE08,
-        Token.Comment.PreprocFile: BASE08,
-        Token.Comment.Special: BASE0C,
-        Token.Keyword: BASE0E,
-        Token.Keyword.Constant: BASE0A,
-        Token.Keyword.Namespace: BASE08,
-        Token.Keyword.Type: BASE0A,
-        Token.Operator: BASE05,
-        Token.Operator.Word: BASE05,
-        Token.Punctuation: BASE0F,
-        Token.Name: BASE05,
-        Token.Name.Attribute: BASE0C,
-        Token.Name.Builtin: BASE09,
-        Token.Name.Builtin.Pseudo: BASE09,
-        Token.Name.Class: BASE0A,
-        Token.Name.Constant: BASE0A,
-        Token.Name.Decorator: BASE08,
-        Token.Name.Exception: BASE0A,
-        Token.Name.Function: BASE0D,
-        Token.Name.Label: BASE0A,
-        Token.Name.Namespace: BASE0E,
-        Token.Name.Tag: BASE0A,
-        Token.Name.Variable: BASE05,
-        Token.Name.Variable.Magic: BASE09,
-        Token.Literal.String: BASE0B,
-        Token.Literal.String.Char: BASE08,
-        Token.Literal.String.Doc: BASE0B,
-        Token.Literal.String.Escape: BASE0F,
-        Token.Literal.String.Interpol: BASE0F,
-        Token.Literal.String.Regex: BASE0B,
-        Token.Literal.Number: BASE09,
-        Token.Literal.Number.Float: BASE09,
-        Token.Generic.Deleted: f"{BASE08} bg:{BASE01}",
-        Token.Generic.Inserted: f"{BASE0B} bg:{BASE01}",
-        Token.Generic.Error: f"{BASE00} bg:{BASE08}",
-        Token.Generic.Output: BASE03,
-        Token.Prompt: BASE03,
-        Token.PromptNum: BASE09,
-        Token.OutPrompt: BASE03,
-        Token.OutPromptNum: BASE09,
-        Token.Header: BASE08,
-        Token.ExcName: BASE08,
-        Token.Topline: BASE08,
-        Token.Lineno: BASE03,
-        Token.LinenoEm: f"bold {BASE0B}",
-        Token.Filename: BASE0C,
-        Token.FilenameEm: f"bold {BASE0C}",
-        Token.VName: BASE0C,
-        Token.ValEm: BASE09,
-        Token.Normal: BASE05,
-        Token.NormalEm: f"bold {BASE05}",
-        Token.Caret: BASE08,
-        Token.Line: BASE05,
-        Token.TB.Name: BASE0D,
-        Token.TB.NameEm: f"bold {BASE0D}",
-        Token.Breakpoint: BASE08,
-        Token.Breakpoint.Enabled: BASE08,
-        Token.Breakpoint.Disabled: BASE03,
-        Token.TbHighlight: f"bg:{BASE02}",
-    },
-)
-
-theme_table["custom"] = theme
 c = get_config()
 c.TerminalInteractiveShell.enable_tip = False
 c.TerminalInteractiveShell.true_color = True
-c.InteractiveShell.colors = "custom"
+c.InteractiveShell.colors = "jungle"
 
 prompt_toolkit_overrides = {
     "readline-like-completions": f"fg:{BASE05} bg:{BASE01}",
