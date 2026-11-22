@@ -185,6 +185,10 @@ vim.keymap.set("n", "<leader>q", "<Cmd>copen<CR>")
 vim.keymap.set("n", "<leader>c", "<Cmd>cclose<CR>")
 vim.keymap.set("n", "<leader>r", vim.lsp.buf.format)
 
+for i = 1, 5 do
+    vim.keymap.set("n", "<C-w>" .. i, "<Cmd>tabnext " .. i .. "<CR>")
+end
+
 vim.keymap.set("n", "<leader>d", function()
     vim.diagnostic.setqflist({ open = true })
 end)
