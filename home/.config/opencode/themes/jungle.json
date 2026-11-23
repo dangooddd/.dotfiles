@@ -19,7 +19,8 @@
         },
         "secondary": {
           "base": "$text.muted",
-          "$hovered": "$text.base"
+          "$hovered": "$text.base",
+          "$focused": "#131914"
         },
         "destructive": {
           "base": "#131914",
@@ -155,7 +156,15 @@
         "action": {
           "primary": {
             "$hovered": "$background.raised.high"
+          },
+          "secondary": {
+            "$hovered": "$background.raised.high"
           }
+        }
+      },
+      "@footer": {
+        "text": {
+          "muted": "$hue.neutral.200"
         }
       }
     }
