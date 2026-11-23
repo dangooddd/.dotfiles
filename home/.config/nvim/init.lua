@@ -221,7 +221,7 @@ vim.keymap.set("n", "<leader>fl", require("fzf-lua").live_grep)
 vim.keymap.set("n", "<leader>fz", require("fzf-lua").builtin)
 vim.keymap.set("n", "<leader>fr", require("fzf-lua").resume)
 
-vim.keymap.set({ "n", "t" }, "<C-t>", require("terminal.floaterm").toggle)
+vim.keymap.set({ "n", "t" }, "<C-e>", require("terminal.floaterm").toggle)
 vim.keymap.set({ "n", "t" }, "<C-g>", require("terminal.lazygit").toggle)
 vim.keymap.set("n", "<leader>gc", require("terminal.lazygit").close)
 
