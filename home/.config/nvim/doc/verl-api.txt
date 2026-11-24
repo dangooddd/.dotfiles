@@ -1,0 +1,983 @@
+*verl-api.txt*	verl documentation: api
+Version latest — https://verl.readthedocs.io/en/latest/
+
+==============================================================================
+API                                                         *verl-section-api*
+
+
+----------------------------------------------------------------------------
+Data interface                                                *verl.DataProto*
+
+Last updated: 05/19/2025 (API docstrings are auto-generated).
+
+DataProto is the interface for data exchange.
+
+The |verl.DataProto| class contains two key members:
+
+- batch: a `tensordict.TensorDict` object for the actual data
+- meta_info: a `Dict` with additional meta information
+
+TENSORDICT                                               *api-data-tensordict*
+
+`DataProto.batch` is built on top of `tensordict`, a project in the PyTorch
+ecosystem. A TensorDict is a dict-like container for tensors. To instantiate
+a TensorDict, you must specify key-value pairs as well as the batch size.
+
+>python
+    >>> import torch
+    >>> from tensordict import TensorDict
+    >>> tensordict = TensorDict({"zeros": torch.zeros(2, 3, 4), "ones": torch.ones(2, 3, 5)}, batch_size=[2,])
+    >>> tensordict["twos"] = 2 * torch.ones(2, 5, 6)
+    >>> zeros = tensordict["zeros"]
+    >>> tensordict
+    TensorDict(
+    fields={
+        ones: Tensor(shape=torch.Size([2, 3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+        twos: Tensor(shape=torch.Size([2, 5, 6]), device=cpu, dtype=torch.float32, is_shared=False),
+        zeros: Tensor(shape=torch.Size([2, 3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
+    batch_size=torch.Size([2]),
+    device=None,
+    is_shared=False)
+<
+One can also index a tensordict along its batch_size. The contents of the
+TensorDict can be manipulated collectively as well.
+
+>python
+    >>> tensordict[..., :1]
+    TensorDict(
+    fields={
+        ones: Tensor(shape=torch.Size([1, 3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+        twos: Tensor(shape=torch.Size([1, 5, 6]), device=cpu, dtype=torch.float32, is_shared=False),
+        zeros: Tensor(shape=torch.Size([1, 3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
+    batch_size=torch.Size([1]),
+    device=None,
+    is_shared=False)
+    >>> tensordict = tensordict.to("cuda:0")
+    >>> tensordict = tensordict.reshape(6)
+<
+For more about `tensordict.TensorDict` usage, see the official tensordict
+https://pytorch.org/tensordict/stable/overview.html documentation.
+
+CORE APIS                                                 *api-data-core-apis*
+
+class verl.DataProto(batch: TensorDict = None, non_tensor_batch: dict =
+    <factory>, meta_info: dict = <factory>)
+    A DataProto is a data structure that aims to provide a standard protocol
+    for data exchange between functions. It contains a batch (TensorDict)
+    and a meta_info (Dict). The batch is a TensorDict
+    https://pytorch.org/tensordict/. TensorDict allows you to manipulate a
+    dictionary of Tensors like a single Tensor. Ideally, the tensors with
+    the same batch size should be put inside batch.
+
+    static concat(data: list[|verl.DataProto|]) → |verl.DataProto|
+    *verl.DataProto.concat*
+        Concat a list of DataProto. The batch is concatenated among dim=0.
+        The meta_info is merged, with special handling for metrics from
+        different workers.
+
+        Parameters: ~
+            data (List[|verl.DataProto|]) -- list of DataProto
+
+        Returns: ~
+            concatenated DataProto
+
+        Return type: ~
+            |verl.DataProto|
+
+    make_iterator(mini_batch_size, epochs, seed=None,
+    dataloader_kwargs=None) *verl.DataProto.make_iterator*
+        Make an iterator from the DataProto. This is built upon that
+        TensorDict can be used as a normal Pytorch dataset. See
+        https://pytorch.org/tensordict/stable/tutorials/data_fashion for
+        more details.
+
+        Parameters: ~
+            - mini_batch_size (int) -- mini-batch size when iterating the
+              dataset. We require that
+              `batch.batch_size[0] % mini_batch_size == 0`.
+            - epochs (int) -- number of epochs when iterating the dataset.
+            - dataloader_kwargs (Any) -- internally, it returns a DataLoader
+              over the batch. The dataloader_kwargs is the kwargs passed to
+              the DataLoader.
+
+        Returns: ~
+            an iterator that yields a mini-batch data at a time. The total
+            number of iteration
+                steps is `self.batch.batch_size * epochs // mini_batch_size`
+
+        Return type: ~
+            Iterator
+
+    select(batch_keys=None, non_tensor_batch_keys=None, meta_info_keys=None,
+    deepcopy=False) → |verl.DataProto| *verl.DataProto.select*
+        Select a subset of the DataProto via batch_keys and meta_info_keys
+
+        Parameters: ~
+            - batch_keys (list, optional) -- a list of strings indicating
+              the keys in batch to select
+            - meta_info_keys (list, optional) -- a list of keys indicating
+              the meta info to select
+
+        Returns: ~
+            the DataProto with the selected batch_keys and meta_info_keys
+
+        Return type: ~
+            |verl.DataProto|
+
+    to(device) → |verl.DataProto| *verl.DataProto.to*
+        move the batch to device
+
+        Parameters: ~
+            device (torch.device, str) -- torch device
+
+        Returns: ~
+            the current DataProto
+
+        Return type: ~
+            |verl.DataProto|
+
+    union(other: |verl.DataProto|) → |verl.DataProto| *verl.DataProto.union*
+        Union with another DataProto. Union batch and meta_info separately.
+        Throw an error if
+
+        - there are conflict keys in batch and they are not equal
+        - the batch size of two data batch is not the same
+        - there are conflict keys in meta_info and they are not the same.
+
+        Parameters: ~
+            other (|verl.DataProto|) -- another DataProto to union
+
+        Returns: ~
+            the DataProto after union
+
+        Return type: ~
+            |verl.DataProto|
+
+----------------------------------------------------------------------------
+Single Controller interface                    *verl.single_controller.Worker*
+
+Last updated: 05/27/2025 (API docstrings are auto-generated).
+
+The Single Controller provides a unified interface for managing distributed
+workers using Ray or other backends and executing functions across them. It
+simplifies the process of dispatching tasks and collecting results,
+particularly when dealing with data parallelism or model parallelism.
+
+CORE APIS                                    *api-single_controller-core-apis*
+
+class verl.single_controller.Worker(cuda_visible_devices=None)
+    A distributed worker that handles initialization and configuration for
+    distributed training.
+
+    This class manages worker initialization, configuration, and provides
+    methods for executing distributed operations. It handles communication
+    settings, device configuration, and worker metadata management.
+
+    __init__(cuda_visible_devices=None) → None
+    *verl.single_controller.Worker.__init__*
+        Initialize the worker with environment settings and device
+        configuration.
+
+        Parameters: ~
+            cuda_visible_devices (str, optional) -- CUDA visible devices
+            configuration. Defaults to None.
+
+    classmethod __new__(*args, **kwargs)
+    *verl.single_controller.Worker.__new__*
+
+    get_cuda_visible_devices()
+    *verl.single_controller.Worker.get_cuda_visible_devices*
+        Get the CUDA visible devices configuration.
+
+    get_master_addr_port()
+    *verl.single_controller.Worker.get_master_addr_port*
+        Get the master address and port for distributed communication.
+
+    property rank *verl.single_controller.Worker.rank*
+        Get the rank of this worker in the distributed setup.
+
+    property world_size *verl.single_controller.Worker.world_size*
+        Get the total number of workers in the distributed setup.
+
+class verl.single_controller.WorkerGroup(resource_pool:
+    |verl.single_controller.ResourcePool|, **kwargs)
+    *verl.single_controller.WorkerGroup*
+    Base class for managing a group of workers in a distributed system. The
+    class provides methods for worker management, aliveness checking, and
+    method binding.
+
+    __init__(resource_pool: |verl.single_controller.ResourcePool|, **kwargs)
+    → None *verl.single_controller.WorkerGroup.__init__*
+
+    property world_size *verl.single_controller.WorkerGroup.world_size*
+        Number of workers in the group.
+
+class verl.single_controller.ClassWithInitArgs(cls, *args, **kwargs)
+    *verl.single_controller.ClassWithInitArgs*
+    Wrapper class that stores constructor arguments for deferred
+    instantiation. This class is particularly useful for remote class
+    instantiation where the actual construction needs to happen at a
+    different time or location.
+
+    __call__() → Any *verl.single_controller.ClassWithInitArgs.__call__*
+        Instantiate the stored class with the stored arguments.
+
+    __init__(cls, *args, **kwargs) → None
+    *verl.single_controller.ClassWithInitArgs.__init__*
+        Initialize the ClassWithInitArgs instance.
+
+        Parameters: ~
+            - cls -- The class to be instantiated later
+            - *args -- Positional arguments for the class constructor
+            - **kwargs -- Keyword arguments for the class constructor
+
+class verl.single_controller.ResourcePool(process_on_nodes=None,
+    max_colocate_count: int = 10, n_gpus_per_node=8)
+    *verl.single_controller.ResourcePool*
+    Manages a pool of resources across multiple nodes, tracking process
+    counts and GPU allocations. The class provides methods to calculate
+    world size, local world sizes, and local ranks across all nodes in the
+    pool.
+
+    __init__(process_on_nodes=None, max_colocate_count: int = 10,
+    n_gpus_per_node=8) → None *verl.single_controller.ResourcePool.__init__*
+        Initialize the ResourcePool with node processes and GPU
+        configuration.
+
+        Parameters: ~
+            - process_on_nodes (List[int], optional) -- List of process
+              counts per node. Defaults to empty list.
+            - max_colocate_count (int, optional) -- Maximum number of
+              processes that can be colocated. Defaults to 10.
+            - n_gpus_per_node (int, optional) -- Number of GPUs available
+              per node. Defaults to 8.
+
+    local_rank_list() → list[int]
+    *verl.single_controller.ResourcePool.local_rank_list*
+        Returns a flat list of local ranks for all processes across all
+        nodes.
+
+    local_world_size_list() → list[int]
+    *verl.single_controller.ResourcePool.local_world_size_list*
+        Returns a flat list where each process has its local world size.
+
+    property world_size *verl.single_controller.ResourcePool.world_size*
+        Total number of processes across all nodes in the pool.
+
+class verl.single_controller.ray.RayWorkerGroup(resource_pool:
+    RayResourcePool = None, ray_cls_with_init: RayClassWithInitArgs = None,
+    bin_pack: bool = True, name_prefix: str = None, detached=False,
+    worker_names=None, worker_handles: list[ActorHandle] = None,
+    ray_wait_register_center_timeout: int = 300, **kwargs)
+    *verl.single_controller.ray.RayWorkerGroup*
+    A group of Ray workers that can be managed collectively.
+
+    This class extends WorkerGroup to provide Ray-specific functionality for
+    creating and managing groups of Ray actors with specific resource
+    requirements and scheduling strategies.
+
+    __init__(resource_pool: RayResourcePool = None, ray_cls_with_init:
+    RayClassWithInitArgs = None, bin_pack: bool = True, name_prefix: str =
+    None, detached=False, worker_names=None, worker_handles:
+    list[ActorHandle] = None, ray_wait_register_center_timeout: int = 300,
+    **kwargs) → None *verl.single_controller.ray.RayWorkerGroup.__init__*
+        Initialize a RayWorkerGroup.
+
+        Parameters: ~
+            - resource_pool -- Resource pool for worker allocation
+            - ray_cls_with_init -- Class with initialization arguments for
+              workers
+            - bin_pack -- Whether to use strict bin packing for resource
+              allocation
+            - name_prefix -- Prefix for worker names
+            - detached -- Whether workers should be detached
+            - worker_names -- Names of existing workers to attach to
+            - ray_wait_register_center_timeout -- Timeout for waiting on
+              register center
+            - **kwargs -- Additional keyword arguments
+
+verl.single_controller.ray.create_colocated_worker_cls(class_dict: dict[str,
+    RayClassWithInitArgs])
+    *verl.single_controller.ray.create_colocated_worker_cls*
+    This function should return a class instance that delegates the calls to
+    every cls in cls_dict
+
+----------------------------------------------------------------------------
+Trainer Interface                          *verl.utils.tokenizer.hf_tokenizer*
+
+Last updated: 06/08/2025 (API docstrings are auto-generated).
+
+Trainers drive the training loop. Introducing new trainer classes in case of
+new training paradiam is encouraged.
+
+CORE APIS                            *api-trainer-module-verl.utils.tokenizer*
+
+*api-trainer-core-apis*
+
+verl.utils.tokenizer.hf_tokenizer(name_or_path, correct_pad_token=True,
+    correct_gemma2=True, **kwargs)
+    Create a huggingface pretrained tokenizer which correctness handles eos
+    and pad tokens.
+
+    Parameters: ~
+        - name (str) -- The name of the tokenizer.
+        - correct_pad_token (bool) -- Whether to correct the pad token id.
+        - correct_gemma2 (bool) -- Whether to correct the gemma2 tokenizer.
+
+    Returns: ~
+        The pretrained tokenizer.
+
+    Return type: ~
+        transformers.PreTrainedTokenizer
+
+Core functions to implement PPO algorithms. The function implemented in this
+file should be used by trainer with different distributed strategies to
+implement PPO-like algorithms.
+
+verl.trainer.ppo.core_algos.agg_loss(loss_mat: Tensor, loss_mask: Tensor,
+    loss_agg_mode: str, dp_size: int = 1, batch_num_tokens: int | None = None,
+    global_batch_size: int | None = None, loss_scale_factor: int | None = None)
+    *verl.trainer.ppo.core_algos.agg_loss*
+    Aggregate the loss across global batch to ensure the loss is invariant
+    to fsdp/megatron parallelism.
+
+    NOTE: The returned loss has different behaviors for different backend: -
+    FSDP: the loss is directly used for backward. - Megatron: the loss
+    should be scaled by num_microbatches and cp_size for pp schedule.
+
+    Parameters: ~
+        - loss_mat -- micro batch loss matrix, (bs, response_length)
+        - loss_mask -- micro batch loss mask, (bs, response_length)
+        - loss_agg_mode -- method to aggregate the loss matrix into a scalar
+        - dp_size -- data parallel size
+        - batch_num_tokens -- number of valid tokens in global batch
+        - global_batch_size -- global batch size
+        - loss_scale_factor -- scale factor for “seq-mean-token-sum-norm”
+          mode. If None, uses loss_mask.shape[-1]. Set this to a constant
+          value to ensure consistent normalization throughout training.
+
+    Returns: ~
+        a scalar torch.Tensor
+            aggregated loss
+
+    Return type: ~
+        loss
+
+verl.trainer.ppo.core_algos.compute_policy_loss(old_log_prob, log_prob,
+    advantages, response_mask, cliprange=None, cliprange_low=None,
+    cliprange_high=None, clip_ratio_c=3.0, loss_agg_mode: str = 'token-mean')
+    *verl.trainer.ppo.core_algos.compute_policy_loss*
+    Compute the clipped policy objective and related metrics for PPO.
+
+    Adapted from
+    https://github.com/huggingface/trl/blob/main/trl/trainer/ppo_trainer.py#L1122
+
+    Parameters: ~
+        - old_log_prob (torch.Tensor) -- Log-probabilities of actions under
+          the old policy, shape (batch_size, response_length).
+        - log_prob (torch.Tensor) -- Log-probabilities of actions under the
+          current policy, shape (batch_size, response_length).
+        - advantages (torch.Tensor) -- Advantage estimates for each action,
+          shape (batch_size, response_length).
+        - response_mask (torch.Tensor) -- Mask indicating which tokens to
+          include in the loss, shape (batch_size, response_length).
+        - cliprange (float, optional) -- Clipping parameter ε for standard
+          PPO. See https://arxiv.org/abs/1707.06347. Defaults to None (must
+          be provided).
+        - cliprange_low (float, optional) -- Lower clip range for dual-clip
+          PPO. Defaults to same as cliprange.
+        - cliprange_high (float, optional) -- Upper clip range for dual-clip
+          PPO. Defaults to same as cliprange.
+        - clip_ratio_c (float, optional) -- Lower bound of the ratio for
+          dual-clip PPO. See https://arxiv.org/pdf/1912.09729. Defaults to
+          3.0.
+        - loss_agg_mode (str, optional) -- Aggregation mode for agg_loss.
+          Defaults to “token-mean”.
+
+verl.trainer.ppo.core_algos.kl_penalty(logprob: FloatTensor, ref_logprob:
+    FloatTensor, kl_penalty) → FloatTensor
+    *verl.trainer.ppo.core_algos.kl_penalty*
+    Compute KL divergence given logprob and ref_logprob. Optionally using
+    straight through to bind k2 on other kl penalty compute method for
+    unbiased KL gradient estimation. See more description in
+    http://joschu.net/blog/kl-approx.html
+
+    Parameters: ~
+        - logprob
+        - ref_logprob
+
+    Returns: ~
+        kl_estimate
+
+verl.trainer.ppo.reward.load_reward_manager(config: DictConfig, tokenizer:
+    Any, **reward_kwargs: Any) → RewardManagerBase
+    *verl.trainer.ppo.reward.load_reward_manager*
+    Load and initialize a reward manager based on the configuration.
+
+    Parameters: ~
+        - config -- PPO trainer configuration object containing reward_model
+          fields.
+        - tokenizer -- Tokenizer object used for processing text.
+        - **reward_kwargs -- Additional keyword arguments for the reward
+          manager.
+
+    Returns: ~
+        An instance of the specified reward manager class.
+
+class verl.workers.reward_manager.NaiveRewardManager(tokenizer, num_examine,
+    compute_score=None, reward_fn_key='data_source', compute_score_timeout=None)
+    *verl.workers.reward_manager.NaiveRewardManager*
+    The reward manager.
+
+                               *verl.workers.reward_manager.DAPORewardManager*
+class verl.workers.reward_manager.DAPORewardManager(tokenizer, num_examine,
+    compute_score=None, reward_fn_key='data_source', max_resp_len=None,
+    overlong_buffer_cfg=None)
+    The reward manager.
+
+----------------------------------------------------------------------------
+Utilities                            *verl.utils.py_functional.append_to_dict*
+
+Last updated: 05/19/2025 (API docstrings are auto-generated).
+
+This section documents the utility functions and classes in the VERL
+library.
+
+PYTHON FUNCTIONAL UTILITIES        *api-utils-module-verl.utils.py_functional*
+
+*api-utils-python-functional-utilities*
+
+Contain small python utility functions
+
+verl.utils.py_functional.append_to_dict(data: dict, new_data: dict, prefix:
+    str = '')
+    Append values from new_data to lists in data.
+
+    For each key in new_data, this function appends the corresponding value
+    to a list stored under the same key in data. If the key doesn't exist in
+    data, a new list is created.
+
+    Parameters: ~
+        - data (Dict) -- The target dictionary containing lists as values.
+        - new_data (Dict) -- The source dictionary with values to append.
+
+    Returns: ~
+        The function modifies data in-place.
+
+    Return type: ~
+        None
+
+FILE SYSTEM UTILITIES                         *api-utils-module-verl.utils.fs*
+
+*api-utils-file-system-utilities*
+
+File-system agnostic IO APIs
+
+verl.utils.fs.copy_to_local(src: str, cache_dir=None, filelock='.file.lock',
+    verbose=False, always_recopy=False, use_shm: bool = False) → str
+    *verl.utils.fs.copy_to_local*
+    Copy files/directories from HDFS to local cache with validation.
+
+    Parameters: ~
+        - src (str) -- Source path - HDFS path (hdfs://...), local
+          filesystem path, or Hugging Face model ID
+        - cache_dir (str, optional) -- Local directory for cached files.
+          Uses system tempdir if None
+        - filelock (str) -- Base name for file lock. Defaults to
+          “.file.lock”
+        - verbose (bool) -- Enable copy operation logging. Defaults to False
+        - always_recopy (bool) -- Force fresh copy ignoring cache. Defaults
+          to False
+        - use_shm (bool) -- Enable shared memory copy. Defaults to False
+
+    Returns: ~
+        Local filesystem path to copied resource
+
+    Return type: ~
+        str
+
+TRACKING UTILITIES                      *api-utils-module-verl.utils.tracking*
+
+*api-utils-tracking-utilities*
+
+A unified tracking interface that supports logging data to different backend
+
+class verl.utils.tracking.Tracking(project_name, experiment_name,
+    default_backend: str | list[str] = 'console', config=None)
+    *verl.utils.tracking.Tracking*
+    A unified tracking interface for logging experiment data to multiple
+    backends.
+
+    This class provides a centralized way to log experiment metrics,
+    parameters, and artifacts to various tracking backends including WandB,
+    MLflow, SwanLab, TensorBoard, and console.
+
+    supported_backend *verl.utils.tracking.Tracking.supported_backend*
+        List of supported tracking backends.
+
+    logger *verl.utils.tracking.Tracking.logger*
+        Dictionary of initialized logger instances for each backend.
+
+    finish(exit_code: int = 0) *verl.utils.tracking.Tracking.finish*
+        Flush and finalize every configured backend exactly once.
+
+METRICS UTILITIES                         *api-utils-module-verl.utils.metric*
+
+*api-utils-metrics-utilities*
+
+                                            *verl.utils.metric.reduce_metrics*
+verl.utils.metric.reduce_metrics(metrics: dict[str, Metric | list[Any]]) →
+    dict[str, Any]
+    Reduces a dictionary of metric lists by computing the mean, max, or min
+    of each list. The reduce operation is determined by the key name: - If
+    the key contains “max”, np.max is used - If the key contains “min”,
+    np.min is used - Otherwise, np.mean is used
+
+    Parameters: ~
+        metrics -- A dictionary mapping metric names to lists of metric
+        values.
+
+    Returns: ~
+        A dictionary with the same keys but with each list replaced by its
+        reduced value.
+
+    Example: ~
+
+    >python
+        >>> metrics = {
+        ...     "loss": [1.0, 2.0, 3.0],
+        ...     "accuracy": [0.8, 0.9, 0.7],
+        ...     "max_reward": [5.0, 8.0, 6.0],
+        ...     "min_error": [0.1, 0.05, 0.2]
+        ... }
+        >>> reduce_metrics(metrics)
+        {"loss": 2.0, "accuracy": 0.8, "max_reward": 8.0, "min_error": 0.05}
+<
+
+                   *api-utils-module-verl.utils.checkpoint.checkpoint_manager*
+CHECKPOINT MANAGEMENT
+
+*api-utils-checkpoint-management*
+
+verl.utils.checkpoint.checkpoint_manager.find_latest_ckpt_path(path,
+    directory_format='global_step_{}')
+    *verl.utils.checkpoint.checkpoint_manager.find_latest_ckpt_path*
+    Return the most recent checkpoint directory based on a tracker file.
+
+    Parameters: ~
+        - path (str) -- Base directory containing the checkpoint tracker.
+        - directory_format (str) -- Template for checkpoint subfolders with
+          one placeholder for the iteration number (default
+          “global_step_{}”).
+
+    Returns: ~
+        Full path to the latest checkpoint directory, or None if the tracker
+        or checkpoint folder is missing.
+
+    Return type: ~
+        str or None
+
+class
+verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager(model:
+    FullyShardedDataParallel, optimizer: Optimizer | None = None, lr_scheduler:
+    LRScheduler | None = None, processing_class: PythonBackend | ProcessorMixin
+    = None, checkpoint_config: DictConfig = None, trust_remote_code: bool =
+    False, per_tensor_param_fn: Callable[[], tuple[Generator[tuple[str, Tensor],
+    None, None], dict | None]] | None = None, hf_export_dtype: dtype | None =
+    None, **kwargs)
+    *verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager*
+    Manage FSDP checkpointing in SPMD training.
+
+    - Saves/loads per-rank sharded model & optimizer states
+    - Persists full lr_scheduler and RNG state
+    - Stores HF tokenizer/processor and model/config for unified restore
+
+    Parameters: ~
+        - model (FSDP) -- Wrapped model instance.
+        - optimizer (Optimizer) -- Training optimizer.
+        - lr_scheduler (LRScheduler) -- Learning-rate scheduler.
+        - processing_class (PreTrainedTokenizer or ProcessorMixin, optional)
+          -- Pre-/post-processing artifact handler.
+        - DictConfig (checkpoint_contents) -- Configuration for checkpoint
+          contents. - ‘load': Components to load; must contain ‘model'.
+          Defaults to [‘model', ‘optimizer', ‘extra']. - ‘save': Components
+          to save; must contain ‘model'. Defaults to [‘model', ‘optimizer',
+          ‘extra'].
+        - trust_remote_code -- Whether to trust_remote_code when loading the
+          model configuration
+        - per_tensor_param_fn -- Callable with the engine
+          `get_per_tensor_param` contract yielding the full HF-format
+          weights streamed into the ‘hf_model' export; required when
+          ‘hf_model' is saved. It is called collectively on every rank.
+        - hf_export_dtype -- Optional dtype the forward computes parameters
+          in (the mixed-precision param_dtype). fp32 parameters are exported
+          in this dtype; buffers and parameters of modules excluded from
+          mixed precision keep their dtype, as the forward uses them
+          unconverted.
+
+    load_checkpoint(local_path: str, hdfs_path: str = None,
+    del_local_after_load=False)
+    *verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager.load_checkpoint*
+        Load an FSDP checkpoint for this rank.
+
+        Downloads and loads: ~
+
+        - model and optimizer shards
+        - extra state dict (scheduler + RNG)
+
+    Parameters: ~
+        - local_path -- Directory with per-rank checkpoint files.
+        - hdfs_path -- Unused (for API compatibility).
+        - del_local_after_load -- Remove local files after loading.
+
+save_checkpoint(local_path: str, hdfs_path: str = None, global_step: int =
+    0, max_ckpt_to_keep=None)
+    *verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager.save_checkpoint*
+    Save an FSDP checkpoint for this rank.
+
+    Writes: ~
+
+    - model & optimizer shard files
+    - extra state dict (scheduler + RNG)
+    - HF tokenizer/processor and model/config on rank 0
+    - optional full HF model under ‘huggingface/' if requested
+
+Rotates old checkpoints, keeping at most max_ckpt_to_keep.
+
+Parameters: ~
+    - local_path -- Target directory for checkpoint files.
+    - hdfs_path -- Unused (for API compatibility).
+    - global_step -- Current training step (used for bookkeeping).
+    - max_ckpt_to_keep -- Number of recent checkpoints to retain.
+
+DATASET UTILITIES             *api-utils-module-verl.utils.dataset.rl_dataset*
+
+*api-utils-dataset-utilities*
+
+class verl.utils.dataset.rl_dataset.RLHFDataset(data_files: str | list[str],
+    tokenizer: PythonBackend, config: DictConfig, processor: ProcessorMixin |
+    None = None, max_samples: int = -1)
+    *verl.utils.dataset.rl_dataset.RLHFDataset*
+    Load and preprocess RLHF data from Parquet files.
+
+    - Caches files locally.
+    - Reads into a HuggingFace Dataset and tokenizes prompts.
+    - Optionally handles images/videos via a ProcessorMixin.
+    - Filters prompts over a max length.
+    - Supports resuming from checkpoints.
+
+    Parameters: ~
+        - data_files (str or list) -- Path(s) to Parquet file(s).
+        - tokenizer (PreTrainedTokenizer) -- For the tokenization of text to
+          token IDs.
+        - config (DictConfig) -- Options like cache_dir, prompt_key,
+          max_prompt_length, truncation, etc.
+        - processor (ProcessorMixin, optional) -- Multimodal preprocessor
+          for images/videos.
+
+    async classmethod process_vision_info(messages: list[dict],
+    image_patch_size, config: DictConfig) → tuple[list[Image],
+    list[tuple[Tensor, dict]]]
+    *verl.utils.dataset.rl_dataset.RLHFDataset.process_vision_info*
+        Extract images and videos from messages.
+
+        This method is called by AgentLoop (e.g SingleTurnAgentLoop) before
+        apply_chat_template to the raw_prompt from dataset. User may
+        customize RLHFDataset and override this method to support custom
+        vision extraction.
+
+        >python
+            >>> messages = kwargs["raw_prompt"]
+            >>> images, videos = RLHFDataset.process_vision_info(messages, image_patch_size)
+            >>> videos, video_metadatas = zip(*videos)
+            >>> raw_prompt = processor.apply_chat_template(messages, tokenize=False)
+            >>> inputs = processor(text=[raw_prompt], images=images, videos=videos,
+            ...                    video_metadata=video_metadatas, do_sample_frames=False)
+<
+        Parameters: ~
+            - messages -- List of messages from dataset raw_prompt.
+            - image_patch_size -- Image patch size for processor.
+            - config -- Config for dataset.
+
+        Returns: ~
+            List of images. videos: List of videos, each video is a tuple of
+            (video_tensor, video_metadata).
+
+        Return type: ~
+            images
+
+    split(num_splits: int) *verl.utils.dataset.rl_dataset.RLHFDataset.split*
+        split the dataset into num_splits sub-datasets :param num_splits:
+        specified number of splits
+
+        Returns: ~
+            list of RLHFDataset splits
+
+        Return type: ~
+            List[|verl.utils.dataset.rl_dataset.RLHFDataset|]
+
+        Raises: ~
+            ValueError -- if num_splits is not a positive integer
+
+verl.utils.dataset.rl_dataset.collate_fn(data_list: list[dict]) → dict
+    *verl.utils.dataset.rl_dataset.collate_fn*
+    Collate a batch of sample dicts into batched tensors and arrays.
+
+    Parameters: ~
+        data_list -- List of dicts mapping feature names to torch.Tensor or
+        other values.
+
+    Returns: ~
+        Dict where tensor entries are stacked into a torch.Tensor of shape
+        (batch_size, *dims) and non-tensor entries are converted to
+        np.ndarray of dtype object with shape (batch_size,).
+
+TORCH FUNCTIONAL UTILITIES      *api-utils-module-verl.utils.torch_functional*
+
+*api-utils-torch-functional-utilities*
+
+Contain small torch utilities
+
+verl.utils.torch_functional.get_constant_schedule_with_warmup(optimizer:
+    Optimizer, num_warmup_steps: int, last_epoch: int = -1)
+    *verl.utils.torch_functional.get_constant_schedule_with_warmup*
+    Create a constant LR schedule with a linear warmup phase.
+
+    Parameters: ~
+        - optimizer (Optimizer) -- Wrapped optimizer.
+        - num_warmup_steps (int) -- Number of steps to ramp up the LR from 0
+          to initial value.
+        - last_epoch (int, optional) -- The index of the last epoch when
+          resuming training. Defaults to -1.
+
+    Returns: ~
+        Scheduler that increases LR linearly during warmup, then holds it
+        constant.
+
+    Return type: ~
+        LambdaLR
+
+verl.utils.torch_functional.logprobs_from_logits(logits, labels,
+    inplace_backward=True, batch_invariant=False, temperature=None)
+    *verl.utils.torch_functional.logprobs_from_logits*
+    Compute per-token log-probabilities for the given labels.
+
+    Uses a Flash-Attention--based cross-entropy (if available) for efficient
+    backward, otherwise falls back to a standard log-softmax+gather
+    approach.
+
+    See:
+    https://github.com/pytorch/pytorch/issues/563#issuecomment-330103591
+
+    Parameters: ~
+        - logits (Tensor) -- Model outputs of shape (..., vocab_size).
+        - labels (LongTensor) -- True class indices of shape matching
+          logits[..., :-1].
+        - inplace_backward (bool) -- If True and Flash-Attn is available,
+          perform backward in-place.
+        - batch_invariant (bool) -- If True, compute the log-probabilities
+          the way the vLLM sampler reports them: fp32 logits divided by the
+          fp32 per-row `temperature` (unscaled when `None` or below 1e-5),
+          fp32 log_softmax over the full vocabulary, then gather. Returns
+          float32 regardless of the logits dtype, and `inplace_backward` is
+          unused.
+        - temperature (Tensor, optional) -- Per-row temperature for the
+          `batch_invariant` path, which takes unscaled logits. The other
+          paths expect logits that are already scaled.
+
+    Returns: ~
+        Log-probabilities of the target labels, shape logits.shape[:-1].
+
+    Return type: ~
+        Tensor
+
+verl.utils.torch_functional.masked_mean(values, mask, axis=None)
+    *verl.utils.torch_functional.masked_mean*
+    Compute the mean of values over elements selected by mask.
+
+    Parameters: ~
+        - values (Tensor) -- Input tensor.
+        - mask (Tensor) -- Boolean or numeric mask of the same shape as
+          values.
+        - axis (int or tuple of int, optional) -- Dimension(s) along which
+          to compute the mean. Defaults to None (over all elements).
+
+    Returns: ~
+        Masked mean, with shape equal to values reduced over axis.
+
+    Return type: ~
+        Tensor
+
+verl.utils.torch_functional.masked_whiten(values, mask, shift_mean=True)
+    *verl.utils.torch_functional.masked_whiten*
+    Whiten values by normalizing with mean and variance computed over mask.
+
+    Parameters: ~
+        - values (torch.Tensor) -- Input tensor.
+        - mask (torch.Tensor) -- Boolean tensor of same shape, selects
+          elements for stats.
+        - shift_mean (bool) -- If True (default), output is zero-mean; if
+          False, the original mean is re-added after scaling.
+
+    Returns: ~
+        Whitened tensor of same shape as values.
+
+    Return type: ~
+        torch.Tensor
+
+SEQUENCE LENGTH BALANCING       *api-utils-module-verl.utils.seqlen_balancing*
+
+*api-utils-sequence-length-balancing*
+
+verl.utils.seqlen_balancing.get_reverse_idx(idx_map)
+    *verl.utils.seqlen_balancing.get_reverse_idx*
+    Build the inverse of an index mapping.
+
+    Parameters: ~
+        idx_map (Sequence[int]) -- Sequence where idx_map[i] = j.
+
+    Returns: ~
+        Inverse mapping list such that output[j] = i for each i.
+
+    Return type: ~
+        List[int]
+
+verl.utils.seqlen_balancing.rearrange_micro_batches(batch, max_token_len,
+    dp_group=None, num_batches_divided_by=None, same_micro_num_in_dp=True,
+    min_num_micro_batch=None, use_dynamic_bsz_balance=True, force_group_size=1)
+    *verl.utils.seqlen_balancing.rearrange_micro_batches*
+    Split a batch into micro-batches by total token count, with optional DP
+    sync and padding.
+
+    Parameters: ~
+        - batch (TensorDict) -- must include “attention_mask” (B*S); other
+          fields are sliced similarly.
+        - max_token_len (int) -- max sum of attention_mask per micro-batch.
+        - dp_group (optional) -- torch.distributed group for data-parallel
+          sync.
+        - num_batches_divided_by (optional) -- virtual pipeline parallel
+          size, for megatron.
+        - same_micro_num_in_dp (bool) -- if True and dp_group set, pad all
+          ranks to the same count.
+        - min_num_micro_batch (int, optional) -- force at least this many
+          splits (pads empty ones).
+        - use_dynamic_bsz_balance (bool, optional) -- balance the
+          computational workload between micro-batches
+        - force_group_size (int, optional) -- force consecutive samples to
+          be in the same micro-batch (for RM training).
+
+    Returns: ~
+        the micro-batches. List[List[int]]: index lists mapping each
+        micro-batch back to original positions.
+
+    Return type: ~
+        List[TensorDict]
+
+ULYSSES UTILITIES                        *api-utils-module-verl.utils.ulysses*
+
+*api-utils-ulysses-utilities*
+
+Utilities for DeepSpeed Ulysses Sequence Parallelism. DeepSpeed Ulysses
+Paper: https://arxiv.org/abs/2309.14509 Inspired from:
+https://github.com/deepspeedai/DeepSpeed/blob/master/deepspeed/sequence/layer.py
+
+verl.utils.ulysses.gather_outputs_and_unpad(x: Tensor, gather_dim: int,
+    unpad_dim: int = None, padding_size: int = 0, grad_scaler: bool = True,
+    group: ProcessGroup | None = None)
+    *verl.utils.ulysses.gather_outputs_and_unpad*
+    Gather a tensor across a process group and optionally unpad its padded
+    elements.
+
+    Parameters: ~
+        - x (Tensor) -- Input tensor to gather.
+        - gather_dim (int) -- Dimension along which to gather across ranks.
+        - unpad_dim (int, optional) -- Dimension from which to remove
+          padding. If None, no unpadding.
+        - padding_size (int) -- Number of padding elements to remove on
+          unpad_dim. Defaults to 0.
+        - grad_scaler (bool) -- Whether to apply gradient scaling during
+          gather. Defaults to True.
+        - group (ProcessGroup, optional) -- Process group for gathering. If
+          None, uses get_ulysses_sequence_parallel_group(). If still None,
+          returns x unchanged.
+
+    Returns: ~
+        The gathered tensor, with padding removed if requested.
+
+    Return type: ~
+        Tensor
+
+verl.utils.ulysses.ulysses_pad_and_slice_inputs(input_ids_rmpad: Tensor,
+    position_ids_rmpad: Tensor | None = None, sp_size: int = 1,
+    skip_position_ids_rmpad: bool = False, pad_value=0)
+    *verl.utils.ulysses.ulysses_pad_and_slice_inputs*
+    Pad and slice input_ids to be divisible by sp_size Pad position_ids to
+    be divisible by sp_size.
+
+    Note both input_ids_rmpad and position_ids_rmpad will be padded and
+    sliced.
+
+    The is the utility of pre-forward for ulysses sequence parallelism
+
+    Parameters: ~
+        - input_ids_rmpad -- shape of [bsz, seqlen]
+        - position_ids_rmpad -- shape of [bsz, seqlen], where bsz must be 1
+        - sp_size (int) -- ulysses sequence parallelism size
+        - skip_position_ids_rmpad -- whether to skip position_ids_rmpad for
+          VeOmniEngine
+
+    Returns: ~
+        padded and sliced input_ids torch.Tensor: padded and sliced
+        position_ids int: pad size
+
+    Return type: ~
+        torch.Tensor
+
+FSDP UTILITIES                        *api-utils-module-verl.utils.fsdp_utils*
+
+*api-utils-fsdp-utilities*
+
+                                  *verl.utils.fsdp_utils.get_fsdp_wrap_policy*
+verl.utils.fsdp_utils.get_fsdp_wrap_policy(module, config=None,
+    is_lora=False)
+    Get FSDP wrap policy for the module.
+
+    Parameters: ~
+        - module -- The module to get wrap policy for
+        - config -- Configuration for wrap policy
+        - is_lora -- Whether to enable lambda policy for LoRA modules
+
+DEBUG UTILITIES                         *api-utils-module-verl.utils.profiler*
+
+*api-utils-debug-utilities*
+
+class verl.utils.profiler.GPUMemoryLogger(role: str, logger: Logger = None,
+    level=10, log_only_rank_0: bool = True)
+    *verl.utils.profiler.GPUMemoryLogger*
+    A decorator class to log GPU memory usage.
+
+    Example: ~
+
+    >python
+        >>> from verl.utils.profiler.performance import GPUMemoryLogger
+        >>> @GPUMemoryLogger(role="actor")
+        >>> def update_actor(self, batch):
+        ...     # real actor update logics
+        ...     return
+<
+
+                                    *verl.utils.profiler.log_gpu_memory_usage*
+verl.utils.profiler.log_gpu_memory_usage(head: str, logger: Logger = None,
+    level=10, rank: int = 0)
+    Log GPU memory usage information.
+
+    Parameters: ~
+        - head (str) -- A descriptive header for the memory usage log
+          message.
+        - logger (logging.Logger, optional) -- Logger instance to use for
+          logging. If None, prints to stdout.
+        - level -- Logging level to use. Defaults to logging.DEBUG.
+        - rank (int) -- The rank of the process to log memory for. Defaults
+          to 0.
+
+ vim:tw=78:ts=8:ft=help:norl:

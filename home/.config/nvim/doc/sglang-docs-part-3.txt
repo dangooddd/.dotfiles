@@ -1,0 +1,2016 @@
+*sglang-docs-part-3.txt*	SGLang documentation: docs
+Version latest — https://docs.sglang.io/
+
+==============================================================================
+DOCS (PART 3)                                     *sglang-section-docs-part-3*
+
+
+----------------------------------------------------------------------------
+Embedding models               *sglang-docs-supported-models-embedding_models*
+
+Dense and sparse embedding models with FlashInfer acceleration and SGLang's
+batching infrastructure.
+
+SGLang provides robust support for embedding models by integrating efficient
+serving mechanisms with its flexible programming interface. This integration
+allows for streamlined handling of embedding tasks, facilitating faster and
+more accurate retrieval and semantic search operations. SGLang's
+architecture enables better resource utilization and reduced latency in
+embedding model deployment.
+
+  Warning: ~
+
+  Native encoder embedding architectures, `google/embeddinggemma-300m` and
+  `nvidia/Nemotron-3-Embed-1B-BF16` are detected automatically.
+  Decoder-style embedding models require `--is-embedding`; add
+  `--trust-remote-code` when the model requires it.
+
+QUICK START               *docs-supported-models-embedding_models-quick-start*
+
+Launch Server           *docs-supported-models-embedding_models-launch-server*
+
+>sh
+    sglang serve \
+      --model-path Qwen/Qwen3-Embedding-4B \
+      --is-embedding
+<
+
+EmbeddingGemma         *docs-supported-models-embedding_models-embeddinggemma*
+
+EmbeddingGemma uses bidirectional attention and is auto-detected, so its
+best default command is simply:
+
+>sh
+    sglang serve --model-path google/embeddinggemma-300m
+<
+On CUDA, SGLang automatically uses breakable CUDA graph (BCG) for its full
+encoder prefill and disables incompatible radix-cache and chunked-prefill
+behavior. Do not add the deprecated piecewise CUDA graph knobs.
+
+Nemotron-3-Embed     *docs-supported-models-embedding_models-nemotron-3-embed*
+
+`nvidia/Nemotron-3-Embed-1B-BF16` uses a bidirectional Ministral3 backbone
+with normalized mean pooling. It is auto-detected from its checkpoint
+config, so `--is-embedding` is not needed:
+
+>sh
+    sglang serve --model-path nvidia/Nemotron-3-Embed-1B-BF16
+<
+It is not supported on ROCm. SGLang disables radix cache and chunked prefill
+for this model, and skips the KV cache allocation when the prefill attention
+backend is FA3 or FA4. Prepend the task prefix to each input text as
+described in the model card, for example `query: ...` or `passage: ...`.
+
+Client Request         *docs-supported-models-embedding_models-client-request*
+
+>python
+    import requests
+
+    url = "http://127.0.0.1:30000"
+
+    payload = {
+        "model": "Qwen/Qwen3-Embedding-4B",
+        "input": "What is the capital of France?",
+        "encoding_format": "float"  # or "base64" for compact FP32 responses
+    }
+
+    response = requests.post(url + "/v1/embeddings", json=payload).json()
+    print("Embedding:", response["data"][0]["embedding"])
+<
+
+         *docs-supported-models-embedding_models-multimodal-embedding-example*
+MULTIMODAL EMBEDDING EXAMPLE
+
+For multimodal models like GME that support both text and images:
+
+>sh
+    sglang serve \
+      --model-path Alibaba-NLP/gme-Qwen2-VL-2B-Instruct \
+      --is-embedding \
+      --chat-template gme-qwen2-vl
+<
+[Example]
+
+[Example]Example
+
+>python
+    import requests
+
+    url = "http://127.0.0.1:30000"
+
+    text_input = "Represent this image in embedding space."
+    image_path = "https://huggingface.co/datasets/liuhaotian/llava-bench-in-the-wild/resolve/main/images/023.jpg"
+
+    payload = {
+        "model": "gme-qwen2-vl",
+        "input": [
+            {
+                "text": text_input
+            },
+            {
+                "image": image_path
+            }
+        ],
+    }
+
+    response = requests.post(url + "/v1/embeddings", json=payload).json()
+
+    print("Embeddings:", [x.get("embedding") for x in response.get("data", [])])
+<
+
+         *docs-supported-models-embedding_models-matryoshka-embedding-example*
+MATRYOSHKA EMBEDDING EXAMPLE
+
+Matryoshka Embeddings
+https://sbert.net/examples/sentence_transformer/training/matryoshka/README.html#matryoshka-embeddings
+or Matryoshka Representation Learning (MRL) https://arxiv.org/abs/2205.13147
+is a technique used in training embedding models. It allows user to trade
+off between performance and cost.
+
+  *docs-supported-models-embedding_models-1-launch-a-matryoshka-capable-model*
+1. Launch a Matryoshka‑capable model
+
+If the model config already includes `matryoshka_dimensions` or
+`is_matryoshka` then no override is needed. Otherwise, you can use
+`--json-model-override-args` as below:
+
+[Command]
+
+[Command]Command
+
+>sh
+    sglang serve \
+        --model-path Qwen/Qwen3-Embedding-0.6B \
+        --is-embedding \
+        --json-model-override-args '{"matryoshka_dimensions": [128, 256, 512, 1024, 1536]}'
+<
+1. Setting `"is_matryoshka": true` allows truncating to any dimension.
+   Otherwise, the server will validate that the specified dimension in the
+   request is one of `matryoshka_dimensions`.
+2. Omitting `dimensions` in a request returns the full vector.
+
+*docs-supported-models-embedding_models-2-make-requests-with-different-output-dimensions*
+2. Make requests with different output dimensions
+
+>python
+    import requests
+
+    url = "http://127.0.0.1:30000"
+
+    # Request a truncated (Matryoshka) embedding by specifying a supported dimension.
+    payload = {
+        "model": "Qwen/Qwen3-Embedding-0.6B",
+        "input": "Explain diffusion models simply.",
+        "dimensions": 512  # change to 128 / 1024 / omit for full size
+    }
+
+    response = requests.post(url + "/v1/embeddings", json=payload).json()
+    print("Embedding:", response["data"][0]["embedding"])
+<
+
+SUPPORTED MODELS     *docs-supported-models-embedding_models-supported-models*
+
+Model Family      Example Model                         Chat          Description
+                                                        template
+----------------  ------------------------------------  ------------  --------------------
+EmbeddingGemma    google/embeddinggemma-300m            N/A           Bidirectional Gemma3
+                                                                      text encoder;
+                                                                      auto-detected and
+                                                                      served with BCG by
+                                                                      default
+Nemotron-3-Embed  nvidia/Nemotron-3-Embed-1B-BF16       N/A           Bidirectional
+                                                                      Ministral3 encoder
+                                                                      with normalized mean
+                                                                      pooling;
+                                                                      auto-detected
+E5                intfloat/e5-mistral-7b-instruct       N/A           High-quality text
+(Llama/Mistral                                                        embeddings based on
+based)                                                                Mistral/Llama
+                                                                      architectures
+GTE-Qwen2         Alibaba-NLP/gte-Qwen2-7B-instruct     N/A           Alibaba's text
+                                                                      embedding model with
+                                                                      multilingual support
+Qwen3-Embedding   Qwen/Qwen3-Embedding-4B               N/A           Latest Qwen3-based
+                                                                      text embedding model
+                                                                      for semantic
+                                                                      representation
+Qwen3 (bare       microsoft/harrier-oss-v1-0.6b         N/A           Bare Qwen3Model
+backbone)                                                             backbone (no LM
+                                                                      head); served
+                                                                      natively on SGLang's
+                                                                      fused Qwen3 kernels
+                                                                      and auto-classified
+                                                                      as an embedding
+                                                                      model
+BGE               BAAI/bge-large-en-v1.5                N/A           BAAI's text
+                                                                      embeddings (requires
+                                                                      attention-backend
+                                                                      triton/torch_native)
+GME (Multimodal)  Alibaba-NLP/gme-Qwen2-VL-2B-Instruct  gme-qwen2-vl  Multimodal embedding
+                                                                      for text and image
+                                                                      cross-modal tasks
+CLIP              openai/clip-vit-large-patch14-336     N/A           OpenAI's CLIP for
+                                                                      image and text
+                                                                      embeddings
+
+----------------------------------------------------------------------------
+Large Language Models         *sglang-docs-supported-models-generative_models*
+
+These models accept text input and produce text output (e.g., chat
+completions). They are primarily large language models (LLMs), some with
+mixture-of-experts (MoE) architectures for scaling.
+
+              *docs-supported-models-generative_models-example-launch-command*
+EXAMPLE LAUNCH COMMAND
+
+[Command]
+
+[Command]Command
+
+>sh
+    python3 -m sglang.launch_server \
+      --model-path meta-llama/Llama-3.2-1B-Instruct \  # example HF/local path
+      --host 0.0.0.0 \
+      --port 30000 \
+<
+
+SUPPORTED MODELS    *docs-supported-models-generative_models-supported-models*
+
+Below the supported models are summarized in a table.
+
+If you are unsure if a specific architecture is implemented, you can search
+for it via GitHub. For example, to search for `Qwen3ForCausalLM`, use the
+expression:
+
+[Output]
+
+[Output]Output
+
+>text
+    repo:sgl-project/sglang path:/^python\/sglang\/srt\/models\// Qwen3ForCausalLM
+<
+in the GitHub search bar.
+
+Model Family      Example HuggingFace Identifier        Description
+(Variants)
+----------------  ------------------------------------  --------------------------
+DeepSeek (v1,     deepseek-ai/DeepSeek-R1               Series of advanced
+v2, v3/R1)                                              reasoning-optimized models
+                                                        (including a 671B MoE)
+                                                        trained with reinforcement
+                                                        learning; top performance
+                                                        on complex reasoning,
+                                                        math, and code tasks.
+                                                        SGLang provides Deepseek
+                                                        v3/R1 model-specific
+                                                        optimizations and
+                                                        Reasoning Parser
+Xing4_0           XingChen-AGI/Xing4.0-29B-A4B          China Telecom's MoE model
+                                                        with MLA attention and mHC
+                                                        (Manifold-constrained
+                                                        Hyper-Connection) residual
+                                                        streams; supports native
+                                                        MTP speculative decoding,
+                                                        tool calling, and
+                                                        reasoning. Tool-call
+                                                        parser and Reasoning
+                                                        parser
+Kimi K2           moonshotai/Kimi-K2-Instruct           Moonshot AI's 1 trillion
+(Thinking,                                              parameter MoE model (32B
+Instruct)                                               active) with 128K--256K
+                                                        context; state-of-the-art
+                                                        agentic intelligence with
+                                                        stable long-horizon agency
+                                                        across 200--300 sequential
+                                                        tool calls. Features MLA
+                                                        attention and native INT4
+                                                        quantization. See
+                                                        Reasoning Parser docs
+Kimi Linear       moonshotai/Kimi-Linear-48B-A3B-Instruct  Moonshot AI's hybrid
+(48B-A3B)                                               linear attention model
+                                                        (48B total, 3B active)
+                                                        with 1M token context;
+                                                        features Kimi Delta
+                                                        Attention (KDA) for up to
+                                                        6× faster decoding and 75%
+                                                        KV cache reduction vs full
+                                                        attention.
+GPT-OSS           openai/gpt-oss-20b,                   OpenAI's latest GPT-OSS
+                  openai/gpt-oss-120b                   series for complex
+                                                        reasoning, agentic tasks,
+                                                        and versatile developer
+                                                        use cases.
+Qwen (3.5, 3,     Qwen/Qwen3.5-397B-A17B,               Alibaba's latest Qwen3
+3MoE, 3Next,      Qwen/Qwen3-0.6B, Qwen/Qwen3-30B-A3B,  series for complex
+2.5, 2 series)    Qwen/Qwen3-Next-80B-A3B-Instruct      reasoning, language
+                                                        understanding, and
+                                                        generation tasks; Support
+                                                        for MoE variants along
+                                                        with previous generation
+                                                        2.5, 2, etc. SGLang
+                                                        provides Qwen3 specific
+                                                        reasoning parser
+Llama (2, 3.x, 4  meta-llama/Llama-4-Scout-17B-16E-Instruct  Meta's open LLM series,
+series)                                                 spanning 7B to 400B
+                                                        parameters (Llama 2, 3,
+                                                        and new Llama 4) with
+                                                        well-recognized
+                                                        performance. SGLang
+                                                        provides Llama-4
+                                                        model-specific
+                                                        optimizations
+Mistral           mistralai/Mistral-7B-Instruct-v0.2    Open 7B LLM by Mistral AI
+(Mixtral, NeMo,                                         with strong performance;
+Small3)                                                 extended into MoE
+                                                        (“Mixtral”) and NeMo
+                                                        Megatron variants for
+                                                        larger scale.
+Gemma (v1, v2,    google/gemma-3-1b-it                  Google's family of
+v3)                                                     efficient multilingual
+                                                        models (1B--27B); Gemma 3
+                                                        offers a 128K context
+                                                        window, and its larger
+                                                        (4B+) variants support
+                                                        vision input.
+Phi (Phi-1.5,     microsoft/Phi-4-multimodal-instruct,  Microsoft's Phi family of
+Phi-2, Phi-3,     microsoft/Phi-3.5-MoE-instruct        small models (1.3B--5.6B);
+Phi-4, Phi-MoE                                          Phi-4-multimodal (5.6B)
+series)                                                 processes text, images,
+                                                        and speech, Phi-4-mini is
+                                                        a high-accuracy text model
+                                                        and Phi-3.5-MoE is a
+                                                        mixture-of-experts model.
+MiniCPM (v3, 4B)  openbmb/MiniCPM3-4B                   OpenBMB's series of
+                                                        compact LLMs for edge
+                                                        devices; MiniCPM 3 (4B)
+                                                        achieves GPT-3.5-level
+                                                        results in text tasks.
+OLMo (2, 3)       allenai/OLMo-3-1125-32B,              Allen AI's series of Open
+                  allenai/OLMo-3-32B-Think,             Language Models designed
+                  allenai/OLMo-2-1124-7B-Instruct       to enable the science of
+                                                        language models.
+OLMoE (Open MoE)  allenai/OLMoE-1B-7B-0924              Allen AI's open
+                                                        Mixture-of-Experts model
+                                                        (7B total, 1B active
+                                                        parameters) delivering
+                                                        state-of-the-art results
+                                                        with sparse expert
+                                                        activation.
+MiniMax-M2 (M2,   MiniMaxAI/MiniMax-M2.5,               MiniMax's SOTA LLM for
+M2.1, M2.5)       MiniMaxAI/MiniMax-M2.1,               coding & agentic
+                  MiniMaxAI/MiniMax-M2                  workflows.
+StableLM (3B,     stabilityai/stablelm-tuned-alpha-7b   StabilityAI's early
+7B)                                                     open-source LLM (3B & 7B)
+                                                        for general text
+                                                        generation; a
+                                                        demonstration model with
+                                                        basic
+                                                        instruction-following
+                                                        ability.
+Command-(R,A)     CohereLabs/c4ai-command-r-v01,        Cohere's open
+(Cohere)          CohereLabs/c4ai-command-r7b-12-2024,  conversational LLM
+                  CohereLabs/c4ai-command-a-03-2025     (Command series) optimized
+                                                        for long context,
+                                                        retrieval-augmented
+                                                        generation, and tool use.
+DBRX              databricks/dbrx-instruct              Databricks' 132B-parameter
+(Databricks)                                            MoE model (36B active)
+                                                        trained on 12T tokens;
+                                                        competes with GPT-3.5
+                                                        quality as a fully open
+                                                        foundation model.
+Grok (xAI)        xai-org/grok-1                        xAI's grok-1 model known
+                                                        for vast size(314B
+                                                        parameters) and high
+                                                        quality; integrated in
+                                                        SGLang for
+                                                        high-performance
+                                                        inference.
+ChatGLM           THUDM/chatglm2-6b                     Zhipu AI's bilingual chat
+(GLM-130B                                               model (6B) excelling at
+family)                                                 Chinese-English dialogue;
+                                                        fine-tuned for
+                                                        conversational quality and
+                                                        alignment.
+InternLM 2 (7B,   internlm/internlm2-7b                 Next-gen InternLM (7B and
+20B)                                                    20B) from SenseTime,
+                                                        offering strong reasoning
+                                                        and ultra-long context
+                                                        support (up to 200K
+                                                        tokens).
+ExaONE 3          LGAI-EXAONE/EXAONE-3.5-7.8B-Instruct  LG AI Research's
+(Korean-English)                                        Korean-English model
+                                                        (7.8B) trained on 8T
+                                                        tokens; provides
+                                                        high-quality bilingual
+                                                        understanding and
+                                                        generation.
+Baichuan 2 (7B,   baichuan-inc/Baichuan2-13B-Chat       BaichuanAI's
+13B)                                                    second-generation
+                                                        Chinese-English LLM
+                                                        (7B/13B) with improved
+                                                        performance and an open
+                                                        commercial license.
+XVERSE (MoE)      xverse/XVERSE-MoE-A36B                Yuanxiang's open MoE LLM
+                                                        (XVERSE-MoE-A36B: 255B
+                                                        total, 36B active)
+                                                        supporting ~40 languages;
+                                                        delivers 100B+ dense-level
+                                                        performance via expert
+                                                        routing.
+SmolLM            HuggingFaceTB/SmolLM-1.7B             Hugging Face's ultra-small
+(135M--1.7B)                                             LLM series (135M--1.7B
+                                                        params) offering
+                                                        surprisingly strong
+                                                        results, enabling advanced
+                                                        AI on mobile/edge devices.
+GLM-4             ZhipuAI/glm-4-9b-chat                 Zhipu's GLM-4 series (up
+(Multilingual                                           to 9B parameters) -- open
+9B)                                                     multilingual models with
+                                                        support for 1M-token
+                                                        context and even a 5.6B
+                                                        multimodal variant
+                                                        (Phi-4V).
+MiMo (7B series)  XiaomiMiMo/MiMo-7B-RL                 Xiaomi's
+                                                        reasoning-optimized model
+                                                        series, leverages
+                                                        Multiple-Token Prediction
+                                                        for faster inference.
+ERNIE-4.5 (4.5,   baidu/ERNIE-4.5-21B-A3B-PT            Baidu's ERNIE-4.5 series
+4.5MoE series)                                          which consists of MoE with
+                                                        47B and 3B active
+                                                        parameters, with the
+                                                        largest model having 424B
+                                                        total parameters, as well
+                                                        as a 0.3B dense model.
+ERNIE 5.5 Flash   baidu/ERNIE-5.5-Flash-Base,           Baidu's ERNIE 5.5 Flash
+                  baidu/ERNIE-5.5-Flash-Base-BF16       (Ernie5_5_MoeForCausalLM),
+                                                        a 280B-total / 14B-active
+                                                        MoE: 37 heavily compressed
+                                                        attention (HCA) layers and
+                                                        6 full-context MLA layers
+                                                        with DSA sparse attention,
+                                                        low-rank gated attention
+                                                        with a cross-head post-mix
+                                                        (VHA),
+                                                        manifold-constrained
+                                                        hyper-connections, and
+                                                        Multi-Router latent MoE
+                                                        layers with 512 experts
+                                                        (top-10) plus a shared
+                                                        expert. The Base
+                                                        checkpoints (FP8 and BF16)
+                                                        are served through the
+                                                        completions endpoint;
+                                                        ERNIE-5.5-Flash (FP8 / FP4
+                                                        / BF16), with the ernie55
+                                                        reasoning and tool-call
+                                                        parsers and a DSpark
+                                                        draft, is coming soon, and
+                                                        attention TP must divide
+                                                        the 8 output groups. See
+                                                        the ERNIE-5.5-Flash
+                                                        cookbook page for recipes.
+Arcee AFM-4.5B    arcee-ai/AFM-4.5B-Base                Arcee's foundational model
+                                                        series for real world
+                                                        reliability and edge
+                                                        deployments.
+Persimmon (8B)    adept/persimmon-8b-chat               Adept's open 8B model with
+                                                        a 16K context window and
+                                                        fast inference; trained
+                                                        for broad usability and
+                                                        licensed under Apache 2.0.
+Solar (10.7B)     upstage/SOLAR-10.7B-Instruct-v1.0     Upstage's 10.7B parameter
+                                                        model, optimized for
+                                                        instruction-following
+                                                        tasks. This architecture
+                                                        incorporates a depth-up
+                                                        scaling methodology,
+                                                        enhancing model
+                                                        performance.
+Tele FLM          CofeAI/Tele-FLM                       BAAI & TeleAI's
+(52B-1T)                                                multilingual model,
+                                                        available in 52-billion
+                                                        and 1-trillion parameter
+                                                        variants. It is a
+                                                        decoder-only transformer
+                                                        trained on ~2T tokens
+Ling              inclusionAI/Ling-lite,                InclusionAI's open MoE
+(16.8B--290B)      inclusionAI/Ling-plus                 models. Ling-Lite has
+                                                        16.8B total / 2.75B active
+                                                        parameters, and Ling-Plus
+                                                        has 290B total / 28.8B
+                                                        active parameters. They
+                                                        are designed for high
+                                                        performance on NLP and
+                                                        complex reasoning tasks.
+Granite 3.0, 3.1  ibm-granite/granite-3.1-8b-instruct   IBM's open dense
+(IBM)                                                   foundation models
+                                                        optimized for reasoning,
+                                                        code, and business AI use
+                                                        cases. Integrated with Red
+                                                        Hat and watsonx systems.
+Granite 3.0, 3.1  ibm-granite/granite-3.0-3b-a800m-instruct,  IBM's Mixture-of-Experts
+MoE (IBM)         ibm-granite/granite-3.1-3b-a800m-instruct  models offering strong
+                                                        performance with
+                                                        cost-efficiency. MoE
+                                                        expert routing designed
+                                                        for enterprise deployment
+                                                        at scale. 3.1 adds shared
+                                                        experts.
+GPT-J (6B)        EleutherAI/gpt-j-6b                   EleutherAI's GPT-2-like
+                                                        causal language model (6B)
+                                                        trained on the Pile
+                                                        dataset.
+Orion (14B)       OrionStarAI/Orion-14B-Base            A series of open-source
+                                                        multilingual large
+                                                        language models by
+                                                        OrionStarAI, pretrained on
+                                                        a 2.5T token multilingual
+                                                        corpus including Chinese,
+                                                        English, Japanese, Korean,
+                                                        etc, and it exhibits
+                                                        superior performance in
+                                                        these languages.
+Llama Nemotron    nvidia/Llama-3_3-Nemotron-Super-49B-v1,  The NVIDIA Nemotron family
+Super (v1, v1.5,  nvidia/Llama-3_3-Nemotron-Super-49B-v1_5  of multimodal models
+NVIDIA)                                                 provides state-of-the-art
+                                                        reasoning models
+                                                        specifically designed for
+                                                        enterprise-ready AI
+                                                        agents.
+Llama Nemotron    nvidia/Llama-3_1-Nemotron-Ultra-253B-v1  The NVIDIA Nemotron family
+Ultra (v1,                                              of multimodal models
+NVIDIA)                                                 provides state-of-the-art
+                                                        reasoning models
+                                                        specifically designed for
+                                                        enterprise-ready AI
+                                                        agents.
+NVIDIA Nemotron   nvidia/NVIDIA-Nemotron-Nano-9B-v2     The NVIDIA Nemotron family
+Nano 2.0                                                of multimodal models
+                                                        provides state-of-the-art
+                                                        reasoning models
+                                                        specifically designed for
+                                                        enterprise-ready AI
+                                                        agents.
+                                                        Nemotron-Nano-9B-v2 is a
+                                                        hybrid Mamba-Transformer
+                                                        language model designed to
+                                                        increase throughput for
+                                                        reasoning workloads while
+                                                        achieving state-of-the-art
+                                                        accuracy compared to
+                                                        similarly-sized models.
+NVIDIA Nemotron   nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4  The NVIDIA Nemotron 3
+3 Super (NVIDIA)                                        Super is a 120B-parameter
+                                                        MoE model (12B active)
+                                                        delivering high-quality
+                                                        reasoning and generation
+                                                        for enterprise AI agents.
+NVIDIA Nemotron   nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16  The NVIDIA Nemotron 3 Nano
+3 Nano (NVIDIA)                                         is a compact model
+                                                        designed for efficient
+                                                        edge and enterprise
+                                                        deployment with strong
+                                                        reasoning capabilities.
+StarCoder2        bigcode/starcoder2-7b                 StarCoder2 is a family of
+(3B-15B)                                                open large language models
+                                                        (LLMs) specialized for
+                                                        code generation and
+                                                        understanding. It is the
+                                                        successor to StarCoder,
+                                                        jointly developed by the
+                                                        BigCode project (a
+                                                        collaboration between
+                                                        Hugging Face, ServiceNow
+                                                        Research, and other
+                                                        contributors).
+Jet-Nemotron      jet-ai/Jet-Nemotron-2B                Jet-Nemotron is a new
+                                                        family of
+                                                        hybrid-architecture
+                                                        language models that
+                                                        surpass state-of-the-art
+                                                        open-source full-attention
+                                                        language models, while
+                                                        achieving significant
+                                                        efficiency gains.
+Trinity (Nano,    arcee-ai/Trinity-Mini                 Arcee's foundational MoE
+Mini)                                                   Trinity family of models,
+                                                        open weights under Apache
+                                                        2.0.
+LFM2 (230M,       LiquidAI/LFM2.5-1.2B-Instruct         Liquid AI's hybrid
+350M, 1.2B)                                             language model combining
+                                                        gated short convolutions
+                                                        with a small number of
+                                                        grouped query attention
+                                                        (GQA) blocks.
+LFM2-MoE          LiquidAI/LFM2-8B-A1B                  Liquid AI's sparse
+(8B-A1B,                                                Mixture-of-Experts variant
+24B-A2B)                                                of the LFM2 hybrid
+                                                        backbone, with SwiGLU
+                                                        experts, normalized
+                                                        sigmoid routing, and top-k
+                                                        expert selection.
+Falcon-H1         tiiuae/Falcon-H1-34B-Instruct         TII's hybrid
+(0.5B--34B)                                              Mamba-Transformer
+                                                        architecture combining
+                                                        attention and state-space
+                                                        models for efficient
+                                                        long-context inference.
+Mamba-Codestral   mistralai/Mamba-Codestral-7B-v0.1     Mistral AI's pure Mamba2
+(7B, Mamba2)                                            state-space model for code
+                                                        generation; uses selective
+                                                        state spaces instead of
+                                                        attention, so it holds no
+                                                        KV cache.
+Hunyuan-Large     tencent/Tencent-Hunyuan-Large         Tencent's open-source MoE
+(389B, MoE)                                             model with 389B total /
+                                                        52B active parameters,
+                                                        featuring Cross-Layer
+                                                        Attention (CLA) for
+                                                        improved efficiency.
+IBM Granite 4.0   ibm-granite/granite-4.0-h-micro,      IBM Granite 4.0 micro
+(Hybrid, Dense)   ibm-granite/granite-4.0-micro         models: hybrid Mamba--MoE
+                                                        (h-micro) and dense
+                                                        (micro) variants.
+                                                        Enterprise-focused
+                                                        reasoning models
+Granite SWA       ibm-granite/granite-swash-2b          IBM Granite dense model
+(IBM)                                                   with per-layer sliding
+                                                        window attention and
+                                                        learnable per-head
+                                                        attention sinks. Served by
+                                                        the Granite
+                                                        implementation; needs
+                                                        transformers ≥ 5.15.
+Granite MoE SWA   ibm-granite/granite-swash-3b-a600m    IBM Granite
+(IBM)                                                   Mixture-of-Experts model
+                                                        with per-layer sliding
+                                                        window attention,
+                                                        learnable attention sinks,
+                                                        and optional shared
+                                                        experts. Served by the
+                                                        GraniteMoE implementation;
+                                                        needs transformers ≥ 5.15.
+Sarvam 2          sarvamai/sarvam-2                     Sarvam's
+(30B-A2B,                                               Mixture-of-Experts models.
+105B-A10B)                                              The 105B variant uses MLA
+                                                        (Multi-head Latent
+                                                        Attention) and the 30B
+                                                        variant uses GQA, both
+                                                        with 128 routed experts.
+Laguna XS.2       poolside/Laguna-XS.2                  Poolside's hybrid
+(poolside)                                              sliding-window-attention
+                                                        MoE model (256 routed
+                                                        experts, 1 shared expert,
+                                                        sigmoid router) with
+                                                        per-layer-type RoPE (YARN
+                                                        on full-attention layers,
+                                                        default on
+                                                        sliding-attention layers)
+                                                        and a softplus per-head
+                                                        attention gate.
+Mellum 2          JetBrains/Mellum2-12B-A2.5B-Base,     JetBrains' Qwen3-MoE-based
+(JetBrains)       JetBrains/Mellum2-12B-A2.5B-Thinking  code generation model with
+                                                        interleaved
+                                                        sliding-window/full
+                                                        attention, per-layer-type
+                                                        RoPE, and per-layer
+                                                        dense/sparse MLP routing.
+GigaChat 3.5      ai-sage/GigaChat3.5-432B-A28B         GigaChat's hybrid MoE
+                                                        model: per-layer mix of
+                                                        DeepSeek-style MLA full
+                                                        attention and Qwen3
+                                                        Gated-Delta-Net (GDN)
+                                                        linear attention,
+                                                        DeepSeek-style routed +
+                                                        shared experts, and
+                                                        multiple
+                                                        multi-token-prediction
+                                                        (MTP) heads for
+                                                        speculative decoding.
+                                                        Emits tool calls in GCML
+                                                        format.
+
+----------------------------------------------------------------------------
+MindSpore Models               *sglang-docs-supported-models-mindspore_models*
+
+INTRODUCTION             *docs-supported-models-mindspore_models-introduction*
+
+MindSpore is a high-performance AI framework optimized for Ascend NPUs. This
+doc guides users to run MindSpore models in SGLang.
+
+REQUIREMENTS             *docs-supported-models-mindspore_models-requirements*
+
+MindSpore currently only supports Ascend NPU devices. Users need to first
+install Ascend CANN 8.5. The CANN software packages can be downloaded from
+the Ascend Official Website https://www.hiascend.com.
+
+SUPPORTED MODELS     *docs-supported-models-mindspore_models-supported-models*
+
+Currently, the following models are supported:
+
+- Qwen3: Dense and MoE models
+- DeepSeek V3/R1
+- More models coming soon...
+
+INSTALLATION             *docs-supported-models-mindspore_models-installation*
+
+  Note: Currently, MindSpore models are provided by an independent package
+  `sgl-mindspore`. Support for MindSpore is built upon current SGLang
+  support for Ascend NPU platform. Please first
+  |sglang-ascend-npus-getting-started-installation| and then install
+  `sgl-mindspore`:
+
+[Install]
+
+[Install]Install
+
+>sh
+    git clone https://github.com/mindspore-lab/sgl-mindspore.git
+    cd sgl-mindspore
+    pip install -e .
+<
+
+RUN MODEL                   *docs-supported-models-mindspore_models-run-model*
+
+Current SGLang-MindSpore supports Qwen3 and DeepSeek V3/R1 models. This doc
+uses Qwen3-8B as an example.
+
+Offline inference   *docs-supported-models-mindspore_models-offline-inference*
+
+Use the following script for offline inference:
+
+[Offline Inference]
+
+[Offline Inference]Offline Inference
+
+>python
+    import sglang as sgl
+
+    # Initialize the engine with MindSpore backend
+    llm = sgl.Engine(
+        model_path="/path/to/your/model",  # Local model path
+        device="npu",                      # Use NPU device
+        model_impl="mindspore",            # MindSpore implementation
+        attention_backend="ascend",        # Attention backend
+        tp_size=1,                         # Tensor parallelism size
+        dp_size=1                          # Data parallelism size
+    )
+
+    # Generate text
+    prompts = [
+        "Hello, my name is",
+        "The capital of France is",
+        "The future of AI is"
+    ]
+
+    sampling_params = {"temperature": 0, "top_p": 0.9}
+    outputs = llm.generate(prompts, sampling_params)
+
+    for prompt, output in zip(prompts, outputs):
+        print(f"Prompt: {prompt}")
+        print(f"Generated: {output['text']}")
+        print("---")
+<
+
+Start server             *docs-supported-models-mindspore_models-start-server*
+
+Launch a server with MindSpore backend:
+
+[Command]
+
+[Command]Command
+
+>sh
+    # Basic server startup
+    python3 -m sglang.launch_server \
+        --model-path /path/to/your/model \
+        --host 0.0.0.0 \
+        --device npu \
+        --model-impl mindspore \
+        --attention-backend ascend \
+        --tp-size 1 \
+        --dp-size 1
+<
+For distributed server with multiple nodes:
+
+[Command]
+
+[Command]Command
+
+>sh
+    # Multi-node distributed server
+    python3 -m sglang.launch_server \
+        --model-path /path/to/your/model \
+        --host 0.0.0.0 \
+        --device npu \
+        --model-impl mindspore \
+        --attention-backend ascend \
+        --dist-init-addr 127.0.0.1:29500 \
+        --nnodes 2 \
+        --node-rank 0 \
+        --tp-size 4 \
+        --dp-size 2
+<
+
+TROUBLESHOOTING       *docs-supported-models-mindspore_models-troubleshooting*
+
+Debug Mode                 *docs-supported-models-mindspore_models-debug-mode*
+
+Enable sglang debug logging by log-level argument.
+
+[Debug Mode]
+
+[Debug Mode]Debug Mode
+
+>sh
+    python3 -m sglang.launch_server \
+        --model-path /path/to/your/model \
+        --host 0.0.0.0 \
+        --device npu \
+        --model-impl mindspore \
+        --attention-backend ascend \
+        --log-level DEBUG
+<
+Enable mindspore info and debug logging by setting environments.
+
+[Command]
+
+[Command]Command
+
+>sh
+    export GLOG_v=1  # INFO
+    export GLOG_v=0  # DEBUG
+<
+
+            *docs-supported-models-mindspore_models-explicitly-select-devices*
+Explicitly select devices
+
+Use the following environment variable to explicitly select the devices to
+use.
+
+[Command]
+
+[Command]Command
+
+>sh
+    export ASCEND_RT_VISIBLE_DEVICES=4,5,6,7  # to set device
+<
+
+*docs-supported-models-mindspore_models-some-communication-environment-issues*
+Some communication environment issues
+
+In case of some environment with special communication environment, users
+need set some environment variables.
+
+[Disable LCCL]
+
+[Disable LCCL]Disable LCCL
+
+>sh
+    export MS_ENABLE_LCCL=off # current not support LCCL communication mode in SGLang-MindSpore
+<
+
+        *docs-supported-models-mindspore_models-some-dependencies-of-protobuf*
+Some dependencies of protobuf
+
+In case of some environment with special protobuf version, users need set
+some environment variables to avoid binary version mismatch.
+
+[Command]
+
+[Command]Command
+
+>sh
+    export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python  # to avoid protobuf binary version mismatch
+<
+
+SUPPORT                       *docs-supported-models-mindspore_models-support*
+
+For MindSpore-specific issues:
+
+- Refer to the MindSpore documentation https://www.mindspore.cn/
+
+----------------------------------------------------------------------------
+Use Models From ModelScope           *sglang-docs-supported-models-modelscope*
+
+To use a model from ModelScope https://www.modelscope.cn, set the
+environment variable `SGLANG_USE_MODELSCOPE`.
+
+[Set Environment Variable]
+
+[Set Environment Variable]Set Environment Variable
+
+>sh
+    export SGLANG_USE_MODELSCOPE=true
+<
+We take Qwen2-7B-Instruct
+https://www.modelscope.cn/models/qwen/qwen2-7b-instruct as an example.
+
+Launch the Server:
+
+[Python]
+
+[Python]Python
+
+>sh
+    python -m sglang.launch_server --model-path qwen/Qwen2-7B-Instruct --port 30000
+<
+Or start it by docker:
+
+[Docker]
+
+[Docker]Docker
+
+>sh
+    docker run --gpus all \
+        -p 30000:30000 \
+        -v ~/.cache/modelscope:/root/.cache/modelscope \
+        --env "SGLANG_USE_MODELSCOPE=true" \
+        --ipc=host \
+        lmsysorg/sglang:latest \
+        python3 -m sglang.launch_server --model-path Qwen/Qwen2.5-7B-Instruct --host 0.0.0.0 --port 30000
+<
+Note that modelscope uses a different cache directory than huggingface. You
+may need to set it manually to avoid running out of disk space.
+
+----------------------------------------------------------------------------
+                     *sglang-docs-supported-models-multimodal_language_models*
+Multimodal Language Models
+
+These models accept multi-modal inputs (e.g., images and text) and generate
+text output. They augment language models with multimodal encoders.
+
+     *docs-supported-models-multimodal_language_models-example-launch-command*
+EXAMPLE LAUNCH COMMAND
+
+[Launch Server]
+
+[Launch Server]Launch Server
+
+>sh
+    python3 -m sglang.launch_server \
+      --model-path meta-llama/Llama-3.2-11B-Vision-Instruct \  # example HF/local path
+      --host 0.0.0.0 \
+      --port 30000 \
+<
+  See the |sglang-docs-basic_usage-openai_api_vision| for how to send
+  multimodal requests.
+
+           *docs-supported-models-multimodal_language_models-supported-models*
+SUPPORTED MODELS
+
+Below the supported models are summarized in a table.
+
+If you are unsure if a specific architecture is implemented, you can search
+for it via GitHub. For example, to search for
+`Qwen2_5_VLForConditionalGeneration`, use the expression:
+
+[GitHub Search]
+
+[GitHub Search]GitHub Search
+
+>text
+    repo:sgl-project/sglang path:/^python\/sglang\/srt\/models\// Qwen2_5_VLForConditionalGeneration
+<
+in the GitHub search bar.
+
+Model Family (Variants)    Example HuggingFace Identifier        Description                   Notes
+-------------------------  ------------------------------------  ----------------------------  ------------------------------------
+Qwen-VL                    Qwen/Qwen3-VL-235B-A22B-Instruct      Alibaba's vision-language
+                                                                 extension of Qwen; for
+                                                                 example, Qwen2.5-VL (7B and
+                                                                 larger variants) can analyze
+                                                                 and converse about image
+                                                                 content.
+DeepSeek-VL2               deepseek-ai/deepseek-vl2              Vision-language variant of
+                                                                 DeepSeek (with a dedicated
+                                                                 image processor), enabling
+                                                                 advanced multimodal
+                                                                 reasoning on image and text
+                                                                 inputs.
+DeepSeek-OCR / OCR-2       deepseek-ai/DeepSeek-OCR-2            OCR-focused DeepSeek models   Use ---trust-remote-code.
+                                                                 for document understanding
+                                                                 and text extraction.
+Janus-Pro (1B, 7B)         deepseek-ai/Janus-Pro-7B              DeepSeek's open-source
+                                                                 multimodal model capable of
+                                                                 both image understanding and
+                                                                 generation. Janus-Pro
+                                                                 employs a decoupled
+                                                                 architecture for separate
+                                                                 visual encoding paths,
+                                                                 enhancing performance in
+                                                                 both tasks.
+MiniCPM-V / MiniCPM-o      openbmb/MiniCPM-V-2_6                 MiniCPM-V (2.6, ~8B)
+                                                                 supports image inputs, and
+                                                                 MiniCPM-o adds audio/video;
+                                                                 these multimodal LLMs are
+                                                                 optimized for end-side
+                                                                 deployment on mobile/edge
+                                                                 devices.
+Llama 3.2 Vision (11B)     meta-llama/Llama-3.2-11B-Vision-Instruct  Vision-enabled variant of
+                                                                 Llama 3 (11B) that accepts
+                                                                 image inputs for visual
+                                                                 question answering and other
+                                                                 multimodal tasks.
+LLaVA (v1.5 & v1.6)        e.g. liuhaotian/llava-v1.5-13b        Open vision-chat models that
+                                                                 add an image encoder to
+                                                                 LLaMA/Vicuna (e.g. LLaMA2
+                                                                 13B) for following
+                                                                 multimodal instruction
+                                                                 prompts.
+LLaVA-NeXT (8B, 72B)       lmms-lab/llava-next-72b               Improved LLaVA models (with
+                                                                 an 8B Llama3 version and a
+                                                                 72B version) offering
+                                                                 enhanced visual
+                                                                 instruction-following and
+                                                                 accuracy on multimodal
+                                                                 benchmarks.
+LLaVA-OneVision            lmms-lab/llava-onevision-qwen2-7b-ov  Enhanced LLaVA variant
+                                                                 integrating Qwen as the
+                                                                 backbone; supports multiple
+                                                                 images (and even video
+                                                                 frames) as inputs via an
+                                                                 OpenAI Vision API-compatible
+                                                                 format.
+Gemma 3 (Multimodal)       google/gemma-3-4b-it                  Gemma 3's larger models (4B,
+                                                                 12B, 27B) accept images
+                                                                 (each image encoded as 256
+                                                                 tokens) alongside text in a
+                                                                 combined 128K-token context.
+Kimi-VL (A3B)              moonshotai/Kimi-VL-A3B-Instruct       Kimi-VL is a multimodal
+                                                                 model that can understand
+                                                                 and generate text from
+                                                                 images.
+Mistral-Small-3.1-24B      mistralai/Mistral-Small-3.1-24B-Instruct-2503  Mistral 3.1 is a multimodal
+                                                                 model that can generate text
+                                                                 from text or images input.
+                                                                 It also supports tool
+                                                                 calling and structured
+                                                                 output.
+Phi-4-multimodal-instruct  microsoft/Phi-4-multimodal-instruct   Phi-4-multimodal-instruct is
+                                                                 the multimodal variant of
+                                                                 the Phi-4-mini model,
+                                                                 enhanced with LoRA for
+                                                                 improved multimodal
+                                                                 capabilities. It supports
+                                                                 text, vision and audio
+                                                                 modalities in SGLang.
+MiMo-VL (7B)               XiaomiMiMo/MiMo-VL-7B-RL              Xiaomi's compact yet
+                                                                 powerful vision-language
+                                                                 model featuring a native
+                                                                 resolution ViT encoder for
+                                                                 fine-grained visual details,
+                                                                 an MLP projector for
+                                                                 cross-modal alignment, and
+                                                                 the MiMo-7B language model
+                                                                 optimized for complex
+                                                                 reasoning tasks.
+GLM-4.5V (106B) /          zai-org/GLM-4.5V                      GLM-4.5V and                  Use ---chat-template glm-4v
+GLM-4.1V(9B)                                                     GLM-4.1V-Thinking: Towards
+                                                                 Versatile Multimodal
+                                                                 Reasoning with Scalable
+                                                                 Reinforcement Learning
+PaddleOCR-VL (0.9B, 1.5,   PaddlePaddle/PaddleOCR-VL-1.6         Baidu's 0.9B                  Task is selected by the prompt
+1.6)                                                             document-parsing VLM: a       (OCR:, Table Recognition:, ...). Leave
+                                                                 NaViT-style                   ---trust-remote-code off ---
+                                                                 dynamic-resolution SigLIP     transformers supports this
+                                                                 encoder on an ERNIE-4.5-0.3B  architecture natively and its image
+                                                                 backbone, covering text,      processor is the faster one.
+                                                                 tables, formulas, charts and
+                                                                 seals in 109 languages. See
+                                                                 the cookbook page.
+GLM-OCR                    zai-org/GLM-OCR                       GLM-OCR: A fast and accurate
+                                                                 general OCR model
+DotsVLM (General/OCR)      rednote-hilab/dots.vlm1.inst          RedNote's vision-language
+                                                                 model built on a 1.2B vision
+                                                                 encoder and DeepSeek V3 LLM,
+                                                                 featuring NaViT vision
+                                                                 encoder trained from scratch
+                                                                 with dynamic resolution
+                                                                 support and enhanced OCR
+                                                                 capabilities through
+                                                                 structured image data
+                                                                 training.
+DotsVLM-OCR                rednote-hilab/dots.ocr                Specialized OCR variant of    Don't use ---trust-remote-code
+                                                                 DotsVLM optimized for
+                                                                 optical character
+                                                                 recognition tasks with
+                                                                 enhanced text extraction and
+                                                                 document understanding
+                                                                 capabilities.
+NVILA (8B, 15B, Lite-2B,   Efficient-Large-Model/NVILA-8B        chatml                        NVILA explores the full stack
+Lite-8B, Lite-15B)                                                                             efficiency of multi-modal design,
+                                                                                               achieving cheaper training, faster
+                                                                                               deployment and better performance.
+NVIDIA Nemotron Nano 2.0   nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16  NVIDIA Nemotron Nano v2 VL    Use ---trust-remote-code. You may need
+VL                                                               enables multi-image           to adjust ---max-mamba-cache-size
+                                                                 reasoning and video           [default is 512] to fit memory
+                                                                 understanding, along with     constraints.
+                                                                 strong document
+                                                                 intelligence, visual Q&A and
+                                                                 summarization capabilities.
+                                                                 It builds on Nemotron Nano
+                                                                 V2, a hybrid
+                                                                 Mamba-Transformer LLM, in
+                                                                 order to achieve higher
+                                                                 inference throughput in long
+                                                                 document and video
+                                                                 scenarios.
+NVIDIA Cosmos3 Reasoner    nvidia/Cosmos3-Nano                   The understanding tower       Launch with ---model-type llm; see
+(Nano)                                                           (Qwen3-VL-based reasoner) of  Cosmos3 LLM serving. Pass
+                                                                 NVIDIA's Cosmos3 world        ---language-model-only for text-only
+                                                                 model, served as a            serving.
+                                                                 standalone VLM for image and
+                                                                 video understanding from the
+                                                                 unified diffusers-layout
+                                                                 checkpoint. The generation
+                                                                 (diffusion) tower is dropped
+                                                                 at load time.
+NVIDIA Cosmos3-Edge (4B)   nvidia/Cosmos3-Edge                   The 4B dense understanding    Launch with ---model-type llm; see
+                                                                 tower of Cosmos3-Edge: an     Cosmos3 LLM serving. Pass
+                                                                 Arcee-structure text model    ---language-model-only for text-only
+                                                                 with a SigLIP2 vision tower   serving.
+                                                                 and an Edge-specific
+                                                                 spatial-merge projector,
+                                                                 supporting image and video
+                                                                 understanding.
+Ernie4.5-VL                baidu/ERNIE-4.5-VL-28B-A3B-PT         Baidu's vision-language
+                                                                 models(28B,424B). Support
+                                                                 image and video
+                                                                 comprehension, and also
+                                                                 support thinking.
+JetVLM                                                           JetVLM is an vision-language  Coming soon
+                                                                 model designed for
+                                                                 high-performance multimodal
+                                                                 understanding and generation
+                                                                 tasks built upon
+                                                                 Jet-Nemotron.
+Step3-VL (10B)             stepfun-ai/Step3-VL-10B               StepFun's lightweight
+                                                                 open-source 10B parameter
+                                                                 VLM for multimodal
+                                                                 intelligence, excelling in
+                                                                 visual perception, complex
+                                                                 reasoning, and human
+                                                                 alignment.
+Qwen3-ASR (0.6B, 1.7B)     Qwen/Qwen3-ASR-1.7B                   Alibaba's automatic speech
+                                                                 recognition models
+                                                                 supporting 52 languages.
+                                                                 Served via the
+                                                                 /v1/audio/transcriptions
+                                                                 endpoint.
+Qwen3-Omni                 Qwen/Qwen3-Omni-30B-A3B-Instruct      Alibaba's omni-modal MoE
+                                                                 model. Currently supports
+                                                                 the Thinker component
+                                                                 (multimodal understanding
+                                                                 for text, images, audio, and
+                                                                 video), while the Talker
+                                                                 component (audio generation)
+                                                                 is not yet supported.
+LFM2-VL                    LiquidAI/LFM2.5-VL-1.6B               Liquid AI's vision-language
+                                                                 model combining a SigLIP2
+                                                                 NaFlex vision encoder
+                                                                 (variable resolution, native
+                                                                 aspect ratio) with the LFM2
+                                                                 hybrid gated short conv +
+                                                                 GQA language model. Supports
+                                                                 multi-image inputs.
+LocateAnything (3B)        nvidia/LocateAnything-3B              NVIDIA's visual               Use ---trust-remote-code. Set
+                                                                 grounding/detection model     skip_special_tokens=false so the
+                                                                 (MoonViT vision encoder +     <ref>/<box> grounding tokens survive
+                                                                 Qwen2 backbone) that emits    in the output. Constrained <box>
+                                                                 <ref>label</ref><box>...</box>  decoding is opt-in and client-side:
+                                                                 outputs with coordinates      start the server with
+                                                                 normalized to [0, 1000].      ---enable-custom-logit-processor, then
+                                                                 Covers object detection,      pass custom_logit_processor (a
+                                                                 phrase grounding, scene-text  top-level request field) and
+                                                                 detection, GUI grounding,     custom_params (inside
+                                                                 and pointing.                 sampling_params) together --- use
+                                                                                               LocateAnythingBoxGrammarLogitProcessor.build_sampling_params(config)
+                                                                                               to build both from the config token
+                                                                                               ids.
+
+        *docs-supported-models-multimodal_language_models-audio-transcription*
+AUDIO TRANSCRIPTION
+
+SGLang supports audio-only ASR models via the OpenAI-compatible
+`/v1/audio/transcriptions` endpoint. Upload an audio file and receive a
+transcription.
+
+             *docs-supported-models-multimodal_language_models-launch-command*
+Launch Command
+
+[Command]
+
+[Command]Command
+
+>sh
+    sglang serve \
+      --model-path Qwen/Qwen3-ASR-1.7B \
+      --served-model-name qwen3-asr \
+      --trust-remote-code \
+      --host 0.0.0.0 --port 30000
+<
+
+            *docs-supported-models-multimodal_language_models-example-request*
+Example Request
+
+[Command]
+
+[Command]Command
+
+>sh
+    curl http://localhost:30000/v1/audio/transcriptions \
+      -F file=@audio.wav \
+      -F model=qwen3-asr \
+      -F response_format=verbose_json
+<
+
+Model Family            Example Identifier       Notes
+----------------------  -----------------------  -----------------------------
+Whisper                 openai/whisper-large-v3  OpenAI's speech recognition
+                                                 model.
+Qwen3-ASR (0.6B, 1.7B)  Qwen/Qwen3-ASR-1.7B      Use ---trust-remote-code.
+                                                 Supports 52 languages.
+
+        *docs-supported-models-multimodal_language_models-video-input-support*
+VIDEO INPUT SUPPORT
+
+SGLang supports video input for Vision-Language Models (VLMs), enabling
+temporal reasoning tasks such as video question answering, captioning, and
+holistic scene understanding. Video clips are decoded, key frames are
+sampled, and the resulting tensors are batched together with the text
+prompt, allowing multimodal inference to integrate visual and linguistic
+context.
+
+Model Family         Example Identifier                    Video notes
+-------------------  ------------------------------------  -------------------------
+Qwen-VL (Qwen2-VL,   Qwen/Qwen3-VL-235B-A22B-Instruct      The processor gathers
+Qwen2.5-VL,                                                video_data, runs Qwen's
+Qwen3-VL,                                                  frame sampler, and merges
+Qwen3-Omni)                                                the resulting features
+                                                           with text tokens before
+                                                           inference.
+Ling-VL              inclusionAI/Ling-3.0-flash-VL         InclusionAI's KDA/MLA
+(Ling-3.0-flash-VL)                                        hybrid MoE VLM (125B
+                                                           total / ~5.1B active)
+                                                           built on the
+                                                           Ling-3.0-flash backbone
+                                                           with a Qwen3-ViT-family
+                                                           vision tower. Image and
+                                                           video inputs are expanded
+                                                           by the Bailing processor
+                                                           with centered mRoPE
+                                                           positions. Requires
+                                                           ---trust-remote-code. Audio
+                                                           is not supported.
+GLM-4v (4.5V, 4.1V,  zai-org/GLM-4.5V                      Video clips are read with
+MOE)                                                       Decord, converted to
+                                                           tensors, and passed to
+                                                           the model alongside
+                                                           metadata for
+                                                           rotary-position handling.
+NVILA (Full & Lite)  Efficient-Large-Model/NVILA-8B        The runtime samples eight
+                                                           frames per clip and
+                                                           attaches them to the
+                                                           multimodal request when
+                                                           video_data is present.
+LLaVA video          lmms-lab/LLaVA-NeXT-Video-7B          The processor routes
+variants                                                   video prompts to the
+(LLaVA-NeXT-Video,                                         LlavaVid video-enabled
+LLaVA-OneVision)                                           architecture, and the
+                                                           provided example shows
+                                                           how to query it with
+                                                           sgl.video(...) clips.
+NVIDIA Nemotron      nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16  The processor samples at
+Nano 2.0 VL                                                2 FPS, at a max of 128
+                                                           frames, as per model
+                                                           training. The model uses
+                                                           EVS, a pruning method
+                                                           that removes redundant
+                                                           tokens from video
+                                                           embeddings. By default
+                                                           video_pruning_rate=0.7.
+                                                           Change this by providing:
+                                                           ---json-model-override-args
+                                                           '{“video_pruning_rate”:
+                                                           0.0}' to disable EVS, for
+                                                           example.
+JetVLM                                                     The runtime samples eight
+                                                           frames per clip and
+                                                           attaches them to the
+                                                           multimodal request when
+                                                           video_data is present.
+
+Use `sgl.video(path, num_frames)` when building prompts to attach clips from
+your SGLang programs.
+
+Example OpenAI-compatible request that sends a video clip:
+
+[Complete Example]
+
+[Complete Example]Complete Example
+
+>python
+    import requests
+
+    url = "http://localhost:30000/v1/chat/completions"
+
+    data = {
+        "model": "Qwen/Qwen3-VL-30B-A3B-Instruct",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "What’s happening in this video?"},
+                    {
+                        "type": "video_url",
+                        "video_url": {
+                            "url": "https://github.com/sgl-project/sgl-test-files/raw/refs/heads/main/videos/jobs_presenting_ipod.mp4"
+                        },
+                    },
+                ],
+            }
+        ],
+        "max_tokens": 300,
+    }
+
+    response = requests.post(url, json=data)
+    print(response.text)
+<
+
+*docs-supported-models-multimodal_language_models-serving-the-llm-tower-of-cosmos3-checkpoints*
+SERVING THE LLM TOWER OF COSMOS3 CHECKPOINTS
+
+`nvidia/Cosmos3-Nano` and `nvidia/Cosmos3-Edge` are unified world-model
+checkpoints in a diffusers layout, so `sglang serve` routes them to the
+diffusion runtime by default (see the |sglang-diffusion-Cosmos-Cosmos3| for
+media generation). To serve the understanding tower as a vision-language
+model instead, force the LLM backend with `--model-type llm`:
+
+[Launch Server]
+
+[Launch Server]Launch Server
+
+>sh
+    sglang serve \
+      --model-path nvidia/Cosmos3-Nano \
+      --model-type llm \
+      --host 0.0.0.0 --port 30000
+<
+The same command serves `nvidia/Cosmos3-Edge` by swapping the model path.
+Both accept image and video inputs through the OpenAI-compatible API:
+
+[Example Request]
+
+[Example Request]Example Request
+
+>sh
+    curl http://localhost:30000/v1/chat/completions \
+      -H "Content-Type: application/json" \
+      -d '{
+        "model": "nvidia/Cosmos3-Nano",
+        "messages": [{
+          "role": "user",
+          "content": [
+            {"type": "text", "text": "Describe this image."},
+            {"type": "image_url", "image_url": {"url": "https://raw.githubusercontent.com/sgl-project/sglang/main/examples/assets/example_image.png"}}
+          ]
+        }],
+        "max_tokens": 128
+      }'
+<
+To serve only the text model (skipping the vision tower entirely), add
+`--language-model-only`. In this mode `/model_info` reports
+`has_image_understanding: false`, and requests containing image or video
+inputs are rejected:
+
+[Text-Only Launch]
+
+[Text-Only Launch]Text-Only Launch
+
+>sh
+    sglang serve \
+      --model-path nvidia/Cosmos3-Nano \
+      --model-type llm \
+      --language-model-only \
+      --host 0.0.0.0 --port 30000
+<
+
+USAGE NOTES     *docs-supported-models-multimodal_language_models-usage-notes*
+
+   *docs-supported-models-multimodal_language_models-performance-optimization*
+Performance Optimization
+
+For multimodal models, you can use `--mm-feature-transport=cuda_ipc` to
+optimize for latency at the cost of increased GPU memory usage:
+
+- Default behavior: Multimodal feature tensors are moved to CPU after
+  processing to save GPU memory
+- With `--mm-feature-transport=cuda_ipc`: Feature tensors stay in a bounded
+  GPU pool shared over CUDA IPC, reducing device-to-host copy overhead and
+  improving latency, but consuming more GPU memory
+
+Use this option when you have sufficient GPU memory and want to minimize
+latency for multimodal inference.
+
+*docs-supported-models-multimodal_language_models-multimodal-inputs-limitation*
+Multimodal Inputs Limitation
+
+- Use
+  `--mm-process-config '&#123;"image":&#123;"max_pixels":1048576&#125;,"video":&#123;"fps":3,"max_pixels":602112,"max_frames":60&#125;&#125;'`:
+  To set `image`, `video`, and `audio` input limits.
+
+This can reduce GPU memory usage, improve inference speed, and help to avoid
+OOM, but may impact model performance, thus set a proper value based on your
+specific use case. The config entries are passed as `images_kwargs`,
+`videos_kwargs`, and `audio_kwargs` to the HuggingFace processor, so each
+modality's settings are kept separate and do not collide. Refer to the
+HuggingFace documentation for your model's processor to understand the
+available parameters.
+
+For GLM-V models, the per-request `video_url` fields `fps`, `max_frames`,
+`max_tokens_per_frame`, and `max_image_tokens` can only tighten the
+deployment's video budget. Larger `fps`, `max_frames`, and
+`max_image_tokens` values are clamped to the deployment setting, and a
+`max_tokens_per_frame` that would exceed the video token budget is ignored.
+Raise the limits with `--mm-process-config` instead.
+
+*docs-supported-models-multimodal_language_models-bidirectional-attention-in-multimodal-model-serving*
+Bidirectional Attention in Multimodal Model Serving
+
+Note for serving the Gemma-3 multimodal model:
+
+As mentioned in
+Welcome Gemma 3: Google's all new multimodal, multilingual, long context open LLM
+https://huggingface.co/blog/gemma3#multimodality , Gemma-3 employs
+bidirectional attention between image tokens during the prefill phase.
+Currently, SGLang only supports bidirectional attention when using the
+Triton Attention Backend. Note, however, that SGLang's current bidirectional
+attention implementation is incompatible with both CUDA Graph and Chunked
+Prefill.
+
+To enable bidirectional attention, you can use the `TritonAttnBackend` while
+disabling CUDA Graph and Chunked Prefill. Example launch command:
+
+[Bidirectional Attention]
+
+[Bidirectional Attention]Bidirectional Attention
+
+>sh
+    python -m sglang.launch_server \
+      --model-path google/gemma-3-4b-it \
+      --host 0.0.0.0 --port 30000 \
+      --enable-multimodal \
+      --dtype bfloat16 \
+      --attention-backend triton \ # Use Triton attention backend
+      --disable-decode-cuda-graph --disable-prefill-cuda-graph \ # Disable Cuda Graph
+      --chunked-prefill-size -1 # Disable Chunked Prefill
+<
+If higher serving performance is required and a certain degree of accuracy
+loss is acceptable, you may choose to use other attention backends, and you
+can also enable features like CUDA Graph and Chunked Prefill for better
+performance, but note that the model will fall back to using causal
+attention instead of bidirectional attention.
+
+----------------------------------------------------------------------------
+Rerank models                     *sglang-docs-supported-models-rerank_models*
+
+SGLang offers comprehensive support for rerank models by incorporating
+optimized serving frameworks with a flexible programming interface. This
+setup enables efficient processing of cross-encoder reranking tasks,
+improving the accuracy and relevance of search result ordering. SGLang's
+design ensures high throughput and low latency during reranker model
+deployment, making it ideal for semantic-based result refinement in
+large-scale retrieval systems.
+
+  Warning: ~
+
+  Rerank models in SGLang fall into two categories:
+
+  - Cross-encoder rerank models: run with `--is-embedding` (embedding
+    runner).
+  - Decoder-only rerank models: run without `--is-embedding` and use
+    next-token logprob scoring (yes/no).
+    - Text-only (e.g. Qwen3-Reranker)
+    - Multimodal (e.g. Qwen3-VL-Reranker): also supports image/video content
+
+  Some models may require `--trust-remote-code`.
+
+                 *docs-supported-models-rerank_models-supported-rerank-models*
+SUPPORTED RERANK MODELS
+
+Model Family       Example HuggingFace        Chat Template                         Description
+(Rerank)           Identifier
+-----------------  -------------------------  ------------------------------------  -----------------
+BGE-Reranker       BAAI/bge-reranker-v2-m3    N/A                                   Currently only
+(BgeRerankModel)                                                                    support
+                                                                                    attention-backend
+                                                                                    triton and
+                                                                                    torch_native.
+                                                                                    High-performance
+                                                                                    cross-encoder
+                                                                                    reranker model
+                                                                                    from BAAI.
+                                                                                    Suitable for
+                                                                                    reranking search
+                                                                                    results based on
+                                                                                    semantic
+                                                                                    relevance.
+Qwen3-Reranker     Qwen/Qwen3-Reranker-8B     examples/chat_template/qwen3_reranker.jinja  Decoder-only
+(decoder-only                                                                       reranker using
+yes/no)                                                                             next-token
+                                                                                    logprob scoring
+                                                                                    for labels
+                                                                                    (yes/no). Launch
+                                                                                    without
+                                                                                    ---is-embedding.
+Qwen3-VL-Reranker  Qwen/Qwen3-VL-Reranker-2B  examples/chat_template/qwen3_vl_reranker.jinja  Multimodal
+(multimodal                                                                         decoder-only
+yes/no)                                                                             reranker
+                                                                                    supporting text,
+                                                                                    images, and
+                                                                                    videos. Uses
+                                                                                    yes/no logprob
+                                                                                    scoring. Launch
+                                                                                    without
+                                                                                    ---is-embedding.
+
+   *docs-supported-models-rerank_models-cross-encoder-rerank-embedding-runner*
+CROSS-ENCODER RERANK (EMBEDDING RUNNER)
+
+Launch Command            *docs-supported-models-rerank_models-launch-command*
+
+>sh
+    python3 -m sglang.launch_server \
+      --model-path BAAI/bge-reranker-v2-m3 \
+      --host 0.0.0.0 \
+      --disable-radix-cache \
+      --chunked-prefill-size -1 \
+      --attention-backend triton \
+      --is-embedding \
+      --port 30000
+<
+
+                  *docs-supported-models-rerank_models-example-client-request*
+Example Client Request
+
+>python
+    import requests
+
+    url = "http://127.0.0.1:30000/v1/rerank"
+
+    payload = {
+        "model": "BAAI/bge-reranker-v2-m3",
+        "query": "what is panda?",
+        "documents": [
+            "hi",
+            "The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China."
+        ],
+        "top_n": 1,
+        "return_documents": True
+    }
+
+    response = requests.post(url, json=payload)
+    response_json = response.json()
+
+    for item in response_json:
+        if item.get("document"):
+            print(f"Score: {item['score']:.2f} - Document: '{item['document']}'")
+        else:
+            print(f"Score: {item['score']:.2f} - Index: {item['index']}")
+<
+Request Parameters:
+
+- `query` (required): The query text to rank documents against
+- `documents` (required): List of documents to be ranked
+- `model` (required): Model to use for reranking
+- `top_n` (optional): Maximum number of documents to return. Defaults to
+  returning all documents. If specified value is greater than the total
+  number of documents, all documents will be returned.
+- `return_documents` (optional): Whether to return documents in the
+  response. Defaults to `True`.
+
+*docs-supported-models-rerank_models-qwen3-reranker-decoder-only-yes/no-rerank*
+QWEN3-RERANKER (DECODER-ONLY YES/NO RERANK)
+
+Launch Command          *docs-supported-models-rerank_models-launch-command-2*
+
+>sh
+    python3 -m sglang.launch_server \
+      --model-path Qwen/Qwen3-Reranker-0.6B \
+      --trust-remote-code \
+      --disable-radix-cache \
+      --host 0.0.0.0 \
+      --port 8001 \
+      --chat-template examples/chat_template/qwen3_reranker.jinja
+<
+  Note: ~
+
+  Qwen3-Reranker uses decoder-only logprob scoring (yes/no). Do NOT launch
+  it with `--is-embedding`.
+
+*docs-supported-models-rerank_models-example-client-request-supports-optional-instruct-top_n-and-return_documents*
+Example Client Request (supports optional instruct, top_n, and
+return_documents)
+
+>sh
+    curl -X POST http://127.0.0.1:8001/v1/rerank \
+      -H "Content-Type: application/json" \
+      -d '{
+        "model": "Qwen3-Reranker-0.6B",
+        "query": "法国首都是哪里？",
+        "documents": [
+          "法国的首都是巴黎。",
+          "德国的首都是柏林。",
+          "香蕉是黄色的水果。"
+        ],
+        "instruct": "Given a web search query, retrieve relevant passages that answer the query.",
+        "top_n": 2,
+        "return_documents": true
+      }'
+<
+Request Parameters:
+
+- `query` (required): The query text to rank documents against
+- `documents` (required): List of documents to be ranked
+- `model` (required): Model to use for reranking
+- `instruct` (optional): Instruction text for the reranker
+- `top_n` (optional): Maximum number of documents to return. Defaults to
+  returning all documents. If specified value is greater than the total
+  number of documents, all documents will be returned.
+- `return_documents` (optional): Whether to return documents in the
+  response. Defaults to `True`.
+
+Response Format          *docs-supported-models-rerank_models-response-format*
+
+`/v1/rerank` returns a list of objects (sorted by descending score):
+
+- `score`: float, higher means more relevant
+- `document`: the original document string (only included when
+  `return_documents` is `true`)
+- `index`: the original index in the input `documents`
+- `meta_info`: optional debug/usage info (may be present for some models)
+
+The number of returned results is controlled by the `top_n` parameter. If
+`top_n` is not specified or is greater than the total number of documents,
+all documents are returned.
+
+Example (with `return_documents: true`):
+
+>json
+    [
+      {"score": 0.99, "document": "法国的首都是巴黎。", "index": 0},
+      {"score": 0.01, "document": "德国的首都是柏林。", "index": 1},
+      {"score": 0.00, "document": "香蕉是黄色的水果。", "index": 2}
+    ]
+<
+Example (with `return_documents: false`):
+
+>json
+    [
+      {"score": 0.99, "index": 0},
+      {"score": 0.01, "index": 1},
+      {"score": 0.00, "index": 2}
+    ]
+<
+Example (with `top_n: 2`):
+
+>json
+    [
+      {"score": 0.99, "document": "法国的首都是巴黎。", "index": 0},
+      {"score": 0.01, "document": "德国的首都是柏林。", "index": 1}
+    ]
+<
+
+Common Pitfalls          *docs-supported-models-rerank_models-common-pitfalls*
+
+- `--chat-template` is required. Without
+  `--chat-template examples/chat_template/qwen3_reranker.jinja`, the server
+  does not recognize the model as a decoder-only reranker and returns a 400
+  error:
+  `"This model does not appear to be an embedding model by default. Please add `---is-embedding`..."`.
+  The fix is to add the chat template flag, NOT `--is-embedding`.
+- If you launch Qwen3-Reranker with `--is-embedding`, `/v1/rerank` cannot
+  compute yes/no logprob scores. Relaunch without `--is-embedding`.
+- If you see a validation error like “score should be a valid number” and
+  the backend returned a list, upgrade to a version that coerces
+  `embedding[0]` into `score` for rerank responses.
+
+*docs-supported-models-rerank_models-qwen3-vl-reranker-multimodal-decoder-only-rerank*
+QWEN3-VL-RERANKER (MULTIMODAL DECODER-ONLY RERANK)
+
+Qwen3-VL-Reranker extends the Qwen3-Reranker to support multimodal content,
+allowing reranking of documents containing text, images, and videos.
+
+Launch Command          *docs-supported-models-rerank_models-launch-command-3*
+
+>sh
+    python3 -m sglang.launch_server \
+      --model-path Qwen/Qwen3-VL-Reranker-2B \
+      --trust-remote-code \
+      --disable-radix-cache \
+      --host 0.0.0.0 \
+      --port 30000 \
+      --chat-template examples/chat_template/qwen3_vl_reranker.jinja
+<
+  Note: ~
+
+  Qwen3-VL-Reranker uses decoder-only logprob scoring (yes/no) like
+  Qwen3-Reranker. Do NOT launch it with `--is-embedding`.
+
+ *docs-supported-models-rerank_models-text-only-reranking-backward-compatible*
+Text-Only Reranking (backward compatible)
+
+>python
+    import requests
+
+    url = "http://127.0.0.1:30000/v1/rerank"
+
+    payload = {
+        "model": "Qwen3-VL-Reranker-2B",
+        "query": "What is machine learning?",
+        "documents": [
+            "Machine learning is a branch of artificial intelligence that enables computers to learn from data.",
+            "The weather in Paris is usually mild with occasional rain.",
+            "Deep learning is a subset of machine learning using neural networks with many layers.",
+        ],
+        "instruct": "Retrieve passages that answer the question.",
+        "return_documents": True
+    }
+
+    response = requests.post(url, json=payload)
+    results = response.json()
+
+    for item in results:
+        print(f"Score: {item['score']:.4f} - {item['document'][:60]}...")
+<
+
+*docs-supported-models-rerank_models-image-reranking-text-query-image/mixed-documents*
+Image Reranking (text query, image/mixed documents)
+
+>python
+    import requests
+
+    url = "http://127.0.0.1:30000/v1/rerank"
+
+    payload = {
+        "query": "A woman playing with her dog on a beach at sunset.",
+        "documents": [
+            # Document 1: Text description
+            "A woman shares a joyful moment with her golden retriever on a sun-drenched beach at sunset.",
+            # Document 2: Image URL
+            [
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "https://example.com/beach_dog.jpeg"
+                    }
+                }
+            ],
+            # Document 3: Text + Image (mixed)
+            [
+                {"type": "text", "text": "A joyful scene at the beach:"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "https://example.com/beach_dog.jpeg"
+                    }
+                }
+            ]
+        ],
+        "instruct": "Retrieve images or text relevant to the user's query.",
+        "return_documents": False
+    }
+
+    response = requests.post(url, json=payload)
+    results = response.json()
+
+    for item in results:
+        print(f"Index: {item['index']}, Score: {item['score']:.4f}")
+<
+
+*docs-supported-models-rerank_models-multimodal-query-reranking-query-with-image*
+Multimodal Query Reranking (query with image)
+
+>python
+    import requests
+
+    url = "http://127.0.0.1:30000/v1/rerank"
+
+    payload = {
+        # Query with text and image
+        "query": [
+            {"type": "text", "text": "Find similar images to this:"},
+            {
+                "type": "image_url",
+                "image_url": {
+                    "url": "https://example.com/reference_image.jpeg"
+                }
+            }
+        ],
+        "documents": [
+            "A cat sleeping on a couch.",
+            "A woman and her dog enjoying the sunset at the beach.",
+            "A busy city street with cars and pedestrians.",
+            [
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "https://example.com/similar_image.jpeg"
+                    }
+                }
+            ]
+        ],
+        "instruct": "Find images or descriptions similar to the query image."
+    }
+
+    response = requests.post(url, json=payload)
+    results = response.json()
+
+    for item in results:
+        print(f"Index: {item['index']}, Score: {item['score']:.4f}")
+<
+
+           *docs-supported-models-rerank_models-request-parameters-multimodal*
+Request Parameters (Multimodal)
+
+- `query` (required): Can be a string (text-only) or a list of content
+  parts:
+  - `&#123;"type": "text", "text": "..."&#125;` for text
+  - `&#123;"type": "image_url", "image_url": &#123;"url": "..."&#125;&#125;`
+    for images
+  - `&#123;"type": "video_url", "video_url": &#123;"url": "..."&#125;&#125;`
+    for videos
+- `documents` (required): List where each document can be a string or list
+  of content parts (same format as query)
+- `instruct` (optional): Instruction text for the reranker
+- `top_n` (optional): Maximum number of documents to return
+- `return_documents` (optional): Whether to return documents in the response
+  (default: `false`)
+
+Common Pitfalls        *docs-supported-models-rerank_models-common-pitfalls-2*
+
+- Always use
+  `--chat-template examples/chat_template/qwen3_vl_reranker.jinja` for
+  Qwen3-VL-Reranker.
+- Do NOT launch with `--is-embedding`.
+- For best results, use `--disable-radix-cache` to avoid caching issues with
+  multimodal content.
+- Note: Currently only `Qwen3-VL-Reranker-2B` is tested and supported. The
+  8B model may have different behavior and is not guaranteed to work with
+  this template.
+
+----------------------------------------------------------------------------
+Reward models                     *sglang-docs-supported-models-reward_models*
+
+These models output a scalar reward score or classification result, often
+used in reinforcement learning or content moderation tasks.
+
+They are executed with `--is-embedding` and some may require
+`--trust-remote-code`.
+
+                  *docs-supported-models-reward_models-example-launch-command*
+EXAMPLE LAUNCH COMMAND
+
+>sh
+    python3 -m sglang.launch_server \
+      --model-path Qwen/Qwen2.5-Math-RM-72B \  # example HF/local path
+      --is-embedding \
+      --host 0.0.0.0 \
+      --tp-size=4 \                          # set for tensor parallelism
+      --port 30000 \
+<
+
+SUPPORTED MODELS        *docs-supported-models-reward_models-supported-models*
+
+Model Family (Reward)             Example HuggingFace Identifier        Description
+--------------------------------  ------------------------------------  ----------------
+Llama (3.1 Reward /               Skywork/Skywork-Reward-Llama-3.1-8B-v0.2  Reward model
+LlamaForSequenceClassification)                                         (preference
+                                                                        classifier)
+                                                                        based on Llama
+                                                                        3.1 (8B) for
+                                                                        scoring and
+                                                                        ranking
+                                                                        responses for
+                                                                        RLHF.
+Gemma 2 (27B Reward /             Skywork/Skywork-Reward-Gemma-2-27B-v0.2  Derived from
+Gemma2ForSequenceClassification)                                        Gemma‑2 (27B),
+                                                                        this model
+                                                                        provides human
+                                                                        preference
+                                                                        scoring for RLHF
+                                                                        and multilingual
+                                                                        tasks.
+InternLM 2 (Reward /              internlm/internlm2-7b-reward          InternLM 2
+InternLM2ForRewardMode)                                                 (7B)--based
+                                                                        reward model
+                                                                        used in
+                                                                        alignment
+                                                                        pipelines to
+                                                                        guide outputs
+                                                                        toward preferred
+                                                                        behavior.
+Qwen2.5 (Reward - Math /          Qwen/Qwen2.5-Math-RM-72B              A 72B
+Qwen2ForRewardModel)                                                    math-specialized
+                                                                        RLHF reward
+                                                                        model from the
+                                                                        Qwen2.5 series,
+                                                                        tuned for
+                                                                        evaluating and
+                                                                        refining
+                                                                        responses.
+Qwen2.5 (Reward - Sequence /      jason9693/Qwen2.5-1.5B-apeach         A smaller
+Qwen2ForSequenceClassification)                                         Qwen2.5 variant
+                                                                        used for
+                                                                        sequence
+                                                                        classification,
+                                                                        offering an
+                                                                        alternative RLHF
+                                                                        scoring
+                                                                        mechanism.
+
+----------------------------------------------------------------------------
+                          *sglang-docs-supported-models-transformers_fallback*
+Transformers Fallback in SGLang
+
+`sglang` can fall back to using models that are available in `transformers`.
+This works for most decoder-style language models and support for
+vision-language models is coming soon!
+
+          *docs-supported-models-transformers_fallback-example-launch-command*
+EXAMPLE LAUNCH COMMAND
+
+By default, we will use sglang implementation if it is available. Otherwise,
+we will fall back to transformers one. However, you can switch the
+implementation by setting `--model-impl` to `transformers`.
+
+[Launch Server]
+
+[Launch Server]Launch Server
+
+>sh
+    python3 -m sglang.launch_server \
+      --model-path meta-llama/Llama-3.2-1B-Instruct \
+      --host 0.0.0.0 \
+      --port 30000 \
+      --model-impl transformers
+<
+
+              *docs-supported-models-transformers_fallback-supported-features*
+SUPPORTED FEATURES
+
+Quantization        *docs-supported-models-transformers_fallback-quantization*
+
+Transformers fall back has supported most of available quantization in
+SGLang (except GGUF). See |sglang-docs-advanced_features-quantization| for
+more information about supported quantization in SGLang.
+
+Remote code          *docs-supported-models-transformers_fallback-remote-code*
+
+This fallback also means that any model on the hub that can be used in
+`transformers` with `trust_remote_code=True` that correctly implements
+attention can be used in production!
+
+A model just needs the following two things:
+
+[Example]
+
+[Example]Example
+
+>python
+    from transformers import PreTrainedModel
+    from torch import nn
+
+    class MyAttention(nn.Module):
+
+      def forward(self, hidden_states, **kwargs): # <- kwargs are required
+
+        ...
+        attention_interface = ALL_ATTENTION_FUNCTIONS[self.config._attn_implementation]
+        attn_output, attn_weights = attention_interface(
+          self,
+          query_states,
+          key_states,
+          value_states,
+          **kwargs,
+        )
+        ...
+
+    class MyModel(PreTrainedModel):
+      _supports_attention_backend = True
+<
+Here is what happens in the background:
+
+1. The config is loaded
+2. `MyModel` python class is loaded from the `auto_map`, and we check that
+   the model `_supports_attention_backend`.
+3. The `TransformersModel` backend is used. See `/srt/models/transformers`,
+   which leverages `self.config._attn_implementation = "sglang"`, thus the
+   need to use `ALL_ATTENTION_FUNCTIONS`.
+
+That's it!
+
+ vim:tw=78:ts=8:ft=help:norl:

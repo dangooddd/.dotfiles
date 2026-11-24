@@ -1,0 +1,53 @@
+*deepspeed.txt* *deepspeed*	DeepSpeed documentation
+Version latest — https://www.deepspeed.ai/
+License: Apache-2.0
+
+TABLE OF CONTENTS	*deepspeed-toc*
+
+docs .............................................. |deepspeed-section-docs|
+getting started ........................ |deepspeed-section-getting-started|
+tutorials .................................... |deepspeed-section-tutorials|
+
+==============================================================================
+DOCS
+
+DeepSpeed Configuration JSON ............ |deepspeed-docs-config-json-index|
+
+==============================================================================
+GETTING STARTED
+
+Getting Started .......................... |deepspeed-getting-started-index|
+
+==============================================================================
+TUTORIALS
+
+Automatic Tensor Parallelism for HuggingFace Models ... |deepspeed-tutorials-automatic-tensor-parallelism-index|
+Automatic Tensor Parallelism (Training) ... |deepspeed-tutorials-autotp-training-index|
+Autotuning .......................... |deepspeed-tutorials-autotuning-index|
+BingBertSQuAD Fine-tuning ...... |deepspeed-tutorials-bert-finetuning-index|
+BERT Pre-training ............. |deepspeed-tutorials-bert-pretraining-index|
+Communication Logging ............ |deepspeed-tutorials-comms-logging-index|
+DeepSpeed Data Efficiency: A composable library that makes better use of data, increases training efficiency, and improves model quality ... |deepspeed-tutorials-data-efficiency-index|
+DataStates-LLM Checkpointing Engine ... |deepspeed-tutorials-datastates-async-checkpointing-index|
+DeepNVMe .............................. |deepspeed-tutorials-deepnvme-index|
+Deterministic Mode .......... |deepspeed-tutorials-deterministic-mode-index|
+Getting Started with DeepSpeed-Ulysses for Training Transformer Models with Extreme Long Sequences ... |deepspeed-tutorials-ds-sequence-index|
+Flops Profiler .................. |deepspeed-tutorials-flops-profiler-index|
+Getting Started with DeepSpeed for Inferencing Transformer based Models ... |deepspeed-tutorials-inference-tutorial-index|
+Training your large model with DeepSpeed ... |deepspeed-tutorials-large-models-w-deepspeed-index|
+Megatron-LM GPT2 ...................... |deepspeed-tutorials-megatron-index|
+Mixed Precision ZeRO++ ... |deepspeed-tutorials-mixed_precision_zeropp-index|
+Getting Started with DeepSpeed-MoE for Inferencing Large-Scale MoE Models ... |deepspeed-tutorials-mixture-of-experts-inference-index|
+Mixture of Experts (DeepSpeed MoE) ... |deepspeed-tutorials-mixture-of-experts-index|
+Monitor ................................ |deepspeed-tutorials-monitor-index|
+Pipeline Parallelism .................. |deepspeed-tutorials-pipeline-index|
+Using PyTorch Profiler with DeepSpeed for performance debugging ... |deepspeed-tutorials-pytorch-profiler-index|
+Arctic Long Sequence Training (ALST) for HF Transformers integration ... |deepspeed-tutorials-ulysses-alst-sequence-parallelism-index|
+DeepSpeed Ulysses-Offload ...... |deepspeed-tutorials-ulysses-offload-index|
+Universal Checkpointing with DeepSpeed: A Practical Guide ... |deepspeed-tutorials-universal-checkpointing-index|
+ZenFlow ................................ |deepspeed-tutorials-zenflow-index|
+ZeRO-Offload ...................... |deepspeed-tutorials-zero-offload-index|
+Zero Redundancy Optimizer ................. |deepspeed-tutorials-zero-index|
+ZeRO++ .................................. |deepspeed-tutorials-zeropp-index|
+
+ vim:tw=78:ts=8:ft=help:norl:

@@ -1,0 +1,1008 @@
+*verl-sglang_multiturn.txt*	verl documentation: sglang_multiturn
+Version latest — https://verl.readthedocs.io/en/latest/
+
+==============================================================================
+SGLANG_MULTITURN                               *verl-section-sglang_multiturn*
+
+
+----------------------------------------------------------------------------
+Multi-turn Rollout Support                   *verl-sglang_multiturn-multiturn*
+
+Last updated: 05/09/2026.
+
+BASIC CONFIGURATION           *sglang_multiturn-multiturn-basic-configuration*
+
+To enable multi-turn rollout, make sure to configure the following fields in
+your rollout configuration:
+
+>yaml
+    actor_rollout_ref:
+        rollout:
+            multi_turn: True
+            name: "sglang"
+<
+These configuration activates the sglang engine for multi-turn interaction
+during rollout.
+
+                        *sglang_multiturn-multiturn-custom-tool-configuration*
+CUSTOM TOOL CONFIGURATION
+
+For custom environment interaction tools, you can implement your own tools
+based on `verl.tools.base_tool.BaseTool`. Then, specify your tool
+configurations in a YAML file:
+
+>yaml
+    tools:
+      - class_name: ""
+        config:
+            type: native
+        tool_schema:
+<
+For stateless tools that don't need `BaseTool`'s `create`/`release`
+lifecycle, see the |sglang_multiturn-multiturn-function-tool-configuration|
+section below for the simpler `@function_tool` API.
+
+Finally, set the `tools_config_file` in your rollout config:
+
+>yaml
+    actor_rollout_ref:
+        rollout:
+            tool_kwargs:
+                tools_config_file: <path_to_tool_yaml_file>
+<
+This allows integration of customized tool behaviors during actor rollout
+steps.
+
+If your tool creates multi-modal inputs, you should return a list of
+multi-modal inputs in your tool.execute() implementation.
+
+Image and video should be processed before returning. For example, if you
+are using Qwen2.5-VL, you can use the following code to get the
+representations:
+
+>python
+    async def create(self, ...) -> tuple[str, ToolResponse]:
+        ...
+        from verl.utils.dataset.vision_utils import process_image, process_video
+
+        img1 = process_image(img1)
+        video1 = process_video(video1)
+
+        # due to the (image | video) key is ("image" | "video") instead of ("images" | "videos") in vllm, we need to use ("image" | "video") to specify list of images/videos
+        # link: https://github.com/vllm-project/vllm/blob/3c545c0c3b98ee642373a308197d750d0e449403/vllm/multimodal/parse.py#L205
+        return instance_id, ToolResponse(image=[img1, ...], video=[video1, ...], text="...")
+
+    async def execute(self, ...) -> Tuple[str | Dict[str, Any], float, dict]:
+        ...
+        from verl.utils.dataset.vision_utils import process_image, process_video
+
+        img1 = process_image(img1)
+        video1 = process_video(video1)
+
+        # due to the (image | video) key is ("image" | "video") instead of ("images" | "videos") in vllm, we need to use ("image" | "video") to specify list of images/videos
+        # link: https://github.com/vllm-project/vllm/blob/3c545c0c3b98ee642373a308197d750d0e449403/vllm/multimodal/parse.py#L205
+        return ToolResponse(image=[img1, ...], video=[video1, ...], text="..."), 0, {}
+<
+remeber to set `return_multi_modal_inputs: False` in your dataset config in
+order to process the multi-modal inputs in the rollout correctly. Refer to
+the |sglang_multiturn-multiturn-handling-multi-modal-inputs-in-datasets|
+section for more details.
+
+                      *sglang_multiturn-multiturn-function-tool-configuration*
+FUNCTION TOOL CONFIGURATION
+
+For stateless tools, defining a full `BaseTool` subclass plus a yaml schema
+is overkill. The `@function_tool` decorator lets you register a plain Python
+function as a tool; verl delegates schema inference to
+`transformers.utils.get_json_schema()`, which reads the function signature
+and a Google-style docstring.
+
+A typical configuration:
+
+>yaml
+    actor_rollout_ref:
+        rollout:
+            mode: async
+            multi_turn:
+                enable: True
+                format: hermes  # or any other format your model's chat template supports
+                function_tool_path: path/to/your_tools.py
+            agent:
+                default_agent_loop: tool_agent
+<
+Define your tools in `path/to/your_tools.py`. The decorator works either
+bare or with an explicit name; the function name is used as the tool name
+when bare:
+
+>python
+    from verl.tools.function_tool import function_tool
+
+    @function_tool
+    def get_weather(city: str) -> dict:
+        """Get the current weather for a city.
+
+        Args:
+            city: The city to look up, e.g. "Tokyo" or "San Francisco".
+        """
+        return {"temperature_c": 17.3, "condition": "drizzle"}
+
+    @function_tool("calculator")  # explicit name overrides the function name
+    def calculator(expression: str) -> str:
+        """Evaluate a Python-style arithmetic expression.
+
+        Args:
+            expression: A Python-style arithmetic expression, e.g. "(3+4)*5".
+        """
+        return str(eval(expression, {"__builtins__": {}}, {}))
+<
+A few notes on the inferred schema:
+
+- Parameter types come from the function's type annotations. Beyond the
+  primitives (`str`, `int`, `float`, `bool`), generic and union forms work
+  too: `list[T]` / `dict[K, V]`, `Optional[X]` / `X | None` (yields
+  `nullable`), `int | float` (yields the JSON `["integer", "number"]` type),
+  `Literal["a", "b"]` (yields `enum`).
+- Per-argument descriptions come from the `Args:` section of the docstring.
+- Parameters without a default value are marked `required`.
+- The function may be sync or async; sync functions are dispatched through
+  `asyncio.to_thread` so they don't block the event loop.
+- `*args` / `**kwargs` are not representable in JSON Schema and will be
+  rejected at registration time. Use a `param: list[T]` argument instead for
+  variable-length inputs.
+- Pass `schema=` to the decorator if you want to bypass inference entirely
+  and supply your own `OpenAIFunctionToolSchema` (or a dict with the same
+  shape).
+
+If the function violates `transformers.get_json_schema`'s contract -- no
+docstring, missing type hint on a parameter, or a parameter that isn't
+documented in `Args:` -- registration raises a `DocstringParsingException`
+or `TypeHintParsingException` that points at the offending function. Fix the
+function rather than catching the exception.
+
+Return values are normalised the same way for every function tool:
+
+- `str` → wrapped as `ToolResponse(text=...)`
+- `dict` → JSON-serialised into `ToolResponse(text=...)`
+- `ToolResponse` → passed through unchanged
+- `(response, reward)` or `(response, reward, metrics)` tuples are accepted,
+  with `None` reward / metrics treated as `0.0` / `{}`
+
+`function_tool_path` and `tool_config_path` can be set together.
+`AgentLoopWorker` merges both into one registry once on startup; name
+collisions across the two paths raise an error. `RLHFDataset` shares the
+same loader so prompt-length filtering sees the exact tool schemas the
+rollout will.
+
+The function-tool path intentionally exposes no framework-level lifecycle
+hooks: each call is just `fn(**parameters)`, with no `create`/`release` or
+per-trajectory `instance_id`. For per-trajectory state that must be torn
+down between rollouts (sandbox VMs, scratch directories, DB rows) or that
+needs `tools_kwargs` injected from the dataset, keep using `BaseTool` via
+`tool_config_path`.
+
+MULTI-TURN TOKENIZATION   *sglang_multiturn-multiturn-multi-turn-tokenization*
+
+Tokenizing multi-turn rollouts poses a challenge: after applying the chat
+template and tokenizing the full message list, it's hard to identify which
+tokens belong to assistant messages. Since the token list is flat, it lacks
+direct alignment with the message roles.
+
+To address this, we adopt a delta-based tokenization strategy. Each time the
+LLM generates a new message, we:
+
+1. Apply the chat template to all prior messages (messages[:i]).
+2. Apply the chat template again including the latest message
+   (messages[:i+1]).
+3. Tokenize only the delta between these two serialized message strings.
+
+This ensures that only tokens generated by the assistant are included in the
+loss mask.
+
+>python
+    # When using tokenizer
+    # Exclude the assistant prompt (e.g., "<|im_start|>assistant") from the loss by setting add_generation_prompt=True
+    prev = tokenizer.apply_chat_template(messages[:i], add_generation_prompt=True, tokenize=False)
+    curr = tokenizer.apply_chat_template(messages[:i+1], add_generation_prompt=False, tokenize=False)
+    token_ids += tokenizer.encode(curr[len(prev):], add_special_tokens=False)
+    loss_mask += [1] * len(token_ids)  # Mask only the new assistant tokens
+<
+>python
+    # When using processor
+    # Exclude the assistant prompt (e.g., "<|im_start|>assistant") from the loss by setting add_generation_prompt=True
+    prev = processor.apply_chat_template(messages[:i], add_generation_prompt=True, tokenize=False)
+    prev_model_inputs = processor(text=prev, images=images, videos=videos, return_tensors="pt")[0].tolist()
+    curr = processor.apply_chat_template(messages[:i+1], add_generation_prompt=False, tokenize=False)
+    curr_model_inputs = processor(text=curr, images=images, videos=videos, return_tensors="pt")[0].tolist()
+    token_ids += curr_model_inputs["input_ids"][len(prev_model_inputs["input_ids"]):]
+    loss_mask += [1] * len(token_ids)  # Mask only the new assistant tokens
+<
+Agent loop rollouts build these deltas with a Continuous Token builder
+selected from the model's `config.json` `model_type`. A builder that does
+not match the chat template (for example a `model_type` that falls back to
+the default builder) trains on turn boundaries the template never produces,
+such as a missing `\n` after the end-of-turn token, and nothing fails at
+runtime. To catch this, when the run can dispatch to an agent loop that
+appends tool/user turns, every agent loop worker replays a few fixed
+conversations through its builder before the first rollout and compares each
+turn boundary with a single-pass `apply_chat_template` render of the same
+conversation. A boundary mismatch raises an error that shows the decoded
+tokens, for example:
+
+>text
+    Continuous Token builder ContinuousTokenBuilder (config.json model_type='granite') does not reproduce the chat template at multi-turn boundaries, so multi-turn rollouts would train on token sequences the template never produces:
+<
+Differences confined to earlier turns, for example a template that drops
+`<think>` blocks from history, are expected because generated tokens are
+kept as-is, so they only log a warning.
+
+An agent loop declares that it appends tool/user turns with the class
+attribute `merges_context_messages = True`. `ToolAgentLoop` sets it and is a
+candidate whenever tools are configured or `multi_turn.enable` is set, since
+datasets route multi-turn samples to it. The default agent loop and the
+loops in `agent.agent_loop_config_path` are candidates too, so a custom loop
+that calls `ct_merge_context_msg` should set the attribute (subclasses of
+`ToolAgentLoop` inherit it). Single-turn loops never merge context and are
+not checked.
+
+The check is configured with
+`actor_rollout_ref.rollout.multi_turn.tokenization_sanity_check_mode`, which
+accepts the following values:
+
+- `strict` (default): Raise if any turn boundary differs from the chat
+  template.
+- `ignore_strippable`: Only warn when a boundary differs in whitespace
+  characters (`\n`, `\t`, `\r`, spaces) alone, and still raise on other
+  differences.
+- `disable`: Skip the check. Only use this if you have verified that the
+  boundary differences are expected and won't impact training.
+
+Example configuration:
+
+>yaml
+    actor_rollout_ref:
+        rollout:
+            multi_turn:
+                tokenization_sanity_check_mode: "ignore_strippable"  # Choose from: "disable", "ignore_strippable", "strict"
+<
+
+          *sglang_multiturn-multiturn-handling-multi-modal-inputs-in-datasets*
+HANDLING MULTI-MODAL INPUTS IN DATASETS
+
+If your dataset includes multi-modal inputs (such as images or videos), you
+can control whether these are pre-processed and included in each sample by
+setting the return_multi_modal_inputs flag in your dataset config (used by
+RLHFDataset).
+
+- `return_multi_modal_inputs: True` (default): The dataset will pre-process
+  and include a multi_modal_inputs dictionary for each sample. This dict
+  contains the model-ready representations (e.g., image tensors, video
+  tensors, etc.) as produced by your processor. This is useful for
+  single-turn or SFT-style training, where the model expects all modalities
+  to be present in the batch.
+- `return_multi_modal_inputs: False`: The dataset will not include the
+  multi_modal_inputs field. This is recommended for multi-turn RL or
+  tool-augmented rollouts, where the model may generate new multi-modal
+  inputs dynamically during rollout, and you want to avoid conflicts or
+  redundant data in the batch.
+
+Special Cases                       *sglang_multiturn-multiturn-special-cases*
+
+Some models (e.g., Qwen/QwQ-32B and Qwen3 series) remove internal reasoning
+content during chat template rendering. As a result, the message content can
+vary across turns, making the delta-based tokenization inaccurate.
+
+For example, for the following conversation:
+
+>python
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is 2 + 2?"},
+        {"role": "assistant", "content": "<think>user asked about a simple math question.</think> 2 + 2 = 4."},
+        {"role": "user", "content": "Explain why."},
+        {"role": "assistant", "content": "<think>user wants to know the reasoning behind the answer. Search for a good explanation</think>",
+         "tool_calls": [{"id": "tool1", "type": "search", "arguments": {"query": "Why is 2 + 2 = 4?"}}]},
+        {"role": "tool", "content": "The sum of two and two is four because it is a basic arithmetic operation."},
+        {"role": "assistant", "content": "<think>The tool provided a good explanation.</think>The sum of two and two is four because it is a basic arithmetic operation."}
+    ]
+<
+1. Qwen/QwQ-32B will remove all reasoning content except the last assistant
+   message after applying the chat template.
+
+>text
+    <|im_start|>system
+    You are a helpful assistant.<|im_end|>
+    <|im_start|>user
+    What is 2 + 2?<|im_end|>
+    <|im_start|>assistant
+     2 + 2 = 4.<|im_end|>
+    <|im_start|>user
+    Explain why.<|im_end|>
+    <|im_start|>assistant
+    <tool_call>
+    {"name": "", "arguments": {"query": "Why is 2 + 2 = 4?"}}
+    </tool_call><|im_end|>
+    <|im_start|>user
+    <tool_response>
+    The sum of two and two is four because it is a basic arithmetic operation.
+    </tool_response><|im_end|>
+    <|im_start|>assistant
+    <think>The tool provided a good explanation.</think> The sum of two and two is four because it is a basic arithmetic operation.<|im_end|>
+<
+2. Qwen3 series will remove all reasoning content before the last user
+   message.
+
+>text
+    <|im_start|>system
+    You are a helpful assistant.<|im_end|>
+    <|im_start|>user
+    What is 2 + 2?<|im_end|>
+    <|im_start|>assistant
+     2 + 2 = 4.<|im_end|>
+    <|im_start|>user
+    Explain why.<|im_end|>
+    <|im_start|>assistant
+    <think>
+    user wants to know the reasoning behind the answer. Search for a good explanation
+    </think>
+
+    <tool_call>
+    {"name": "", "arguments": {"query": "Why is 2 + 2 = 4?"}}
+    </tool_call><|im_end|>
+    <|im_start|>user
+    <tool_response>
+    The sum of two and two is four because it is a basic arithmetic operation.
+    </tool_response><|im_end|>
+    <|im_start|>assistant
+    <think>
+    The tool provided a good explanation.
+    </think>
+
+    The sum of two and two is four because it is a basic arithmetic operation.<|im_end|>
+<
+To handle this, we fall back to a fixed base conversation containing only a
+single system and user message. Since this base doesn't include assistant
+messages or reasoning content, it remains consistent across turns.
+
+>python
+    BASE_CHAT_HISTORY = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "I am a user."}
+    ]
+    prev = tokenizer.apply_chat_template(BASE_CHAT_HISTORY, add_generation_prompt=True, tokenize=False)
+    curr = tokenizer.apply_chat_template([*BASE_CHAT_HISTORY, messages[i]], add_generation_prompt=False, tokenize=False)
+    token_ids += tokenizer.encode(curr[len(prev):], add_special_tokens=False)
+    loss_mask += [1] * len(token_ids)
+<
+This method works well for Qwen3 series. However, Qwen/QwQ-32B currently has
+a bug in its chat template. A fix
+https://huggingface.co/Qwen/QwQ-32B/discussions/81 has been proposed but not
+yet adopted. Until then, use the following command to download the fixed
+model revision:
+
+>bash
+    pip install huggingface_hub
+    hf download Qwen/QwQ-32B --revision refs/pr/81
+<
+
+*sglang_multiturn-multiturn-discrepancy-between-training-and-inference-templates*
+Discrepancy Between Training and Inference Templates
+
+Although the above approach fixes the delta mismatch issue, the removal of
+reasoning content in the inference-time chat template introduces a new
+discrepancy: training uses the full reasoning content, while inference does
+not.
+
+This mismatch can affect model performance in unpredictable ways. To avoid
+it, we default to using the full response (including reasoning) for both
+training and rollout.
+
+However, this approach comes with trade-offs:
+
+1. Long reasoning contents can easily exceed the model's context window,
+   especially in multi-turn rollout.
+2. There's a mismatch between rollout and production environment
+   now---models will not have reasoning content from past turns if you use
+   the default chat template in production.
+
+We are still evaluating the impact of these issues. If you experience
+context length problems or prefer rollouts that match production (i.e.,
+exclude reasoning), you can enable:
+
+`actor_rollout_ref.rollout.multi_turn.use_inference_chat_template = True`
+
+            *sglang_multiturn-multiturn-gsm8k-multi-turn-training-performance*
+GSM8K MULTI-TURN TRAINING PERFORMANCE
+
+See the training performance of multi-turn rollout on the GSM8K task HERE
+https://wandb.ai/zhaochenyang20/gsm8k_async_rl/runs/1ro1r7om?nw=nwuserzhaochenyang20.
+
+SEARCH TOOL INTEGRATION   *sglang_multiturn-multiturn-search-tool-integration*
+
+CODE WALKTHROUGH                 *sglang_multiturn-multiturn-code-walkthrough*
+
+If you want to learn more in depth about the code execution flow, please
+read
+https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/tree/main/rlhf/verl/multi-turn/code-walk-through
+
+----------------------------------------------------------------------------
+Sandbox Fusion Tool Integration         *verl-sglang_multiturn-sandbox_fusion*
+
+Last updated: 05/09/2026.
+
+  Note: ~
+
+  The in-tree `verl.tools.sandbox_fusion_tools.SandboxFusionTool` reference
+  implementation discussed in this guide has been removed. The integration
+  pattern below remains accurate for users implementing their own
+  `verl.tools.base_tool.BaseTool` subclass; for the previous implementation
+  see git history at commit `f5e21df6` and earlier.
+
+MOTIVATIONS                      *sglang_multiturn-sandbox_fusion-motivations*
+
+- As users of verl, we want to allow the model to call certain tools during
+  Actor rollout, incorporating the results into the training process.
+- A colleague from ByteDance proposed a paper aimed at enhancing model
+  capability through code execution tools.
+- We aim to support tool-calling capabilities of inference engines using
+  sandbox-fusion as the code execution system, providing the community with
+  a reimplementation of retools.
+
+*sglang_multiturn-sandbox_fusion-reward-compute-with-sandbox-fusion-faas-integration*
+REWARD COMPUTE WITH SANDBOX FUSION + FAAS INTEGRATION
+
+- In current datasets and tasks, similar work already exists (e.g., Prime),
+  which uses local processes as runners to execute model-generated code for
+  reward computation.
+- On this basis, #1429 has advanced the design by integrating FaaS as the
+  runner for reward computation.
+
+GOALS                                  *sglang_multiturn-sandbox_fusion-goals*
+
+- Adapt to the sglang tool-calling protocol and define tools for sandbox
+  fusion.
+- Integrate with the async-rollout process, ensuring sandbox fusion tools
+  follow asyncIO conventions.
+- Design and implement a basic rate limiter to prevent issues such as 429
+  errors.
+
+NON-GOALS                          *sglang_multiturn-sandbox_fusion-non-goals*
+
+- Training effectiveness is out of scope.
+- Observability metrics are not considered.
+- Distributed failover and component fault tolerance are not addressed.
+
+DESIGN DETAILS                *sglang_multiturn-sandbox_fusion-design-details*
+
+                      *sglang_multiturn-sandbox_fusion-tool-schema-definition*
+Tool Schema Definition
+
+- Currently, only code execution is considered, requiring a code field in
+  the JSON from the model.
+- Only Python code is supported for now, so no language parameter is
+  defined.
+
+>python
+    OpenAIFunctionToolSchema(
+        type="function",
+        function=OpenAIFunctionSchema(
+            name="code_interpreter",
+            description="A tool for executing code.",
+            parameters=OpenAIFunctionParametersSchema(
+                type="object",
+                properties={
+                    "code": OpenAIFunctionPropertySchema(
+                        type="string",
+                        description="The code to execute.",
+                        enum=None,
+                    )
+                },
+                required=["code"],
+            ),
+            strict=False,
+        )
+    )
+<
+
+                    *sglang_multiturn-sandbox_fusion-configuration-parameters*
+Configuration Parameters
+
+Parameter Name            Description
+------------------------  ----------------------------------------------------
+num_workers               Number of worker threads/processes per DP to request
+                          runner.
+rate_limit                Global limit of concurrent code executions. Default:
+                          10
+default_timeout           Timeout (in seconds) for each code execution.
+                          Default: 30
+default_language          Default programming language. Default: “python”
+enable_global_rate_limit  Whether to enable global rate limiting. Default:
+                          True
+sandbox_fusion_url        URL for the veFaas sandbox execution service
+
+Rate Limiting Design    *sglang_multiturn-sandbox_fusion-rate-limiting-design*
+
+Objective:
+
+- Limit the number of inflight requests using a token bucket model.
+- Ensure ordered submission to code runners to avoid starvation due to
+  backoff.
+
+Design Highlights:
+
+- Use Ray Global Actor as a singleton distributed counter at cluster level.
+- Semaphore used for counting, with acquire and release in separate thread
+  pools to preserve order.
+- Use Ray's cloud-pickle to serialize functions for decoupled
+  ExecutionWorker.
+
+>python
+    @ray.remote(concurrency_groups={"acquire": 1,"release": 10})
+    class TokenBucketWorker:
+        def __init__(self, rate_limit: int):
+            self.rate_limit = rate_limit
+            self.current_count = 0
+            self._semaphore = threading.Semaphore(rate_limit)
+
+        @ray.method(concurrency_group="acquire")
+        def acquire(self):
+            self._semaphore.acquire()
+            self.current_count += 1
+
+        @ray.method(concurrency_group="release")
+        def release(self):
+            self._semaphore.release()
+            self.current_count -= 1
+
+        def get_current_count(self):
+            return self.current_count
+
+    class ExecutionWorker:
+        def __init__(self, enable_global_rate_limit=True, rate_limit=10):
+            self.rate_limit_worker = self._init_rate_limit(rate_limit) if enable_global_rate_limit else None
+
+        def _init_rate_limit(self, rate_limit):
+            return TokenBucketWorker.options(name="rate-limiter", get_if_exists=True).remote(rate_limit)
+
+        def execute(self, fn: Callable[..., T], *fn_args, **fn_kwargs) -> T:
+            with ExitStack() as stack:
+                stack.callback(self.rate_limit_worker.release.remote)
+                ray.get(self.rate_limit_worker.acquire.remote())
+                try:
+                    return fn(*fn_args, **fn_kwargs)
+                except Exception as e:
+                    logger.warning(f"Error when executing code: {e}")
+
+    def init_execution_pool(num_workers: int, enable_global_rate_limit=True, rate_limit=10, mode: PoolMode=PoolMode.ThreadMode):
+        if mode == PoolMode.ThreadMode:
+            return ray.remote(ExecutionWorker).options(max_concurrency=num_workers).remote(
+                enable_global_rate_limit=enable_global_rate_limit,
+                rate_limit=rate_limit
+            )
+        else:
+            raise NotImplementedError("Process mode is not implemented yet")
+<
+
+Tool Implementation      *sglang_multiturn-sandbox_fusion-tool-implementation*
+
+- Use instance_id to identify requests across multiple dialogue rounds.
+- Use execution_pool to implement async invocation.
+- Cleanup state after rollout completion.
+
+>python
+    class SandboxFusionTool(BaseTool):
+        def __init__(self, config: dict, tool_schema: OpenAIFunctionToolSchema):
+            ...
+            self.execution_pool = init_execution_pool(...)
+            ...
+
+        async def create(self, instance_id: Optional[str] = None, ...):
+            ...
+
+         async def execute(self, instance_id: str, parameters: dict[str, Any], **kwargs) -> Tuple[str, float, dict]:
+             code = parameters.get("code", "")
+             timeout = parameters.get("timeout", self.default_timeout)
+             language = parameters.get("language", self.default_language)
+             if not isinstance(code, str):
+                 code = str(code)
+
+             result = await self.execution_pool.execute.remote(self.execute_code,instance_id,code,timeout,language)
+             self._instance_dict[instance_id]["reward"].append(result.strip())
+
+             return result, result, {}
+
+         def execute_code(self,instance_id,code,timeout=30,language="python"):
+             result_status, metadata  = _process_single_case(0, None, None,self.sandbox_fusion_url, code, timeout, language)
+             # we should always expect this since we don't have correct answer
+             if metadata["run_status"] == "Finished":
+                 actual_output = metadata["stdout"] if metadata["stdout"] is not None else ""
+                 return actual_output
+             else:
+                 return "no stdout here"
+
+        async def calc_reward(self, instance_id: str, ...):
+            ...
+
+        async def release(self, instance_id: str, ...):
+            ...
+<
+
+TEST PLAN                          *sglang_multiturn-sandbox_fusion-test-plan*
+
+Unit Tests                        *sglang_multiturn-sandbox_fusion-unit-tests*
+
+- test_tools_registration: Test tool registration and initialization.
+- test_rollout_req_creation: Validate that AsyncRolloutReq is built
+  correctly.
+- test_over_size_case: Ensure rollout terminates early when exceeding
+  max_seq_len.
+- test_tool_call_basic_case: Mock sglang output, validate tool call and
+  result.
+- test_tool_call_batch_case: Test batch processing of tool calls.
+- test_basic_multi_process_init: Validate Ray global actor behaves as
+  singleton.
+- TestSingleNodeRateLimiterCase: Verify rate limiter works in single-node
+  mode.
+- test_rotten_execution: Ensure rate limiter recovers from function errors.
+- TestMultiNodeRateLimiterCase: Verify behavior in multi-node environments.
+
+e2e Tests                          *sglang_multiturn-sandbox_fusion-e2e-tests*
+
+we provide e2e test scripts in tests/special_e2e folder, named
+tests/special_e2e/run_gsm8k_fsdp_sgl_multiturn_sf_tool.sh
+
+by setting ‘trainer.rollout_data_dir' you can dump the rollout data to local
+disk. here is an sample taken from the rollout data:
+
+>python
+    {
+      "input": "
+
+      system\nYou are a math expert. You are given a question and you need to solve it step by step. Reasoning step by step before any tool call. You should use the `calc_gsm8k_reward` tool after step by step solving the question, before generate final answer at least once and refine your answer if necessary. Put your final answer in the format of `#### <answer>`.\n\n# Tools\n\nYou may call one or more functions to assist with the user query.\n\nYou are provided with function signatures within <tools></tools> XML tags:\n<tools>\n{\"type\": \"function\", \"function\": {\"name\": \"code_interpreter\", \"description\": \"A tool for executing code.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"code\": {\"type\": \"string\", \"description\": \"The code to execute.\", \"enum\": null}}, \"required\": [\"code\"]}, \"strict\": false}}\n</tools>\n\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\n<tool_call>\n{\"name\": <function-name>, \"arguments\": <args-json-object>}\n</tool_call>\n
+
+      user\nJohn gets a bonus that's the same percentage every year.  Last year he made $100,000 and got a $10,000 bonus.  This year he makes $200,000.  How much will John make this year when adding both his total pay and bonus together? Let's think step by step and output the final answer after `####`.\n
+
+      assistant\n",
+      "output": "assistant\n<think>\nOkay, let's see. John gets a bonus that's the same percentage every year. Last year, he made $100,000 and got a $10,000 bonus. This year, he makes $200,000. The question is asking how much he'll make this year when adding both his total pay and bonus together.\n\nFirst, I need to figure out the percentage bonus he gets. Since the bonus is the same percentage each year, if I can find that percentage based on last year's details, I can apply it to this year's earnings to find this year's bonus. Then, I'll add that bonus to his total pay this year.\n\nLast year, he earned $100,000 and got a $10,000 bonus. To find the percentage, I can divide the bonus by his total earnings. So, 10,000 divided by 100,000. Let me calculate that.\n\n10,000 / 100,000 equals 0.1, which is 10% as a percentage. So, his bonus is 10% of his pay each year.\n\nThis year, he makes $200,000. So, the bonus this year would be 10% of 200,000. Let me compute that using the code interpreter to ensure accuracy.\n
+
+      <tool_call>\n{\"name\": \"code_interpreter\", \"arguments\": {\"code\": \"total_pay_this_year = 200000\\nbonus_percentage = 10 / 100\\nbonus_this_year = total_pay_this_year * bonus_percentage\\ntotal_income_this_year = total_pay_this_year + bonus_this_year\\nprint(total_income_this_year)\", \"executes\": \"True\"}}\n</tool_call>\n
+
+      tool\n220000.0\n\n
+
+      assistant\n<think>\nSo the code shows that John's total income this year would be $220,000. This is consistent with the 10% bonus on last year's pay of $100,000, which was $10,000. Therefore, this year's bonus of $20,000 added to his total pay of $200,000 results in a total income of $220,000.\n\nI need to verify that there are no other factors at play. The problem states it's a constant percentage bonus each year, so there's no mention of changing percentages or other variables. Therefore, applying a straightforward percentage of 10% on this year's partial salary amount would result in $20,000. Adding that to his total pay gives $220,000. The calculation is correct and aligns with the question's parameters.\n</think>\n\n#### 220000.0",
+      "score": 0,
+      "step": 1
+    }
+<
+here is the readable format version:
+
+>python
+    [system]
+
+    You are a math expert. You are given a question and you need to solve it step by step. Reasoning step by step before any tool call. You should use the `calc_gsm8k_reward` tool after step by step solving the question, before generate final answer at least once and refine your answer if necessary. Put your final answer in the format of `#### <answer>`.
+
+    # Tools
+
+    You may call one or more functions to assist with the user query.
+
+    You are provided with function signatures within <tools></tools> XML tags:
+    <tools>
+    {"type": "function", "function": {"name": "code_interpreter", "description": "A tool for executing code.", "parameters": {"type": "object", "properties": {"code": {"type": "string", "description": "The code to execute.", "enum": null}}, "required": ["code"]}, "strict": false}}
+    </tools>
+
+    For each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:
+    <tool_call>
+    {"name": <function-name>, "arguments": <args-json-object>}
+    </tool_call>
+
+    [user]
+
+    John gets a bonus that's the same percentage every year.  Last year he made $100,000 and got a $10,000 bonus.  This year he makes $200,000.  How much will John make this year when adding both his total pay and bonus together? Let's think step by step and output the final answer after `####`.
+
+    [assistant]
+
+    <think>
+    Okay, let's see. John gets a bonus that's the same percentage every year. Last year, he made $100,000 and got a $10,000 bonus. This year, he makes $200,000. The question is asking how much he'll make this year when adding both his total pay and bonus together.
+
+    First, I need to figure out the percentage bonus he gets. Since the bonus is the same percentage each year, if I can find that percentage based on last year's details, I can apply it to this year's earnings to find this year's bonus. Then, I'll add that bonus to his total pay this year.
+
+    Last year, he earned $100,000 and got a $10,000 bonus. To find the percentage, I can divide the bonus by his total earnings. So, 10,000 divided by 100,000. Let me calculate that.
+
+    10,000 / 100,000 equals 0.1, which is 10% as a percentage. So, his bonus is 10% of his pay each year.
+
+    This year, he makes $200,000. So, the bonus this year would be 10% of 200,000. Let me compute that using the code interpreter to ensure accuracy.
+    <tool_call>
+    {"name": "code_interpreter", "arguments": {"code": "total_pay_this_year = 200000\nbonus_percentage = 10 / 100\nbonus_this_year = total_pay_this_year * bonus_percentage\ntotal_income_this_year = total_pay_this_year + bonus_this_year\nprint(total_income_this_year)", "executes": "True"}}
+    </tool_call>
+
+    [tool]
+
+    220000.0
+
+    [assistant]
+
+    <think>
+    So the code shows that John's total income this year would be $220,000. This is consistent with the 10% bonus on last year's pay of $100,000, which was $10,000. Therefore, this year's bonus of $20,000 added to his total pay of $200,000 results in a total income of $220,000.
+
+    I need to verify that there are no other factors at play. The problem states it's a constant percentage bonus each year, so there's no mention of changing percentages or other variables. Therefore, applying a straightforward percentage of 10% on this year's partial salary amount would result in $20,000. Adding that to his total pay gives $220,000. The calculation is correct and aligns with the question's parameters.
+    </think>
+
+    #### 220000.0
+<
+You can also use the RolloutViewer TUI tool to view the dumped rollout data:
+
+>bash
+    python scripts/rollout_viewer.py ${trainer.rollout_data_dir}
+<
+
+----------------------------------------------------------------------------
+Search Tool Integration            *verl-sglang_multiturn-search_tool_example*
+
+Last updated: 05/09/2026.
+
+  Note: ~
+
+  The in-tree `verl.tools.search_tool.SearchTool` reference implementation
+  used throughout this guide has been removed. The end-to-end recipe
+  (config, retrieval server, training script) still works as documentation
+  of the integration pattern, but the `SearchTool` class must now be
+  provided by users (see `verl.tools.base_tool.BaseTool`).
+
+INTRODUCTION               *sglang_multiturn-search_tool_example-introduction*
+
+- We have added a search tool calling function to Multi-Turn RL, enabling
+  the model to initiate retrieval requests during Actor rollout and directly
+  use retrieval results for training. We support using a local dense
+  retriever as the retrieval tool, as well as integrating with your own
+  local retrieval engine.
+
+QUICK REPRODUCTION   *sglang_multiturn-search_tool_example-quick-reproduction*
+
+          *sglang_multiturn-search_tool_example-create-a-new-docker-container*
+Create a New Docker Container
+
+>bash
+    docker run \
+        -it \
+        --shm-size 32g \
+        --gpus all \
+        -v {Huggingface-Cache-Path}:/root/.cache \
+        --ipc=host \
+        --network=host \
+        --privileged \
+        --name sglang_{your-name} \
+        lmsysorg/sglang:dev \
+        /bin/zsh
+<
+If you need to restart after exiting the container:
+
+>bash
+    docker start -i sglang_{your-name}
+<
+
+*sglang_multiturn-search_tool_example-update-python-and-configure-the-virtual-environment-using-uv*
+Update Python and Configure the Virtual Environment using uv
+
+>bash
+    apt update
+    apt install -y python3.10 python3.10-venv
+
+    # Create a virtual environment
+    python3 -m venv ~/.python/verl-multiturn-rollout
+
+    # Activate the virtual environment
+    source ~/.python/verl-multiturn-rollout/bin/activate
+
+    # Install uv
+    python3 -m pip install uv
+<
+
+                  *sglang_multiturn-search_tool_example-install-verl-upstream*
+Install verl Upstream
+
+>bash
+    cd ~
+    git clone https://github.com/verl-project/verl.git
+    cd verl
+
+    # Install verl
+    python3 -m uv pip install .
+    python3 -m uv pip install -r ./requirements_sglang.txt
+
+    # Manually install flash-attn
+    python3 -m uv pip install wheel
+    python3 -m uv pip install packaging
+    python3 -m uv pip install flash-attn --no-build-isolation --no-deps
+<
+
+        *sglang_multiturn-search_tool_example-set-up-a-local-retrieval-engine*
+Set Up a Local Retrieval Engine
+
+If you are using your own local retrieval service, you can skip this step.
+We chose the local dense retriever provided in the search-R1 example;
+detailed instructions are in the searchR1 docs
+https://raw.githubusercontent.com/PeterGriffinJin/Search-R1/refs/heads/main/docs/retriever.md.
+In brief:
+
+- The GPU version offers higher accuracy and speed; each GPU uses about 5--7
+  GB of memory.
+- The CPU version can be used for simple testing but has lower retrieval
+  precision, which will degrade training performance. See the
+  retriever documentation
+  https://github.com/PeterGriffinJin/Search-R1/blob/main/docs/retriever.md
+  in search-R1 for details.
+- Recommend using Conda to install faiss-gpu=1.8.0; venv may cause errors.
+
+Note: To start both the training process and the local retrieval service, we
+launch two separate Python environments. The training uses uv in the
+verl-multiturn-rollout environment, while the retriever uses conda to
+install `faiss-gpu`.
+
+>bash
+    # Download the Miniconda installer script
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+
+    # Install to $HOME/miniconda3 in batch mode
+    bash ~/miniconda.sh -b -p $HOME/miniconda3
+
+    # Activate conda (only in the current shell)
+    eval "$($HOME/miniconda3/bin/conda shell.bash hook)"
+
+    # (Optional) Add conda to your default shell startup
+    conda init
+
+    # Reload shell config
+    source ~/.bashrc
+
+    # Create and activate the retriever environment with Python 3.10
+    conda create -n retriever python=3.10 -y
+    conda activate retriever
+
+    # Install PyTorch (with GPU support) and related libraries
+    conda install pytorch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0 pytorch-cuda=12.1 -c pytorch -c nvidia -y
+
+    # Install other Python packages
+    pip install transformers datasets pyserini huggingface_hub
+
+    # Install the GPU version of faiss
+    conda install faiss-gpu=1.8.0 -c pytorch -c nvidia -y
+
+    # Install the API service framework
+    pip install uvicorn fastapi
+<
+
+       *sglang_multiturn-search_tool_example-download-the-indexing-and-corpus*
+Download the Indexing and Corpus
+
+The local retrieval files are large---prepare sufficient disk space.
+Downloading is about 60--70 GB, and uncompressed takes about 132 GB:
+
+>bash
+    conda activate retriever
+
+    save_path=/the/path/to/save
+    python examples/sglang_multiturn/search_r1_like/local_dense_retriever/download.py --save_path $save_path
+    cat $save_path/part_* > $save_path/e5_Flat.index
+    gzip -d $save_path/wiki-18.jsonl.gz
+<
+
+*sglang_multiturn-search_tool_example-start-the-local-flat-e5-retrieval-server*
+Start the Local flat e5 Retrieval Server
+
+1. The first startup will download models and load the index.
+2. Apart from the download, startup takes about 1--2 minutes.
+3. After startup, each GPU uses about 5--7 GB of memory, leaving the rest
+   for multi-turn RL training.
+
+>bash
+    conda activate retriever
+
+    index_file=$save_path/e5_Flat.index
+    corpus_file=$save_path/wiki-18.jsonl
+    retriever_name=e5
+    retriever_path=intfloat/e5-base-v2
+
+    python examples/sglang_multiturn/search_r1_like/local_dense_retriever/retrieval_server.py \
+      --index_path $index_file \
+      --corpus_path $corpus_file \
+      --topk 3 \
+      --retriever_name $retriever_name \
+      --retriever_model $retriever_path \
+      --faiss_gpu
+<
+
+                   *sglang_multiturn-search_tool_example-set-up-wandb-api-key*
+Set Up WANDB_API_KEY
+
+>bash
+    export WANDB_API_KEY={YOUR_WANDB_API_KEY}
+
+    # Define a timestamp function
+    function now() {
+        date '+%Y-%m-%d-%H-%M'
+    }
+<
+
+                 *sglang_multiturn-search_tool_example-preprocess-the-dataset*
+Preprocess the Dataset
+
+  Note: The following data processing and training commands must be run in
+  the verl-multiturn-rollout environment.
+
+>bash
+    python3 examples/data_preprocess/preprocess_search_r1_dataset.py
+<
+
+Testing on 8 x H20   *sglang_multiturn-search_tool_example-testing-on-8-x-h20*
+
+>bash
+    # Ensure the now() function is defined
+    # Create a logs directory
+    mkdir -p logs
+
+    # Set GPUs and run with a suitable log path
+    export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+
+    nohup bash examples/sglang_multiturn/search_r1_like/run_qwen2_5_3b_search_multiturn_fsdp.sh \
+      trainer.experiment_name=qwen2.5-3b-it_rm-searchR1-like-sgl-multiturn-$(now) \
+      > logs/searchR1-like$(now).log 2>&1 &
+<
+
+            *sglang_multiturn-search_tool_example-custom-search-configuration*
+CUSTOM SEARCH CONFIGURATION
+
+To enable multi-turn reasoning, set the following fields in your config:
+
+>yaml
+    actor_rollout_ref:
+      rollout:
+        name: "sglang"
+        multi_turn:
+          enable: True
+<
+You must specify `retrieval_service_url` in
+`examples/sglang_multiturn/config/tool_config/search_tool_config.yaml`, and
+properly configure concurrency. For more details on concurrency, refer to
+the Sandbox Fusion example:
+
+>yaml
+    tools:
+      - class_name: verl.tools.search_tool.SearchTool
+        config:
+          retrieval_service_url: http://127.0.0.1:8000/retrieve
+          num_workers: 120
+          rate_limit: 120
+          timeout: 30
+<
+The retriever input/output formats are as follows. If your service
+parameters match, only modify `retrieval_service_url`. You can also
+customize in `search_r1_like_utils.py`.
+
+>python
+    Input format:
+    {
+      "queries": ["What is Python?", "Tell me about neural networks."],
+      "topk": 3,
+      "return_scores": true
+    }
+
+    Output format (when return_scores=True, similarity scores are returned):
+    {
+        "result": [
+            [   # Results for each query
+                {
+                    "document": doc, "score": score
+                },
+                # ... more documents
+            ],
+            # ... results for other queries
+        ]
+    }
+<
+
+NOTES                             *sglang_multiturn-search_tool_example-notes*
+
+1. The total training time is about 27 hours; meanwhile, the validation
+   dataset is very large (51 k), and each validation takes about 6000 s.
+   (Therefore, `val_before_train=False` by default)
+
+ vim:tw=78:ts=8:ft=help:norl:

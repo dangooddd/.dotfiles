@@ -1,0 +1,1241 @@
+*numpy-main.txt*	NumPy documentation: main
+Version 2.5 — https://numpy.org/doc/stable/
+
+==============================================================================
+MAIN                                                      *numpy-section-main*
+
+
+----------------------------------------------------------------------------
+NumPy benchmarks                                          *numpy-benchmarking*
+
+Benchmarking NumPy with Airspeed Velocity.
+
+USAGE                                                     *benchmarking-usage*
+
+Airspeed Velocity manages building and Python virtualenvs by itself, unless
+told otherwise. To run the benchmarks, you do not need to install a
+development version of NumPy to your current Python environment.
+
+Before beginning, ensure that airspeed velocity is installed. By default,
+asv ships with support for anaconda and virtualenv:
+
+>bash
+    pip install asv
+    pip install virtualenv
+<
+After contributing new benchmarks, you should test them locally before
+submitting a pull request.
+
+To run all benchmarks, navigate to the root NumPy directory at the command
+line and execute:
+
+>bash
+    spin bench
+<
+This builds NumPy and runs all available benchmarks defined in
+`benchmarks/`. (Note: this could take a while. Each benchmark is run
+multiple times to measure the distribution in execution times.)
+
+For testing benchmarks locally, it may be better to run these without
+replications:
+
+>bash
+    cd benchmarks/
+    export REGEXP="bench.*Ufunc"
+    asv run --dry-run --show-stderr --python=same --quick -b $REGEXP
+<
+Where the regular expression used to match benchmarks is stored in
+`$REGEXP`, and --quick is used to avoid repetitions.
+
+To run benchmarks from a particular benchmark module, such as
+`bench_core.py`, simply append the filename without the extension:
+
+>bash
+    spin bench -t bench_core
+<
+To run a benchmark defined in a class, such as `MeshGrid` from
+`bench_creation.py`:
+
+>bash
+    spin bench -t bench_creation.MeshGrid
+<
+Compare changes in benchmark results to another version/commit/branch, use
+the `--compare` option (or the equivalent `-c`):
+
+>bash
+    spin bench --compare v1.6.2 -t bench_core
+    spin bench --compare 20d03bcfd -t bench_core
+    spin bench -c main -t bench_core
+<
+All of the commands above display the results in plain text in the console,
+and the results are not saved for comparison with future commits. For
+greater control, a graphical view, and to have results saved for future
+comparison you can run ASV commands (record results and generate HTML):
+
+>bash
+    cd benchmarks
+    asv run -n -e --python=same
+    asv publish
+    asv preview
+<
+More on how to use `asv` can be found in ASV documentation
+https://asv.readthedocs.io/ Command-line help is available as usual via
+`asv --help` and `asv run --help`.
+
+BENCHMARKING VERSIONS                                  *benchmarking-versions*
+
+To benchmark or visualize only releases on different machines locally, the
+tags with their commits can be generated, before being run with `asv`, that
+is:
+
+>python
+    cd benchmarks
+    # Get commits for tags
+    # delete tag_commits.txt before re-runs
+    for gtag in $(git tag --list --sort taggerdate | grep "^v"); do
+    git log $gtag --oneline -n1 --decorate=no | awk '{print $1;}' >> tag_commits.txt
+    done
+    # Use the last 20
+    tail --lines=20 tag_commits.txt > 20_vers.txt
+    asv run HASHFILE:20_vers.txt
+    # Publish and view
+    asv publish
+    asv preview
+<
+For details on contributing these, see the benchmark results repository
+https://github.com/HaoZeke/asv-numpy.
+
+WRITING BENCHMARKS                           *benchmarking-writing-benchmarks*
+
+See ASV documentation https://asv.readthedocs.io/ for basics on how to write
+benchmarks.
+
+Some things to consider:
+
+- The benchmark suite should be importable with any NumPy version.
+- The benchmark parameters etc. should not depend on which NumPy version is
+  installed.
+- Try to keep the runtime of the benchmark reasonable.
+- Prefer ASV's `time_` methods for benchmarking times rather than cooking up
+  time measurements via `time.clock`, even if it requires some juggling when
+  writing the benchmark.
+- Preparing arrays etc. should generally be put in the `setup` method rather
+  than the `time_` methods, to avoid counting preparation time together with
+  the time of the benchmarked operation.
+- Be mindful that large arrays created with `np.empty` or `np.zeros` might
+  not be allocated in physical memory until the memory is accessed. If this
+  is desired behaviour, make sure to comment it in your setup function. If
+  you are benchmarking an algorithm, it is unlikely that a user will be
+  executing said algorithm on a newly created empty/zero array. One can
+  force pagefaults to occur in the setup phase either by calling `np.ones`
+  or `arr.fill(value)` after creating the array.
+
+----------------------------------------------------------------------------
+Getting started                                        *numpy-getting_started*
+
+----------------------------------------------------------------------------
+Glossary                                                      *numpy-glossary*
+
+(n,) *glossary-term-n*
+    A parenthesized number followed by a comma denotes a tuple with one
+    element. The trailing comma distinguishes a one-element tuple from a
+    parenthesized `n`.
+
+-1 *glossary-term-1*
+    - In a dimension entry, instructs NumPy to choose the length that will
+      keep the total number of array elements the same.
+
+      >python
+          >>> np.arange(12).reshape(4, -1).shape
+          (4, 3)
+<
+
+    - In an index, any negative value denotes
+      https://docs.python.org/dev/faq/programming.html#what-s-a-negative-index
+      indexing from the right.
+
+... *glossary-term-.-.-.*
+    An `Ellipsis` https://docs.python.org/3/library/constants.html#Ellipsis.
+
+    - When indexing an array, shorthand that the missing axes, if they
+      exist, are full slices.
+
+      >python
+          >>> a = np.arange(24).reshape(2,3,4)
+<
+      >python
+          >>> a[...].shape
+          (2, 3, 4)
+<
+      >python
+          >>> a[...,0].shape
+          (2, 3)
+<
+      >python
+          >>> a[0,...].shape
+          (3, 4)
+<
+      >python
+          >>> a[0,...,0].shape
+          (3,)
+<
+      It can be used at most once; `a[...,0,...]` raises an `IndexError`
+      https://docs.python.org/3/library/exceptions.html#IndexError.
+
+    - In printouts, NumPy substitutes `...` for the middle elements of large
+      arrays. To see the entire array, use |numpy.printoptions|
+
+: *glossary-term-0*
+    The Python slice https://docs.python.org/3/glossary.html#term-slice
+    operator. In ndarrays, slicing can be applied to every axis:
+
+    >python
+        >>> a = np.arange(24).reshape(2,3,4)
+        >>> a
+        array([[[ 0,  1,  2,  3],
+                [ 4,  5,  6,  7],
+                [ 8,  9, 10, 11]],
+
+               [[12, 13, 14, 15],
+                [16, 17, 18, 19],
+                [20, 21, 22, 23]]])
+
+        >>> a[1:,-2:,:-1]
+        array([[[16, 17, 18],
+                [20, 21, 22]]])
+<
+    Trailing slices can be omitted:
+
+    >python
+        >>> a[1] == a[1,:,:]
+        array([[ True,  True,  True,  True],
+               [ True,  True,  True,  True],
+               [ True,  True,  True,  True]])
+<
+    In contrast to Python, where slicing creates a copy, in NumPy slicing
+    creates a |glossary-term-view|.
+
+    For details, see
+    |user-basics.indexing-combining-advanced-and-basic-indexing|.
+
+< *glossary-term-2*
+    In a dtype declaration, indicates that the data is
+    |glossary-term-little-endian| (the bracket is big on the right).
+
+    >python
+        >>> dt = np.dtype('<f')  # little-endian single-precision float
+<
+
+> *glossary-term-3*
+    In a dtype declaration, indicates that the data is
+    |glossary-term-big-endian| (the bracket is big on the left).
+
+    >python
+        >>> dt = np.dtype('>H')  # big-endian unsigned short
+<
+
+advanced indexing *glossary-term-advanced-indexing*
+    Rather than using a |numpy.generic| or slice as an index, an axis can be
+    indexed with an array, providing fine-grained selection. This is known
+    as |user-basics.indexing-advanced-indexing| or “fancy indexing”.
+
+along an axis *glossary-term-along-an-axis*
+    An operation along axis n of array `a` behaves as if its argument were
+    an array of slices of `a` where each slice has a successive index of
+    axis n.
+
+    For example, if `a` is a 3 x N array, an operation along axis 0 behaves
+    as if its argument were an array containing slices of each row:
+
+    >python
+        >>> np.array((a[0,:], a[1,:], a[2,:])) 
+<
+    To make it concrete, we can pick the operation to be the array-reversal
+    function |numpy.flip|, which accepts an `axis` argument. We construct a
+    3 x 4 array `a`:
+
+    >python
+        >>> a = np.arange(12).reshape(3,4)
+        >>> a
+        array([[ 0,  1,  2,  3],
+               [ 4,  5,  6,  7],
+               [ 8,  9, 10, 11]])
+<
+    Reversing along axis 0 (the row axis) yields
+
+    >python
+        >>> np.flip(a,axis=0)
+        array([[ 8,  9, 10, 11],
+               [ 4,  5,  6,  7],
+               [ 0,  1,  2,  3]])
+<
+    Recalling the definition of along an axis, `flip` along axis 0 is
+    treating its argument as if it were
+
+    >python
+        >>> np.array((a[0,:], a[1,:], a[2,:]))
+        array([[ 0,  1,  2,  3],
+               [ 4,  5,  6,  7],
+               [ 8,  9, 10, 11]])
+<
+    and the result of `np.flip(a,axis=0)` is to reverse the slices:
+
+    >python
+        >>> np.array((a[2,:],a[1,:],a[0,:]))
+        array([[ 8,  9, 10, 11],
+               [ 4,  5,  6,  7],
+               [ 0,  1,  2,  3]])
+<
+
+array *glossary-term-array*
+    Used synonymously in the NumPy docs with |glossary-term-ndarray|.
+
+array_like *glossary-term-array_like*
+    Any |numpy.generic| or sequence
+    https://docs.python.org/3/glossary.html#term-sequence that can be
+    interpreted as an ndarray. In addition to ndarrays and scalars this
+    category includes lists (possibly nested and with different element
+    types) and tuples. Any argument accepted by |numpy.array| is array_like.
+
+    >python
+        >>> a = np.array([[1, 2.0], [0, 0], (1+1j, 3.)])
+
+        >>> a
+        array([[1.+0.j, 2.+0.j],
+               [0.+0.j, 0.+0.j],
+               [1.+1.j, 3.+0.j]])
+<
+
+array scalar *glossary-term-array-scalar*
+    An |numpy.generic| is an instance of the types/classes float32, float64,
+    etc.. For uniformity in handling operands, NumPy treats a scalar as an
+    array of zero dimension. In contrast, a 0-dimensional array is an
+    |numpy-reference-arrays.ndarray| instance containing precisely one
+    value.
+
+axis *glossary-term-axis*
+    Another term for an array dimension. Axes are numbered left to right;
+    axis 0 is the first element in the shape tuple.
+
+    In a two-dimensional vector, the elements of axis 0 are rows and the
+    elements of axis 1 are columns.
+
+    In higher dimensions, the picture changes. NumPy prints
+    higher-dimensional vectors as replications of row-by-column building
+    blocks, as in this three-dimensional vector:
+
+    >python
+        >>> a = np.arange(12).reshape(2,2,3)
+        >>> a
+        array([[[ 0,  1,  2],
+                [ 3,  4,  5]],
+               [[ 6,  7,  8],
+                [ 9, 10, 11]]])
+<
+    `a` is depicted as a two-element array whose elements are 2x3 vectors.
+    From this point of view, rows and columns are the final two axes,
+    respectively, in any shape.
+
+    This rule helps you anticipate how a vector will be printed, and
+    conversely how to find the index of any of the printed elements. For
+    instance, in the example, the last two values of 8's index must be 0 and
+    2. Since 8 appears in the second of the two 2x3's, the first index must
+    be 1:
+
+    >python
+        >>> a[1,0,2]
+        8
+<
+    A convenient way to count dimensions in a printed vector is to count `[`
+    symbols after the open-parenthesis. This is useful in distinguishing,
+    say, a (1,2,3) shape from a (2,3) shape:
+
+    >python
+        >>> a = np.arange(6).reshape(2,3)
+        >>> a.ndim
+        2
+        >>> a
+        array([[0, 1, 2],
+               [3, 4, 5]])
+<
+    >python
+        >>> a = np.arange(6).reshape(1,2,3)
+        >>> a.ndim
+        3
+        >>> a
+        array([[[0, 1, 2],
+                [3, 4, 5]]])
+<
+
+.base *glossary-term-.base*
+    If an array does not own its memory, then its |numpy.ndarray.base|
+    attribute returns the object whose memory the array is referencing. That
+    object may be referencing the memory from still another object, so the
+    owning object may be `a.base.base.base...`. Some writers erroneously
+    claim that testing `base` determines if arrays are
+    |glossary-term-view|s. For the correct way, see |numpy.shares_memory|.
+
+big-endian *glossary-term-big-endian*
+    See Endianness https://en.wikipedia.org/wiki/Endianness.
+
+BLAS *glossary-term-BLAS*
+    Basic Linear Algebra Subprograms
+    https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms
+
+broadcast *glossary-term-broadcast*
+    broadcasting is NumPy's ability to process ndarrays of different sizes
+    as if all were the same size.
+
+    It permits an elegant do-what-I-mean behavior where, for instance,
+    adding a scalar to a vector adds the scalar value to every element.
+
+    >python
+        >>> a = np.arange(3)
+        >>> a
+        array([0, 1, 2])
+<
+    >python
+        >>> a + [3, 3, 3]
+        array([3, 4, 5])
+<
+    >python
+        >>> a + 3
+        array([3, 4, 5])
+<
+    Ordinarily, vector operands must all be the same size, because NumPy
+    works element by element -- for instance, `c = a * b` is
+
+    >text
+         c[0,0,0] = a[0,0,0] * b[0,0,0]
+         c[0,0,1] = a[0,0,1] * b[0,0,1]
+        ...
+<
+    But in certain useful cases, NumPy can duplicate data along “missing”
+    axes or “too-short” dimensions so shapes will match. The duplication
+    costs no memory or time. For details, see
+    |numpy-user-basics.broadcasting|
+
+C order *glossary-term-C-order*
+    Same as |glossary-term-row-major|.
+
+casting *glossary-term-casting*
+    The process of converting array data from one dtype to another. There
+    exist several casting modes, defined by the following casting rules:
+
+    - `no`: The data types should not be cast at all. Any mismatch in data
+      types between the arrays will raise a TypeError.
+    - `equiv`: Only byte-order changes are allowed.
+    - `safe`: Only casts that can preserve values are allowed. Upcasting
+      (e.g., from int to float) is allowed, but downcasting is not.
+    - `same_kind`: The ‘same_kind' casting option allows safe casts and
+      casts within a kind, like float64 to float32.
+    - `unsafe`: any data conversions may be done.
+
+column-major *glossary-term-column-major*
+    See Row- and column-major order
+    https://en.wikipedia.org/wiki/Row-_and_column-major_order.
+
+contiguous *glossary-term-contiguous*
+    An array is contiguous if:
+
+    - it occupies an unbroken block of memory, and
+    - array elements with higher indexes occupy higher addresses (that is,
+      no |glossary-term-stride| is negative).
+
+    There are two types of proper-contiguous NumPy arrays:
+    - Fortran-contiguous arrays refer to data that is stored column-wise,
+      i.e. the indexing of data as stored in memory starts from the lowest
+      dimension;
+    - C-contiguous, or simply contiguous arrays, refer to data that is
+      stored row-wise, i.e. the indexing of data as stored in memory starts
+      from the highest dimension.
+
+    For one-dimensional arrays these notions coincide.
+
+    For example, a 2x2 array `A` is Fortran-contiguous if its elements are
+    stored in memory in the following order:
+
+    >text
+        A[0,0] A[1,0] A[0,1] A[1,1]
+<
+    and C-contiguous if the order is as follows:
+
+    >text
+        A[0,0] A[0,1] A[1,0] A[1,1]
+<
+    To test whether an array is C-contiguous, use the `.flags.c_contiguous`
+    attribute of NumPy arrays. To test for Fortran contiguity, use the
+    `.flags.f_contiguous` attribute.
+
+copy *glossary-term-copy*
+    See |glossary-term-view|.
+
+dimension *glossary-term-dimension*
+    See |glossary-term-axis|.
+
+dtype *glossary-term-dtype*
+    The datatype describing the (identically typed) elements in an ndarray.
+    It can be changed to reinterpret the array contents. For details, see
+    |numpy-reference-arrays.dtypes|
+
+fancy indexing *glossary-term-fancy-indexing*
+    Another term for |glossary-term-advanced-indexing|.
+
+field *glossary-term-field*
+    In a |glossary-term-structured-data-type|, each subtype is called a
+    field. The field has a name (a string), a type (any valid dtype), and an
+    optional title. See |reference-arrays.dtypes-arrays-dtypes|.
+
+Fortran order *glossary-term-Fortran-order*
+    Same as |glossary-term-column-major|.
+
+flattened *glossary-term-flattened*
+    See |glossary-term-ravel|.
+
+homogeneous *glossary-term-homogeneous*
+    All elements of a homogeneous array have the same type. ndarrays, in
+    contrast to Python lists, are homogeneous. The type can be complicated,
+    as in a |glossary-term-structured-array|, but all elements have that
+    type.
+
+    NumPy |glossary-term-object-array|, which contain references to Python
+    objects, fill the role of heterogeneous arrays.
+
+itemsize *glossary-term-itemsize*
+    The size of the dtype element in bytes.
+
+little-endian *glossary-term-little-endian*
+    See Endianness https://en.wikipedia.org/wiki/Endianness.
+
+mask *glossary-term-mask*
+    A boolean array used to select only certain elements for an operation:
+
+    >python
+        >>> x = np.arange(5)
+        >>> x
+        array([0, 1, 2, 3, 4])
+<
+    >python
+        >>> mask = (x > 2)
+        >>> mask
+        array([False, False, False, True,  True])
+<
+    >python
+        >>> x[mask] = -1
+        >>> x
+        array([ 0,  1,  2,  -1, -1])
+<
+
+masked array *glossary-term-masked-array*
+    Bad or missing data can be cleanly ignored by putting it in a masked
+    array, which has an internal boolean array indicating invalid entries.
+    Operations with masked arrays ignore these entries.
+
+    >python
+        >>> a = np.ma.masked_array([np.nan, 2, np.nan], [True, False, True])
+        >>> a
+        masked_array(data=[--, 2.0, --],
+                     mask=[ True, False,  True],
+               fill_value=1e+20)
+
+        >>> a + [1, 2, 3]
+        masked_array(data=[--, 4.0, --],
+                     mask=[ True, False,  True],
+               fill_value=1e+20)
+<
+    For details, see |numpy-reference-maskedarray|
+
+matrix *glossary-term-matrix*
+    NumPy's two-dimensional |numpy.matrix| should no longer be used; use
+    regular ndarrays.
+
+ndarray *glossary-term-ndarray*
+    |numpy-reference-arrays|.
+
+object array *glossary-term-object-array*
+    An array whose dtype is `object`; that is, it contains references to
+    Python objects. Indexing the array dereferences the Python objects, so
+    unlike other ndarrays, an object array has the ability to hold
+    heterogeneous objects.
+
+ravel *glossary-term-ravel*
+    |numpy.ravel| and |numpy.ndarray.flatten| both flatten an ndarray.
+    `ravel` will return a view if possible; `flatten` always returns a copy.
+
+    Flattening collapses a multidimensional array to a single dimension;
+    details of how this is done (for instance, whether `a[n+1]` should be
+    the next row or next column) are parameters.
+
+record array *glossary-term-record-array*
+    A |glossary-term-structured-array| with allowing access in an attribute
+    style (`a.field`) in addition to `a['field']`. For details, see
+    numpy.recarray.
+    https://numpy.org/doc/stable/reference/generated/numpy.recarray.html
+
+row-major *glossary-term-row-major*
+    See Row- and column-major order
+    https://en.wikipedia.org/wiki/Row-_and_column-major_order. NumPy creates
+    arrays in row-major order by default.
+
+scalar *glossary-term-scalar*
+    In NumPy, usually a synonym for |glossary-term-array-scalar|.
+
+shape *glossary-term-shape*
+    A tuple showing the length of each dimension of an ndarray. The length
+    of the tuple itself is the number of dimensions (|numpy.ndarray.ndim|).
+    The product of the tuple elements is the number of elements in the
+    array. For details, see |numpy.ndarray.shape|.
+
+stride *glossary-term-stride*
+    Physical memory is one-dimensional; strides provide a mechanism to map a
+    given index to an address in memory. For an N-dimensional array, its
+    `strides` attribute is an N-element tuple; advancing from index `i` to
+    index `i+1` on axis `n` means adding `a.strides[n]` bytes to the
+    address.
+
+    Strides are computed automatically from an array's dtype and shape, but
+    can be directly specified using |numpy.lib.stride_tricks.as_strided|.
+    Bounds validation can be enabled with the `check_bounds` parameter.
+
+    For details, see |numpy.ndarray.strides|.
+
+    To see how striding underlies the power of NumPy views, see
+    The NumPy array: a structure for efficient numerical computation.
+    https://arxiv.org/pdf/1102.1523.pdf
+
+structured array *glossary-term-structured-array*
+    Array whose |glossary-term-dtype| is a
+    |glossary-term-structured-data-type|.
+
+structured data type *glossary-term-structured-data-type*
+    Users can create arbitrarily complex |glossary-term-dtype| that can
+    include other arrays and dtypes. These composite dtypes are called
+    |numpy.lib.recfunctions.append_fields|
+
+subarray *glossary-term-subarray*
+    An array nested in a |glossary-term-structured-data-type|, as `b` is
+    here:
+
+    >python
+        >>> dt = np.dtype([('a', np.int32), ('b', np.float32, (3,))])
+        >>> np.zeros(3, dtype=dt)
+        array([(0, [0., 0., 0.]), (0, [0., 0., 0.]), (0, [0., 0., 0.])],
+              dtype=[('a', '<i4'), ('b', '<f4', (3,))])
+<
+
+subarray data type *glossary-term-subarray-data-type*
+    An element of a structured datatype that behaves like an ndarray.
+
+title *glossary-term-title*
+    An alias for a field name in a structured datatype.
+
+type *glossary-term-type*
+    In NumPy, usually a synonym for |glossary-term-dtype|. For the more
+    general Python meaning, see here.
+    https://docs.python.org/3/glossary.html#term-type
+
+ufunc *glossary-term-ufunc*
+    NumPy's fast element-by-element computation
+    (|glossary-term-vectorization|) gives a choice which function gets
+    applied. The general term for the function is `ufunc`, short for
+    `universal function`. NumPy routines have built-in ufuncs, but users can
+    also |numpy-reference-ufuncs|
+
+vectorization *glossary-term-vectorization*
+    NumPy hands off array processing to C, where looping and computation are
+    much faster than in Python. To exploit this, programmers using NumPy
+    eliminate Python loops in favor of array-to-array operations.
+    |glossary-term-vectorization| can refer both to the C offloading and to
+    structuring NumPy code to leverage it.
+
+view *glossary-term-view*
+    Without touching underlying data, NumPy can make one array appear to
+    change its datatype and shape.
+
+    An array created this way is a view, and NumPy often exploits the
+    performance gain of using a view versus making a new array.
+
+    A potential drawback is that writing to a view can alter the original as
+    well. If this is a problem, NumPy instead needs to create a physically
+    distinct array -- a `copy`
+    https://docs.python.org/3/library/copy.html#module-copy.
+
+    Some NumPy routines always return views, some always return copies, some
+    may return one or the other, and for some the choice can be specified.
+    Responsibility for managing views and copies falls to the programmer.
+    |numpy.shares_memory| will check whether `b` is a view of `a`, but an
+    exact answer isn't always feasible, as the documentation page explains.
+
+    >python
+        >>> x = np.arange(5)
+        >>> x
+        array([0, 1, 2, 3, 4])
+<
+    >python
+        >>> y = x[::2]
+        >>> y
+        array([0, 2, 4])
+<
+    >python
+        >>> x[0] = 3 # changing x changes y as well, since y is a view on x
+        >>> y
+        array([3, 2, 4])
+<
+
+----------------------------------------------------------------------------
+NumPy documentation                                              *numpy-index*
+
+*index-numpy-docs-mainpage*
+
+Version: 2.5
+
+Download documentation: Historical versions of documentation
+https://numpy.org/doc/
+
+Useful links: Home https://numpy.org | Installation
+https://numpy.org/install/ | Source Repository
+https://github.com/numpy/numpy | Issue Tracker
+https://github.com/numpy/numpy/issues | Q&A Support
+https://numpy.org/gethelp/ | Mailing List
+https://mail.python.org/mailman/listinfo/numpy-discussion
+
+NumPy is the fundamental package for scientific computing in Python. It is a
+Python library that provides a multidimensional array object, various
+derived objects (such as masked arrays and matrices), and an assortment of
+routines for fast operations on arrays, including mathematical, logical,
+shape manipulation, sorting, selecting, I/O, discrete Fourier transforms,
+basic linear algebra, basic statistical operations, random simulation and
+much more.
+
+Getting started
+
+New to NumPy? Check out the Absolute Beginner's Guide. It contains an
+introduction to NumPy's main concepts and links to additional tutorials.
+
+|numpy-user-absolute_beginners|
+
+User guide
+
+The user guide provides in-depth information on the key concepts of NumPy
+with useful background information and explanation.
+
+|user-index-user|
+
+API reference
+
+The reference guide contains a detailed description of the functions,
+modules, and objects included in NumPy. The reference describes how the
+methods work and which parameters can be used. It assumes that you have an
+understanding of the key concepts.
+
+|reference-index-reference|
+
+Contributor's guide
+
+Want to add to the codebase? Can help add translation or a flowchart to the
+documentation? The contributing guidelines will guide you through the
+process of improving NumPy.
+
+To the contributor's guide
+https://numpy.org/doc/stable/dev/index.html#devindex
+
+----------------------------------------------------------------------------
+NumPy license                                                  *numpy-license*
+
+>text
+    Copyright (c) 2005-2025, NumPy Developers.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are
+    met:
+
+        * Redistributions of source code must retain the above copyright
+           notice, this list of conditions and the following disclaimer.
+
+        * Redistributions in binary form must reproduce the above
+           copyright notice, this list of conditions and the following
+           disclaimer in the documentation and/or other materials provided
+           with the distribution.
+
+        * Neither the name of the NumPy Developers nor the names of any
+           contributors may be used to endorse or promote products derived
+           from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+    LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<
+
+----------------------------------------------------------------------------
+NumPy 2.0 migration guide                    *numpy-numpy_2_0_migration_guide*
+
+*numpy_2_0_migration_guide-numpy-2-migration-guide*
+
+This document contains a set of instructions on how to update your code to
+work with NumPy 2.0. It covers changes in NumPy's Python and C APIs.
+
+  Note: ~
+
+  Note that NumPy 2.0 also breaks binary compatibility - if you are
+  distributing binaries for a Python package that depends on NumPy's C API,
+  please see NumPy 2.0-specific advice
+  https://numpy.org/doc/stable/dev/depending_on_numpy.html#numpy-2-abi-handling.
+
+RUFF PLUGIN                            *numpy_2_0_migration_guide-ruff-plugin*
+
+Many of the changes covered in the 2.0 release notes and in this migration
+guide can be automatically adapted in downstream code with a dedicated Ruff
+https://docs.astral.sh/ruff/ rule, namely rule NPY201
+https://docs.astral.sh/ruff/rules/numpy2-deprecation/.
+
+You should install `ruff>=0.4.8` and add the `NPY201` rule to your
+`pyproject.toml`:
+
+>text
+    [tool.ruff.lint]
+    select = ["NPY201"]
+<
+You can also apply the NumPy 2.0 rule directly from the command line:
+
+>bash
+    $ ruff check path/to/code/ --select NPY201
+<
+
+              *numpy_2_0_migration_guide-changes-to-numpy-data-type-promotion*
+CHANGES TO NUMPY DATA TYPE PROMOTION
+
+*numpy_2_0_migration_guide-migration-promotion-changes*
+
+NumPy 2.0 changes promotion (the result of combining dissimilar data types)
+as per NEP 50 https://numpy.org/neps/nep-0050-scalar-promotion.html#nep50.
+Please see the NEP for details on this change. It includes a table of
+example changes and a backwards compatibility section.
+
+The largest backwards compatibility change is that the precision of scalars
+is now preserved consistently. Two examples are:
+
+- `np.float32(3) + 3.` now returns a float32 when it previously returned a
+  float64.
+- `np.array([3], dtype=np.float32) + np.float64(3)` will now return a
+  float64 array. (The higher precision of the scalar is not ignored.)
+
+For floating point values, this can lead to lower precision results when
+working with scalars. For integers, errors or overflows are possible.
+
+To solve this, you may cast explicitly. Very often, it may also be a good
+solution to ensure you are working with Python scalars via `int()`,
+`float()`, or `numpy_scalar.item()`.
+
+To track down changes, you can enable emitting warnings for changed behavior
+(use `warnings.simplefilter` to raise it as an error for a traceback):
+
+>python
+    np._set_promotion_state("weak_and_warn")
+<
+which is useful during testing. Unfortunately, running this may flag many
+changes that are irrelevant in practice.
+
+WINDOWS DEFAULT INTEGER    *numpy_2_0_migration_guide-windows-default-integer*
+
+*numpy_2_0_migration_guide-migration-windows-int64*
+
+The default integer used by NumPy is now 64bit on all 64bit systems (and
+32bit on 32bit system). For historic reasons related to Python 2 it was
+previously equivalent to the C `long` type. The default integer is now
+equivalent to `np.intp`.
+
+Most end-users should not be affected by this change. Some operations will
+use more memory, but some operations may actually become faster. If you
+experience issues due to calling a library written in a compiled language it
+may help to explicitly cast to a `long`, for example with:
+`arr = arr.astype("long", copy=False)`.
+
+Libraries interfacing with compiled code that are written in C, Cython, or a
+similar language may require updating to accommodate user input if they are
+using the `long` or equivalent type on the C-side. In this case, you may
+wish to use `intp` and cast user input or support both `long` and `intp` (to
+better support NumPy 1.x as well). When creating a new integer array in C or
+Cython, the new `NPY_DEFAULT_INT` macro will evaluate to either `NPY_LONG`
+or `NPY_INTP` depending on the NumPy version.
+
+Note that the NumPy random API is not affected by this change.
+
+C-API CHANGES                        *numpy_2_0_migration_guide-c-api-changes*
+
+Some definitions were removed or replaced due to being outdated or
+unmaintainable. Some new API definitions will evaluate differently at
+runtime between NumPy 2.0 and NumPy 1.x. Some are defined in
+`numpy/_core/include/numpy/npy_2_compat.h` (for example `NPY_DEFAULT_INT`)
+which can be vendored in full or part to have the definitions available when
+compiling against NumPy 1.x.
+
+If necessary, `PyArray_RUNTIME_VERSION >= NPY_2_0_API_VERSION` can be used
+to explicitly implement different behavior on NumPy 1.x and 2.0. (The compat
+header defines it in a way compatible with such use.)
+
+Please let us know if you require additional workarounds here.
+
+         *numpy_2_0_migration_guide-the-pyarray-descr-struct-has-been-changed*
+The `PyArray_Descr` struct has been changed
+
+*numpy_2_0_migration_guide-migration-c-descr*
+
+One of the most impactful C-API changes is that the `PyArray_Descr` struct
+is now more opaque to allow us to add additional flags and have itemsizes
+not limited by the size of `int` as well as allow improving structured
+dtypes in the future and not burden new dtypes with their fields.
+
+Code which only uses the type number and other initial fields is unaffected.
+Most code will hopefully mainly access the `->elsize` field, when the
+dtype/descriptor itself is attached to an array (e.g. `arr->descr->elsize`)
+this is best replaced with `PyArray_ITEMSIZE(arr)`.
+
+Where not possible, new accessor functions are required:
+
+- `PyDataType_ELSIZE` and `PyDataType_SET_ELSIZE` (note that the result is
+  now `npy_intp` and not `int`).
+- `PyDataType_ALIGNMENT`
+- `PyDataType_FIELDS`, `PyDataType_NAMES`, `PyDataType_SUBARRAY`
+- `PyDataType_C_METADATA`
+
+Cython code should use Cython 3, in which case the change is transparent.
+(Struct access is available for elsize and alignment when compiling only for
+NumPy 2.)
+
+For compiling with both 1.x and 2.x if you use these new accessors it is
+unfortunately necessary to either define them locally via a macro like:
+
+>c
+    #if NPY_ABI_VERSION < 0x02000000
+      #define PyDataType_ELSIZE(descr) ((descr)->elsize)
+    #endif
+<
+or adding `npy2_compat.h` into your code base and explicitly include it when
+compiling with NumPy 1.x (as they are new API). Including the file has no
+effect on NumPy 2.
+
+Please do not hesitate to open a NumPy issue, if you require assistance or
+the provided functions are not sufficient.
+
+Custom User DTypes: Existing user dtypes must now use `PyArray_DescrProto`
+https://numpy.org/doc/stable/reference/c-api/types-and-structures.html#c.PyArray_DescrProto
+to define their dtype and slightly modify the code. See note in
+`PyArray_RegisterDataType`
+https://numpy.org/doc/stable/reference/c-api/array.html#c.PyArray_RegisterDataType.
+
+*numpy_2_0_migration_guide-functionality-moved-to-headers-requiring-import-array*
+Functionality moved to headers requiring `import_array()`
+
+If you previously included only `ndarraytypes.h` you may find that some
+functionality is not available anymore and requires the inclusion of
+`ndarrayobject.h` or similar. This include is also needed when vendoring
+`npy_2_compat.h` into your own codebase to allow use of the new definitions
+when compiling with NumPy 1.x.
+
+Functionality which previously did not require import includes:
+
+- Functions to access dtype flags: `PyDataType_FLAGCHK`,
+  `PyDataType_REFCHK`, and the related `NPY_BEGIN_THREADS_DESCR`.
+- `PyArray_GETITEM` and `PyArray_SETITEM`.
+
+  Warning: ~
+
+  It is important that the `import_array()` mechanism is used to ensure that
+  the full NumPy API is accessible when using the `npy_2_compat.h` header.
+  In most cases your extension module probably already calls it. However, if
+  not we have added `PyArray_ImportNumPyAPI()` as a preferable way to ensure
+  the NumPy API is imported. This function is light-weight when called
+  multiple times so that you may insert it wherever it may be needed (if you
+  wish to avoid setting it up at module import).
+
+            *numpy_2_0_migration_guide-increased-maximum-number-of-dimensions*
+Increased maximum number of dimensions
+
+*numpy_2_0_migration_guide-migration-maxdims*
+
+The maximum number of dimensions (and arguments) was increased to 64. This
+affects the `NPY_MAXDIMS` and `NPY_MAXARGS` macros. It may be good to review
+their use, and we generally encourage you to not use these macros
+(especially `NPY_MAXARGS`), so that a future version of NumPy can remove
+this limitation on the number of dimensions.
+
+`NPY_MAXDIMS` was also used to signal `axis=None` in the C-API, including
+the `PyArray_AxisConverter`. The latter will return `-2147483648` as an axis
+(the smallest integer value). Other functions may error with
+`AxisError: axis 64 is out of bounds for array of dimension` in which case
+you need to pass `NPY_RAVEL_AXIS` instead of `NPY_MAXDIMS`. `NPY_RAVEL_AXIS`
+is defined in the `npy_2_compat.h` header and runtime dependent (mapping to
+32 on NumPy 1.x and `-2147483648` on NumPy 2.x).
+
+             *numpy_2_0_migration_guide-complex-types-underlying-type-changes*
+Complex types - Underlying type changes
+
+The underlying C types for all of the complex types have been changed to use
+native C99 types. While the memory layout of those types remains identical
+to the types used in NumPy 1.x, the API is slightly different, since direct
+field access (like `c.real` or `c.imag`) is no longer possible.
+
+It is recommended to use the functions `npy_creal` and `npy_cimag` (and the
+corresponding float and long double variants) to retrieve the real or
+imaginary part of a complex number, as these will work with both NumPy 1.x
+and with NumPy 2.x. New functions `npy_csetreal` and `npy_csetimag`, along
+with compatibility macros `NPY_CSETREAL` and `NPY_CSETIMAG` (and the
+corresponding float and long double variants), have been added for setting
+the real or imaginary part.
+
+The underlying type remains a struct under C++ (all of the above still
+remains valid).
+
+This has implications for Cython. It is recommended to always use the native
+typedefs `cfloat_t`, `cdouble_t`, `clongdouble_t` rather than the NumPy
+types `npy_cfloat`, etc, unless you have to interface with C code written
+using the NumPy types. You can still write cython code using the `c.real`
+and `c.imag` attributes (using the native typedefs), but you can no longer
+use in-place operators `c.imag += 1` in Cython's c++ mode.
+
+Because NumPy 2 now includes `complex.h` code that uses a variable named `I`
+may see an error such as
+
+to use the name `I` requires an `#undef I` now.
+
+  Note: ~
+
+  NumPy 2.0.1 briefly included the `#undef I` to help users not already
+  including `complex.h`.
+
+CHANGES TO NAMESPACES        *numpy_2_0_migration_guide-changes-to-namespaces*
+
+In NumPy 2.0 certain functions, modules, and constants were moved or removed
+to make the NumPy namespace more user-friendly by removing unnecessary or
+outdated functionality and clarifying which parts of NumPy are considered
+private. Please see the tables below for guidance on migration. For most
+changes this means replacing it with a backwards compatible alternative.
+
+Please refer to NEP 52 --- Python API cleanup for NumPy 2.0
+https://numpy.org/neps/nep-0052-python-api-cleanup.html#nep52 for more
+details.
+
+Main namespace                      *numpy_2_0_migration_guide-main-namespace*
+
+About 100 members of the main `np` namespace have been deprecated, removed,
+or moved to a new place. It was done to reduce clutter and establish only
+one way to access a given attribute. The table below shows members that have
+been removed:
+
+removed member        migration guideline
+--------------------  --------------------------------------------------------
+add_docstring         It's still available as np.lib.add_docstring.
+add_newdoc            It's still available as np.lib.add_newdoc.
+add_newdoc_ufunc      It's an internal function and doesn't have a
+                      replacement.
+alltrue               Use np.all instead.
+asfarray              Use np.asarray with a float dtype instead.
+byte_bounds           Now it's available under np.lib.array_utils.byte_bounds
+cast                  Use np.asarray(arr, dtype=dtype) instead.
+cfloat                Use np.complex128 instead.
+charrarray            It's still available as np.char.chararray.
+clongfloat            Use np.clongdouble instead.
+compare_chararrays    It's still available as np.char.compare_chararrays.
+compat                There's no replacement, as Python 2 is no longer
+                      supported.
+complex_              Use np.complex128 instead.
+cumproduct            Use np.cumprod instead.
+DataSource            It's still available as np.lib.npyio.DataSource.
+deprecate             Emit DeprecationWarning with warnings.warn directly, or
+                      use typing.deprecated.
+deprecate_with_doc    Emit DeprecationWarning with warnings.warn directly, or
+                      use typing.deprecated.
+disp                  Use your own printing function instead.
+fastCopyAndTranspose  Use arr.T.copy() instead.
+find_common_type      Use numpy.promote_types or numpy.result_type instead. To
+                      achieve semantics for the scalar_types argument, use
+                      numpy.result_type and pass the Python values 0, 0.0, or
+                      0j.
+format_parser         It's still available as np.rec.format_parser.
+get_array_wrap
+float_                Use np.float64 instead.
+geterrobj             Use the np.errstate context manager instead.
+Inf                   Use np.inf instead.
+Infinity              Use np.inf instead.
+infty                 Use np.inf instead.
+issctype              Use issubclass(rep, np.generic) instead.
+issubclass_           Use issubclass builtin instead.
+issubsctype           Use np.issubdtype instead.
+mat                   Use np.asmatrix instead.
+maximum_sctype        Use a specific dtype instead. You should avoid relying
+                      on any implicit mechanism and select the largest dtype
+                      of a kind explicitly in the code.
+NaN                   Use np.nan instead.
+nbytes                Use np.dtype(<dtype>).itemsize instead.
+NINF                  Use -np.inf instead.
+NZERO                 Use -0.0 instead.
+longcomplex           Use np.clongdouble instead.
+longfloat             Use np.longdouble instead.
+lookfor               Search NumPy's documentation directly.
+obj2sctype            Use np.dtype(obj).type instead.
+PINF                  Use np.inf instead.
+product               Use np.prod instead.
+PZERO                 Use 0.0 instead.
+recfromcsv            Use np.genfromtxt with comma delimiter instead.
+recfromtxt            Use np.genfromtxt instead.
+round_                Use np.round instead.
+safe_eval             Use ast.literal_eval instead.
+sctype2char           Use np.dtype(obj).char instead.
+sctypes               Access dtypes explicitly instead.
+seterrobj             Use the np.errstate context manager instead.
+set_numeric_ops       For the general case, use
+                      PyUFunc_ReplaceLoopBySignature. For ndarray subclasses,
+                      define the __array_ufunc__ method and override the
+                      relevant ufunc.
+set_string_function   Use np.set_printoptions instead with a formatter for
+                      custom printing of NumPy objects.
+singlecomplex         Use np.complex64 instead.
+string_               Use np.bytes_ instead.
+sometrue              Use np.any instead.
+source                Use inspect.getsource instead.
+tracemalloc_domain    It's now available from np.lib.
+unicode_              Use np.str_ instead.
+who                   Use an IDE variable explorer or locals() instead.
+
+If the table doesn't contain an item that you were using but was removed in
+`2.0`, then it means it was a private member. You should either use the
+existing API or, in case it's infeasible, reach out to us with a request to
+restore the removed entry.
+
+The next table presents deprecated members, which will be removed in a
+release after `2.0`:
+
+deprecated member  migration guideline
+-----------------  -----------------------------------------------------------
+in1d               Use np.isin instead.
+row_stack          Use np.vstack instead (row_stack was an alias for vstack).
+trapz              Use np.trapezoid or a scipy.integrate function instead.
+
+Finally, a set of internal enums has been removed. As they weren't used in
+downstream libraries we don't provide any information on how to replace
+them:
+
+[`FLOATING_POINT_SUPPORT`, `FPE_DIVIDEBYZERO`, `FPE_INVALID`,
+`FPE_OVERFLOW`, `FPE_UNDERFLOW`, `UFUNC_BUFSIZE_DEFAULT`,
+`UFUNC_PYVALS_NAME`, `CLIP`, `WRAP`, `RAISE`, `BUFSIZE`, `ALLOW_THREADS`,
+`MAXDIMS`, `MAY_SHARE_EXACT`, `MAY_SHARE_BOUNDS`]
+
+numpy.lib namespace            *numpy_2_0_migration_guide-numpy-lib-namespace*
+
+Most of the functions available within `np.lib` are also present in the main
+namespace, which is their primary location. To make it unambiguous how to
+access each public function, `np.lib` is now empty and contains only a
+handful of specialized submodules, classes and functions:
+
+- `array_utils`, `format`, `introspect`, `mixins`, `npyio`, `scimath` and
+  `stride_tricks` submodules,
+- `Arrayterator` and `NumpyVersion` classes,
+- `add_docstring` and `add_newdoc` functions,
+- `tracemalloc_domain` constant.
+
+If you get an `AttributeError` when accessing an attribute from `np.lib` you
+should try accessing it from the main `np` namespace then. If an item is
+also missing from the main namespace, then you're using a private member.
+You should either use the existing API or, in case it's infeasible, reach
+out to us with a request to restore the removed entry.
+
+numpy.core namespace          *numpy_2_0_migration_guide-numpy-core-namespace*
+
+The `np.core` namespace is now officially private and has been renamed to
+`np._core`. The user should never fetch members from the `_core` directly -
+instead the main namespace should be used to access the attribute in
+question. The layout of the `_core` module might change in the future
+without notice, contrary to public modules which adhere to the deprecation
+period policy. If an item is also missing from the main namespace, then you
+should either use the existing API or, in case it's infeasible, reach out to
+us with a request to restore the removed entry.
+
+                        *numpy_2_0_migration_guide-ndarray-and-scalar-methods*
+ndarray and scalar methods
+
+A few methods from `np.ndarray` and `np.generic` scalar classes have been
+removed. The table below provides replacements for the removed members:
+
+expired member    migration guideline
+----------------  ------------------------------------------------------------
+newbyteorder      Use arr.view(arr.dtype.newbyteorder(order)) instead.
+ptp               Use np.ptp(arr, ...) instead.
+setitem           Use arr[index] = value instead.
+
+numpy.strings namespace    *numpy_2_0_migration_guide-numpy-strings-namespace*
+
+A new |reference-routines.strings-module-numpy.strings| namespace has been
+created, where most of the string operations are implemented as ufuncs. The
+old |reference-routines.char-module-numpy.char| namespace still is
+available, and, wherever possible, uses the new ufuncs for greater
+performance. We recommend using the
+|reference-routines.strings-module-numpy.strings| functions going forward.
+The |reference-routines.char-module-numpy.char| namespace may be deprecated
+in the future.
+
+OTHER CHANGES                        *numpy_2_0_migration_guide-other-changes*
+
+Note about pickled files  *numpy_2_0_migration_guide-note-about-pickled-files*
+
+NumPy 2.0 is designed to load pickle files created with NumPy 1.26, and vice
+versa. For versions 1.25 and earlier loading NumPy 2.0 pickle file will
+throw an exception.
+
+           *numpy_2_0_migration_guide-adapting-to-changes-in-the-copy-keyword*
+Adapting to changes in the `copy` keyword
+
+The copy keyword behavior changes
+https://numpy.org/doc/stable/release/2.0.0-notes.html#copy-keyword-changes-2-0
+in |numpy.asarray|, |numpy.array| and |numpy.ndarray.__array__| may require
+these changes:
+
+- Code using `np.array(..., copy=False)` can in most cases be changed to
+  `np.asarray(...)`. Older code tended to use `np.array` like this because
+  it had less overhead than the default `np.asarray` copy-if-needed
+  behavior. This is no longer true, and `np.asarray` is the preferred
+  function.
+- For code that explicitly needs to pass `None`/`False` meaning “copy if
+  needed” in a way that's compatible with NumPy 1.x and 2.x, see scipy#20172
+  https://github.com/scipy/scipy/pull/20172 for an example of how to do so.
+- For any `__array__` method on a non-NumPy array-like object, `dtype=None`
+  and `copy=None` keywords must be added to the signature - this will work
+  with older NumPy versions as well (although older numpy versions will
+  never pass in `copy` keyword). If the keywords are added to the
+  `__array__` signature, then for:
+
+  - `copy=True` and any `dtype` value always return a new copy,
+  - `copy=None` create a copy if required (for example by `dtype`),
+  - `copy=False` a copy must never be made. If a copy is needed to return a
+    numpy array or satisfy `dtype`, then raise an exception (`ValueError`).
+
+              *numpy_2_0_migration_guide-writing-numpy-version-dependent-code*
+Writing numpy-version-dependent code
+
+It should be fairly rare to have to write code that explicitly branches on
+the `numpy` version - in most cases, code can be rewritten to be compatible
+with 1.x and 2.0 at the same time. However, if it is necessary, here is a
+suggested code pattern to use, using |numpy.lib.NumpyVersion|:
+
+>python
+    # example with AxisError, which is no longer available in
+    # the main namespace in 2.0, and not available in the
+    # `exceptions` namespace in <1.25.0 (example uses <2.0.0b1
+    # for illustrative purposes):
+    if np.lib.NumpyVersion(np.__version__) >= '2.0.0b1':
+        from numpy.exceptions import AxisError
+    else:
+        from numpy import AxisError
+<
+This pattern will work correctly including with NumPy release candidates,
+which is important during the 2.0.0 release period.
+
+ vim:tw=78:ts=8:ft=help:norl:

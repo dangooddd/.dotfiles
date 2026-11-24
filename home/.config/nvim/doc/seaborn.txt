@@ -1,0 +1,179 @@
+*seaborn.txt* *seaborn*	seaborn documentation
+Version 0.13.2 — https://seaborn.pydata.org/
+License: BSD-3-Clause
+
+TABLE OF CONTENTS	*seaborn-toc*
+
+main ................................................ |seaborn-section-main|
+reference ...................................... |seaborn-section-reference|
+tutorial ........................................ |seaborn-section-tutorial|
+
+==============================================================================
+MAIN
+
+API reference ................................................ |seaborn-api|
+Frequently asked questions ................................... |seaborn-faq|
+seaborn: statistical data visualization .................... |seaborn-index|
+Installing and getting started ........................ |seaborn-installing|
+User guide and tutorial ................................. |seaborn-tutorial|
+
+==============================================================================
+REFERENCE
+
+seaborn.FacetGrid.__init__ .................... |seaborn.FacetGrid.__init__|
+seaborn.FacetGrid.add_legend ................ |seaborn.FacetGrid.add_legend|
+seaborn.FacetGrid.apply .......................... |seaborn.FacetGrid.apply|
+seaborn.FacetGrid.despine ...................... |seaborn.FacetGrid.despine|
+seaborn.FacetGrid.facet_axis ................ |seaborn.FacetGrid.facet_axis|
+seaborn.FacetGrid.facet_data ................ |seaborn.FacetGrid.facet_data|
+seaborn.FacetGrid ...................................... |seaborn.FacetGrid|
+seaborn.FacetGrid.map .............................. |seaborn.FacetGrid.map|
+seaborn.FacetGrid.map_dataframe .......... |seaborn.FacetGrid.map_dataframe|
+seaborn.FacetGrid.pipe ............................ |seaborn.FacetGrid.pipe|
+seaborn.FacetGrid.refline ...................... |seaborn.FacetGrid.refline|
+seaborn.FacetGrid.savefig ...................... |seaborn.FacetGrid.savefig|
+seaborn.FacetGrid.set .............................. |seaborn.FacetGrid.set|
+seaborn.FacetGrid.set_axis_labels ...... |seaborn.FacetGrid.set_axis_labels|
+seaborn.FacetGrid.set_titles ................ |seaborn.FacetGrid.set_titles|
+seaborn.FacetGrid.set_xlabels .............. |seaborn.FacetGrid.set_xlabels|
+seaborn.FacetGrid.set_xticklabels ...... |seaborn.FacetGrid.set_xticklabels|
+seaborn.FacetGrid.set_ylabels .............. |seaborn.FacetGrid.set_ylabels|
+seaborn.FacetGrid.set_yticklabels ...... |seaborn.FacetGrid.set_yticklabels|
+seaborn.FacetGrid.tick_params .............. |seaborn.FacetGrid.tick_params|
+seaborn.FacetGrid.tight_layout ............ |seaborn.FacetGrid.tight_layout|
+seaborn.JointGrid.__init__ .................... |seaborn.JointGrid.__init__|
+seaborn.JointGrid.apply .......................... |seaborn.JointGrid.apply|
+seaborn.JointGrid ...................................... |seaborn.JointGrid|
+seaborn.JointGrid.pipe ............................ |seaborn.JointGrid.pipe|
+seaborn.JointGrid.plot ............................ |seaborn.JointGrid.plot|
+seaborn.JointGrid.plot_joint ................ |seaborn.JointGrid.plot_joint|
+seaborn.JointGrid.plot_marginals ........ |seaborn.JointGrid.plot_marginals|
+seaborn.JointGrid.refline ...................... |seaborn.JointGrid.refline|
+seaborn.JointGrid.savefig ...................... |seaborn.JointGrid.savefig|
+seaborn.JointGrid.set .............................. |seaborn.JointGrid.set|
+seaborn.JointGrid.set_axis_labels ...... |seaborn.JointGrid.set_axis_labels|
+seaborn.PairGrid.__init__ ...................... |seaborn.PairGrid.__init__|
+seaborn.PairGrid.add_legend .................. |seaborn.PairGrid.add_legend|
+seaborn.PairGrid.apply ............................ |seaborn.PairGrid.apply|
+seaborn.PairGrid ........................................ |seaborn.PairGrid|
+seaborn.PairGrid.map ................................ |seaborn.PairGrid.map|
+seaborn.PairGrid.map_diag ...................... |seaborn.PairGrid.map_diag|
+seaborn.PairGrid.map_lower .................... |seaborn.PairGrid.map_lower|
+seaborn.PairGrid.map_offdiag ................ |seaborn.PairGrid.map_offdiag|
+seaborn.PairGrid.map_upper .................... |seaborn.PairGrid.map_upper|
+seaborn.PairGrid.pipe .............................. |seaborn.PairGrid.pipe|
+seaborn.PairGrid.savefig ........................ |seaborn.PairGrid.savefig|
+seaborn.PairGrid.set ................................ |seaborn.PairGrid.set|
+seaborn.PairGrid.tick_params ................ |seaborn.PairGrid.tick_params|
+seaborn.PairGrid.tight_layout .............. |seaborn.PairGrid.tight_layout|
+seaborn.axes_style .................................... |seaborn.axes_style|
+seaborn.barplot .......................................... |seaborn.barplot|
+seaborn.blend_palette .............................. |seaborn.blend_palette|
+seaborn.boxenplot ...................................... |seaborn.boxenplot|
+seaborn.boxplot .......................................... |seaborn.boxplot|
+seaborn.catplot .......................................... |seaborn.catplot|
+seaborn.clustermap .................................... |seaborn.clustermap|
+seaborn.color_palette .............................. |seaborn.color_palette|
+seaborn.countplot ...................................... |seaborn.countplot|
+seaborn.cubehelix_palette ...................... |seaborn.cubehelix_palette|
+seaborn.dark_palette ................................ |seaborn.dark_palette|
+seaborn.desaturate .................................... |seaborn.desaturate|
+seaborn.despine .......................................... |seaborn.despine|
+seaborn.displot .......................................... |seaborn.displot|
+seaborn.diverging_palette ...................... |seaborn.diverging_palette|
+seaborn.ecdfplot ........................................ |seaborn.ecdfplot|
+seaborn.heatmap .......................................... |seaborn.heatmap|
+seaborn.histplot ........................................ |seaborn.histplot|
+seaborn.hls_palette .................................. |seaborn.hls_palette|
+seaborn.husl_palette ................................ |seaborn.husl_palette|
+seaborn.jointplot ...................................... |seaborn.jointplot|
+seaborn.kdeplot .......................................... |seaborn.kdeplot|
+seaborn.light_palette .............................. |seaborn.light_palette|
+seaborn.lineplot ........................................ |seaborn.lineplot|
+seaborn.lmplot ............................................ |seaborn.lmplot|
+seaborn.load_dataset ................................ |seaborn.load_dataset|
+seaborn.move_legend .................................. |seaborn.move_legend|
+seaborn.mpl_palette .................................. |seaborn.mpl_palette|
+seaborn.objects.Agg .................................. |seaborn.objects.Agg|
+seaborn.objects.Area ................................ |seaborn.objects.Area|
+seaborn.objects.Band ................................ |seaborn.objects.Band|
+seaborn.objects.Bar .................................. |seaborn.objects.Bar|
+seaborn.objects.Bars ................................ |seaborn.objects.Bars|
+seaborn.objects.Boolean .......................... |seaborn.objects.Boolean|
+seaborn.objects.Continuous .................... |seaborn.objects.Continuous|
+seaborn.objects.Count .............................. |seaborn.objects.Count|
+seaborn.objects.Dash ................................ |seaborn.objects.Dash|
+seaborn.objects.Dodge .............................. |seaborn.objects.Dodge|
+seaborn.objects.Dot .................................. |seaborn.objects.Dot|
+seaborn.objects.Dots ................................ |seaborn.objects.Dots|
+seaborn.objects.Est .................................. |seaborn.objects.Est|
+seaborn.objects.Hist ................................ |seaborn.objects.Hist|
+seaborn.objects.Jitter ............................ |seaborn.objects.Jitter|
+seaborn.objects.KDE .................................. |seaborn.objects.KDE|
+seaborn.objects.Line ................................ |seaborn.objects.Line|
+seaborn.objects.Lines .............................. |seaborn.objects.Lines|
+seaborn.objects.Mark ................................ |seaborn.objects.Mark|
+seaborn.objects.Move ................................ |seaborn.objects.Move|
+seaborn.objects.Nominal .......................... |seaborn.objects.Nominal|
+seaborn.objects.Norm ................................ |seaborn.objects.Norm|
+seaborn.objects.Path ................................ |seaborn.objects.Path|
+seaborn.objects.Paths .............................. |seaborn.objects.Paths|
+seaborn.objects.Perc ................................ |seaborn.objects.Perc|
+seaborn.objects.Plot.add ........................ |seaborn.objects.Plot.add|
+seaborn.objects.Plot.facet .................... |seaborn.objects.Plot.facet|
+seaborn.objects.Plot ................................ |seaborn.objects.Plot|
+seaborn.objects.Plot.label .................... |seaborn.objects.Plot.label|
+seaborn.objects.Plot.layout .................. |seaborn.objects.Plot.layout|
+seaborn.objects.Plot.limit .................... |seaborn.objects.Plot.limit|
+seaborn.objects.Plot.on .......................... |seaborn.objects.Plot.on|
+seaborn.objects.Plot.pair ...................... |seaborn.objects.Plot.pair|
+seaborn.objects.Plot.plot ...................... |seaborn.objects.Plot.plot|
+seaborn.objects.Plot.save ...................... |seaborn.objects.Plot.save|
+seaborn.objects.Plot.scale .................... |seaborn.objects.Plot.scale|
+seaborn.objects.Plot.share .................... |seaborn.objects.Plot.share|
+seaborn.objects.Plot.show ...................... |seaborn.objects.Plot.show|
+seaborn.objects.Plot.theme .................... |seaborn.objects.Plot.theme|
+seaborn.objects.PolyFit .......................... |seaborn.objects.PolyFit|
+seaborn.objects.Range .............................. |seaborn.objects.Range|
+seaborn.objects.Scale .............................. |seaborn.objects.Scale|
+seaborn.objects.Shift .............................. |seaborn.objects.Shift|
+seaborn.objects.Stack .............................. |seaborn.objects.Stack|
+seaborn.objects.Stat ................................ |seaborn.objects.Stat|
+seaborn.objects.Temporal ........................ |seaborn.objects.Temporal|
+seaborn.objects.Text ................................ |seaborn.objects.Text|
+seaborn.pairplot ........................................ |seaborn.pairplot|
+seaborn.plotting_context ........................ |seaborn.plotting_context|
+seaborn.pointplot ...................................... |seaborn.pointplot|
+seaborn.regplot .......................................... |seaborn.regplot|
+seaborn.relplot .......................................... |seaborn.relplot|
+seaborn.residplot ...................................... |seaborn.residplot|
+seaborn.rugplot .......................................... |seaborn.rugplot|
+seaborn.saturate ........................................ |seaborn.saturate|
+seaborn.scatterplot .................................. |seaborn.scatterplot|
+seaborn.set_color_codes .......................... |seaborn.set_color_codes|
+seaborn.set_context .................................. |seaborn.set_context|
+seaborn.set_palette .................................. |seaborn.set_palette|
+seaborn.set_style ...................................... |seaborn.set_style|
+seaborn.set_theme ...................................... |seaborn.set_theme|
+seaborn.stripplot ...................................... |seaborn.stripplot|
+seaborn.swarmplot ...................................... |seaborn.swarmplot|
+seaborn.violinplot .................................... |seaborn.violinplot|
+
+==============================================================================
+TUTORIAL
+
+Controlling figure aesthetics ................ |seaborn-tutorial-aesthetics|
+Building structured multi-plot grids ......... |seaborn-tutorial-axis_grids|
+Visualizing categorical data ................ |seaborn-tutorial-categorical|
+Choosing color palettes .................. |seaborn-tutorial-color_palettes|
+Data structures accepted by seaborn ...... |seaborn-tutorial-data_structure|
+Visualizing distributions of data ......... |seaborn-tutorial-distributions|
+Statistical estimation and error bars ........ |seaborn-tutorial-error_bars|
+Overview of seaborn plotting functions ... |seaborn-tutorial-function_overview|
+An introduction to seaborn ................. |seaborn-tutorial-introduction|
+The seaborn.objects interface ......... |seaborn-tutorial-objects_interface|
+Properties of Mark objects ................... |seaborn-tutorial-properties|
+Estimating regression fits ................... |seaborn-tutorial-regression|
+Visualizing statistical relationships ........ |seaborn-tutorial-relational|
+
+ vim:tw=78:ts=8:ft=help:norl:

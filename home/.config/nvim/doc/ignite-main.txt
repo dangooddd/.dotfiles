@@ -1,0 +1,2453 @@
+*ignite-main.txt*	PyTorch Ignite documentation: main
+Version v0.5.5 — https://pytorch.org/ignite/
+
+==============================================================================
+MAIN                                                     *ignite-section-main*
+
+
+----------------------------------------------------------------------------
+ignite.distributed          *ignite.distributed.utils.has_native_dist_support*
+
+Helper module to use distributed settings for multiple backends:
+
+- backends from native torch distributed configuration: “nccl”, “gloo”,
+  “mpi”
+- XLA on TPUs via pytorch/xla https://github.com/pytorch/xla
+- using Horovod framework https://horovod.readthedocs.io/en/stable/ as a
+  backend
+
+DISTRIBUTED LAUNCHER AND AUTO HELPERS  *distributed-launcher-and-auto-helpers*
+
+We provide a context manager to simplify the code of distributed
+configuration setup for all above supported backends. In addition, methods
+like |ignite.distributed.auto.auto_model|,
+|ignite.distributed.auto.auto_optim| and
+|ignite.distributed.auto.auto_dataloader| help to adapt in a transparent way
+provided model, optimizer and data loaders to existing configuration:
+
+>python
+    # main.py
+
+    import ignite.distributed as idist
+
+    def training(local_rank, config, **kwargs):
+
+        print(idist.get_rank(), ": run with config:", config, "- backend=", idist.backend())
+
+        train_loader = idist.auto_dataloader(dataset, batch_size=32, num_workers=12, shuffle=True, **kwargs)
+        # batch size, num_workers and sampler are automatically adapted to existing configuration
+        # ...
+        model = resnet50()
+        model = idist.auto_model(model)
+        # model is DDP or DP or just itself according to existing configuration
+        # ...
+        optimizer = optim.SGD(model.parameters(), lr=0.01)
+        optimizer = idist.auto_optim(optimizer)
+        # The optimizer remains unchanged, except for XLA configurations where the step() method is overridden.
+        # User can safely call `optimizer.step()` (behind `xm.optimizer_step(optimizer)` is performed)
+
+
+    backend = "nccl"  # torch native distributed configuration on multiple GPUs
+    # backend = "xla-tpu"  # XLA TPUs distributed configuration
+    # backend = None  # no distributed configuration
+    #
+    # dist_configs = {'nproc_per_node': 4}  # Use specified distributed configuration if launch as python main.py
+    # dist_configs["start_method"] = "fork"  # Add start_method as "fork" if using Jupyter Notebook
+    with idist.Parallel(backend=backend, **dist_configs) as parallel:
+        parallel.run(training, config, a=1, b=2)
+<
+Above code may be executed with torch.distributed.launch
+https://pytorch.org/docs/stable/distributed.html#launch-utility tool or by
+python and specifying distributed configuration in the code. For more
+details, please see |ignite.distributed.launcher.Parallel|,
+|ignite.distributed.auto.auto_model|, |ignite.distributed.auto.auto_optim|
+and |ignite.distributed.auto.auto_dataloader|.
+
+Complete example of CIFAR10 training can be found here
+https://github.com/pytorch/ignite/tree/master/examples/cifar10.
+
+IGNITE.DISTRIBUTED.AUTO                  *distributed-ignite-distributed-auto*
+
+DistributedProxySampler  Distributed sampler proxy to adapt user's sampler for
+                         distributed data parallelism configuration.
+auto_dataloader          Helper method to create a dataloader adapted for
+                         non-distributed and distributed configurations
+                         (supporting all available backends from
+                         available_backends()).
+auto_model               Helper method to adapt provided model for
+                         non-distributed and distributed configurations
+                         (supporting all available backends from
+                         available_backends()).
+auto_optim               Helper method to adapt optimizer for non-distributed
+                         and distributed configurations (supporting all
+                         available backends from available_backends()).
+
+  Note: ~
+
+  In distributed configuration, methods
+  |ignite.distributed.auto.auto_model|, |ignite.distributed.auto.auto_optim|
+  and |ignite.distributed.auto.auto_dataloader| will have effect only when
+  distributed group is initialized.
+
+IGNITE.DISTRIBUTED.LAUNCHER          *distributed-ignite-distributed-launcher*
+
+Parallel  Distributed launcher context manager to simplify distributed
+          configuration setup for multiple backends:
+
+IGNITE.DISTRIBUTED.UTILS                *distributed-ignite-distributed-utils*
+
+This module wraps common methods to fetch information about distributed
+configuration, initialize/finalize process group or spawn multiple
+processes.
+
+backend                         Returns computation model's backend.
+broadcast                       Helper method to perform broadcast operation.
+device                          Returns current device according to current
+                                distributed configuration.
+available_backends              Returns available backends.
+model_name                      Returns distributed configuration name (given
+                                by ignite)
+get_world_size                  Returns world size of current distributed
+                                configuration.
+get_rank                        Returns process rank within current
+                                distributed configuration.
+get_local_rank                  Returns local process rank within current
+                                distributed configuration.
+get_nproc_per_node              Returns number of processes (or tasks) per
+                                node within current distributed configuration.
+get_node_rank                   Returns node rank within current distributed
+                                configuration.
+get_nnodes                      Returns number of nodes within current
+                                distributed configuration.
+spawn                           Spawns nproc_per_node processes that run fn
+                                with args/kwargs_dict and initialize
+                                distributed configuration defined by backend.
+initialize                      Initializes distributed configuration
+                                according to provided backend
+finalize                        Finalizes distributed configuration.
+show_config                     Helper method to display distributed
+                                configuration via logging.
+set_local_rank                  Method to hint the local rank in case if torch
+                                native distributed context is created by user
+                                without using initialize() or spawn().
+all_reduce                      Helper method to perform all reduce operation.
+all_gather                      Helper method to perform all gather operation.
+barrier                         Helper method to synchronize all processes.
+hostname                        Returns host name for current process within
+                                current distributed configuration.
+sync                            Helper method to force this module to
+                                synchronize with current distributed context.
+one_rank_only                   Decorator to filter handlers wrt a rank number
+new_group                       Helper method to make group for each backend
+                                from ranks.
+one_rank_first                  Context manager that ensures a specific rank
+                                runs first before others in a distributed
+                                environment.
+all_gather_tensors_with_shapes  Helper method to gather tensors of possibly
+                                different shapes but with the same number of
+                                dimensions across processes.
+
+ignite.distributed.utils.has_native_dist_support
+    True if torch.distributed is available
+
+ignite.distributed.utils.has_xla_support
+*ignite.distributed.utils.has_xla_support*
+    True if torch_xla package is found
+
+ignite.distributed.utils.all_gather(tensor, group=None)
+    *ignite.distributed.utils.all_gather*
+    Helper method to perform all gather operation.
+
+    Parameters: ~
+        - tensor (Tensor
+          https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+          float | str | Any) -- tensor or number or str to collect across
+          participating processes. If tensor, it should have the same shape
+          across processes.
+        - group (Any | list[int] | None) -- list of integer or the process
+          group for each backend. If None, the default process group will be
+          used.
+
+    Returns: ~
+        If input is a tensor, returns a torch.Tensor of shape
+        `(world_size * tensor.shape[0], tensor.shape[1], ...)`. If input is
+        a number, a torch.Tensor of shape `(world_size, )` is returned and
+        finally a list of strings is returned if input is a string. If
+        current process does not belong to group, the very `tensor` is
+        returned.
+
+    Return type: ~
+        Tensor
+        https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+        float | list[float] | list[str] | list[Any]
+
+      Changed in version 0.4.11: ~
+
+      `group`
+
+                     *ignite.distributed.utils.all_gather_tensors_with_shapes*
+ignite.distributed.utils.all_gather_tensors_with_shapes(tensor, shapes,
+    group=None)
+    Helper method to gather tensors of possibly different shapes but with
+    the same number of dimensions across processes.
+
+    This function gets the shapes of participating tensors as input so you
+    should know them beforehand. If your tensors are of different number of
+    dimensions or you don't know their shapes beforehand, you can use
+    `torch.distributed.all_gather_object`, otherwise this method is quite
+    faster.
+
+    Examples: ~
+
+    >python
+        import ignite.distributed as idist
+
+        rank = idist.get_rank()
+        ws = idist.get_world_size()
+        tensor = torch.randn(rank+1, rank+2)
+        tensors = idist.all_gather_tensors_with_shapes(tensor, [[r+1, r+2] for r in range(ws)])
+<
+    Parameters: ~
+        - tensor (Tensor
+          https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor) --
+          tensor to collect across participating processes.
+        - shapes (Sequence[Sequence[int]]) -- A sequence containing the
+          shape of participating processes' `tensor` s.
+        - group (Any | list[int] | None) -- list of integer or the process
+          group for each backend. If None, the default process group will be
+          used.
+
+    Returns: ~
+        list[torch.Tensor]
+
+    Return type: ~
+        list[torch.Tensor
+        https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor]
+
+ignite.distributed.utils.all_reduce(tensor, op='SUM', group=None)
+    *ignite.distributed.utils.all_reduce*
+    Helper method to perform all reduce operation.
+
+    Parameters: ~
+        - tensor (Tensor
+          https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+          float) -- tensor or number to collect across participating
+          processes.
+        - op (str) -- reduction operation, “SUM” by default. Possible
+          values: “SUM”, “PRODUCT”, “MIN”, “MAX”, “AND”, “OR”. Horovod
+          backend supports only “SUM”, “AVERAGE”, “ADASUM”, “MIN”, “MAX”,
+          “PRODUCT”.
+        - group (Any | list[int] | None) -- list of integer or the process
+          group for each backend. If None, the default process group will be
+          used.
+
+    Returns: ~
+        torch.Tensor or number
+
+    Return type: ~
+        Tensor
+        https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+        float
+
+      Changed in version 0.4.11: ~
+
+      `group`
+
+ignite.distributed.utils.available_backends()
+    *ignite.distributed.utils.available_backends*
+    Returns available backends.
+
+    Return type: ~
+        tuple[str, ...]
+
+ignite.distributed.utils.backend()  *ignite.distributed.utils.backend*
+    Returns computation model's backend.
+
+    - None for no distributed configuration
+    - “nccl” or “gloo” or “mpi” for native torch distributed configuration
+    - “xla-tpu” for XLA distributed configuration
+    - “horovod” for Horovod distributed framework
+
+    Returns: ~
+        str or None
+
+    Return type: ~
+        str | None
+
+      Changed in version 0.4.2: ~
+
+ignite.distributed.utils.barrier()  *ignite.distributed.utils.barrier*
+    Helper method to synchronize all processes.
+
+    Return type: ~
+        None
+
+ignite.distributed.utils.broadcast(tensor, src=0, safe_mode=False)
+    *ignite.distributed.utils.broadcast*
+    Helper method to perform broadcast operation.
+
+    Parameters: ~
+        - tensor (Tensor
+          https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+          float | str | Path
+          https://docs.python.org/3/library/pathlib.html#pathlib.Path |
+          None) -- tensor, number, str or pathlib.Path to broadcast to
+          participating processes. Make sure to respect data type of torch
+          tensor input for all processes, otherwise execution will crash.
+          Can use None for non-source data with `safe_mode=True`.
+        - src (int) -- source rank. Default, 0.
+        - safe_mode (bool) -- if True, non source input data can be `None`
+          or anything (will be discarded), otherwise data type of the input
+          `tensor` should be respected for all processes. Please, keep in
+          mind, this mode is working only for dense tensors as source input
+          if a tensor is provided. It also leads to some additional
+          collectives before the broadcast, making it slower than without
+          using this mode. Default, False.
+
+    Returns: ~
+        torch.Tensor, string, pathlib.Path or number
+
+    Return type: ~
+        Tensor
+        https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+        float | str | Path
+        https://docs.python.org/3/library/pathlib.html#pathlib.Path
+
+    Examples: ~
+
+    >python
+        y = None
+        if idist.get_rank() == 0:
+            t1 = torch.rand(4, 5, 6, device=idist.device())
+            s1 = "abc"
+            x = 12.3456
+            y = torch.rand(1, 2, 3, device=idist.device())
+        else:
+            t1 = torch.empty(4, 5, 6, device=idist.device())
+            s1 = ""
+            x = 0.0
+
+        # Broadcast tensor t1 from rank 0 to all processes
+        t1 = idist.broadcast(t1, src=0)
+        assert isinstance(t1, torch.Tensor)
+
+        # Broadcast string s1 from rank 0 to all processes
+        s1 = idist.broadcast(s1, src=0)
+        # >>> s1 = "abc"
+
+        # Broadcast float number x from rank 0 to all processes
+        x = idist.broadcast(x, src=0)
+        # >>> x = 12.3456
+
+        # Broadcast any of those types from rank 0,
+        # but other ranks do not define the placeholder
+        y = idist.broadcast(y, src=0, safe_mode=True)
+        assert isinstance(y, torch.Tensor)
+<
+      New in version 0.4.2.: ~
+
+      Changed in version 0.4.5: ~
+
+      `safe_mode`
+
+ignite.distributed.utils.device()  *ignite.distributed.utils.device*
+    Returns current device according to current distributed configuration.
+
+    - torch.device(“cpu”) if no distributed configuration or torch native
+      gloo distributed configuration
+    - torch.device(“cuda:local_rank”) if torch native nccl or horovod
+      distributed configuration
+    - torch.device(“xla:index”) if XLA distributed configuration
+
+    Returns: ~
+        torch.device
+
+    Return type: ~
+        device
+        https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.device
+
+      Changed in version 0.4.2: ~
+
+ignite.distributed.utils.finalize()  *ignite.distributed.utils.finalize*
+    Finalizes distributed configuration. For example, in case of native
+    pytorch distributed configuration, it calls
+    `dist.destroy_process_group()`.
+
+    Return type: ~
+        None
+
+ignite.distributed.utils.get_local_rank()
+    *ignite.distributed.utils.get_local_rank*
+    Returns local process rank within current distributed configuration.
+    Returns 0 if no distributed configuration.
+
+    Return type: ~
+        int
+
+ignite.distributed.utils.get_nnodes()  *ignite.distributed.utils.get_nnodes*
+    Returns number of nodes within current distributed configuration.
+    Returns 1 if no distributed configuration.
+
+    Return type: ~
+        int
+
+ignite.distributed.utils.get_node_rank()
+    *ignite.distributed.utils.get_node_rank*
+    Returns node rank within current distributed configuration. Returns 0 if
+    no distributed configuration.
+
+    Return type: ~
+        int
+
+ignite.distributed.utils.get_nproc_per_node()
+    *ignite.distributed.utils.get_nproc_per_node*
+    Returns number of processes (or tasks) per node within current
+    distributed configuration. Returns 1 if no distributed configuration.
+
+    Return type: ~
+        int
+
+ignite.distributed.utils.get_rank()  *ignite.distributed.utils.get_rank*
+    Returns process rank within current distributed configuration. Returns 0
+    if no distributed configuration.
+
+    Return type: ~
+        int
+
+ignite.distributed.utils.get_world_size()
+    *ignite.distributed.utils.get_world_size*
+    Returns world size of current distributed configuration. Returns 1 if no
+    distributed configuration.
+
+    Return type: ~
+        int
+
+ignite.distributed.utils.hostname()  *ignite.distributed.utils.hostname*
+    Returns host name for current process within current distributed
+    configuration.
+
+    Return type: ~
+        str
+
+ignite.distributed.utils.initialize(backend, **kwargs)
+    *ignite.distributed.utils.initialize*
+    Initializes distributed configuration according to provided `backend`
+
+    Parameters: ~
+        - backend (str) -- backend: nccl, gloo, xla-tpu, horovod.
+        - kwargs (Any) --
+
+          acceptable kwargs according to provided backend:
+
+          - ”nccl” or “gloo” : `timeout(=timedelta(minutes=30))`,
+            `init_method(=None)`,
+            `rank(=None)`, `world_size(=None)`.
+            By default, `init_method` will be “env://”. See more info about
+            parameters: torch_init
+            https://pytorch.org/docs/stable/distributed.html#torch.distributed.init_process_group.
+          - ”horovod” : comm(=None), more info: hvd_init
+            https://horovod.readthedocs.io/en/latest/api.html#module-horovod.torch.
+
+    Return type: ~
+        None
+
+    Examples: ~
+
+    Launch single node multi-GPU training with `torchrun` utility.
+
+    >python
+        # >>> torchrun --nproc_per_node=4 main.py
+        # main.py
+
+        import ignite.distributed as idist
+
+        def train_fn(local_rank, a, b, c):
+            import torch.distributed as dist
+            assert dist.is_available() and dist.is_initialized()
+            assert dist.get_world_size() == 4
+
+            device = idist.device()
+            assert device == torch.device(f"cuda:{local_rank}")
+
+
+        backend = "nccl"  # or "gloo" or "horovod" or "xla-tpu"
+        idist.initialize(backend)
+        # or for torch native distributed on Windows:
+        # idist.initialize("nccl", init_method="file://tmp/shared")
+        local_rank = idist.get_local_rank()
+        train_fn(local_rank, a, b, c)
+        idist.finalize()
+<
+      Changed in version 0.4.2: ~
+
+      `backend` now accepts horovod distributed framework.
+
+      Changed in version 0.4.5: ~
+
+      `kwargs` now accepts `init_method`, `rank`, `world_size` for PyTorch
+      native distributed backend.
+
+ignite.distributed.utils.model_name()  *ignite.distributed.utils.model_name*
+    Returns distributed configuration name (given by ignite)
+
+    - serial for no distributed configuration
+    - native-dist for native torch distributed configuration
+    - xla-dist for XLA distributed configuration
+    - horovod-dist for Horovod distributed framework
+
+      Changed in version 0.4.2: ~
+
+      horovod-dist will be returned for Horovod distributed framework.
+
+    Return type: ~
+        str
+
+ignite.distributed.utils.new_group(ranks, **kwargs)
+    *ignite.distributed.utils.new_group*
+    Helper method to make group for each backend from ranks.
+
+    Parameters: ~
+        - ranks (list[int]) -- subset of ranks to be grouped.
+        - kwargs (Any) --
+
+          acceptable kwargs according to provided backend:
+
+          - ”nccl” or “gloo” : `backend (=None)`, `pg_options (=None)`.
+
+    Return type: ~
+        Any
+
+    Examples: ~
+
+    Launch single node multi-GPU training with `torchrun` utility.
+
+    >python
+        import ignite.distributed as idist
+
+        ranks = [0, 1]
+        group = idist.new_group(ranks)
+<
+      New in version 0.4.11.: ~
+
+ignite.distributed.utils.one_rank_first(rank=0, local=False)
+    *ignite.distributed.utils.one_rank_first*
+    Context manager that ensures a specific rank runs first before others in
+    a distributed environment.
+
+    Parameters: ~
+        - rank (int) -- rank of the process that should execute the code
+          block inside the context manager first. Default, 0.
+        - local (bool) -- flag to specify local rank or global rank. If True
+          `rank` argument will define a local rank to run first. Default,
+          False
+
+    Return type: ~
+        Any
+
+    Examples: ~
+
+    >python
+        def download_dataset():
+            ...
+
+        with idist.one_rank_first():
+            ds = download_dataset()
+
+        dp = ds[0]
+<
+      New in version 0.4.13.: ~
+
+ignite.distributed.utils.one_rank_only(rank=0, with_barrier=False)
+    *ignite.distributed.utils.one_rank_only*
+    Decorator to filter handlers wrt a rank number
+
+    Parameters: ~
+        - rank (int) -- rank number of the handler (default: 0).
+        - with_barrier (bool) -- synchronisation with a barrier (default:
+          False).
+
+    Return type: ~
+        Callable
+
+    Examples: ~
+
+    >python
+        engine = ...
+
+        @engine.on(...)
+        @one_rank_only() # means @one_rank_only(rank=0)
+        def some_handler(_):
+            ...
+
+        @engine.on(...)
+        @one_rank_only(rank=1)
+        def some_handler(_):
+            ...
+<
+
+ignite.distributed.utils.set_local_rank(index)
+    *ignite.distributed.utils.set_local_rank*
+    Method to hint the local rank in case if torch native distributed
+    context is created by user without using
+    |ignite.distributed.utils.initialize| or
+    |ignite.distributed.utils.spawn|.
+
+    Parameters: ~
+        index (int) -- local rank or current process index
+
+    Return type: ~
+        None
+
+    Examples: ~
+
+    User set up torch native distributed process group
+
+    >python
+        import ignite.distributed as idist
+
+        def run(local_rank, *args, **kwargs):
+
+            idist.set_local_rank(local_rank)
+            # ...
+            dist.init_process_group(**dist_info)
+            # ...
+<
+
+ignite.distributed.utils.show_config()
+    *ignite.distributed.utils.show_config*
+    Helper method to display distributed configuration via `logging`.
+
+    Return type: ~
+        None
+
+                                              *ignite.distributed.utils.spawn*
+ignite.distributed.utils.spawn(backend, fn, args, kwargs_dict=None,
+    nproc_per_node=1, **kwargs)
+    Spawns `nproc_per_node` processes that run `fn` with
+    `args`/`kwargs_dict` and initialize distributed configuration defined by
+    `backend`.
+
+    Parameters: ~
+        - backend (str) -- backend to use: nccl, gloo, xla-tpu, horovod
+        - fn (Callable) -- function to called as the entrypoint of the
+          spawned process. This function must be defined at the top level of
+          a module so it can be pickled and spawned. This is a requirement
+          imposed by multiprocessing. The function is called as
+          `fn(i, *args, **kwargs_dict)`, where i is the process index and
+          args is the passed through tuple of arguments.
+        - args (tuple) -- arguments passed to fn.
+        - kwargs_dict (Mapping | None) -- kwargs passed to fn.
+        - nproc_per_node (int) -- number of processes to spawn on a single
+          node. Default, 1.
+        - kwargs (Any) --
+
+          acceptable kwargs according to provided backend:
+
+          - ”nccl” or “gloo” : `nnodes` (default, 1), `node_rank` (default,
+            0), `master_addr`
+            (default, “127.0.0.1”), `master_port` (default, 2222),
+            `init_method` (default, “env://”),
+            timeout to dist.init_process_group
+            https://pytorch.org/docs/stable/distributed.html#torch.distributed.init_process_group
+            function
+            and kwargs for mp.start_processes
+            https://pytorch.org/docs/stable/multiprocessing.html#torch.multiprocessing.spawn.spawn
+            function.
+          - ”xla-tpu” : `nnodes` (default, 1), `node_rank` (default, 0) and
+            kwargs to xmp.spawn
+            https://pytorch.org/xla/release/1.6/index.html#torch_xla.distributed.xla_multiprocessing.spawn
+            function.
+          - ”horovod”: `hosts` (default, None) and other kwargs to hvd_run
+            https://horovod.readthedocs.io/en/latest/api.html#module-horovod.run
+            function. Arguments `nnodes=1`
+            and `node_rank=0` are tolerated and ignored, otherwise an
+            exception is raised.
+
+    Return type: ~
+        None
+
+    Examples: ~
+
+    1. Launch single node multi-GPU training using torch native distributed
+       framework
+
+    >python
+        # >>> python main.py
+
+        # main.py
+
+        import ignite.distributed as idist
+
+        def train_fn(local_rank, a, b, c, d=12):
+            import torch.distributed as dist
+            assert dist.is_available() and dist.is_initialized()
+            assert dist.get_world_size() == 4
+
+            device = idist.device()
+            assert device == torch.device(f"cuda:{local_rank}")
+
+
+        idist.spawn("nccl", train_fn, args=(a, b, c), kwargs_dict={"d": 23}, nproc_per_node=4)
+<
+    2. Launch multi-node multi-GPU training using torch native distributed
+       framework
+
+    >python
+        # >>> (node 0): python main.py --node_rank=0 --nnodes=8 --master_addr=master --master_port=2222
+        # >>> (node 1): python main.py --node_rank=1 --nnodes=8 --master_addr=master --master_port=2222
+        # >>> ...
+        # >>> (node 7): python main.py --node_rank=7 --nnodes=8 --master_addr=master --master_port=2222
+
+        # main.py
+
+        import torch
+        import ignite.distributed as idist
+
+        def train_fn(local_rank, nnodes, nproc_per_node):
+            import torch.distributed as dist
+            assert dist.is_available() and dist.is_initialized()
+            assert dist.get_world_size() == nnodes * nproc_per_node
+
+            device = idist.device()
+            assert device == torch.device(f"cuda:{local_rank}")
+
+        idist.spawn(
+            "nccl",
+            train_fn,
+            args=(nnodes, nproc_per_node),
+            nproc_per_node=nproc_per_node,
+            nnodes=nnodes,
+            node_rank=node_rank,
+            master_addr=master_addr,
+            master_port=master_port
+        )
+<
+    3. Launch single node multi-TPU training (for example on Google Colab)
+       using PyTorch/XLA
+
+    >python
+        # >>> python main.py
+
+        # main.py
+
+        import ignite.distributed as idist
+
+        def train_fn(local_rank, a, b, c, d=12):
+            import torch_xla.core.xla_model as xm
+            assert xm.get_world_size() == 8
+
+            device = idist.device()
+            assert "xla" in device.type
+
+
+        idist.spawn("xla-tpu", train_fn, args=(a, b, c), kwargs_dict={"d": 23}, nproc_per_node=8)
+<
+      Changed in version 0.4.2: ~
+
+      `backend` now accepts horovod distributed framework.
+
+ignite.distributed.utils.sync(temporary=False)
+    *ignite.distributed.utils.sync*
+    Helper method to force this module to synchronize with current
+    distributed context. This method should be used when distributed context
+    is manually created or destroyed.
+
+    Parameters: ~
+        temporary (bool) -- If True, distributed model synchronization is
+        done every call of `idist.get_*` methods. This may have a negative
+        performance impact.
+
+    Return type: ~
+        None
+
+----------------------------------------------------------------------------
+ignite.engine                                                  *ignite-engine*
+
+Main module of the library containing:
+
+IGNITE.ENGINE.ENGINE                             *engine-ignite-engine-engine*
+
+Engine  Runs a given process_function over each batch of a dataset, emitting
+        events as it goes.
+
+IGNITE.ENGINE.EVENTS                             *engine-ignite-engine-events*
+
+CallableEventWithFilter  Single Event containing a filter, specifying whether
+                         the event should be run at the current event (if the
+                         event type is correct)
+EventEnum                Base class for all Events.
+Events                   Events that are fired by the Engine during execution.
+EventsList               Collection of events stacked by operator __or__.
+State                    An object that is used to pass internal and
+                         user-defined state between event handlers.
+RemovableEventHandle     A weakref handle to remove a registered event.
+
+IGNITE.ENGINE.DETERMINISTIC               *engine-ignite-engine-deterministic*
+
+Helper methods for deterministic training
+
+DeterministicEngine       Deterministic engine derived from Engine.
+ReproducibleBatchSampler  Reproducible batch sampler.
+keep_random_state         Helper decorator to keep random state of torch,
+                          numpy and random intact while executing a function.
+update_dataloader         Helper function to replace current batch sampler of
+                          the dataloader by a new batch sampler.
+
+            *engine-helper-methods-to-define-supervised-trainer-and-evaluator*
+HELPER METHODS TO DEFINE SUPERVISED TRAINER AND EVALUATOR
+
+create_supervised_trainer       Factory function for creating a trainer for
+                                supervised models.
+create_supervised_evaluator     Factory function for creating an evaluator for
+                                supervised models.
+supervised_training_step        Factory function for supervised training.
+supervised_training_step_amp    Factory function for supervised training using
+                                torch.amp.
+supervised_training_step_apex   Factory function for supervised training using
+                                apex.
+supervised_training_step_tpu    Factory function for supervised training using
+                                torch_xla.
+supervised_evaluation_step      Factory function for supervised evaluation.
+supervised_evaluation_step_amp  Factory function for supervised evaluation
+                                using torch.cuda.amp.
+
+RESUMING THE TRAINING                           *engine-resuming-the-training*
+
+It is possible to resume the training from a checkpoint and approximately
+reproduce original run's behaviour. Using Ignite, this can be easily done
+using |ignite.handlers.Checkpoint| handler. Engine provides two methods to
+serialize and deserialize its internal state
+|ignite.engine.engine.Engine.state_dict| and
+|ignite.engine.engine.Engine.load_state_dict|. In addition to serializing
+model, optimizer, lr scheduler, metrics, etc., user can store the trainer
+and then resume the training. For example:
+
+>python
+    from ignite.engine import Engine, Events
+    from ignite.handlers import Checkpoint, DiskSaver
+
+    trainer = ...
+    model = ...
+    optimizer = ...
+    lr_scheduler = ...
+    data_loader = ...
+    metric = ...
+
+    to_save = {'trainer': trainer, 'model': model, 'optimizer': optimizer, 'lr_scheduler': lr_scheduler, 'metric': metric}
+    handler = Checkpoint(to_save, DiskSaver('/tmp/training', create_dir=True))
+    trainer.add_event_handler(Events.EPOCH_COMPLETED, handler)
+    trainer.run(data_loader, max_epochs=100)
+<
+>bash
+    ls /tmp/training
+    > "checkpoint_50000.pt"
+<
+We can then restore the training from the last checkpoint.
+
+>python
+    from ignite.handlers import Checkpoint
+
+    trainer = ...
+    model = ...
+    optimizer = ...
+    lr_scheduler = ...
+    data_loader = ...
+    metric = ...
+
+    to_load = {'trainer': trainer, 'model': model, 'optimizer': optimizer, 'lr_scheduler': lr_scheduler, 'metric': metric}
+    checkpoint = torch.load(checkpoint_file)
+    Checkpoint.load_objects(to_load=to_load, checkpoint=checkpoint)
+
+    trainer.run(train_loader, max_epochs=100)
+<
+It is also possible to store checkpoints every N iterations and continue the
+training from one of these checkpoints, i.e from iteration.
+
+Complete examples that resumes the training from a checkpoint can be found
+here:
+
+- save/resume MNIST
+  https://github.com/pytorch/ignite/tree/master/examples/mnist#training-save--resume
+- save/resume Distributed CIFAR10
+  https://github.com/pytorch/ignite/tree/master/examples/cifar10#check-resume-training
+
+DETERMINISTIC TRAINING                         *engine-deterministic-training*
+
+In general, it is rather difficult task to achieve deterministic and
+reproducible trainings as it relies on multiple aspects, e.g. data version,
+code version, software environment, hardware etc. According to
+PyTorch note on randomness
+https://pytorch.org/docs/stable/notes/randomness.html: there are some steps
+to take in order to make computations deterministic on your specific problem
+on one specific platform and PyTorch release:
+
+- setup random state seed
+- set cudnn to deterministic
+  https://pytorch.org/docs/stable/notes/randomness.html#cuda-convolution-benchmarking
+  if applicable
+
+By default, these two options can be enough to run and rerun experiments in
+a deterministic way. Ignite's engine does not impact this behaviour.
+
+In this module we provide helper methods and classes to make additional
+“|engine-dataflow-synchronization|” to ensure that model sees the same data
+for a given epoch:
+
+- |ignite.engine.deterministic.DeterministicEngine|
+- |ignite.engine.deterministic.ReproducibleBatchSampler|
+
+DATAFLOW SYNCHRONIZATION                     *engine-dataflow-synchronization*
+
+Ignite provides an option to control the dataflow by synchronizing random
+state on epochs. In this way, for a given iteration/epoch the dataflow can
+be the same for a given seed. More precisely it is roughly looks like:
+
+>python
+    for e in range(num_epochs):
+        set_seed(seed + e)
+        do_single_epoch_iterations(dataloader)
+<
+In addition, if data provider is `torch.utils.data.DataLoader`, batch data
+indices can be made completely deterministic. Here is a trivial example of
+usage:
+
+>python
+    import torch
+    from torch.utils.data import DataLoader
+    from ignite.engine import DeterministicEngine, Events
+    from ignite.utils import manual_seed
+
+
+    def random_train_data_loader(size):
+        data = torch.arange(0, size)
+        return DataLoader(data, batch_size=4, shuffle=True)
+
+
+    def print_train_data(engine, batch):
+        i = engine.state.iteration
+        e = engine.state.epoch
+        print("train", e, i, batch.tolist())
+
+    trainer = DeterministicEngine(print_train_data)
+
+    print("Original Run")
+    manual_seed(56)
+    trainer.run(random_train_data_loader(40), max_epochs=2, epoch_length=5)
+
+    print("Resumed Run")
+    # Resume from 2nd epoch
+    trainer.load_state_dict({"epoch": 1, "epoch_length": 5, "max_epochs": 2, "rng_states": None})
+    manual_seed(56)
+    trainer.run(random_train_data_loader(40))
+<
+>text
+    Original Run
+    train 1 1 [31, 13, 3, 4]
+    train 1 2 [23, 18, 6, 16]
+    train 1 3 [10, 8, 33, 36]
+    train 1 4 [1, 37, 19, 9]
+    train 1 5 [20, 30, 14, 26]
+    train 2 6 [29, 35, 38, 34]
+    train 2 7 [7, 22, 12, 17]
+    train 2 8 [25, 21, 24, 15]
+    train 2 9 [39, 5, 2, 28]
+    train 2 10 [27, 11, 32, 0]
+    Resumed Run
+    train 2 6 [29, 35, 38, 34]
+    train 2 7 [7, 22, 12, 17]
+    train 2 8 [25, 21, 24, 15]
+    train 2 9 [39, 5, 2, 28]
+    train 2 10 [27, 11, 32, 0]
+<
+We can see that the data samples are exactly the same between original and
+resumed runs.
+
+Complete examples that simulates a crash on a defined iteration and resumes
+the training from a checkpoint can be found here:
+
+- save/resume MNIST
+  https://github.com/pytorch/ignite/tree/master/examples/mnist#training-save--resume
+- save/resume Distributed CIFAR10
+  https://github.com/pytorch/ignite/tree/master/examples/cifar10#check-resume-training
+
+  Note: ~
+
+  In case when input data is torch.utils.data.DataLoader, previous batches
+  are skipped and the first provided batch corresponds to the batch after
+  the checkpoint iteration. Internally, while resuming, previous datapoint
+  indices are just skipped without fetching the data.
+
+  Warning: ~
+
+  However, while resuming from iteration, random data augmentations are not
+  synchronized in the middle of the epoch and thus batches remaining until
+  the end of the epoch can be different of those from the initial run.
+
+  Warning: ~
+
+  However, please, keep in mind that there can be an issue with dataflow
+  synchronization on every epoch if user's handler synchronizes the random
+  state, for example, by calling periodically `torch.manual_seed(seed)`
+  during the run. This can have an impact on the dataflow:
+
+  >python
+      def random_train_data_generator():
+          while True:
+              yield torch.randint(0, 100, size=(1, ))
+
+      trainer = DeterministicEngine(print_train_data)
+
+      @trainer.on(Events.ITERATION_COMPLETED(every=3))
+      def user_handler():
+          # handler synchronizes the random state
+          torch.manual_seed(12)
+          a = torch.rand(1)
+
+      trainer.run(random_train_data_generator(), max_epochs=3, epoch_length=5);
+<
+  >text
+      train 1 1 [32]
+      train 1 2 [29]
+      train 1 3 [40]
+      train 1 4 [3]  <---
+      train 1 5 [22]
+      train 2 6 [77]
+      train 2 7 [3]  <---
+      train 2 8 [22]
+      train 2 9 [77]
+      train 2 10 [3] <---
+      train 3 11 [22]
+      train 3 12 [77]
+      train 3 13 [3] <---
+      train 3 14 [22]
+      train 3 15 [77]
+<
+  Initially, the function `random_train_data_generator()` generates randomly
+  data batches using the random state set up by `trainer`. This is intended
+  behaviour until `user_handler()` is called. After `user_handler()`
+  execution, random state is altered and thus
+  `random_train_data_generator()` will produce random batches based on
+  altered random state.
+
+  We provide helper decorator
+  |ignite.engine.deterministic.keep_random_state| to save and restore random
+  states for torch, numpy and random. Therefore, we can deal with described
+  issue using this decorator:
+
+  >python
+      from ignite.engine.deterministic import keep_random_state
+
+      @trainer.on(Events.ITERATION_COMPLETED(every=3))
+      @keep_random_state
+      def user_handler():
+          # handler synchronizes the random state
+          torch.manual_seed(12)
+          a = torch.rand(1)
+<
+
+----------------------------------------------------------------------------
+ignite.exceptions                       *ignite.exceptions.NotComputableError*
+
+NotComputableError   Exception class to raise if Metric cannot be computed.
+
+class ignite.exceptions.NotComputableError
+    Exception class to raise if Metric cannot be computed.
+
+----------------------------------------------------------------------------
+ignite.handlers                                              *ignite-handlers*
+
+COMPLETE LIST OF GENERIC HANDLERS *handlers-complete-list-of-generic-handlers*
+
+Checkpoint                   Checkpoint handler can be used to periodically
+                             save and load objects which have attribute
+                             state_dict/load_state_dict.
+checkpoint.CheckpointEvents  Events fired by Checkpoint
+DiskSaver                    Handler that saves input checkpoint on a disk.
+ModelCheckpoint              ModelCheckpoint handler, inherits from
+                             Checkpoint, can be used to periodically save
+                             objects to disk only.
+EMAHandler                   Exponential moving average (EMA) handler can be
+                             used to compute a smoothed version of model.
+EarlyStopping                EarlyStopping handler can be used to stop the
+                             training if no improvement after a given number
+                             of events.
+FastaiLRFinder               Learning rate finder handler for supervised
+                             trainers.
+TerminateOnNan               TerminateOnNan handler can be used to stop the
+                             training if the process_function's output
+                             contains a NaN or infinite number or
+                             torch.tensor.
+TimeLimit                    TimeLimit handler can be used to control training
+                             time for computing environments where session
+                             time is limited.
+BasicTimeProfiler            BasicTimeProfiler can be used to profile the
+                             handlers, events, data loading and data
+                             processing times.
+HandlersTimeProfiler         HandlersTimeProfiler can be used to profile the
+                             handlers, data loading and data processing times.
+Timer                        Timer object can be used to measure (average)
+                             time between events.
+global_step_from_engine      Helper method to setup global_step_transform
+                             function using another engine.
+EpochOutputStore             EpochOutputStore handler to save output
+                             prediction and target history after every epoch,
+                             could be useful for e.g., visualization purposes.
+
+checkpoint.BaseSaveHandler            Base class for save handlers
+param_scheduler.ParamScheduler        An abstract class for updating an
+                                      optimizer's parameter value during
+                                      training.
+state_param_scheduler.StateParamScheduler  An abstract class for updating an engine
+                                      state parameter values during training.
+
+INTERFACES                                               *handlers-interfaces*
+
+ResettableHandler  Interface for handlers whose internal state can be reset.
+
+LOGGERS                                                     *handlers-loggers*
+
+base_logger             Base logger and its helper handlers.
+clearml_logger          ClearML logger and its helper handlers.
+mlflow_logger           MLflow logger and its helper handlers.
+neptune_logger          Neptune logger and its helper handlers.
+polyaxon_logger         Polyaxon logger and its helper handlers.
+tensorboard_logger      TensorBoard logger and its helper handlers.
+tqdm_logger             TQDM logger.
+visdom_logger           Visdom logger and its helper handlers.
+wandb_logger            WandB logger and its helper handlers.
+fbresearch_logger       FBResearch logger and its helper handlers.
+
+  See also: ~
+
+  Below are a comprehensive list of examples of various loggers.
+
+  - See tensorboardX mnist example
+    https://github.com/pytorch/ignite/blob/master/examples/mnist/mnist_with_tensorboard_logger.py
+    and CycleGAN and EfficientNet notebooks
+    https://github.com/pytorch/ignite/tree/master/examples/notebooks for
+    detailed usage.
+  - See visdom mnist example
+    https://github.com/pytorch/ignite/blob/master/examples/mnist/mnist_with_visdom_logger.py
+    for detailed usage.
+  - See neptune mnist example
+    https://github.com/pytorch/ignite/blob/master/examples/mnist/mnist_with_neptune_logger.py
+    for detailed usage.
+  - See tqdm mnist example
+    https://github.com/pytorch/ignite/blob/master/examples/mnist/mnist_with_tqdm_logger.py
+    for detailed usage.
+  - See wandb mnist example
+    https://github.com/pytorch/ignite/blob/master/examples/mnist/mnist_with_wandb_logger.py
+    for detailed usage.
+  - See clearml mnist example
+    https://github.com/pytorch/ignite/blob/master/examples/mnist/mnist_with_clearml_logger.py
+    for detailed usage.
+
+LOGGER SETUP HELPERS            *handlers-module-ignite.handlers.logger_utils*
+
+*handlers-param-scheduler-label*
+
+*handlers-logger-setup-helpers*
+
+setup_tb_logging       Method to setup TensorBoard logging on trainer and a
+                       list of evaluators.
+setup_visdom_logging   Method to setup Visdom logging on trainer and a list of
+                       evaluators.
+setup_mlflow_logging   Method to setup MLflow logging on trainer and a list of
+                       evaluators.
+setup_neptune_logging  Method to setup Neptune logging on trainer and a list
+                       of evaluators.
+setup_wandb_logging    Method to setup WandB logging on trainer and a list of
+                       evaluators.
+setup_plx_logging      Method to setup Polyaxon logging on trainer and a list
+                       of evaluators.
+setup_clearml_logging  Method to setup ClearML logging on trainer and a list
+                       of evaluators.
+setup_trains_logging   setup_trains_logging was renamed to
+                       setup_clearml_logging().
+
+PARAMETER SCHEDULER                             *handlers-parameter-scheduler*
+
+BaseParamScheduler               An abstract class for updating an engine
+                                 state or optimizer's parameter value during
+                                 training.
+BatchSizeScheduler               Scheduler to update the batch size of a
+                                 DataLoader's BatchSampler during training.
+ConcatScheduler                  Concat a list of parameter schedulers.
+CosineAnnealingScheduler         Anneals 'start_value' to 'end_value' over
+                                 each cycle.
+CyclicalScheduler                An abstract class for updating an optimizer's
+                                 parameter value over a cycle of some size.
+LRScheduler                      A wrapper class to call
+                                 torch.optim.lr_scheduler objects as ignite
+                                 handlers.
+LinearCyclicalScheduler          Linearly adjusts param value to 'end_value'
+                                 for a half-cycle, then linearly adjusts it
+                                 back to 'start_value' for a half-cycle.
+ParamGroupScheduler              Scheduler helper to group multiple schedulers
+                                 into one.
+ParamScheduler                   An abstract class for updating an optimizer's
+                                 parameter value during training.
+PiecewiseLinear                  Piecewise linear parameter scheduler
+ReduceLROnPlateauScheduler       Reduce LR when a metric stops improving.
+create_lr_scheduler_with_warmup  Helper method to create a learning rate
+                                 scheduler with a linear warm-up.
+
+STATE PARAMETER SCHEDULER                 *handlers-state-parameter-scheduler*
+
+StateParamScheduler            An abstract class for updating an engine state
+                               parameter values during training.
+LambdaStateScheduler           Update a parameter during training by using a
+                               user defined callable object.
+PiecewiseLinearStateScheduler  Piecewise linear state parameter scheduler.
+ExpStateScheduler              Update a parameter during training by using
+                               exponential function.
+StepStateScheduler             Update a parameter during training by using a
+                               step function.
+MultiStepStateScheduler        Update a parameter during training by using a
+                               multi step function.
+
+MORE ON PARAMETER SCHEDULING           *handlers-more-on-parameter-scheduling*
+
+In this section there are visual examples of various parameter schedulings
+that can be achieved.
+
+                              *handlers-example-with-cosineannealingscheduler*
+Example with CosineAnnealingScheduler
+
+>python
+    import numpy as np
+    import matplotlib.pylab as plt
+    from ignite.handlers import CosineAnnealingScheduler
+
+    lr_values_1 = np.array(CosineAnnealingScheduler.simulate_values(num_events=75, param_name='lr',
+                                                                start_value=1e-1, end_value=2e-2, cycle_size=20))
+
+    lr_values_2 = np.array(CosineAnnealingScheduler.simulate_values(num_events=75, param_name='lr',
+                                                                    start_value=1e-1, end_value=2e-2, cycle_size=20, cycle_mult=1.3))
+
+    lr_values_3 = np.array(CosineAnnealingScheduler.simulate_values(num_events=75, param_name='lr',
+                                                                    start_value=1e-1, end_value=2e-2,
+                                                                    cycle_size=20, start_value_mult=0.7))
+
+    lr_values_4 = np.array(CosineAnnealingScheduler.simulate_values(num_events=75, param_name='lr',
+                                                                    start_value=1e-1, end_value=2e-2,
+                                                                    cycle_size=20, end_value_mult=0.1))
+
+
+    plt.figure(figsize=(25, 5))
+
+    plt.subplot(141)
+    plt.title("Cosine annealing")
+    plt.plot(lr_values_1[:, 0], lr_values_1[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+    plt.ylim([0.0, 0.12])
+
+    plt.subplot(142)
+    plt.title("Cosine annealing with cycle_mult=1.3")
+    plt.plot(lr_values_2[:, 0], lr_values_2[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+    plt.ylim([0.0, 0.12])
+
+    plt.subplot(143)
+    plt.title("Cosine annealing with start_value_mult=0.7")
+    plt.plot(lr_values_3[:, 0], lr_values_3[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+    plt.ylim([0.0, 0.12])
+
+    plt.subplot(144)
+    plt.title("Cosine annealing with end_value_mult=0.1")
+    plt.plot(lr_values_4[:, 0], lr_values_4[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+    plt.ylim([0.0, 0.12])
+<
+
+*handlers-example-with-ignite-handlers-param-scheduler-linearcyclicalscheduler*
+Example with ignite.handlers.param_scheduler.LinearCyclicalScheduler
+
+>python
+    import numpy as np
+    import matplotlib.pylab as plt
+    from ignite.handlers import LinearCyclicalScheduler
+
+    lr_values_1 = np.array(LinearCyclicalScheduler.simulate_values(num_events=75, param_name='lr',
+                                                                    start_value=1e-1, end_value=2e-2, cycle_size=20))
+
+    lr_values_2 = np.array(LinearCyclicalScheduler.simulate_values(num_events=75, param_name='lr',
+                                                                    start_value=1e-1, end_value=2e-2, cycle_size=20, cycle_mult=1.3))
+
+    lr_values_3 = np.array(LinearCyclicalScheduler.simulate_values(num_events=75, param_name='lr',
+                                                                    start_value=1e-1, end_value=2e-2,
+                                                                    cycle_size=20, start_value_mult=0.7))
+
+    lr_values_4 = np.array(LinearCyclicalScheduler.simulate_values(num_events=75, param_name='lr',
+                                                                    start_value=1e-1, end_value=2e-2,
+                                                                    cycle_size=20, end_value_mult=0.1))
+
+
+    plt.figure(figsize=(25, 5))
+
+    plt.subplot(141)
+    plt.title("Linear cyclical scheduler")
+    plt.plot(lr_values_1[:, 0], lr_values_1[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+    plt.ylim([0.0, 0.12])
+
+    plt.subplot(142)
+    plt.title("Linear cyclical scheduler with cycle_mult=1.3")
+    plt.plot(lr_values_2[:, 0], lr_values_2[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+    plt.ylim([0.0, 0.12])
+
+    plt.subplot(143)
+    plt.title("Linear cyclical scheduler with start_value_mult=0.7")
+    plt.plot(lr_values_3[:, 0], lr_values_3[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+    plt.ylim([0.0, 0.12])
+
+    plt.subplot(144)
+    plt.title("Linear cyclical scheduler with end_value_mult=0.1")
+    plt.plot(lr_values_4[:, 0], lr_values_4[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+    plt.ylim([0.0, 0.12])
+<
+
+       *handlers-example-with-ignite-handlers-param-scheduler-concatscheduler*
+Example with ignite.handlers.param_scheduler.ConcatScheduler
+
+>python
+    import numpy as np
+    import matplotlib.pylab as plt
+    from ignite.handlers import LinearCyclicalScheduler, CosineAnnealingScheduler, ConcatScheduler
+
+    import torch
+
+    t1 = torch.zeros([1], requires_grad=True)
+    optimizer = torch.optim.SGD([t1], lr=0.1)
+
+
+    scheduler_1 = LinearCyclicalScheduler(optimizer, "lr", start_value=0.1, end_value=0.5, cycle_size=30)
+    scheduler_2 = CosineAnnealingScheduler(optimizer, "lr", start_value=0.5, end_value=0.01, cycle_size=50)
+    durations = [15, ]
+
+    lr_values_1 = np.array(ConcatScheduler.simulate_values(num_events=100, schedulers=[scheduler_1, scheduler_2], durations=durations))
+
+
+    t1 = torch.zeros([1], requires_grad=True)
+    optimizer = torch.optim.SGD([t1], lr=0.1)
+
+    scheduler_1 = LinearCyclicalScheduler(optimizer, "lr", start_value=0.1, end_value=0.5, cycle_size=30)
+    scheduler_2 = CosineAnnealingScheduler(optimizer, "momentum", start_value=0.5, end_value=0.01, cycle_size=50)
+    durations = [15, ]
+
+    lr_values_2 = np.array(ConcatScheduler.simulate_values(num_events=100, schedulers=[scheduler_1, scheduler_2], durations=durations,
+                                                            param_names=["lr", "momentum"]))
+
+    plt.figure(figsize=(25, 5))
+
+    plt.subplot(131)
+    plt.title("Concat scheduler of linear + cosine annealing")
+    plt.plot(lr_values_1[:, 0], lr_values_1[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+
+    plt.subplot(132)
+    plt.title("Concat scheduler of linear LR scheduler\n and cosine annealing on momentum")
+    plt.plot(lr_values_2[:, 0], lr_values_2[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+
+    plt.subplot(133)
+    plt.title("Concat scheduler of linear LR scheduler\n and cosine annealing on momentum")
+    plt.plot(lr_values_2[:, 0], lr_values_2[:, 2], label="momentum")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+<
+
+Piecewise linear scheduler               *handlers-piecewise-linear-scheduler*
+
+>python
+    import numpy as np
+    import matplotlib.pylab as plt
+    from ignite.handlers import LinearCyclicalScheduler, ConcatScheduler
+
+    scheduler_1 = LinearCyclicalScheduler(optimizer, "lr", start_value=0.0, end_value=0.6, cycle_size=50)
+    scheduler_2 = LinearCyclicalScheduler(optimizer, "lr", start_value=0.6, end_value=0.0, cycle_size=150)
+    durations = [25, ]
+
+    lr_values = np.array(ConcatScheduler.simulate_values(num_events=100, schedulers=[scheduler_1, scheduler_2], durations=durations))
+
+
+    plt.title("Piecewise linear scheduler")
+    plt.plot(lr_values[:, 0], lr_values[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+<
+
+           *handlers-example-with-ignite-handlers-param-scheduler-lrscheduler*
+Example with ignite.handlers.param_scheduler.LRScheduler
+
+>python
+    import numpy as np
+    import matplotlib.pylab as plt
+    from ignite.handlers import LRScheduler
+
+    import torch
+    from torch.optim.lr_scheduler import ExponentialLR, StepLR, CosineAnnealingLR
+
+    tensor = torch.zeros([1], requires_grad=True)
+    optimizer = torch.optim.SGD([tensor], lr=0.1)
+
+    lr_scheduler_1 = StepLR(optimizer=optimizer, step_size=10, gamma=0.77)
+    lr_scheduler_2 = ExponentialLR(optimizer=optimizer, gamma=0.98)
+    lr_scheduler_3 = CosineAnnealingLR(optimizer=optimizer, T_max=10, eta_min=0.01)
+
+    lr_values_1 = np.array(LRScheduler.simulate_values(num_events=100, lr_scheduler=lr_scheduler_1))
+    lr_values_2 = np.array(LRScheduler.simulate_values(num_events=100, lr_scheduler=lr_scheduler_2))
+    lr_values_3 = np.array(LRScheduler.simulate_values(num_events=100, lr_scheduler=lr_scheduler_3))
+
+
+    plt.figure(figsize=(25, 5))
+
+    plt.subplot(131)
+    plt.title("Torch LR scheduler wrapping StepLR")
+    plt.plot(lr_values_1[:, 0], lr_values_1[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+
+    plt.subplot(132)
+    plt.title("Torch LR scheduler wrapping ExponentialLR")
+    plt.plot(lr_values_2[:, 0], lr_values_2[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+
+    plt.subplot(133)
+    plt.title("Torch LR scheduler wrapping CosineAnnealingLR")
+    plt.plot(lr_values_3[:, 0], lr_values_3[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+<
+
+Concatenate with torch schedulers *handlers-concatenate-with-torch-schedulers*
+
+>python
+    import numpy as np
+    import matplotlib.pylab as plt
+    from ignite.handlers import LRScheduler, ConcatScheduler
+
+    import torch
+    from torch.optim.lr_scheduler import ExponentialLR, StepLR
+
+    t1 = torch.zeros([1], requires_grad=True)
+    optimizer = torch.optim.SGD([t1], lr=0.1)
+
+    scheduler_1 = LinearCyclicalScheduler(optimizer, "lr", start_value=0.001, end_value=0.1, cycle_size=30)
+    lr_scheduler = ExponentialLR(optimizer=optimizer, gamma=0.7)
+    scheduler_2 = LRScheduler(lr_scheduler=lr_scheduler)
+    durations = [15, ]
+    lr_values_1 = np.array(ConcatScheduler.simulate_values(num_events=30, schedulers=[scheduler_1, scheduler_2], durations=durations))
+
+
+    scheduler_1 = LinearCyclicalScheduler(optimizer, "lr", start_value=0.001, end_value=0.1, cycle_size=30)
+    lr_scheduler = StepLR(optimizer=optimizer, step_size=10, gamma=0.7)
+    scheduler_2 = LRScheduler(lr_scheduler=lr_scheduler)
+    durations = [15, ]
+    lr_values_2 = np.array(ConcatScheduler.simulate_values(num_events=75, schedulers=[scheduler_1, scheduler_2], durations=durations))
+
+    plt.figure(figsize=(15, 5))
+    plt.subplot(121)
+    plt.title("Concat scheduler of linear + ExponentialLR")
+    plt.plot(lr_values_1[:, 0], lr_values_1[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+
+    plt.subplot(122)
+    plt.title("Concat scheduler of linear + StepLR")
+    plt.plot(lr_values_2[:, 0], lr_values_2[:, 1], label="learning rate")
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+<
+
+*handlers-example-with-ignite-handlers-param-scheduler-reducelronplateauscheduler*
+Example with ignite.handlers.param_scheduler.ReduceLROnPlateauScheduler
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from ignite.handlers import ReduceLROnPlateauScheduler
+
+    metric_values = [0.7, 0.78, 0.81, 0.82, 0.82, 0.83, 0.80, 0.81, 0.84, 0.78]
+    num_events = 10
+    init_lr = 0.1
+
+    lr_values = np.array(ReduceLROnPlateauScheduler.simulate_values(
+        num_events, metric_values, init_lr,
+        factor=0.5, patience=1, mode='max', threshold=0.01, threshold_mode='abs'
+        )
+    )
+
+    plt.figure(figsize=(15, 5))
+    plt.suptitle("ReduceLROnPlateauScheduler")
+    plt.subplot(121)
+    plt.plot(lr_values[:, 1], label="learning rate")
+    plt.xticks(lr_values[:, 0])
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+
+    plt.subplot(122)
+    plt.plot(metric_values, label="metric")
+    plt.xticks(lr_values[:, 0])
+    plt.xlabel("events")
+    plt.ylabel("values")
+    plt.legend()
+<
+
+----------------------------------------------------------------------------
+Ignite Your Networks!                                           *ignite-index*
+
+PyTorch-Ignite is a high-level library to help with training and evaluating
+neural networks in PyTorch flexibly and transparently.
+
+All our documentation moved to pytorch-ignite.ai
+https://pytorch-ignite.ai/tutorials/beginner/01-getting-started/
+
+----------------------------------------------------------------------------
+ignite.metrics                             *ignite.metrics.metric.MetricUsage*
+
+Metrics provide a way to compute various quantities of interest in an online
+fashion without having to store the entire output history of a model.
+
+ATTACH ENGINE API                                  *metrics-attach-engine-api*
+
+*metrics-attach-engine*
+
+The metrics as stated above are computed in a online fashion, which means
+that the metric instance accumulates some internal counters on each
+iteration and metric value is computed once the epoch is ended. Internal
+counters are reset after every epoch. In practice, this is done with the
+help of three methods: |ignite.metrics.Metric.reset|,
+|ignite.metrics.Metric.update| and |ignite.metrics.Metric.compute|.
+
+Therefore, a user needs to attach the metric instance to the engine so that
+the above three methods can be triggered on execution of certain
+|ignite.engine.events.Events|. The |ignite.metrics.Metric.reset| method is
+triggered on `EPOCH_STARTED` event and it is responsible to reset the metric
+to its initial state. The |ignite.metrics.Metric.update| method is triggered
+on `ITERATION_COMPLETED` event as it updates the state of the metric using
+the passed batch output. And |ignite.metrics.Metric.compute| is triggered on
+`EPOCH_COMPLETED` event. It computes the metric based on its accumulated
+states. The metric value is computed using the output of the engine's
+`process_function`:
+
+>python
+    from ignite.engine import Engine
+    from ignite.metrics import Accuracy
+
+    def process_function(engine, batch):
+        # ...
+        return y_pred, y
+
+    engine = Engine(process_function)
+    metric = Accuracy()
+    metric.attach(engine, "accuracy")
+    # ...
+    state = engine.run(data)
+    print(f"Accuracy: {state.metrics['accuracy']}")
+<
+If the engine's output is not in the format `(y_pred, y)` or
+`{'y_pred': y_pred, 'y': y, ...}`, the user can use the `output_transform`
+argument to transform it:
+
+>python
+    from ignite.engine import Engine
+    from ignite.metrics import Accuracy
+
+    def process_function(engine, batch):
+        # ...
+        return {'y_pred': y_pred, 'y_true': y, ...}
+
+    engine = Engine(process_function)
+
+    def output_transform(output):
+        # `output` variable is returned by above `process_function`
+        y_pred = output['y_pred']
+        y = output['y_true']
+        return y_pred, y  # output format is according to `Accuracy` docs
+
+    metric = Accuracy(output_transform=output_transform)
+    metric.attach(engine, "accuracy")
+    # ...
+    state = engine.run(data)
+    print(f"Accuracy: {state.metrics['accuracy']}")
+<
+  Warning: ~
+
+  Please, be careful when using `lambda` functions to setup multiple
+  `output_transform` for multiple metrics
+
+  >python
+      # Wrong
+      # metrics_group = [Accuracy(output_transform=lambda output: output[name]) for name in names]
+      # As lambda can not store `name` and all `output_transform` will use the last `name`
+
+      # A correct way. For example, using functools.partial
+      from functools import partial
+
+      def ot_func(output, name):
+          return output[name]
+
+      metrics_group = [Accuracy(output_transform=partial(ot_func, name=name)) for name in names]
+<
+  For more details, see here
+  https://discuss.pytorch.org/t/evaluate-multiple-models-with-one-evaluator-results-weird-metrics/96695
+
+  Note: ~
+
+  Most of implemented metrics are adapted to distributed computations and
+  reduce their internal states across supported devices before computing
+  metric value. This can be helpful to run the evaluation on multiple
+  nodes/GPU instances/TPUs with a distributed data sampler. Following code
+  snippet shows in detail how to use metrics:
+
+  >python
+      device = f"cuda:{local_rank}"
+      model = torch.nn.parallel.DistributedDataParallel(model,
+                                                        device_ids=[local_rank, ],
+                                                        output_device=local_rank)
+      test_sampler = DistributedSampler(test_dataset)
+      test_loader = DataLoader(
+          test_dataset,
+          batch_size=batch_size,
+          sampler=test_sampler,
+          num_workers=num_workers,
+          pin_memory=True
+      )
+
+      evaluator = create_supervised_evaluator(model, metrics={'accuracy': Accuracy()}, device=device)
+<
+
+  Note: ~
+
+  Metrics cannot be serialized using pickle module because the
+  implementation is based on lambda functions. Therefore, use the third
+  party library dill to overcome the limitation of pickle.
+
+RESET, UPDATE, COMPUTE API                  *metrics-reset-update-compute-api*
+
+User can also call directly the following methods on the metric:
+
+- |ignite.metrics.Metric.reset| : resets internal variables and accumulators
+- |ignite.metrics.Metric.update| : updates internal variables and
+  accumulators with provided batch output `(y_pred, y)`
+- |ignite.metrics.Metric.compute| : computes custom metric and return the
+  result
+
+This API gives a more fine-grained/custom usage on how to compute a metric.
+For example:
+
+>python
+    from ignite.metrics import Precision
+
+    # Define the metric
+    precision = Precision()
+
+    # Start accumulation:
+    for x, y in data:
+        y_pred = model(x)
+        precision.update((y_pred, y))
+
+    # Compute the result
+    print("Precision: ", precision.compute())
+
+    # Reset metric
+    precision.reset()
+
+    # Start new accumulation:
+    for x, y in data:
+        y_pred = model(x)
+        precision.update((y_pred, y))
+
+    # Compute new result
+    print("Precision: ", precision.compute())
+<
+
+METRIC ARITHMETICS                                *metrics-metric-arithmetics*
+
+Metrics could be combined together to form new metrics. This could be done
+through arithmetics, such as `metric1 + metric2`, use PyTorch operators,
+such as `(metric1 + metric2).pow(2).mean()`, or use a lambda function, such
+as `MetricsLambda(lambda a, b: torch.mean(a + b), metric1, metric2)`.
+
+For example:
+
+>python
+    from ignite.metrics import Precision, Recall
+
+    precision = Precision(average=False)
+    recall = Recall(average=False)
+    F1 = (precision * recall * 2 / (precision + recall)).mean()
+<
+  Note: ~
+
+  This example computes the mean of F1 across classes. To combine precision
+  and recall to get F1 or other F metrics, we have to be careful that
+  `average=False`, i.e. to use the unaveraged precision and recall,
+  otherwise we will not be computing F-beta metrics.
+
+Metrics also support indexing operation (if metric's result is a
+vector/matrix/tensor). For example, this can be useful to compute mean
+metric (e.g. precision, recall or IoU) ignoring the background:
+
+>python
+    from ignite.metrics import ConfusionMatrix
+
+    cm = ConfusionMatrix(num_classes=10)
+    iou_metric = IoU(cm)
+    iou_no_bg_metric = iou_metric[:9]  # We assume that the background index is 9
+    mean_iou_no_bg_metric = iou_no_bg_metric.mean()
+    # mean_iou_no_bg_metric.compute() -> tensor(0.12345)
+<
+
+HOW TO CREATE A CUSTOM METRIC          *metrics-how-to-create-a-custom-metric*
+
+To create a custom metric one needs to create a new class inheriting from
+|ignite.metrics.Metric| and override three methods :
+
+- |ignite.metrics.Metric.reset| : resets internal variables and accumulators
+- |ignite.metrics.Metric.update| : updates internal variables and
+  accumulators with provided batch output `(y_pred, y)`
+- |ignite.metrics.Metric.compute| : computes custom metric and return the
+  result
+
+For example, we would like to implement for illustration purposes a
+multi-class accuracy metric with some specific condition (e.g. ignore
+user-defined classes):
+
+>python
+    from ignite.metrics import Metric
+    from ignite.exceptions import NotComputableError
+
+    # These decorators helps with distributed settings
+    from ignite.metrics.metric import sync_all_reduce, reinit__is_reduced
+
+
+    class CustomAccuracy(Metric):
+
+        def __init__(self, ignored_class, output_transform=lambda x: x, device="cpu"):
+            self.ignored_class = ignored_class
+            self._num_correct = None
+            self._num_examples = None
+            super().__init__(output_transform=output_transform, device=device)
+
+        @reinit__is_reduced
+        def reset(self):
+            self._num_correct = torch.tensor(0, device=self._device)
+            self._num_examples = 0
+            super(CustomAccuracy, self).reset()
+
+        @reinit__is_reduced
+        def update(self, output):
+            y_pred, y = output[0].detach(), output[1].detach()
+
+            indices = torch.argmax(y_pred, dim=1)
+
+            mask = (y != self.ignored_class)
+            mask &= (indices != self.ignored_class)
+            y = y[mask]
+            indices = indices[mask]
+            correct = torch.eq(indices, y).view(-1)
+
+            self._num_correct += torch.sum(correct).to(self._device)
+            self._num_examples += correct.shape[0]
+
+        @sync_all_reduce("_num_examples", "_num_correct:SUM")
+        def compute(self):
+            if self._num_examples == 0:
+                raise NotComputableError('CustomAccuracy must have at least one example before it can be computed.')
+            return self._num_correct.item() / self._num_examples
+<
+We imported necessary classes as |ignite.metrics.Metric|,
+|ignite.exceptions.NotComputableError| and decorators to adapt the metric
+for distributed setting. In `reset` method, we reset internal variables
+`_num_correct` and `_num_examples` which are used to compute the custom
+metric. In `updated` method we define how to update the internal variables.
+And finally in `compute` method, we compute metric value.
+
+Notice that `_num_correct` is a tensor, since in `update` we accumulate
+tensor values. `_num_examples` is a python scalar since we accumulate normal
+integers. For differentiable metrics, you must detach the accumulated values
+before adding them to the internal variables.
+
+We can check this implementation in a simple case:
+
+>python
+    import torch
+    torch.manual_seed(8)
+
+    m = CustomAccuracy(ignored_class=3)
+
+    batch_size = 4
+    num_classes = 5
+
+    y_pred = torch.rand(batch_size, num_classes)
+    y = torch.randint(0, num_classes, size=(batch_size, ))
+
+    m.update((y_pred, y))
+    res = m.compute()
+
+    print(y, torch.argmax(y_pred, dim=1))
+    # Out: tensor([2, 2, 2, 3]) tensor([2, 1, 0, 0])
+
+    print(m._num_correct, m._num_examples, res)
+    # Out: 1 3 0.3333333333333333
+<
+
+METRICS AND ITS USAGES                                *metrics-and-its-usages*
+
+By default, Metrics are epoch-wise, it means
+
+- |ignite.metrics.Metric.reset| is triggered every `EPOCH_STARTED` (See
+  |ignite.engine.events.Events|).
+- |ignite.metrics.Metric.update| is triggered every `ITERATION_COMPLETED`.
+- |ignite.metrics.Metric.compute| is triggered every `EPOCH_COMPLETED`.
+
+Usages can be user defined by creating a class inheriting from
+|ignite.metrics.metric.MetricUsage|. See the list below of usages.
+
+Complete list of usages                      *metrics-complete-list-of-usages*
+
+  - |ignite.metrics.metric.MetricUsage|
+  - |ignite.metrics.metric.EpochWise|
+  - |ignite.metrics.metric.RunningEpochWise|
+  - |ignite.metrics.metric.BatchWise|
+  - |ignite.metrics.metric.RunningBatchWise|
+  - |ignite.metrics.metric.SingleEpochRunningBatchWise|
+  - |ignite.metrics.metric.BatchFiltered|
+
+METRICS AND DISTRIBUTED COMPUTATIONS    *metrics-and-distributed-computations*
+
+In the above example, `CustomAccuracy` has `reset`, `update`, `compute`
+methods decorated with |ignite.metrics.metric.reinit__is_reduced|,
+|ignite.metrics.metric.sync_all_reduce|. The purpose of these features is to
+adapt metrics in distributed computations on supported backend and devices
+(see |ignite.distributed.utils.has_native_dist_support| for more details).
+More precisely, in the above example we added
+`@sync_all_reduce("_num_examples", "_num_correct:SUM")` over `compute`
+method. This means that when `compute` method is called, metric's interal
+variables `self._num_examples` and `self._num_correct:SUM` are summed up
+over all participating devices. We specify the reduction operation
+`self._num_correct:SUM` or we keep the default `self._num_examples` as the
+default is `SUM`. We currently support four reduction operations (SUM, MAX,
+MIN, PRODUCT). Therefore, once collected, these internal variables can be
+used to compute the final metric value.
+
+COMPLETE LIST OF METRICS                    *metrics-complete-list-of-metrics*
+
+Average                               Helper class to compute arithmetic
+                                      average of a single variable.
+GeometricAverage                      Helper class to compute geometric
+                                      average of a single variable.
+VariableAccumulation                  Single variable accumulator helper to
+                                      compute (arithmetic, geometric,
+                                      harmonic) average of a single variable.
+Accuracy                              Calculates the accuracy for binary,
+                                      multiclass and multilabel data.
+ConfusionMatrix                       Calculates confusion matrix for
+                                      multi-class data.
+ClassificationReport                  Build a text report showing the main
+                                      classification metrics.
+DiceCoefficient                       Calculates Dice Coefficient for a given
+                                      ConfusionMatrix metric.
+JaccardIndex                          Calculates the Jaccard Index using
+                                      ConfusionMatrix metric.
+IoU                                   Calculates Intersection over Union using
+                                      ConfusionMatrix metric.
+mIoU                                  Calculates mean Intersection over Union
+                                      using ConfusionMatrix metric.
+EpochMetric                           Class for metrics that should be
+                                      computed on the entire output history of
+                                      a model.
+Fbeta                                 Calculates F-beta score.
+Frequency                             Provides metrics for the number of
+                                      examples processed per second.
+Loss                                  Calculates the average loss according to
+                                      the passed loss_fn.
+MeanAbsoluteError                     Calculates the mean absolute error.
+MeanAveragePrecision                  Calculate the mean average precision
+                                      metric i.e. mean of the
+                                      averaged-over-recall precision for
+                                      classification task:.
+MeanPairwiseDistance                  Calculates the mean PairwiseDistance.
+MeanSquaredError                      Calculates the mean squared error.
+Metric                                Base class for all Metrics.
+MetricGroup                           A class for grouping metrics so that
+                                      user could manage them easier.
+MetricsLambda                         Apply a function to other metrics to
+                                      obtain a new metric.
+MultiLabelConfusionMatrix             Calculates a confusion matrix for
+                                      multi-labelled, multi-class data.
+MutualInformation                     Calculates the mutual information
+                                      between input X and prediction Y.
+ObjectDetectionAvgPrecisionRecall     Calculate mean average precision &
+                                      recall for evaluating an object detector
+                                      in the COCO way.
+CommonObjectDetectionMetrics          Common Object Detection metrics.
+coco_tensor_list_to_dict_list         Convert either of output's y_pred or y
+                                      from list of (N, 6) tensors to list of
+                                      str-to-tensor dictionaries, or keep them
+                                      unchanged if they're already in the
+                                      deisred format.
+Precision                             Calculates precision for binary,
+                                      multiclass and multilabel data.
+PSNR                                  Computes average Peak signal-to-noise
+                                      ratio (PSNR).
+Recall                                Calculates recall for binary, multiclass
+                                      and multilabel data.
+RootMeanSquaredError                  Calculates the root mean squared error.
+RunningAverage                        Compute running average of a metric or
+                                      the output of process function.
+SSIM                                  Computes Structural Similarity Index
+                                      Measure
+TopKCategoricalAccuracy               Calculates the top-k categorical
+                                      accuracy.
+Bleu                                  Calculates the BLEU score.
+Perplexity                            Calculates the Perplexity of a language
+                                      model.
+Rouge                                 Calculates the Rouge score for multiples
+                                      Rouge-N and Rouge-L metrics.
+RougeL                                Calculates the Rouge-L score.
+RougeN                                Calculates the Rouge-N score.
+CharacterErrorRate                    Calculates the Character Error Rate
+                                      (CER).
+InceptionScore                        Calculates Inception Score.
+FID                                   Calculates Frechet Inception Distance.
+CosineSimilarity                      Calculates the mean of the cosine
+                                      similarity.
+Entropy                               Calculates the mean of entropy.
+KLDivergence                          Calculates the mean of Kullback-Leibler
+                                      (KL) divergence.
+JSDivergence                          Calculates the mean of Jensen-Shannon
+                                      (JS) divergence.
+MatthewsCorrCoef                      Compute the Matthews correlation
+                                      coefficient (MCC).
+MaximumMeanDiscrepancy                Calculates the mean of maximum mean
+                                      discrepancy (MMD).
+HSIC                                  Calculates the Hilbert-Schmidt
+                                      Independence Criterion (HSIC).
+AveragePrecision                      Computes Average Precision accumulating
+                                      predictions and the ground-truth during
+                                      an epoch and applying
+                                      sklearn.metrics.average_precision_score
+                                      .
+CohenKappa                            Compute different types of Cohen's
+                                      Kappa: Non-Weighted, Linear, Quadratic.
+GpuInfo                               Provides GPU information: a) used memory
+                                      percentage, b) gpu utilization
+                                      percentage values as Metric on each
+                                      iterations.
+PrecisionRecallCurve                  Compute precision-recall pairs for
+                                      different probability thresholds for
+                                      binary classification task by
+                                      accumulating predictions and the
+                                      ground-truth during an epoch and
+                                      applying
+                                      sklearn.metrics.precision_recall_curve .
+RocCurve                              Compute Receiver operating
+                                      characteristic (ROC) for binary
+                                      classification task by accumulating
+                                      predictions and the ground-truth during
+                                      an epoch and applying
+                                      sklearn.metrics.roc_curve .
+ROC_AUC                               Computes Area Under the Receiver
+                                      Operating Characteristic Curve (ROC AUC)
+                                      accumulating predictions and the
+                                      ground-truth during an epoch and
+                                      applying sklearn.metrics.roc_auc_score .
+regression.CanberraMetric             Calculates the Canberra Metric.
+regression.FractionalAbsoluteError    Calculates the Fractional Absolute
+                                      Error.
+regression.FractionalBias             Calculates the Fractional Bias.
+regression.GeometricMeanAbsoluteError  Calculates the Geometric Mean Absolute
+                                      Error.
+regression.GeometricMeanRelativeAbsoluteError  Calculates the Geometric Mean Relative
+                                      Absolute Error.
+regression.ManhattanDistance          Calculates the Manhattan Distance.
+regression.MaximumAbsoluteError       Calculates the Maximum Absolute Error.
+regression.MeanAbsoluteRelativeError  Calculate Mean Absolute Relative Error
+                                      (MARE), also known as Mean Absolute
+                                      Percentage Error (MAPE).
+regression.MeanError                  Calculates the Mean Error.
+regression.MeanNormalizedBias         Calculates the Mean Normalized Bias.
+regression.MedianAbsoluteError        Calculates the Median Absolute Error.
+regression.MedianAbsolutePercentageError  Calculates the Median Absolute
+                                      Percentage Error.
+regression.MedianRelativeAbsoluteError  Calculates the Median Relative Absolute
+                                      Error.
+regression.PearsonCorrelation         Calculates the Pearson correlation
+                                      coefficient.
+regression.SpearmanRankCorrelation    Calculates the Spearman's rank
+                                      correlation coefficient.
+regression.KendallRankCorrelation     Calculates the Kendall rank correlation
+                                      coefficient.
+regression.R2Score                    Calculates the R-Squared, the
+                                      coefficient of determination.
+regression.WaveHedgesDistance         Calculates the Wave Hedges Distance.
+clustering.SilhouetteScore            Calculates the silhouette score.
+clustering.DaviesBouldinScore         Calculates the Davies-Bouldin score.
+clustering.CalinskiHarabaszScore      Calculates the Calinski-Harabasz score.
+fairness.SubgroupAccuracyDifference   Calculates the Subgroup Accuracy
+                                      Difference.
+fairness.DemographicParityDifference  Calculates the Demographic Parity
+                                      Difference.
+fairness.SelectionRate                Calculates the selection rate (rate of
+                                      positive predictions).
+fairness.SubgroupDifference           A wrapper metric that computes the
+                                      maximum difference between any two
+                                      subgroups' metric values.
+fairness.SubgroupMetric               A wrapper metric that computes a base
+                                      metric for each unique subgroup in the
+                                      dataset.
+rec_sys.HitRate                       Calculates the Hit Rate at k for
+                                      Recommendation Systems.
+rec_sys.NDCG                          Calculates the Normalized Discounted
+                                      Cumulative Gain (NDCG) at k for
+                                      Recommendation Systems.
+
+  Note: ~
+
+  Module ignite.metrics.regression provides implementations of metrics
+  useful for regression tasks. Definitions of metrics are based on
+  Botchkarev 2018 https://arxiv.org/abs/1809.03006, page 30 “Appendix 2.
+  Metrics mathematical definitions”.
+
+HELPERS FOR CUSTOMIZING METRICS      *metrics-helpers-for-customizing-metrics*
+
+MetricUsage                                              *metrics-metricusage*
+
+class ignite.metrics.metric.MetricUsage(started, completed,
+    iteration_completed)
+    Base class for all usages of metrics.
+
+    A usage of metric defines the events when a metric starts to compute,
+    updates and completes. Valid events are from
+    |ignite.engine.events.Events|.
+
+    Parameters: ~
+        - started (|ignite.engine.events.Events|) -- event when the metric
+          starts to compute. This event will be associated to
+          |ignite.metrics.Metric.started|.
+        - completed (|ignite.engine.events.Events|) -- event when the metric
+          completes. This event will be associated to
+          |ignite.metrics.Metric.completed|.
+        - iteration_completed
+          (|ignite.engine.events.CallableEventWithFilter|) -- event when the
+          metric updates. This event will be associated to
+          |ignite.metrics.Metric.iteration_completed|.
+
+EpochWise                                                  *metrics-epochwise*
+
+class ignite.metrics.metric.EpochWise *ignite.metrics.metric.EpochWise*
+    Epoch-wise usage of Metrics. It's the default and most common usage of
+    metrics.
+
+    Metric's methods are triggered on the following engine events:
+
+    - |ignite.metrics.Metric.started| on every `EPOCH_STARTED` (See
+      |ignite.engine.events.Events|).
+    - |ignite.metrics.Metric.iteration_completed| on every
+      `ITERATION_COMPLETED`.
+    - |ignite.metrics.Metric.completed| on every `EPOCH_COMPLETED`.
+
+usage_name *ignite.metrics.metric.EpochWise.usage_name*
+    usage name string
+
+    Type: ~
+        str
+
+RunningEpochWise                                    *metrics-runningepochwise*
+
+class ignite.metrics.metric.RunningEpochWise
+*ignite.metrics.metric.RunningEpochWise*
+    Running epoch-wise usage of Metrics. It's the running version of the
+    |ignite.metrics.metric.EpochWise| metric usage. A metric with such a
+    usage most likely accompanies an |ignite.metrics.metric.EpochWise| one
+    to compute a running measure of it e.g. running average.
+
+    Metric's methods are triggered on the following engine events:
+
+    - |ignite.metrics.Metric.started| on every `STARTED` (See
+      |ignite.engine.events.Events|).
+    - |ignite.metrics.Metric.iteration_completed| on every
+      `EPOCH_COMPLETED`.
+    - |ignite.metrics.Metric.completed| on every `EPOCH_COMPLETED`.
+
+usage_name *ignite.metrics.metric.RunningEpochWise.usage_name*
+    usage name string
+
+    Type: ~
+        str
+
+BatchWise                                                  *metrics-batchwise*
+
+class ignite.metrics.metric.BatchWise *ignite.metrics.metric.BatchWise*
+    Batch-wise usage of Metrics.
+
+    Metric's methods are triggered on the following engine events:
+
+    - |ignite.metrics.Metric.started| on every `ITERATION_STARTED` (See
+      |ignite.engine.events.Events|).
+    - |ignite.metrics.Metric.iteration_completed| on every
+      `ITERATION_COMPLETED`.
+    - |ignite.metrics.Metric.completed| on every `ITERATION_COMPLETED`.
+
+usage_name *ignite.metrics.metric.BatchWise.usage_name*
+    usage name string
+
+    Type: ~
+        str
+
+RunningBatchWise                                    *metrics-runningbatchwise*
+
+class ignite.metrics.metric.RunningBatchWise
+*ignite.metrics.metric.RunningBatchWise*
+    Running batch-wise usage of Metrics. It's the running version of the
+    |ignite.metrics.metric.EpochWise| metric usage. A metric with such a
+    usage could for example accompany a |ignite.metrics.metric.BatchWise|
+    one to compute a running measure of it e.g. running average.
+
+    Metric's methods are triggered on the following engine events:
+
+    - |ignite.metrics.Metric.started| on every `STARTED` (See
+      |ignite.engine.events.Events|).
+    - |ignite.metrics.Metric.iteration_completed| on every
+      `ITERATION_COMPLETED`.
+    - |ignite.metrics.Metric.completed| on every `ITERATION_COMPLETED`.
+
+usage_name *ignite.metrics.metric.RunningBatchWise.usage_name*
+    usage name string
+
+    Type: ~
+        str
+
+SingleEpochRunningBatchWise              *metrics-singleepochrunningbatchwise*
+
+class ignite.metrics.metric.SingleEpochRunningBatchWise
+*ignite.metrics.metric.SingleEpochRunningBatchWise*
+    Running batch-wise usage of Metrics in a single epoch. It's like
+    |ignite.metrics.metric.RunningBatchWise| metric usage with the
+    difference that is used during a single epoch.
+
+    Metric's methods are triggered on the following engine events:
+
+    - |ignite.metrics.Metric.started| on every `EPOCH_STARTED` (See
+      |ignite.engine.events.Events|).
+    - |ignite.metrics.Metric.iteration_completed| on every
+      `ITERATION_COMPLETED`.
+    - |ignite.metrics.Metric.completed| on every `ITERATION_COMPLETED`.
+
+usage_name *ignite.metrics.metric.SingleEpochRunningBatchWise.usage_name*
+    usage name string
+
+    Type: ~
+        str
+
+BatchFiltered                                          *metrics-batchfiltered*
+
+class ignite.metrics.metric.BatchFiltered(*args, **kwargs)
+    *ignite.metrics.metric.BatchFiltered*
+    Batch filtered usage of Metrics. This usage is similar to epoch-wise but
+    update event is filtered.
+
+    Metric's methods are triggered on the following engine events:
+
+    - |ignite.metrics.Metric.started| on every `EPOCH_STARTED` (See
+      |ignite.engine.events.Events|).
+    - |ignite.metrics.Metric.iteration_completed| on filtered
+      `ITERATION_COMPLETED`.
+    - |ignite.metrics.Metric.completed| on every `EPOCH_COMPLETED`.
+
+    Parameters: ~
+        - args (Any) -- Positional arguments to setup
+          |ignite.engine.events.Events.ITERATION_COMPLETED|
+        - kwargs (Any) -- Keyword arguments to setup
+          |ignite.engine.events.Events.ITERATION_COMPLETED| handled by
+          |ignite.metrics.Metric.iteration_completed|.
+
+reinit__is_reduced                                 *metrics-reinit-is-reduced*
+
+ignite.metrics.metric.reinit__is_reduced(func)
+    *ignite.metrics.metric.reinit__is_reduced*
+    Helper decorator for distributed configuration.
+
+    See |ignite.metrics.metric.MetricUsage| on how to use it.
+
+    Parameters: ~
+        func (Callable) -- A callable to reinit.
+
+    Return type: ~
+        Callable
+
+sync_all_reduce                                      *metrics-sync-all-reduce*
+
+ignite.metrics.metric.sync_all_reduce(*attrs)
+    *ignite.metrics.metric.sync_all_reduce*
+    Helper decorator for distributed configuration to collect instance
+    attribute value across all participating processes and apply the
+    specified reduction operation.
+
+    See |ignite.metrics.metric.MetricUsage| on how to use it.
+
+    Parameters: ~
+        attrs (Any) -- attribute names of decorated class
+
+    Return type: ~
+        Callable
+
+      Changed in version 0.4.5: ~
+
+----------------------------------------------------------------------------
+ignite.utils                                    *ignite.utils.apply_to_tensor*
+
+Module with helper methods
+
+convert_tensor   Move tensors to relevant device.
+apply_to_tensor  Apply a function on a tensor or mapping, or sequence of
+                 tensors.
+apply_to_type    Apply a function on an object of input_type or mapping, or
+                 sequence of objects of input_type.
+to_onehot        Convert a tensor of indices of any shape (N, ...) to a tensor
+                 of one-hot indicators of shape (N, num_classes, ...) and of
+                 type uint8.
+setup_logger     Setups logger: name, level, format etc.
+manual_seed      Setup random state from a seed for torch, random and
+                 optionally numpy (if can be imported).
+hash_checkpoint  Hash the checkpoint file in the format of
+                 <filename>-<hash>.<ext> to be used with check_hash of
+                 torch.hub.load_state_dict_from_url().
+
+ignite.utils.apply_to_tensor(x, func)
+    Apply a function on a tensor or mapping, or sequence of tensors.
+
+    Parameters: ~
+        - x (Tensor
+          https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+          Sequence | Mapping | str | bytes) -- input tensor or mapping, or
+          sequence of tensors.
+        - func (Callable) -- the function to apply on `x`.
+
+    Return type: ~
+        Tensor
+        https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+        Sequence | Mapping | str | bytes
+
+ignite.utils.apply_to_type(x, input_type, func)  *ignite.utils.apply_to_type*
+    Apply a function on an object of input_type or mapping, or sequence of
+    objects of input_type.
+
+    Parameters: ~
+        - x (Any | Sequence | Mapping | str | bytes) -- object or mapping or
+          sequence.
+        - input_type (type
+          https://docs.python.org/3/builtins/functions.html#type |
+          tuple[type
+          https://docs.python.org/3/builtins/functions.html#type[Any], Any])
+          -- data type of `x`.
+        - func (Callable) -- the function to apply on `x`.
+
+    Return type: ~
+        Any | Sequence | Mapping | str | bytes
+
+ignite.utils.convert_tensor(x, device=None, non_blocking=False)
+    *ignite.utils.convert_tensor*
+    Move tensors to relevant device.
+
+    Parameters: ~
+        - x (Tensor
+          https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+          Sequence | Mapping | str | bytes) -- input tensor or mapping, or
+          sequence of tensors.
+        - device (str | device
+          https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.device
+          | None) -- device type to move `x`.
+        - non_blocking (bool) -- convert a CPU Tensor with pinned memory to
+          a CUDA Tensor asynchronously with respect to the host if possible
+
+    Return type: ~
+        Tensor
+        https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
+        Sequence | Mapping | str | bytes
+
+ignite.utils.hash_checkpoint(checkpoint_path, output_dir)
+    *ignite.utils.hash_checkpoint*
+    Hash the checkpoint file in the format of `<filename>-<hash>.<ext>` to
+    be used with `check_hash` of `torch.hub.load_state_dict_from_url()`
+    https://docs.pytorch.org/docs/stable/hub.html#torch.hub.load_state_dict_from_url.
+
+    Parameters: ~
+        - checkpoint_path (str | Path
+          https://docs.python.org/3/library/pathlib.html#pathlib.Path) --
+          Path to the checkpoint file.
+        - output_dir (str | Path
+          https://docs.python.org/3/library/pathlib.html#pathlib.Path) --
+          Output directory to store the hashed checkpoint file (will be
+          created if not exist).
+
+    Returns: ~
+        Path to the hashed checkpoint file, the first 8 digits of SHA256
+        hash.
+
+    Return type: ~
+        tuple[pathlib.Path
+        https://docs.python.org/3/library/pathlib.html#pathlib.Path, str]
+
+      New in version 0.4.8.: ~
+
+ignite.utils.manual_seed(seed)  *ignite.utils.manual_seed*
+    Setup random state from a seed for torch, random and optionally numpy
+    (if can be imported).
+
+    Parameters: ~
+        seed (int) -- Random state seed
+
+    Return type: ~
+        None
+
+      Changed in version 0.4.3: ~
+
+      `torch.cuda.manual_seed_all(seed)`.
+
+      Changed in version 0.4.5: ~
+
+      `torch_xla.core.xla_model.set_rng_state(seed)`.
+
+ignite.utils.setup_logger(name='ignite', level=20, stream=None,
+    format='%(asctime)s %(name)s %(levelname)s: %(message)s', filepath=None,
+    distributed_rank=None, reset=False, encoding='utf-8')
+    *ignite.utils.setup_logger*
+    Setups logger: name, level, format etc.
+
+    Parameters: ~
+        - name (str | None) -- new name for the logger. If None, the
+          standard logger is used.
+        - level (int) -- logging level, e.g. CRITICAL, ERROR, WARNING, INFO,
+          DEBUG.
+        - stream (TextIO
+          https://docs.python.org/3/library/typing.html#typing.TextIO |
+          None) -- logging stream. If None, the standard stream is used
+          (sys.stderr).
+        - format (str) -- logging format. By default, %(asctime)s %(name)s
+          %(levelname)s: %(message)s.
+        - filepath (str | None) -- Optional logging file path. If not None,
+          logs are written to the file.
+        - distributed_rank (int | None) -- Optional, rank in distributed
+          configuration to avoid logger setup for workers. If None,
+          distributed_rank is initialized to the rank of process.
+        - reset (bool) -- if True, reset an existing logger rather than keep
+          format, handlers, and level.
+        - encoding (str | None) -- open the file with the encoding. By
+          default, ‘utf-8'.
+
+    Returns: ~
+        logging.Logger
+
+    Return type: ~
+        Logger https://docs.python.org/3/library/logging.html#logging.Logger
+
+    Examples: ~
+
+    Improve logs readability when training with a trainer and evaluator:
+
+    >python
+        from ignite.utils import setup_logger
+
+        trainer = ...
+        evaluator = ...
+
+        trainer.logger = setup_logger("trainer")
+        evaluator.logger = setup_logger("evaluator")
+
+        trainer.run(data, max_epochs=10)
+
+        # Logs will look like
+        # 2020-01-21 12:46:07,356 trainer INFO: Engine run starting with max_epochs=5.
+        # 2020-01-21 12:46:07,358 trainer INFO: Epoch[1] Complete. Time taken: 00:5:23
+        # 2020-01-21 12:46:07,358 evaluator INFO: Engine run starting with max_epochs=1.
+        # 2020-01-21 12:46:07,358 evaluator INFO: Epoch[1] Complete. Time taken: 00:01:02
+        # ...
+<
+    Every existing logger can be reset if needed
+
+    >python
+        logger = setup_logger(name="my-logger", format="=== %(name)s %(message)s")
+        logger.info("first message")
+        setup_logger(name="my-logger", format="+++ %(name)s %(message)s", reset=True)
+        logger.info("second message")
+
+        # Logs will look like
+        # === my-logger first message
+        # +++ my-logger second message
+<
+    Change the level of an existing internal logger
+
+    >python
+        setup_logger(
+            name="ignite.distributed.launcher.Parallel",
+            level=logging.WARNING
+        )
+<
+      Changed in version 0.4.3: ~
+
+      `stream` parameter.
+
+      Changed in version 0.4.5: ~
+
+      `reset` parameter.
+
+      Changed in version 0.5.1: ~
+
+      `encoding` added to correctly handle special characters in the file,
+      default “utf-8”.
+
+ignite.utils.to_onehot(indices, num_classes)  *ignite.utils.to_onehot*
+    Convert a tensor of indices of any shape (N, ...) to a tensor of one-hot
+    indicators of shape (N, num_classes, ...) and of type uint8. Output's
+    device is equal to the input's device`.
+
+    Parameters: ~
+        - indices (Tensor
+          https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor) --
+          input tensor to convert.
+        - num_classes (int) -- number of classes for one-hot tensor.
+
+    Return type: ~
+        Tensor
+        https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor
+
+      Changed in version 0.4.3: ~
+
+ vim:tw=78:ts=8:ft=help:norl:

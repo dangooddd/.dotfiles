@@ -1,0 +1,195 @@
+*megatron-models.txt*	Megatron Core documentation: models
+Version latest — https://docs.nvidia.com/megatron-core/developer-guide/latest/
+
+==============================================================================
+MODELS                                               *megatron-section-models*
+
+
+----------------------------------------------------------------------------
+Supported Models                                    *module-core-models-index*
+
+Megatron Core supports a wide range of language and multimodal models with
+optimized implementations for large-scale training.
+
+MODEL CONVERSION                               *models-index-model-conversion*
+
+For converting HuggingFace models to Megatron format, use Megatron Bridge
+https://github.com/NVIDIA-NeMo/Megatron-Bridge, the official standalone
+converter. Megatron Bridge supports an extensive list of models including
+LLaMA, Mistral, Mixtral, Qwen, DeepSeek, Gemma, Phi, Nemotron, and many
+more.
+
+See the Megatron Bridge supported models list
+https://github.com/NVIDIA-NeMo/Megatron-Bridge?tab=readme-ov-file#supported-models
+for the complete and up-to-date list of supported models.
+
+- |module-core-models-llms|
+- |module-core-models-multimodal|
+- |module-core-llama_mistral|
+- |developer-guide-latest-llama_mistral-contents|
+- |llama_mistral-llama-2|
+- |llama_mistral-llama-3-x|
+- |llama_mistral-mistral-7b|
+- |llama_mistral-other-llama-like-model-support|
+- |llama_mistral-known-numerical-differences|
+
+----------------------------------------------------------------------------
+Language Models                                      *module-core-models-llms*
+
+Megatron Core supports the following language model architectures for
+large-scale training.
+
+CONVERTING HUGGINGFACE MODELS      *models-llms-converting-huggingface-models*
+
+Use Megatron Bridge https://github.com/NVIDIA-NeMo/Megatron-Bridge to
+convert HuggingFace models to Megatron format. Megatron Bridge is the
+official standalone converter with support for an extensive list of models
+including LLaMA, Mistral, Mixtral, Qwen, DeepSeek, Gemma, Phi, Nemotron, and
+many more.
+
+See the Megatron Bridge supported models list
+https://github.com/NVIDIA-NeMo/Megatron-Bridge?tab=readme-ov-file#supported-models
+for the complete and up-to-date list.
+
+DECODER-ONLY MODELS                          *models-llms-decoder-only-models*
+
+Model    Description                        Key Features
+-------  ---------------------------------  ----------------------------------
+GPT      Generative Pre-trained             Standard autoregressive LM,
+         Transformer                        foundational architecture
+LLaMA    Meta's LLaMA family                Efficient architecture with RoPE,
+                                            SwiGLU, RMSNorm
+Mistral  Mistral AI models                  Sliding window attention,
+                                            efficient inference
+Mixtral  Sparse Mixture-of-Experts          8x7B MoE architecture for
+                                            efficient scaling
+Qwen     Alibaba's Qwen series              HuggingFace integration,
+                                            multilingual support
+Mamba    State Space Model                  Subquadratic sequence length
+                                            scaling, efficient long context
+
+ENCODER-ONLY MODELS                          *models-llms-encoder-only-models*
+
+Model  Description                         Key Features
+-----  ----------------------------------  -----------------------------------
+BERT   Bidirectional Encoder               Masked language modeling,
+       Representations                     classification tasks
+
+ENCODER-DECODER MODELS                    *models-llms-encoder-decoder-models*
+
+Model  Description                        Key Features
+-----  ---------------------------------  ------------------------------------
+T5     Text-to-Text Transfer Transformer  Unified text-to-text framework,
+                                          sequence-to-sequence
+
+EXAMPLE SCRIPTS                                  *models-llms-example-scripts*
+
+Training examples for these models can be found in the `examples/`
+directory:
+
+- `examples/gpt3/` - GPT-3 training scripts
+- `examples/llama/` - LLaMA training scripts
+- `examples/mixtral/` - Mixtral MoE training
+- `examples/mamba/` - Mamba training scripts
+- `examples/bert/` - BERT training scripts
+- `examples/t5/` - T5 training scripts
+
+MODEL IMPLEMENTATION                        *models-llms-model-implementation*
+
+All language models are built using Megatron Core's composable transformer
+blocks, enabling:
+
+- Flexible parallelism strategies (TP, PP, DP, EP, CP)
+- Mixed precision training (FP16, BF16, FP8)
+- Distributed checkpointing
+- Efficient memory management
+
+----------------------------------------------------------------------------
+Multimodal Models                              *module-core-models-multimodal*
+
+Megatron Core supports multimodal models that combine language with vision,
+audio, and other modalities for comprehensive multimodal understanding.
+
+                          *models-multimodal-mimo-multimodal-in-out-framework*
+MIMO: MULTIMODAL IN/OUT FRAMEWORK
+
+MIMO (Multimodal In/Out Model) is an experimental framework in Megatron Core
+that supports arbitrary combinations of modalities including vision, audio,
+and text. MIMO provides a flexible architecture for building custom
+multimodal models.
+
+  Note: MIMO is experimental and under active development. The API may
+  change in future releases.
+
+Key Features:
+
+- Arbitrary modality combinations (vision, audio, text)
+- Flexible encoder architecture for different input modalities
+- Unified embedding space across modalities
+- Support for both vision-language and audio-vision-language models
+
+See examples/mimo
+https://github.com/NVIDIA/Megatron-LM/tree/main/examples/mimo for training
+scripts and examples.
+
+VISION-LANGUAGE MODELS              *models-multimodal-vision-language-models*
+
+Model               Description         Vision Encoder      Language Model
+------------------  ------------------  ------------------  ------------------
+LLaVA               Visual instruction  CLIP ViT-L/14       Mistral-7B / LLaMA
+                    tuning
+NVLM                NVIDIA              CLIP / Custom ViT   LLaMA-based
+                    Vision-Language
+                    Model
+LLaMA 3.1 Nemotron  Efficient           Vision Transformer  LLaMA 3.1 8B
+Nano VL             multimodal model
+
+VISION ENCODERS                            *models-multimodal-vision-encoders*
+
+Model     Description                        Key Features
+--------  ---------------------------------  ---------------------------------
+CLIP ViT  OpenAI's CLIP Vision Transformer   Image-text alignment, multiple
+                                             scales (L/14@336px)
+RADIO     Resolution-Agnostic Dynamic Image  Flexible resolution handling,
+          Optimization                       efficient vision encoding
+
+DIFFUSION MODELS                          *models-multimodal-diffusion-models*
+
+For multimodal diffusion models (image generation, text-to-image). Refer to
+Nvidia Diffusion Models https://github.com/NVIDIA-NeMo/DFM/. The Developer
+Program, NIM, and NeMo can offer production-ready implementations of:
+
+- Stable Diffusion variants
+- Text-to-image generation
+- Image-to-image translation
+- ControlNet and other conditioning mechanisms
+
+MULTIMODAL FEATURES                    *models-multimodal-multimodal-features*
+
+- Image-Text Alignment: Pre-training on image-caption pairs
+- Visual Instruction Tuning: Fine-tuning on instruction-following datasets
+- Flexible Vision Encoders: Support for different ViT architectures and
+  resolutions
+- Combined Checkpointing: Unified checkpoints combining vision and language
+  models
+- Efficient Training: Full parallelism support (TP, PP, DP) for both vision
+  and language components
+
+EXAMPLE SCRIPTS                            *models-multimodal-example-scripts*
+
+Multimodal training examples can be found in the following directories:
+
+MIMO Framework:
+
+- `examples/mimo/` - Multimodal In/Out training with support for
+  vision-language and audio-vision-language models
+
+Specific Multimodal Models:
+
+- `examples/multimodal/` - LLaVA-style training with Mistral + CLIP
+- `examples/multimodal/nvlm/` - NVLM training scripts
+- `examples/multimodal/llama_3p1_nemotron_nano_vl_8b_v1/` - Nemotron VL
+  training
+- `examples/multimodal/radio/` - RADIO vision encoder integration
+
+ vim:tw=78:ts=8:ft=help:norl:

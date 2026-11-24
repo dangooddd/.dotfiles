@@ -1,0 +1,145 @@
+*matplotlib-main.txt*	Matplotlib documentation: main
+Version 3.11 — https://matplotlib.org/stable/
+
+==============================================================================
+MAIN                                                 *matplotlib-section-main*
+
+
+----------------------------------------------------------------------------
+Matplotlib 3.11.2 documentation                             *matplotlib-index*
+
+*index-module-matplotlib*
+
+Matplotlib is a comprehensive library for creating static, animated, and
+interactive visualizations.
+
+INSTALL                                                        *index-install*
+
+pip: ~
+
+>bash
+    pip install matplotlib
+<
+conda: ~
+
+>bash
+    conda install -c conda-forge matplotlib
+<
+pixi: ~
+
+>bash
+    pixi add matplotlib
+<
+uv: ~
+
+>bash
+    uv add matplotlib
+<
+  Warning: ~
+
+  uv usually installs its own versions of Python from the
+  python-build-standalone project, and only recent versions of those Python
+  builds (August 2025) work properly with the `tkagg` backend for displaying
+  plots in a window. Please make sure you are using uv 0.8.7 or newer
+  (update with e.g. `uv self update`) and that your bundled Python installs
+  are up to date (with `uv python upgrade --reinstall`). Alternatively, you
+  can use one of the other supported GUI frameworks
+  https://matplotlib.org/stable/install/dependencies.html#optional-dependencies,
+  e.g.
+
+  >bash
+      uv add matplotlib pyside6
+<
+
+other: ~
+
+|install-index-install-official|
+
+|install-index-install-third-party|
+
+|install-index-install-nightly-build|
+
+|install-index-install-source|
+
+LEARN                                                            *index-learn*
+
+How to use Matplotlib?
+
+- |matplotlib-users-explain-quick_start|
+- |matplotlib-users-index|
+- |matplotlib-tutorials-index|
+- |matplotlib-users-faq|
+
+What can Matplotlib do?
+
+- |matplotlib-plot_types-index|
+- Examples https://matplotlib.org/stable/gallery/index.html
+
+Reference
+
+- |matplotlib-api-index|
+- |matplotlib.figure.FigureBase|
+- |matplotlib.axes.Axes.ArtistList|
+
+Top-level interfaces to create:
+
+- figures: |matplotlib.pyplot.figure|
+- subplots: |matplotlib.pyplot.subplots|, |matplotlib.pyplot.subplot_mosaic|
+
+COMMUNITY                                                    *index-community*
+
+- External resources
+  https://matplotlib.org/stable/users/resources/index.html
+  - Books, chapters and articles
+    https://matplotlib.org/stable/users/resources/index.html#books-chapters-and-articles
+  - Videos https://matplotlib.org/stable/users/resources/index.html#videos
+  - Tutorials
+    https://matplotlib.org/stable/users/resources/index.html#tutorials
+  - Galleries
+    https://matplotlib.org/stable/users/resources/index.html#galleries
+
+Third-party packages https://matplotlib.org/mpl-third-party/,
+
+provide custom, domain specific, and experimental features, including
+styles, colors, more plot types and backends, and alternative interfaces.
+
+WHAT'S NEW                                                  *index-what-s-new*
+
+Learn about new features and API changes.
+
+- Release notes https://matplotlib.org/stable/release/release_notes.html
+
+CONTRIBUTE                                                  *index-contribute*
+
+Matplotlib is a community project maintained for and by its users. See
+Contribute
+https://matplotlib.org/stable/devel/index.html#developers-guide-index for
+the many ways you can help!
+
+- Contribute https://matplotlib.org/stable/devel/index.html
+  - GitHub issue tracker
+    https://matplotlib.org/stable/devel/index.html#github-issue-tracker
+  - Contributing guide
+    https://matplotlib.org/stable/devel/index.html#contributing-guide
+  - Development workflow
+    https://matplotlib.org/stable/devel/index.html#development-workflow
+  - Policies and guidelines
+    https://matplotlib.org/stable/devel/index.html#policies-and-guidelines
+
+ABOUT US                                                      *index-about-us*
+
+Matplotlib was created by neurobiologist John Hunter to work with EEG data.
+It grew to be used and developed by many people in many different fields.
+John's goal was that Matplotlib make easy things easy and hard things
+possible.
+
+- Project information https://matplotlib.org/stable/project/index.html
+  - Mission Statement https://matplotlib.org/stable/project/mission.html
+  - History https://matplotlib.org/stable/project/history.html
+  - Code of Conduct
+    https://matplotlib.org/stable/project/code_of_conduct.html
+  - Citing Matplotlib https://matplotlib.org/stable/project/citing.html
+  - License https://matplotlib.org/stable/project/license.html
+  - Credits https://matplotlib.org/stable/project/credits.html
+
+ vim:tw=78:ts=8:ft=help:norl:

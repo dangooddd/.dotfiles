@@ -1,0 +1,1918 @@
+*verl-perf.txt*	verl documentation: perf
+Version latest — https://verl.readthedocs.io/en/latest/
+
+==============================================================================
+PERF                                                       *verl-section-perf*
+
+
+----------------------------------------------------------------------------
+Verl LLM Best Practices (DAPO + Qwen3-235B)         *verl-perf-best_practices*
+
+Last updated: 11/03/2025.
+
+PURPOSE                                          *perf-best_practices-purpose*
+
+This guide uses DAPO training on Qwen3-235B as a concrete example. We unpack
+every parameter that appears in the optimization objective, map it to Verl
+configuration entries, and share field-tested recommendations so you can
+derive sensible settings for your own workloads.
+
+  Note: ~
+
+  1. The guide only covers the subset of parameters required to reproduce
+     the DAPO experiments discussed here. For the full list, refer to the
+     `config` components in the Verl source tree:
+     https://github.com/verl-project/verl/tree/main/verl/trainer/config
+  2. PPO and GRPO introduce KL-constrained policies. We therefore include
+     that setup in the explanations below. You can treat all configurations
+     mentioned here as a DAPO pipeline augmented with a KL penalty.
+
+OPTIMIZATION OBJECTIVES          *perf-best_practices-optimization-objectives*
+
+DAPO objective                            *perf-best_practices-dapo-objective*
+
+\[\begin{split}\begin{aligned} \mathcal{J}_{\mathrm{DAPO}}(\theta)= & \mathbb{E}_{(q, a) \sim \mathcal{D},\left\{o_i\right\}_{i=1}^G \sim \pi_{\theta_{\text {old }}}(\cdot \mid q)} \ {\left[\frac{1}{\sum_{i=1}^G\left|o_i\right|} \sum_{i=1}^G \sum_{t=1}^{\left|o_i\right|} \min \left(r_{i, t}(\theta) \hat{A}_{i, t}, \operatorname{clip}\left(r_{i, t}(\theta), 1-\varepsilon_{\text {low }}, 1+\varepsilon_{\text {high }}\right) \hat{A}_{i, t}\right)\right] } \\ \end{aligned}\end{split}\]
+\[\text { s.t. } \quad 0<\mid\left\{o_i \mid \text { is_equivalent }\left(a, o_i\right)\right\} \mid<G,\]
+\[\text {where} \quad r_{i, t}(\theta)=\frac{\pi_\theta\left(o_{i, t} \mid q, o_{i,<t}\right)}{\pi_{\theta_{\text {old }}}\left(o_{i, t} \mid q, o_{i,<t}\right)}, \quad \hat{A}_{i, t}=\frac{R_i-\operatorname{mean}\left(\left\{R_i\right\}_{i=1}^G\right)}{\operatorname{std}\left(\left\{R_i\right\}_{i=1}^G\right)}\]
+
+GRPO objective                            *perf-best_practices-grpo-objective*
+
+\[\begin{aligned} \mathcal{J}_{G R P O}(\theta) & =\mathbb{E}_{q \sim P(Q),\left\{o_i\right\}_{i=1}^G \sim \pi_{\theta_{\text {old }}}(O \mid q)} \ \frac{1}{G} \sum_{i=1}^G \frac{1}{\left|o_i\right|} \sum_{t=1}^{\left|o_i\right|}\left\{\min \left[\frac{\pi_\theta\left(o_{i, t} \mid q, o_{i,<t}\right)}{\pi_{\theta_{\text {old }}}\left(o_{i, t} \mid q, o_{i,<t}\right)} \hat{A}_{i, t}, \operatorname{clip}\left(\frac{\pi_\theta\left(o_{i, t} \mid q, o_{i,<t}\right)}{\pi_{\theta_{\text {old }}}\left(o_{i, t} \mid q, o_{i,<t}\right)}, 1-\varepsilon, 1+\varepsilon\right) \hat{A}_{i, t}\right]-\beta \mathbb{D}_{K L}\left[\pi_\theta \| \pi_{r e f}\right]\right\}, \end{aligned}\]
+
+NOTATION OVERVIEW                      *perf-best_practices-notation-overview*
+
+`\((q,a)\sim D\)`
+    - `\(D\)` denotes the training dataset. For each sample, `\(q\)` is the
+      input prompt (for math tasks, the question) and `\(a\)` is the target
+      output---typically the final answer without intermediate reasoning
+      steps.
+
+`\(G\)`
+    - Group size. For every prompt we sample `\(G\)` independent responses.
+
+`\(\theta\)`
+    - Actor model parameters.
+
+`\(\pi\)`
+    - Sampling strategy that bundles the rollout backend (vLLM, sglang,
+      etc.) and all generation hyperparameters. Because LLMs generate tokens
+      autoregressively, rollout dominates runtime, so backend-specific
+      tuning is critical.
+
+`\(\pi_\theta\)`
+    - Actor policy obtained by instantiating `\(\pi\)` with parameters
+      `\(\theta\)`.
+
+`\(\hat{A}_{i,t}\)`
+    - Advantage of the `\(i\)`-th sample within the group at timestep
+      `\(t\)`.
+
+`\(R_i\)`
+    - Reward assigned to the `\(i\)`-th sample in the group.
+
+`\(\mathbb{D}_{KL}\)`
+    - KL divergence between two policies.
+
+`\(\beta\)`
+    - Coefficient that weights the KL term.
+
+`\(\pi_{old}\)`
+    - Frozen “old” policy, updated after every
+      `\(\texttt{train_batch_size}\)` samples.
+
+`\(\pi_{ref}\)`
+    - Reference policy used to compute the KL divergence.
+
+`\(o_i, |o_i|\)`
+    - `\(o_i\)` is the generated output sequence for the `\(i\)`-th prompt;
+      `\(|o_i|\)` is its token length.
+
+`\(\pi_\theta(o_{i,t} \mid q_i, o_{i,<t})\)`
+    - Probability of emitting token `\(o_{i,t}\)` at timestep `\(t\)` given
+      prompt `\(q_i\)` and the previously generated prefix under parameters
+      `\(\theta\)`. In practice, the rollout engine first generates full
+      responses, then concatenates prompts and outputs for each model; with
+      attention masks we can compute all token probabilities in one pass.
+
+`\(\varepsilon_{low}\)` and `\(\varepsilon_{high}\)`
+    - Lower and upper clipping bounds for importance sampling. DAPO adopts a
+      clip-higher strategy, so the upper bound is different from the lower
+      bound to prevent overly large policy updates.
+
+PARAMETER REFERENCE                  *perf-best_practices-parameter-reference*
+
+`\((q,a)\sim D\)`
+    - `data.train_files` / `data.val_files`: Training and validation
+      datasets. They must be stored as `.parquet`. Use the conversion
+      scripts under `examples/data_preprocess` and make sure your
+      `data_source` implements the matching reward function. You can also
+      reuse the HuggingFace dataset `BytedTsinghua-SIA/DAPO-Math-17k`.
+    - `data.prompt_key`: Column name for prompts. Keep the default `prompt`
+      unless you have a clearer schema.
+    - `data.max_prompt_length`: Upper bound on prompt length. Set it to
+      cover the longest prompt in the corpus; when long-tail samples make it
+      too large, lower the value and combine with `data.truncation`.
+    - `data.truncation`: Policy for over-length inputs (truncate-left/right
+      or raise). `left` works for most runs. If training logs show large
+      `clip_ratio` and poor metrics, increase `data.max_prompt_length` or
+      clean the data. Set to `error` when strict validation is required.
+
+`\(G\)`
+    - `actor_rollout_ref.rollout.n`: Number of generations per prompt.
+      Typical values: GRPO 64, DAPO 16.
+
+`\(\theta\)`
+    - `actor_rollout_ref.model.path`: Path to the actor checkpoint in
+      HuggingFace-compatible format.
+    - `actor_rollout_ref.actor.megatron.use_mbridge`: Keep this option
+      `True`. The Megatron engine uses Megatron-Bridge
+      https://github.com/NVIDIA-NeMo/Megatron-Bridge for model construction
+      and HuggingFace weight conversion. Set `use_dist_checkpointing=True`
+      to save or load Megatron model shards. Optimizer, LR scheduler, and
+      RNG states always use distributed checkpointing. See
+      |advance-checkpoint-checkpoint-page|.
+
+`\(\pi\)`
+    - `actor_rollout_ref.rollout.name`: Rollout backend. Verl currently
+      supports `vllm` and `sglang`---benchmark and tune according to your
+      infrastructure.
+    - `actor_rollout_ref.rollout.response_length` /
+      `data.max_response_length`: Maximum generated tokens (rollout setting
+      takes precedence). Larger values improve quality but consume more
+      memory and latency. Monitor `clip_ratio`; values above 0.1 often mean
+      you are truncating too much.
+    - `actor_rollout_ref.rollout.gpu_memory_utilization`: Target GPU memory
+      usage during rollout. Push it as high as possible without triggering
+      OOM; with parameter/gradient/optimizer offload enabled, 0.8--0.9 is
+      common.
+    - `actor_rollout_ref.rollout.tensor_model_parallel_size`: Tensor
+      parallel degree for the inference engine. Ensure
+      `(memory_per_gpu * gpu_memory_utilization * TP) > 2 * model_parameters`
+      (bf16/fp16). Increase TP gradually to expand KV cache capacity while
+      watching communication cost---especially once TP > 8.
+    - `actor_rollout_ref.rollout.temperature` / `top_p` / `top_k`: Sampling
+      knobs for rollout. Keep enough randomness; `temperature=1.0`,
+      `top_p=1.0`, `top_k=-1` are good defaults.
+    - `actor_rollout_ref.rollout.val_kwargs.temperature` / `top_p` / `top_k`
+      / `do_sample` / `n`: Sampling options for validation. Set
+      `temperature > 0` to prevent repetitive thinking chains. For small
+      test sets (e.g., AIME24) raise `n` (64 is a common choice) to reduce
+      variance. A practical starting point is `temperature=1.0`,
+      `top_p=0.7`, `top_k=-1`, `do_sample=True`, `n=1` and then increase `n`
+      as needed.
+    - `+actor_rollout_ref.rollout.engine_kwargs.vllm.*` /
+      `+actor_rollout_ref.rollout.engine_kwargs.sglang.*`: Extra backend
+      options injected via the `+` syntax. Consult backend docs for exact
+      semantics. Some switches (for example `pipeline_parallel_size`) may
+      not be supported yet; when TP=32, expert parallelism
+      (`actor_rollout_ref.rollout.expert_parallel_size`) can even slow down
+      DeepSeek-V3 rollout, so benchmark carefully.
+
+`\(\pi_\theta\)`
+    - `data.train_batch_size`: Total batch size per training iteration. Each
+      rollout produces `train_batch_size * n` samples. Larger values reduce
+      the number of rollouts but increase off-policy drift.
+    - `actor_rollout_ref.actor.ppo_mini_batch_size`: Mini-batch size per
+      optimization step. Tune it the same way you would for standard deep
+      learning workloads.
+    - `actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu`: Samples
+      processed per forward pass on one GPU group (a Megatron group contains
+      TP * PP * CP GPUs). Keep it ≤ `ppo_mini_batch_size` and as large as
+      memory allows.
+    - `actor_rollout_ref.actor.use_dynamic_bsz`: Enable dynamic batch sizing
+      to adapt to sequence length and improve throughput.
+    - `actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu`: Maximum
+      tokens per GPU when computing log probabilities under dynamic
+      batching. Set it to at least a multiple of
+      `max_prompt_length + max_response_length` to prevent truncation.
+    - Megatron parallelism parameters (`pipeline_model_parallel_size` /
+      `tensor_model_parallel_size` / `expert_model_parallel_size` /
+      `expert_tensor_parallel_size` / `context_parallel_size`): Balance
+      PP/TP/EP/ETP/CP to match memory and network constraints. In bf16/fp16,
+      each parameter consumes roughly `2 / TP` bytes; if you keep FP32
+      master weights or skip optimizer offload, reserve another 4--8 bytes
+      for Adam. Activations scale with
+      `micro_batch_size × sequence_length × hidden_size` and can be
+      mitigated with gradient checkpointing, dynamic batches, or offload.
+      Prefer increasing TP first, add PP when necessary, extend sequence
+      capacity with CP, align EP/ETP with TP for MoE models, and keep DP
+      minimal on constrained clusters while combining with offload. Always
+      align the setup with hardware topology and communication cost.
+    - `actor_rollout_ref.model.use_fused_kernels`: Enable Verl's fused
+      kernels for supported models to squeeze out additional performance.
+
+`\(\hat{A}_{i,t}\)`
+    - `algorithm.adv_estimator`: Advantage estimator. Set to `grpo` for
+      DAPO/GRPO.
+
+`\(R_i\)`
+    - `reward_model.reward_manager`: Reward aggregation strategy. Use `dapo`
+      for DAPO and `naive` for GRPO.
+
+`\(D_{KL}\)`
+    - `algorithm.use_kl_in_reward`: Whether to add a KL term to the reward.
+      `True` for PPO, `False` for GRPO and DAPO.
+    - `actor_rollout_ref.actor.use_kl_loss`: Whether to include a KL loss
+      term. `False` for PPO, `True` for GRPO, `False` for DAPO.
+
+`\(\beta\)`
+    - `actor_rollout_ref.actor.kl_loss_coef`: Weight of the KL loss. Start
+      around 0.001. Larger values curb reward hacking but reduce
+      exploration.
+    - `algorithm.kl_ctrl.kl_coef`: KL coefficient applied within the reward.
+      Adjust to match your tolerance for divergence.
+
+`\(\pi_{old}\)`
+    - `actor_rollout_ref.rollout.log_prob_use_dynamic_bsz`: Enable dynamic
+      batching when the old policy computes log-probabilities. Recommended.
+
+`\(\pi_{ref}\)`
+    - `actor_rollout_ref.ref.log_prob_use_dynamic_bsz`: Enable dynamic
+      batching for the reference policy. Recommended.
+    - Reference Megatron parallelism: Keep `pipeline_model_parallel_size`,
+      `tensor_model_parallel_size`, `expert_model_parallel_size`,
+      `expert_tensor_parallel_size`, and `context_parallel_size` in sync
+      with the actor.
+    - `actor_rollout_ref.ref.megatron.param_offload`: Offload reference
+      parameters to CPU when the actor does so. Even without gradients or
+      optimizer states, parity helps with capacity planning.
+
+`\(o_i\)` / `\(|o_i|\)`
+    - `actor_rollout_ref.actor.loss_agg_mode`: Loss aggregation mode.
+      Token-level `token-mean` matches the recommendations from Dr.GRPO and
+      DAPO; use `seq-mean-token-mean` to reproduce the original GRPO
+      behavior.
+
+`\(\pi_\theta(o_{i,t} \mid q_i,o_{i,<t})\)`
+    - `actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu` /
+      `actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu`: Batch size
+      while computing token probabilities. Rollout engines generate outputs
+      and then concatenate inputs for each model, so balance memory against
+      throughput.
+
+`\(\epsilon_{low}\)` / `\(\epsilon_{high}\)`
+    - `actor_rollout_ref.actor.clip_ratio_low` /
+      `actor_rollout_ref.actor.clip_ratio_high`: Importance sampling
+      clipping bounds. For DAPO, use `clip_ratio_low=0.2` and
+      `clip_ratio_high=0.28`.
+
+vLLM inference optimizations
+    - `actor_rollout_ref.rollout.enable_chunked_prefill`: Enables chunked
+      prefill to boost GPU utilization (vLLM only). Tune together with
+      `max_num_batched_tokens`.
+    - `actor_rollout_ref.rollout.max_num_batched_tokens`: Maximum tokens per
+      batch. A practical rule of thumb is
+      `max(8192, max_prompt_length + max_response_length, max_model_len)`;
+      see the vLLM docs for details.
+    - `actor_rollout_ref.rollout.enforce_eager`: Disables CUDA graphs. By
+      default vLLM leverages CUDA graphs for speed at the cost of extra
+      memory (not limited by `gpu_memory_utilization`); set this to `True`
+      when memory is tight.
+    - `actor_rollout_ref.rollout.cudagraph_capture_sizes`: Explicit capture
+      batch sizes for CUDA graphs. Default is `null`; on memory-constrained
+      systems try `[1, 2, 4, 8, 16, 32]`.
+
+Optimizer settings
+    - `actor_rollout_ref.actor.optim.lr`: Learning rate. Start around `1e-5`
+      or `1e-6`.
+    - `actor_rollout_ref.actor.optim.lr_warmup_steps`: Number of warmup
+      steps (e.g., 10).
+    - `actor_rollout_ref.actor.optim.weight_decay`: Weight decay
+      coefficient, typically 0.1.
+    - `actor_rollout_ref.actor.optim.clip_grad`: Gradient clipping
+      threshold, commonly 1.
+    - `+actor_rollout_ref.actor.optim.override_optimizer_config.optimizer_offload_fraction`:
+      Portion of optimizer updates executed on CPU. Large models such as
+      DeepSeek benefit from enabling it with value 1.
+    - `+actor_rollout_ref.actor.optim.override_optimizer_config.overlap_cpu_optimizer_d2h_h2d`
+      / `+...use_precision_aware_optimizer` / `+...optimizer_cpu_offload`:
+      Companion switches for hybrid optimizers. Turn them on alongside CPU
+      offload.
+
+Megatron-related parameters
+    - `actor_rollout_ref.actor.megatron.param_offload` /
+      `optimizer_offload`: Offload parameters and optimizer states to CPU
+      when GPU memory is insufficient. Parameter offload also releases
+      gradient buffers while the actor is inactive.
+    - `+actor_rollout_ref.actor.megatron.override_transformer_config.recompute_method`
+      / `recompute_granularity` / `recompute_num_layers`: Gradient
+      checkpointing controls. Enable (e.g., `uniform`, `full`, `1`) to trade
+      computation for memory.
+    - `+actor_rollout_ref.actor.megatron.override_transformer_config.moe_router_dtype`
+      / `moe_shared_expert_overlap` / `moe_permute_fusion` /
+      `moe_enable_deepep` / `moe_token_dispatcher_type`: Recommended MoE
+      knobs (sample values: `fp32`, `False`, `True`, `True`, `flex`) for
+      stable performance.
+    - `+actor_rollout_ref.actor.megatron.override_transformer_config.gradient_accumulation_fusion`:
+      Enables fused gradient accumulation for additional speedup.
+    - `+actor_rollout_ref.actor.megatron.override_transformer_config.account_for_embedding_in_pipeline_split`
+      / `account_for_loss_in_pipeline_split` /
+      `num_layers_in_last_pipeline_stage`: Pipeline-parallel adjustments
+      when layer counts do not divide evenly. Treat embedding and loss as
+      standalone stages and set `num_layers_in_last_pipeline_stage` (0 or
+      `${LAST_LAYER}`) when you need manual control.
+
+Trainer
+    - `trainer.logger`: Logging backends. Use `['console', 'wandb']` or, on
+      Volcano Engine ML Platform, `['console', 'vemlp_wandb']`.
+    - `trainer.project_name` / `trainer.experiment_name`: Hierarchical
+      naming for projects and experiments so you can locate runs quickly.
+    - `trainer.n_gpus_per_node` / `trainer.nnodes`: Number of GPUs per node
+      and total node count. Match your cluster allocation.
+    - `trainer.test_freq` / `trainer.save_freq` / `trainer.total_epochs`:
+      Evaluation interval, checkpoint interval, and total epochs---configure
+      for your SLA.
+    - `trainer.log_val_generations`: Number of validation samples stored in
+      logs. Start with 10 and adjust as needed.
+    - `trainer.val_before_train`: Run validation before training begins when
+      you require a baseline checkpoint.
+
+----------------------------------------------------------------------------
+Hardware Resource Needed for RL                      *verl-perf-device_tuning*
+
+Last updated: 06/25/2025.
+
+Since RL requires more resources compared to regular training, determining
+how much resources are needed to successfully run it before training is a
+relatively difficult task. To provide more people with reference points for
+resource selection when dealing with different models and tasks, this
+section is mainly dedicated to introducing the environmental requirements
+based on experiments we have conducted.
+
+However, due to limited staff and equipment resources, we also hope for more
+contributions from the open-source community. When submitting a PR, it is
+necessary to provide a script to be added to the example/tuning scripts.
+
+We need two types of scripts: one is the configuration that can run with the
+minimum resources(min), and the other is the configuration that runs with
+recommended resources(recommended). For the former, it can be understood as
+a script that can run after applying all memory optimization techniques
+(e.g., offload, gradient checkpointing). For the latter, it can be
+understood as a script that can run while avoiding operations that incur
+additional time overhead as much as possible (targetting best throughput).
+
+When defining script names, please follow this format:
+`[model]_[task]_[gpunums]_[device]_[train]_[infer].sh`. This will
+effectively improve the script's recognizability. You can place the script
+under the `examples/tuning/` directory.
+
+If you happen to have a configuration that has already been tested, we
+welcome you to submit a PR and include a screenshot from Wandb or other
+verifiable evidence.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+0.5B ~~~
+
+Tag  Model         Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
+---  ------------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
+MIN  Qwen2.5-0.5B  GRPO-LoRA  1*H100    116       fsdp   vllm0.8.3  qwen2-0.5b_grpo-lora_1_h100_fsdp_vllm.sh  SimonHuang
+
+1.5B ~~~
+
+Tag  Model         Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
+---  ------------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
+MIN  Qwen2.5-1.5B  GRPO-LoRA  1*H100    128       fsdp   vllm0.8.3  qwen2-1.5b_grpo-lora_1_h100_fsdp_vllm.sh  SimonHuang
+
+3B                                                      *perf-device_tuning-b*
+
+Tag  Model       Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
+---  ----------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
+MIN  Qwen2.5-3B  GRPO-LoRA  1*H100    62        fsdp   vllm0.8.3  qwen2-3b_grpo-lora_1_h100_fsdp_vllm.sh  SimonHuang
+
+7B                                                    *perf-device_tuning-id3*
+
+Tag  Model       Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
+---  ----------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
+MIN  Qwen2-7B    GRPO       2*H800              fsdp   vllm0.8.2  qwen2-7b_grpo_2_h800_fsdp_vllm        Xiangyongan
+MIN  Qwen2.5-7B  GRPO-LoRA  1*H100    16        fsdp   vllm0.8.3  qwen2-7b_grpo-lora_1_h100_fsdp_vllm.sh  SimonHuang
+
+14B                                                   *perf-device_tuning-id5*
+
+Tag  Model        Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
+---  -----------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
+MIN  Qwen2-14B    GRPO       4*H800              fsdp   vllm0.8.2  qwen2-14b_grpo_4_h800_fsdp_vllm       Xiangyongan
+MIN  Qwen2.5-14B  GRPO-LoRA  2*H100    116       fsdp   vllm0.8.3  qwen2-14b_grpo-lora_2_h100_fsdp_vllm.sh  SimonHuang
+
+32B                                                   *perf-device_tuning-id8*
+
+Tag  Model        Task       Resource  MaxBatch  Train     Infer      Link                                  Contributor
+---  -----------  ---------  --------  --------  --------  ---------  ------------------------------------  -----------
+MIN  Qwen2-32B    GRPO       8*H20               megatron  vllm0.8.2  qwen2-32b_grpo_8_h20_megatron_vllm    Xiangyongan
+MIN  Qwen2.5-32B  GRPO-LoRA  4*H100    180       fsdp      vllm0.8.3  qwen2-32b_grpo-lora_4_h100_fsdp_vllm.sh  SimonHuang
+
+70B                                                  *perf-device_tuning-id11*
+
+Tag  Model        Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
+---  -----------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
+MIN  Qwen2-70B    GRPO       32*H20              fsdp   vllm0.8.2  qwen2-70b_grpo_32_h20_fsdp_vllm       Xiangyongan
+MIN  Qwen2-70B    GRPO       32*H800             fsdp   vllm0.8.3  qwen2-70b_grpo_32_h800_fsdp_vllm      Xiangyongan
+MIN  Qwen2.5-72B  GRPO-LoRA  8*H100    176       fsdp   vllm0.8.3  qwen2-72b_grpo-lora_8_h100_fsdp_vllm.sh  SimonHuang
+
+405B                                                 *perf-device_tuning-id15*
+
+tag   model    task    resource         MaxBatch      train    infer    link
+----  -------  ------  ---------------  ------------  -------  -------  ------
+
+671B                                                 *perf-device_tuning-id16*
+
+tag   model    task    resource         MaxBatch      train    infer    link
+----  -------  ------  ---------------  ------------  -------  -------  ------
+
+----------------------------------------------------------------------------
+Training DeepSeek 671b                                        *verl-perf-dpsk*
+
+Last updated: 08/20/2025.
+
+verl integrates Megatron to support large MoE models such as
+`Qwen3-235B-A22B` and `deepseek-ai/DeepSeek-V3`. This is an ongoing
+community effort.
+
+In the journey the community added the following features and optimizations
+that enable verl with larger models:
+
+- per tensor weight resharding between rollout and training
+- context parallelism and expert parallelism enabled via megatron
+- dynamic batch size (sequence balance) for megatron
+- reduced ray-related serialization overhead
+- optimizer offloading, recomputation, and efficient kernels
+- various debugging metrics and utils
+- hybrid optimizer
+
+and the megatron backend now has a wider list of models supported:
+
+- DeepSeek-V3
+- Moonlight
+- Qwen3
+- Qwen2.5-VL (to be merged soon)
+- Qwen2
+- Mixtral
+
+GETTING STARTED                                    *perf-dpsk-getting-started*
+
+preparation                                            *perf-dpsk-preparation*
+
+The recommended image with pre-built Megatron dependency is
+`verlai/verl:app-verl0.4-vllm0.8.5-mcore0.13.0-preview`, which is built
+using the Dockerfile at
+docker/verl0.4-cu124-torch2.6-fa2.7.4/Dockerfile.app.vllm.mcore0.13.preview
+https://github.com/verl-project/verl/blob/main/docker/verl0.4-cu124-torch2.6-fa2.7.4/Dockerfile.app.vllm.mcore0.13.preview.
+
+The image is build in Hopper GPUs with DeepEP. It does not support
+None-Hopper GPUs, such as A100. You may need to reinstall DeepEP to work
+with A100.
+
+With `OFFLOAD_FRACTION=1`, the system's minimum requirements are lowered. It
+can run on as few as 96 H20 (96GB) GPUs for DeepSeek-V3, and on as few as 32
+H20 (96GB) GPUs for Qwen3-235B-A22B. However, this configuration will use
+1.6TB CPU memory per node. If you run out of CPU memory or require faster
+training speed, you can add more nodes.
+
+DeepSeek 671b                                        *perf-dpsk-deepseek-671b*
+
+For DeepSeek-V3 671b, please refer to
+examples/grpo_trainer/run_deepseek_v3_671b_megatron.sh
+https://github.com/verl-project/verl/blob/main/examples/grpo_trainer/run_deepseek_v3_671b_megatron.sh.
+
+MTP and quantilization is disabled during RL training.
+
+To train your project, configure the following environment variables based
+on the number of available GPUs. These are recommended settings and can be
+adjusted based on your specific hardware.
+
+num gpus  NNODES  TP  PP  EP  OFFLOAD_FRACTION     OFFLOAD_OPTIM    LAST_LAYER
+--------  ------  --  --  --  -------------------  ---------------  ----------
+96        12      8   12  8   1.                   False            6
+128       16      8   16  8   0.5                  True             1
+256       32      8   16  8   0.                   True             1
+512       64      1   16  32  0                    True             1
+
+Qwen3 235b                                              *perf-dpsk-qwen3-235b*
+
+For Qwen3-235b, please refer to
+examples/grpo_trainer/run_qwen3_235b_a22b_megatron.sh
+https://github.com/verl-project/verl/blob/main/examples/grpo_trainer/run_qwen3_235b_a22b_megatron.sh.
+
+To train your project, configure the following environment variables based
+on the number of available GPUs. These are recommended settings and can be
+adjusted based on your specific hardware.
+
+num gpus  NNODES  TP  PP  EP  OFFLOAD_FRACTION     OFFLOAD_OPTIM    LAST_LAYER
+--------  ------  --  --  --  -------------------  ---------------  ----------
+32        4       4   8   4   1.                   False            6
+64        8       4   8   4   0.5                  True             6
+128       16      4   8   4   0                    True             6
+256       32      4   8   4   0                    True             6
+
+Benchmark                                                *perf-dpsk-benchmark*
+
+Here are some benchmark results for DeepSeek / Qwen3-235B. All
+configurations match the recommended settings based on the number of GPUs.
+
+model     num gpus  mean      rollout   GPU         CPU         MFU   step
+                    response  time(s)   memory(GB)  memory(GB)        time(s)
+                    length
+--------  --------  --------  --------  ----------  ----------  ----  --------
+DeepSeek  96        1960      1050      66          1500        0.19  1700
+671b
+
+Qwen3-30B-A3B MOE                                *perf-dpsk-qwen3-30b-a3b-moe*
+
+For Qwen3-30b, please refer to
+examples/grpo_trainer/run_qwen3_30b_a3b_megatron.sh
+https://github.com/verl-project/verl/blob/main/examples/grpo_trainer/run_qwen3_30b_a3b_megatron.sh.
+
+To train your project, configure the following environment variables based
+on the number of available GPUs. These are recommended settings and can be
+adjusted based on your specific hardware.
+
+num gpus  NNODES  TP  PP  EP  OFFLOAD_FRACTION         OFFLOAD_OPTIM      MFU
+--------  ------  --  --  --  -----------------------  -----------------  ----
+8         1       1   1   8   1.                       True               0.4
+16        2       1   1   8   1.                       True               0.37
+32        4       1   1   8   1.                       True               0.31
+
+UPCOMING OPTIMIZATIONS                      *perf-dpsk-upcoming-optimizations*
+
+The community continue to optimize large MoE models further, ongoing efforts
+include:
+
+- further optimizing memory consumption, and provide recommended/tuned
+  configurations with various machine types
+- optimizing long context RL training performance
+- performance improvement with SGLang x Megatron
+
+We invite the community to try and improve verl together. Get connected with
+us on slack
+https://join.slack.com/t/verlgroup/shared_invite/zt-2w5p9o4c3-yy0x2Q56s_VlGLsJ93A6vA/wechat
+https://raw.githubusercontent.com/eric-haibin-lin/verl-community/refs/heads/main/WeChat.JPG/Github issues
+https://github.com/verl-project/verl/issues/708!
+
+ACKNOWLEDGEMENT                                    *perf-dpsk-acknowledgement*
+
+@vermouth1992 @ISEEKYAN @ETOgaosion @yzlnew @ShareLer @BearBiscuit05 @ccclyu
+@ann-qin-lu @SwordFaith @zzong2006 @zhaochenyang20 @ocss884 @eric-haibin-lin
+@chenhaiq @techkang
+
+----------------------------------------------------------------------------
+NVIDIA Nsight Systems profiling in verl           *verl-perf-nsight_profiling*
+
+Last updated: 07/29/2026.
+
+This guide explains how to use NVIDIA Nsight Systems for profiling verl
+training runs.
+
+CONFIGURATION                            *perf-nsight_profiling-configuration*
+
+Profiling in verl can be configured through several parameters in the
+trainer configuration file (ppo_trainer.yaml or other files like
+dapo_trainer.yaml):
+
+Prerequisites                            *perf-nsight_profiling-prerequisites*
+
+Nsight Systems version is important, please reference
+`docker/Dockerfile.vllm.sglang.megatron` for the version we used.
+
+Global profiling control      *perf-nsight_profiling-global-profiling-control*
+
+verl has one single controller process and multiple worker processes. Both
+controller and worker processes can be profiled. Since the controller
+process can be executed in any nodes in the cluster, there is a message
+printed in the logging to indicate the controller process node hostname and
+process id.
+
+In `global_profiler`, three new config entries control the profiler
+behaviors:
+
+- `global_profiler.steps`. List of step numbers at which profiling should be
+  performed. For example: [1, 2, 5] will profile steps 1, 2, and 5. And
+  `null` means no profiling.
+- `global_profiler.profile_continuous_steps`. If true, and the following
+  `global_profiler.discrete==False`, then the continuous steps in
+  `global_profiler.steps` will be combined into one database. For example
+  the above step 1 and 2 are in one database, and 5 in another. If false,
+  every step occupies at least one database. The reason for this config is
+  to observe the program behaviors between steps.
+
+Nsys options in controller nodes and worker nodes are configured in
+`global_profiler.global_tool_config.nsys`:
+
+- `global_profiler.global_tool_config.nsys.controller_nsight_options`. This
+  config group is for the single controller. All fields in this config group
+  will be just sent to Nsight Systems when Ray starts the controller
+  process. `ppo_trainer.yaml` provides a workable example. Users can
+  reference Nsight Systems manual
+  https://docs.nvidia.com/nsight-systems/UserGuide/index.html and
+  Ray user guide
+  https://docs.ray.io/en/latest/ray-observability/user-guides/profiling.html
+  for more details.
+- `global_profiler.global_tool_config.nsys.worker_nsight_options`. This
+  config group is for the worker processes. Similarly all fields in this
+  config group will be just sent to Nsight Systems when Ray starts the
+  controller process. Capture range is used to control the profiler when to
+  start and stop. So `capture-range: "cudaProfilerApi"` is fixed and does
+  not change it. Users can change `capture-range-end` with some accurate
+  calculation or just leave it `null`.
+
+Worker process profiling      *perf-nsight_profiling-worker-process-profiling*
+
+Verl manages mulitiple RL roles, Actor, Ref, Rollout, Critic, Reward, which
+are implemented in different Worker classes. And these workers can be
+combined into one Ray Actor, running in a process group. Each RL role has
+its own profiling config group, `profiler`, which consists of three fields:
+
+- `all_ranks` and `ranks`. When `all_ranks` is set `True` then all ranks
+  will be profiled; when set `False`, `ranks` will be profiled. By default,
+  verl profiles the whole training process in a series
+  ` worker_process_<PID>.<RID>.nsys-rep` files for each process rank. PID is
+  the process ID; RID is the capture range ID.
+- `discrete`. When set `False`, all the roles actions in one training step
+  will be dumped in one database. When set `True`, the actions annotated by
+  `DistProfiler.annotate` will be dumped into a discrete database. In this
+  case, each role's action occupies one `<RID>`.
+- Verl collocate mode. Verl can combine two Worker sub classes to one Worker
+  Actor. In this case, the user should take care that the combined Workers
+  have consistent `discrete`. The Nsight Systems profiler uses a
+  `torch.cuda.profiler.start()` and `stop()` pair to dump a `<step>`
+  database anyway.
+
+                      *perf-nsight_profiling-where-to-find-the-profiling-data*
+where to find the profiling data
+
+By default the `*.nsys-rep` files are saved in the directory
+`/tmp/ray/session_latest/logs/nsight/` at each node. According to the Ray
+manual, this default directory is not changeable.
+“however, Ray preserves the `--output` option of the default config”
+https://docs.ray.io/en/latest/ray-observability/user-guides/profiling.html.
+
+Some users may think it is not convenient, but it is understandable that Ray
+may start hundreds of processes and it would be a big network file system
+pressure if we save the files in one central place.
+
+ *perf-nsight_profiling-finish-hook-relocate-results-and-run-a-custom-command*
+Finish hook: relocate results and run a custom command
+
+Because Ray hardcodes the Nsight output directory, verl provides a finish
+hook. It has two independent parts, configurable either once under
+`global_profiler` (every role inherits it) or per role under `profiler`
+(which overrides the global value):
+
+- `relocate_results` (bool, default `False`). When `True`, each profiled
+  worker moves its own `worker_process_<pid>.*` reports out of
+  `/tmp/ray/session_latest/logs/nsight/` into `save_path`, on every profiled
+  step. Matching is by PID (nsys's `%p` token equals the worker process
+  PID), so co-located ranks never touch each other's files and there is no
+  race. Destination filenames are prefixed with the role and hostname (e.g.
+  `actor_<host>_worker_process_<pid>.nsys-rep`) to stay unique across nodes.
+  The move is best-effort: nsys only finalizes a report after the capture
+  session shuts down, so files that are not present yet are simply skipped
+  and nothing is ever deleted. The same flag also flattens rollout engine
+  traces, which the engines write into
+  `<save_path>/agent_loop_rollout_replica_<n>/`, into `save_path` --- see
+  |verl-perf-torch_profiling|.
+- `finish_hook_cmd` (str, default `null`). A shell command executed on the
+  selected ranks once, after the last profiled step (not once per step). Use
+  it for post-processing, compression, or uploading traces to remote
+  storage. Backend stop and `relocate_results` still run every profiled
+  step, so by the last step `save_path` holds every profiled step's reports;
+  because the command runs a single time, a command that uploads the whole
+  directory sends each report exactly once. It runs with these environment
+  variables:
+
+  - `VERL_PROFILE_SAVE_PATH` --- the configured `save_path` (holds all
+    profiled steps' reports by the time the command runs).
+  - `VERL_PROFILE_TOOL` --- the profiler tool (e.g. `nsys`).
+  - `VERL_PROFILE_RANK` --- the global rank.
+  - `VERL_PROFILE_PID` --- the worker process PID (matches the `%p` in the
+    report filename).
+  - `VERL_PROFILE_ROLE` --- the worker role, when known.
+  - `VERL_PROFILE_RAY_NSIGHT_DIR` --- Ray's fixed Nsight log dir (nsys
+    only), handy for grabbing stragglers.
+
+Running once is what keeps each report uploaded exactly once. If the command
+instead ran every profiled step, a directory upload would re-send earlier
+steps' reports each step (`save_path` accumulates), and an uploader that
+versions by upload time would then store one report as several files
+differing only by a trailing timestamp. A single upload at the end avoids
+that entirely.
+
+Choosing which ranks run the command. `finish_hook_cmd` runs on
+`finish_hook_all_ranks`/`finish_hook_ranks`. When both are unset it falls
+back to the profiled ranks (`all_ranks`/`ranks`), so by default the command
+runs wherever profiling happened. `finish_hook_ranks` may also select ranks
+that were not profiled (for example to run a single aggregation step on rank
+0). `relocate_results` always runs on the profiled ranks, since that is
+where the artifacts live. `save_path` is usually node-local, so the command
+runs on every selected rank/node: with multi-node profiling keep one
+selected rank per node (do not narrow it to rank 0 only, or the other nodes'
+artifacts are never picked up), but avoid selecting several ranks that share
+one node's directory, or each would upload that directory.
+
+Which role's config applies. A worker reads exactly one role block, chosen
+by its own role: a collocated `actor_rollout_ref` worker reads
+`actor_rollout_ref.actor.profiler`, and `rollout.profiler` only applies to a
+standalone rollout worker. Setting the hook on `global_profiler` avoids
+having to guess.
+
+Example: relocate every rank's reports into `save_path` every step and, once
+profiling is done, upload each node's directory to HDFS in one shot:
+
+>yaml
+        global_profiler:
+            tool: nsys
+            steps: [1, 2, 5]
+            save_path: "outputs/profile"
+            relocate_results: True
+            finish_hook_cmd: 'hdfs dfs -put -f "$VERL_PROFILE_SAVE_PATH"/*.nsys-rep hdfs:///my/profiles/'
+        actor_rollout_ref:
+            actor:
+                profiler:
+                    enable: True
+                    all_ranks: True
+<
+Because the command runs once (after step 5 here), globbing `save_path`
+uploads each report exactly once --- there is no per-step re-upload to
+deduplicate. When you reference a variable on the command line, wrap it in
+single quotes so your shell does not expand it before the worker sees it.
+The value itself must not contain double quotes --- Hydra's override parser
+rejects them --- so a command that needs quoting (paths with spaces) belongs
+in a small script that the hook calls.
+
+Observing the hook. After the last profiled step, the selected ranks print a
+`[Profiler][finish_hook]` line to the worker's stdout stating whether a
+command is configured and whether the current rank was selected, followed by
+the command line itself, its merged stdout/stderr streamed live, and its
+exit code. These are plain prints rather than logger calls so they show up
+in the Ray worker logs regardless of the logging level. The command failing
+(non-zero exit or launch error) never interrupts training.
+
+USAGE EXAMPLE                            *perf-nsight_profiling-usage-example*
+
+To enable profiling for specific components and steps, modify your
+ppo_trainer.yaml like this:
+
+Disable profiler                      *perf-nsight_profiling-disable-profiler*
+
+>yaml
+        profiler:
+            steps: null # disable profile
+<
+
+*perf-nsight_profiling-enable-profiler-and-one-database-for-one-training-step*
+Enable profiler and one database for one training step
+
+>yaml
+        global_profiler:
+            steps: [1, 2, 5]
+            discrete: False
+        actor_rollout_ref:
+            actor:
+                profiler:
+                    enable: True
+                    all_ranks: True
+            # rollout & ref follow actor settings
+        critic:
+                profiler:
+                    enable: True
+                    all_ranks: True
+        reward_model:
+                profiler:
+                    enable: True
+                    all_ranks: True
+<
+
+*perf-nsight_profiling-enable-profiler-and-multiple-databases-for-one-training-step*
+Enable profiler and multiple databases for one training step
+
+>yaml
+        profiler:
+            steps: [1, 2, 5]
+            discrete: True
+<
+
+PROFILING OUTPUT                      *perf-nsight_profiling-profiling-output*
+
+When profiling is enabled, verl will generate Nsight Systems profiles for
+the specified components and steps. The profiles will include:
+
+- CUDA kernel execution
+- Memory operations
+- CPU-GPU synchronization
+- NVTX markers for key operations
+
+Nsight Systems supports multi-report view, to open multiple databases
+together. In this mode, different processes and steps can be aligned in one
+time line for better analysis.
+
+----------------------------------------------------------------------------
+Performance Tuning Guide                               *verl-perf-perf_tuning*
+
+Last updated: 10/22/2026.
+
+Author: Guangming Sheng https://github.com/PeterSH6, Jiali Zheng
+https://github.com/CurryRice233
+
+In this section, we will discuss how to tune the performance of all the
+stages in verl, including:
+
+1. Rollout generation throughput.
+2. Enable `use_remove_padding=True` for sequence packing (i.e., data packing
+   and remove padding).
+3. Batch size tuning for forward and backward computation
+4. Enable `use_dynamic_bsz=True` for higher throughput.
+5. Utilize Ulysses Sequence Parallel for Long Context Training
+6. LigerKernel for SFT performance optimization
+7. Forward prefetch in FSDP training backend
+8. Reduce FSDP gradient synchronization during gradient accumulation
+9. Memory optimization for entropy calculation from logits
+10. Node-local low-precision gradient communication with VeOmni
+
+ROLLOUT GENERATION TUNING         *perf-perf_tuning-rollout-generation-tuning*
+
+verl supports rollout backends including vLLM, SGLang, and TensorRT-LLM.
+
+Below are key factors for tuning vLLM-based rollout. Before tuning, we
+recommend setting `actor_rollout_ref.rollout.disable_log_stats=False` so
+that rollout statistics are logged.
+
+- Increase `gpu_memory_utilization`.
+
+  - For vLLM v0.7.0 and later, the vLLM instance will only use
+    gpu_memory_utilization of the total memory.
+  - For SGLang, it's the fraction of the free GPU memory used for static
+    memory like model weights and KV cache. However, the remaining
+    (1-gpu_memory_utilization) will also be used during inference.
+
+  However, if model parameters and optimizer states are not offloaded, using
+  too high a fraction can lead to OOM. A value between 0.5 and 0.7 often
+  strikes a good balance between high throughput and avoiding OOM.
+
+  Note: since the definition of `gpu_memory_utilization` varies across
+  inference engines, a value that works well for one engine may cause OOM
+  for another.
+
+- Adjust `max_num_seqs` or `max_num_batched_tokens`. If the GPU cache
+  utilization is relatively low in the log, increase `max_num_seqs` or
+  `max_num_batched_tokens` can enlarge the effective batch size in the
+  decoding stage, allowing more concurrent requests per batch. We recommend
+  setting `max_num_batched_tokens > 2048` for higher throughput.
+- Use a smaller `tensor_parallel_size`. When GPU resources allow, a smaller
+  tensor parallel size spawns more vLLM replicas. Data parallelism (DP) can
+  yield higher throughput than tensor parallelism (TP), but also increases
+  KVCache consumption. Carefully balance the trade-off between more replicas
+  and higher memory usage. Our experiment in Sec. 8.4 of HybridFlow paper
+  https://arxiv.org/pdf/2409.19256v2 evaluate this trade-off.
+- Balance performance and memory using `cudagraph_capture_sizes`. If
+  `cudagraph_capture_sizes` is set, vLLM will try to capture the model
+  execution graph for different batch sizes. Since cudagraph memory can not
+  be offloaded to cpu, The memory stay in gpu when update actor is running.
+  Using smaller batch sizes can avoid OOM but slightly reduce throughput.
+  Must to set `enforce_eager=False` to use `cudagraph_capture_sizes`.
+
+More tuning details such as dealing with Preemption and Chunked-prefill can
+be found in vLLM official tuning guide
+https://docs.vllm.ai/en/latest/configuration/optimization/
+
+For optimal performance, we recommend using vLLM v0.8.3 or later. See
+https://github.com/verl-project/verl/blob/main/docs/README_vllm0.8.md for
+details.
+
+                     *perf-perf_tuning-enable-remove-padding-sequence-packing*
+ENABLE REMOVE PADDING (SEQUENCE PACKING)
+
+For FSDP training, set `actor_rollout_ref.model.use_remove_padding=True` to
+remove padding tokens before the model forward pass. If the run uses a
+critic, set `critic.model.use_remove_padding=True` as well. The benefit
+depends on how much padding is present in the training batches.
+
+For an architecture not covered by tests/models/test_transformer.py
+https://github.com/verl-project/verl/blob/main/tests/models/test_transformer.py,
+add a small configuration to its `test_configs` list and run the padded
+versus unpadded forward-output comparison on a CUDA or NPU device:
+
+>bash
+    pytest -s tests/models/test_transformer.py
+<
+This test provides an initial numerical comparison. Before adopting the
+setting, run a short training job with the intended configuration and
+compare throughput and peak memory against the padded path.
+
+BATCH SIZE TUNING                         *perf-perf_tuning-batch-size-tuning*
+
+To achieve higher throughput in experience preparation (i.e., model fwd) and
+model update (i.e., actor/critic fwd/bwd), users may need to tune the
+`*micro_batch_size_per_gpu` for different computation.
+
+In verl, the core principle for setting batch sizes is:
+
+- Algorithmic metrics (train batch size, PPO mini-batch size) are global
+  (from a single-controller perspective), normalized in each worker. See the
+  normalization code
+  https://github.com/verl-project/verl/blob/main/verl/workers/engine_workers.py.
+- Performance-related parameters (micro batch size, max token length for
+  dynamic batch size) are local parameters that define the per-GPU data
+  allocations. See the normalization code
+  https://github.com/verl-project/verl/blob/main/verl/workers/engine_workers.py.
+
+  Note: ~
+
+  In your training script, please use `*micro_batch_size_per_gpu` instead of
+  `*micro_batch_size`. So that you don't need to consider the normalization
+  of the `micro_batch_size` and `micro_batch_size` will be deprecated.
+
+Batch Size Tuning tips               *perf-perf_tuning-batch-size-tuning-tips*
+
+Therefore, users may need to tune the `*micro_batch_size_per_gpu` to
+accelerate training. Here're some tips:
+
+1. Enable gradient checkpointing: Set
+   `actor_rollout_ref.model.enable_gradient_checkpointing=True` and
+   `critic.model.enable_gradient_checkpointing=True`. This often allows for
+   larger micro-batch sizes and will be beneficial for large mini-batch
+   training.
+2. Increase the `*micro_batch_size_per_gpu` as much as possible till equals
+   to normalized `mini_batch_size`.
+3. Use larger forward-only parameters: Forward only parameter, such as
+   `actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu`,
+   `actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu`,
+   `critic.forward_micro_batch_size_per_gpu` could be larger (e.g., 2x) than
+   training related micro batch sizes, such as
+   `actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu`,
+   `critic.ppo_micro_batch_size_per_gpu`.
+4. Allow larger micro-batch sizes for Critic and Reward models: micro batch
+   size of Critic and Reward model could be larger than Actor model. This is
+   because the actor model has much larger vocab size in the final layer.
+5. Enable activation offloading: Set
+   `actor_rollout_ref.model.enable_activation_offload=True` and
+   `critic.model.enable_activation_offload=True`. This often works together
+   with gradient checkpointing to get larger micro-batch sizes and it's only
+   available in FSDP backend now.
+
+   The VeOmni backend does not support this synchronous mode and rejects the
+   flag; use
+   `actor_rollout_ref.actor.veomni.enable_async_activation_offload=True`
+   instead, which overlaps the device-to-host and host-to-device copies with
+   compute rather than blocking on them. By default the offloaded modules
+   are discovered from the model's `_no_split_modules`; override that with
+   `actor_rollout_ref.actor.veomni.activation_offload_modules=[model.layers.{*}]`
+   when the model does not declare them or when only part of the stack
+   should be offloaded. Free pinned-host buffers are capped by
+   `actor_rollout_ref.actor.veomni.activation_offload_host_cache_limit_gb`
+   (default 4.0 GB).
+
+TUNING FOR DYNAMIC BATCH SIZE *perf-perf_tuning-tuning-for-dynamic-batch-size*
+
+Dynamic batch size is a technique that allows the model to process similar
+number of tokens in a single forward pass (with different actual batch
+sizes). This can significantly improve the training efficiency and reduce
+the memory usage.
+
+To utilize this technique, users can set `use_dynamic_bsz=True` in actor,
+ref, critic and reward models. With `use_dynamic_bsz=True`, users don't need
+to tune `*micro_batch_size_per_gpu`. Instead, users should tune the
+following parameters:
+
+- `actor_rollout_ref.actor.ppo_max_token_len_per_gpu`,
+  `critic.ppo_max_token_len_per_gpu`: The maximum number of tokens to be
+  processed in fwd and bwd of `update_policy` and `update_critic`.
+- `actor_rollout_ref.ref.log_prob_max_token_len_per_gpu` and
+  `actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu`: The maximum
+  number of tokens to be processed in a the fwd computation of
+  `compute_log_prob` and `compute_ref_log_prob`.
+- `critic.forward_micro_batch_size_per_gpu`,
+  `reward_model.forward_micro_batch_size_per_gpu`: The maximum number of
+  tokens to be processed in a the fwd computation of `compute_values`,
+  `compute_rm_score`.
+
+                             *perf-perf_tuning-dynamic-batch-size-tuning-tips*
+Dynamic Batch Size Tuning tips
+
+Here're some tips to tune the above parameters:
+
+1. Increase `actor_rollout_ref.actor.ppo_max_token_len_per_gpu` Make it at
+   least 2 x (max_prompt_length + max_response_length). See
+   run_qwen3_8b_fsdp.sh
+   https://github.com/verl-project/verl/blob/main/examples/ppo_trainer/run_qwen3_8b_fsdp.sh
+   for an example. Try to increase it to get higher throughput.
+2. Forward-only parameters can be larger: Similar to the non-dynamic-batch
+   scenario, forward-only token limits can exceed those used in
+   forward/backward operations.
+3. Use larger limits for Critic and Reward models: Critic and Reward
+   parameters can be set at least 2× the Actor's limits. See
+   run_qwen3_8b_fsdp.sh
+   https://github.com/verl-project/verl/blob/main/examples/ppo_trainer/run_qwen3_8b_fsdp.sh
+   for an example.
+
+        *perf-perf_tuning-ulysses-sequence-parallel-for-long-context-training*
+ULYSSES SEQUENCE PARALLEL FOR LONG CONTEXT TRAINING
+
+To utilize this technique, users can set `ulysses_sequence_parallel_size>1`
+in actor, ref, critic and reward models.
+
+We support different model utilize different ulysses_sequence_parallel_size
+sizes.
+
+To train long sequence (>32k), users may need to decrease the
+`*micro_batch_size_per_gpu` and `*max_token_len_per_gpu` to avoid OOM.
+
+                       *perf-perf_tuning-ligerkernel-for-training-performance*
+LIGERKERNEL FOR TRAINING PERFORMANCE
+
+LigerKernel provides fused Triton kernels (RMSNorm, SwiGLU, RoPE) that can
+improve training throughput. It works with both SFT and RL (PPO/GRPO)
+training, including vision-language models.
+
+1. Install Liger Kernel 0.8.4 via `uv pip install "liger-kernel==0.8.4"`.
+   Set `use_liger` in your configuration:
+
+   >yaml
+       model:
+         use_liger: True  # Enable LigerKernel
+<
+
+2. The default value is `False`. When enabled, verl applies Liger's fused
+   RMSNorm, SwiGLU, and RoPE kernels to the model. The model-level
+   `fused_linear_cross_entropy` patch remains disabled because verl computes
+   log-probabilities through its output-head path.
+3. `use_liger` is compatible with `use_fused_kernels`. The former controls
+   model-internal kernels, while the latter controls the output head. Set
+   `fused_kernel_options.impl_backend` to `liger` to use Liger's fused
+   scaled cross entropy, or keep the default `torch` backend to use verl's
+   native chunked `FusedLinearForPPOFunction`. The `liger` backend falls
+   back to the native implementation when Liger is not installed.
+
+   For Megatron, enable both `use_fused_kernels` and `use_liger` to select
+   Liger's public tensor-parallel output-head operator instead of Verl's
+   Triton implementation. Verl passes the full token tensor to the public
+   API without exposing chunking or padding controls. Verl delegates native
+   setup to `liger_kernel.ops.configure.configure` using the existing
+   actor/reference maximum-token limits. Every pipeline stage participates,
+   including stages without output weights. The runtime bootstraps on WORLD
+   and registers the tensor-parallel partition separately; Verl does not
+   initialize NVSHMEM or own native workspace/context caches.
+
+   Before the reference engine initializes, colocated Megatron
+   actor/reference workers reserve the maximum across the actor training,
+   actor log-probability, and reference limits, accounting for each engine's
+   context parallelism. They also reserve the local vocabulary required by
+   the smallest configured TP size. This does not change either engine's
+   batching settings or add a user-facing capacity knob. Standalone engines
+   reserve
+   `max(max_token_len_per_gpu, infer_max_token_len_per_gpu) * context_parallel_size`
+   tokens. Capacity cannot grow after initialization. Repeated setup and
+   additional TP partitions within the original capacity are managed by
+   Liger. Execution across native contexts must remain serialized per
+   process. With fixed-size microbatches these token settings do not limit
+   the batch itself: choose them to cover the largest packed output-head
+   input, including Megatron's alignment padding. Verl does not resize the
+   workspace from observed microbatch shapes.
+
+   >bash
+       uv sync --extra megatron --extra vllm  # replace vllm with the selected rollout backend
+       uv pip install /path/to/liger_kernel-0.8.4-py3-none-any.whl
+       uv pip install /path/to/liger_cute_kernels-<version>-<platform>.whl
+<
+   >yaml
+       actor_rollout_ref:
+         model:
+           use_fused_kernels: true
+           use_liger: true
+<
+   The optional `liger-cute-kernels` wheel enables Liger's native
+   CUTLASS/CuTe tensor-parallel implementation when the installed wheel
+   supports the current GPU and CUDA runtime. Backend selection remains
+   inside Liger; Verl calls the same public API whether Liger selects the
+   native implementation or its fallback.
+
+   The Megatron integration requires the public configuration API merged in
+   Liger mainline commit `0043f43309144bb3054518d28efed25fc314edaf`, plus
+   the configuration fallback change in Liger-Kernel PR #1502
+   https://github.com/linkedin/Liger-Kernel/pull/1502 (merged mainline
+   commit `8866e4ee7945bc3cac0e40062e7bde26ecc09f65`). Liger Kernel is
+   pinned to the published `0.8.4` release containing both changes. For
+   native execution, install matching `liger-kernel==0.8.4` and
+   `liger-cute-kernels==0.8.4` wheels, or build those sources locally.
+   Missing optional LCK or unsupported native hardware causes Liger to warn
+   and skip native setup; genuine native configuration errors are not
+   suppressed.
+
+   Requirements, legacy GPU dependencies, and FSDP/Megatron extras use the
+   same `liger-kernel==0.8.4` pin. VeRL does not inspect GPU capabilities or
+   select a hardware fallback. Liger owns both native eligibility and
+   operator dispatch. LCK remains CUDA-only and raises
+   `UnsupportedDeviceError` on unsupported devices. Liger-Kernel's public
+   `configure` catches that specific error, warns, and returns `False`
+   without native setup.
+
+   DeepEP and memory lifetime: Native Liger must not share a process with
+   DeepEP V1 RDMA (cross-node EP). Liger rejects an external NVSHMEM runtime
+   initialized first. VeRL also checks the legacy DeepEP dispatch/combine
+   RDMA buffer-size hints before its lazy buffer can initialize after Liger,
+   and rejects that combination. Use `alltoall`, a Megatron-supported DeepEP
+   V2 dispatcher without NVSHMEM, or disable the Liger fused output head.
+   Intra-node DeepEP V1 buffers with zero RDMA allocation are not rejected.
+   The safety gate has unit coverage; cross-node DeepEP training is
+   unsupported and is not part of the dense training smoke.
+
+   NVSHMEM environment settings must be established before initialization.
+   Its symmetric heap and native workspaces remain resident through
+   parameter and optimizer offload and colocated inference-engine
+   sleep/wake; budget this memory separately from model weights and KV
+   cache. Do not initialize or finalize another NVSHMEM owner while Liger is
+   active. Finalization is only safe after every native operation, backward
+   pass and captured graph has finished, and the loaded NVSHMEM host runtime
+   must be compatible with the device library used to build the native
+   wheel.
+
+                  *perf-perf_tuning-forward-prefetch-in-fsdp-training-backend*
+FORWARD PREFETCH IN FSDP TRAINING BACKEND
+
+During the training phase, users can enable forward prefetching in FSDP by
+setting `fsdp_config.forward_prefetch=True`. For example,
+`actor_rollout_ref.actor.fsdp_config.forward_prefetch=True`. This
+configuration prefetches the next forward-pass all-gather operation before
+completing the current forward computation, overlapping communication with
+computation and improving efficiency. For further details, refer to the
+FSDP forward_prefetch
+https://docs.pytorch.org/docs/stable/fsdp.html#module-torch.distributed.fsdp
+documentation.
+
+  Note: ~
+
+  Backward prefetch is unsupported because the `BACKWARD_POST` policy may
+  prefetch incorrectly in nested-module cases. For details, see the
+  FSDP documentation
+  https://github.com/pytorch/torchtitan/blob/main/docs/fsdp.md?plain=1#L70
+
+*perf-perf_tuning-reduce-fsdp-gradient-synchronization-during-gradient-accumulation*
+REDUCE FSDP GRADIENT SYNCHRONIZATION DURING GRADIENT ACCUMULATION
+
+When a PPO mini-batch is split into multiple micro-batches, the optimizer
+only steps after the final micro-batch, so gradients only need to be
+synchronized once per mini-batch. By default, the FSDP engine defers
+gradient synchronization on the non-final micro-batches and synchronizes
+only before the final backward. This applies to both the actor and the
+critic.
+
+With `\(M\)` micro-batches per mini-batch, this reduces gradient
+synchronization from `\(M\)` rounds to one round. It does not remove
+parameter all-gathers. The optimization is implemented for both FSDP1 (using
+`no_sync`) and FSDP2 (using `set_requires_gradient_sync`), and the optimizer
+update is numerically identical to synchronizing every micro-batch.
+
+  Note: ~
+
+  Deferring synchronization retains unsharded gradients until the final
+  micro-batch, which can substantially increase peak device memory during
+  gradient accumulation for large models or long packed sequences. Set
+  `actor_rollout_ref.actor.fsdp_config.use_no_sync_for_gradient_accumulation=False`
+  (or the corresponding critic FSDP setting) to synchronize and reshard
+  after every micro-batch when memory headroom is limited. Forward-only
+  passes are unaffected.
+
+MIGRATING TO FSDP2                       *perf-perf_tuning-migrating-to-fsdp2*
+
+FSDP2 offers notable improvements over FSDP1. According to
+PyTorch TorchTitan benchmarks https://arxiv.org/abs/2410.06511v1:
+
+- 7% lower GPU memory usage on average
+- 1.5% throughput improvement with BF16 training
+- Better composability with DTensor and per-parameter sharding
+
+Enabling FSDP2 in VERL:
+
+  >python
+      # Enable FSDP2 in actor configuration
+      actor_rollout_ref.actor.strategy="fsdp2"
+<
+
+  Note: ~
+
+  FSDP2 requires PyTorch 2.1+ and is recommended for models with transformer
+  architecture.
+
+*perf-perf_tuning-node-local-low-precision-gradient-communication-with-veomni*
+NODE-LOCAL LOW-PRECISION GRADIENT COMMUNICATION WITH VEOMNI
+
+VeOmni supports BF16 gradient communication with FP32 accumulation and
+output. This defaults to `false` and requires CUDA FSDP2, mixed precision,
+and the VeOmni version pinned by verl. To enable it for the actor:
+
+>bash
+    model_engine=veomni \
+    actor_rollout_ref.actor.veomni.mixed_precision=true \
+    actor_rollout_ref.actor.veomni.low_precision_reduce_scatter_comm=true
+<
+Only eligible multi-rank shard groups confirmed to be on the same node use
+this path; other groups retain native communication. The option only affects
+backward gradient communication; forward-only inference does not execute it.
+
+The option uses additional temporary buffers and may slow small
+communication buckets. Compare actor-update time and peak memory with it on
+and off, and keep it disabled unless the measured workload benefits.
+
+    *perf-perf_tuning-memory-optimization-for-entropy-calculation-from-logits*
+MEMORY OPTIMIZATION FOR ENTROPY CALCULATION FROM LOGITS
+
+The `logits` tensor (typically of shape `[bsz*seq_len, voc]`) can consume
+significant memory. When using `compute_entropy_from_logits`, memory usage
+reaches approximately
+`[bsz*seq_len, voc] × (4 bytes (float32) + 2 bytes (autocast for softmax+logsumexp) + 1 byte (softmax output))`.
+
+To reduce this memory peak, enable chunked computation by setting:
+`actor_rollout_ref.ref.entropy_from_logits_with_chunking = True` This
+processes the tensor in chunks of shape `[chunk_size, voc]` (e.g., 2048)
+rather than the full sequence length, exclusively during the model's forward
+pass.
+
+Additionally, during training, standard gradient checkpointing
+(`enable_gradient_checkpointing=True`) does not apply to entropy
+calculations. To reduce memory peaks in this context, set:
+`actor_rollout_ref.actor.entropy_checkpointing = True` This enables entropy
+recomputation specifically for the entropy calculation, lowering memory
+usage during training.
+
+----------------------------------------------------------------------------
+Rollout KV Cache Offload via Mooncake-Store     *verl-perf-rollout_kv_offload*
+
+Last updated: 10/21/2026.
+
+Offload prefix KV blocks from the vLLM rollout engine to a shared Mooncake
+https://github.com/kvcache-ai/Mooncake store so long shared prefixes (system
+prompt, agentic tool history, `rollout.n` samples per prompt) get
+deduplicated across requests and rollout replicas. This also helps long-tail
+load balancing: when work migrates to idle rollout replicas, shared prefix
+KV reduces the re-prefill cost.
+
+SETUP MOONCAKE + VLLM            *perf-rollout_kv_offload-setup-mooncake-vllm*
+
+Follow vLLM's official guide for installing the Mooncake client, starting a
+master, and writing the JSON config:
+https://docs.vllm.ai/en/latest/features/mooncake_store_connector_usage/
+
+The verl side only consumes whatever that doc produces --- no extra steps.
+
+ENABLE IN VERL                        *perf-rollout_kv_offload-enable-in-verl*
+
+verl forwards `engine_kwargs.vllm.*` straight to `vllm serve` as CLI flags.
+To attach the Mooncake connector, set `kv_transfer_config`:
+
+>yaml
+    actor_rollout_ref:
+      rollout:
+        engine_kwargs:
+          vllm:
+            kv_transfer_config: |-
+              {
+                "kv_connector": "MooncakeStoreConnector",
+                "kv_role": "kv_both",
+                "kv_connector_extra_config": {
+                  "mooncake_config_path": "/path/to/mooncake_config.json"
+                }
+              }
+<
+Or as a Hydra CLI override:
+
+>bash
+    +actor_rollout_ref.rollout.engine_kwargs.vllm.kv_transfer_config.kv_connector=MooncakeStoreConnector \
+    +actor_rollout_ref.rollout.engine_kwargs.vllm.kv_transfer_config.kv_role=kv_both \
+    +actor_rollout_ref.rollout.engine_kwargs.vllm.kv_transfer_config.kv_connector_extra_config.mooncake_config_path=/path/to/mooncake_config.json
+<
+
+    *perf-rollout_kv_offload-rl-correctness-hard-reset-on-every-weight-update*
+RL CORRECTNESS: HARD RESET ON EVERY WEIGHT UPDATE
+
+verl clears both local and Mooncake KV caches at every weight update
+boundary to avoid reusing KV from the previous policy.
+
+Required vLLM version: use vLLM 0.22 or newer. Older builds may leave stale
+KV in the Mooncake master after a weight update.
+
+          *perf-rollout_kv_offload-salting-weight-versions-instead-of-a-reset*
+SALTING WEIGHT VERSIONS INSTEAD OF A RESET
+
+Rollout engines increasingly keep prefix KV beyond GPU memory (KV
+connectors, HiCache storage), where the hard reset is either missing or too
+coarse. In vLLM 0.29 (and still in 0.31), `LMCacheMPConnector` and
+`HF3FSKVConnector` have no `reset_cache()`, so the reset is a silent no-op
+and they keep serving KV from the previous policy. On SGLang, verl's reset
+leaves HiCache storage in place. Where the reset does work, each replica's
+pause, including fully-async rebalance aborts that change no weights, wipes
+a store that other replicas may still be reading or writing. Set
+
+>yaml
+    actor_rollout_ref:
+      rollout:
+        external_kv_cache_invalidation: salt  # default: reset
+<
+to salt weight versions instead of resetting the external store. Each
+request carries the engine's native `cache_salt`, set to
+`<run id>:<global_steps>`. The engine mixes it into every prefix block hash,
+so a store keyed by those hashes never matches entries written under earlier
+weights (or by an earlier run), whether or not it can be reset. Those
+entries are never read again, so LRU-style eviction reclaims them ahead of
+entries still in use. GPU-local caches are still cleared on every weight
+update, as with `reset`; only the external store is kept. vLLM's own sleep
+(`free_cache_engine`) resets the connector by default; under `salt` verl
+passes `reset_connector=False`, so the store also survives sleep, including
+`separate_async` switching, which sleeps hybrid replicas while standalone
+replicas keep using the same store at the same weight version. This needs a
+vLLM with vllm#57810 https://github.com/vllm-project/vllm/pull/57810 (after
+0.33.0). On older vLLM, sleep still resets the store and verl logs a
+warning; results stay correct, only the cached entries are lost.
+
+Things to know before enabling it:
+
+- Weight versions come from `global_steps`. Every weight update must pass a
+  new `global_steps`, which all verl trainers do; the checkpoint-engine
+  update path raises if it is missing.
+- Nothing is reused across runs. The run id is drawn per driver process, so
+  a resumed job starts with a cold store.
+- Only salt-keyed stores. On vLLM the KV connector must key its store by
+  vLLM's block hashes: `MooncakeStoreConnector`, `OffloadingConnector` (what
+  vLLM's `kv_offloading_size` sets up), `LMCacheMPConnector` or
+  `HF3FSKVConnector`. Others, such as `LMCacheConnectorV1`, which looks
+  blocks up by token ids, are rejected at startup. PD disaggregation is not
+  supported yet.
+- Old entries are evicted, not deleted. The store needs an eviction policy
+  (vLLM's CPU offloading, for example, evicts LRU) and room for at least one
+  step's worth of blocks.
+- Backends. vLLM, SGLang and TRT-LLM all accept the salt. On SGLang it also
+  covers HiCache storage (verified with the `file` storage backend), which
+  `reset` does not clear. On TRT-LLM the mode only adds the salt; verl
+  configures no external store for it.
+- The salt is computed when a request passes the server's pause gate, so a
+  request held across a weight update is salted with the weights it runs on.
+
+----------------------------------------------------------------------------
+PyTorch Profiling in verl                          *verl-perf-torch_profiling*
+
+Last updated: 08/04/2026.
+
+This guide explains how to use the native PyTorch Profiler
+https://pytorch.org/tutorials/recipes/recipes/profiler_recipe.html for
+profiling verl training runs.
+
+CONFIGURATION                             *perf-torch_profiling-configuration*
+
+Profiling in verl can be configured through parameters in the trainer
+configuration file (e.g., `ppo_trainer.yaml`).
+
+Global Profiling Control       *perf-torch_profiling-global-profiling-control*
+
+In `global_profiler`, you can control when and how profiling occurs
+globally:
+
+- `global_profiler.steps`: List of step numbers to profile. E.g.,
+  `[1, 2, 5]` profiles steps 1, 2, and 5. Set to `null` to disable.
+- `global_profiler.save_path`: Directory to save the profiling results.
+  Default is `outputs/profile`.
+
+Role Profiling Control           *perf-torch_profiling-role-profiling-control*
+
+Each RL role (Actor, Critic, etc.) has its own `profiler` configuration:
+
+- `enable`: Whether to enable profiling for this role.
+- `all_ranks`: If `True`, profiles all ranks.
+- `ranks`: List of specific ranks to profile if `all_ranks` is `False`.
+- `tool_config.torch`: Configuration specific to the PyTorch Profiler.
+
+             *perf-torch_profiling-pytorch-profiler-options-tool-config-torch*
+PyTorch Profiler Options (`tool_config.torch`)
+
+You can customize the PyTorch Profiler behavior using the following fields
+under `tool_config.torch`:
+
+- `contents`: List of contents to profile. An empty list (the default)
+  collects everything.
+
+  - `cpu`: Profile CPU activities. Collected whether or not you list it:
+    operator names and verl's per-stage markers are CPU-side events, so a
+    device-only trace would be bare kernels with no way to tell which stage
+    they belong to. Listing it is therefore redundant, and the rest of
+    `contents` is honored as written.
+  - `cuda`: Profile CUDA activities. This is the device keyword on NVIDIA
+    and on AMD ROCm (PyTorch exposes HIP as `torch.cuda`). On another
+    accelerator, use that platform's device type instead --- `xpu`, `hpu`,
+    `mtia` --- which is the one `torch.profiler` activity that session
+    records. Naming a device that is not the running platform's records no
+    device activity and logs a warning.
+  - `memory`: Track tensor memory allocation/free.
+  - `shapes`: Record shapes of operator inputs.
+  - `stack`: Record source code file and line number.
+
+- `profile_token_start`: Effective only for the rollout role; defines the
+  start response-token index for rollout decoding collection. It is applied
+  only when valid (0-based, `profile_token_end > profile_token_start`, and
+  within response length).
+- `profile_token_end`: Effective only for the rollout role; defines the stop
+  response-token index (exclusive) for rollout decoding collection. It is
+  applied only when valid (0-based,
+  `profile_token_end > profile_token_start`, and within response length).
+- `schedule`: Optional `torch.profiler.schedule`
+  https://pytorch.org/docs/stable/profiler.html#torch.profiler.schedule over
+  the update loop's mini-batches, so an update stage with many identical
+  mini-batches does not bloat its trace. `verl` advances it once per update
+  mini-batch; the log-prob forwards and rollout are never sub-sampled.
+  Enabled only when `active > 0`. The full
+  `skip_first`/`wait`/`warmup`/`active`/`repeat` selects which update
+  mini-batches are captured in both modes. In continuous mode
+  (`discrete: False`) skipping ahead to a later mini-batch also drops the
+  earlier stages (rollout, log-prob) from that one shared trace; leave
+  `skip_first`/`wait`/`warmup` at 0 to keep them. In `discrete: True` mode
+  the update stage is isolated in its own trace, so the other stages keep
+  their own full traces regardless. It never emits torch's
+  `ProfilerStep#<n>` rows. See
+  |latest-perf-torch_profiling-3-scheduling-the-update-loops-mini-batches|.
+
+EXAMPLES                                       *perf-torch_profiling-examples*
+
+1. Whole-Step Collection          *perf-torch_profiling-whole-step-collection*
+
+Collects one trace file per profiled RL step per process, holding everything
+that process ran during the step. Note that this is the whole step as seen
+by one worker, not the whole RL system: see
+|perf-torch_profiling-what-one-rl-step-looks-like-on-disk|.
+
+>yaml
+    global_profiler:
+      steps: [1, 2, 5]
+      save_path: ./outputs/profile
+
+    actor_rollout_ref:
+      actor:
+        profiler:
+          enable: True
+          all_ranks: True
+          tool_config:
+            torch:
+              discrete: False
+              contents: [cpu, cuda]
+      # rollout & ref follow actor settings
+<
+
+2. Discrete Mode Collection    *perf-torch_profiling-discrete-mode-collection*
+
+Discrete mode saves a separate trace file per stage within each profiled
+step. This is useful for detailed analysis and is mandatory when using Agent
+Loop.
+
+Configuration Example
+
+This configuration supports profiling both Training (Actor) and Inference
+(Rollout). You can enable/disable them independently.
+
+>yaml
+    actor_rollout_ref:
+      actor:
+        profiler:
+          enable: True # Set to True to profile training
+          all_ranks: False
+          ranks: [0] # Global Rank 0
+          tool_config:
+            torch:
+              discrete: True
+              contents: [cpu, cuda]
+      rollout:
+        profiler:
+          enable: True # Set to True to profile inference
+          all_ranks: False
+          ranks: [0] # Global GPU rank(s); each is mapped to the replica that owns it
+          tool_config:
+            torch:
+              discrete: True # REQUIRED 
+              # Optional response-token window for rollout engine side collection.
+              # If start/stop are not set, the entire rollout stage is collected.
+              # Collect tokens in [12, 46), i.e. token index 12~45.
+              profile_token_start: 12
+              profile_token_end: 46
+      # ref follow actor settings
+<
+Agent Loop Mode Description
+
+When Rollout runs in |verl-advance-agent_loop| mode, performance data for
+the Rollout phase must be collected using discrete mode. In this case, the
+Profiler is triggered by the inference engine backend.
+
+1. Rank Definition: `ranks` in the Rollout configuration are global GPU
+   ranks, the same as in the training roles, and you get traces for exactly
+   those GPUs. A rollout replica drives one inference engine spanning
+   `world_size = tensor_model_parallel_size * data_parallel_size * pipeline_model_parallel_size`
+   GPUs, and replica `r` owns global ranks
+   `[r*world_size, (r+1)*world_size)`. Each listed rank is mapped to the
+   replica that owns it (`replica = rank // world_size`), and that replica's
+   engine is profiled. A tensor-parallel group cannot be profiled a GPU at a
+   time, so the engine traces every GPU in the replica, but only the traces
+   for the ranks you listed are surfaced (see Trace Location) -- the rest
+   are left aside. So with `tp=2` `ranks: [0, 8]` gives you exactly global
+   GPUs 0 and 8 (from replicas 0 and 4), not their tp-mates 1 and 9. Ranks
+   that land on a replica that does not exist are silently ignored.
+   `all_ranks: True` profiles and keeps every replica; leaving `ranks` empty
+   profiles the replica that owns global rank 0 and keeps all of its GPUs.
+2. Inference Engine Support: Currently, vLLM and SGLang engines are
+   supported without additional settings. Specific details are as follows:
+
+   - vLLM Engine: Automatically collects AsyncLLM scheduling stacks and
+     inference process performance data.
+   - SGLang Engine: Automatically collects inference process performance
+     data. Does not support the memory option in contents.
+
+3. Collection Window: rollout replicas are profiled for the whole training
+   step. Generation is decoupled from the step in the V1 trainer -- prompts
+   are served asynchronously and consumed from the replay buffer -- so there
+   is no single generation call to wrap.
+4. Trace Location: the engines take an output directory rather than a file
+   name, so each replica writes into its own
+   `<save_path>/agent_loop_rollout_replica_<n>/` on the node that hosts it.
+   Set `global_profiler.relocate_results: True` to have the requested GPUs'
+   traces moved up into `save_path` itself when the step finishes; that
+   keeps every trace of a step in the one directory you configured, which is
+   what post-processing that does not walk sub-directories needs. Relocated
+   files are named
+   `rollout-replica<n>-globalrank<g>_<engine's own file name>`, where `<n>`
+   is the replica index and `<g>` is the file's absolute global GPU rank
+   (`replica * world_size + tp_rank`), so the names line up with the global
+   `ranks` you configured -- e.g. with `tp=2`, `ranks: [0, 8]` puts just
+   `rollout-replica0-globalrank0_...` and `rollout-replica4-globalrank8_...`
+   in `save_path`. The tp-mates the engine also traced (global GPUs 1 and 9
+   here) are left in the per-replica sub-directory, so `save_path` shows
+   exactly the ranks you asked for. This works by reading the per-GPU
+   tensor-parallel rank out of the engine's own file name -- vLLM writes
+   `...-rank-<k>...` and SGLang writes `...-TP-<k>...`. When that rank
+   cannot be read unambiguously -- an engine that names traces by host/pid,
+   or SGLang using extra parallel dimensions (`-DP-`/`-PP-`/`-EP-`), where a
+   GPU's linear offset is layout-dependent -- the trace is kept (never
+   dropped) and named just `rollout-replica<n>_<engine's own file name>`, so
+   you may see the replica's other GPUs too. The rollout engine does not run
+   `finish_hook_cmd` itself: the colocated training worker's single
+   end-of-run upload of `save_path` (which now includes these relocated
+   traces) is what moves them off the node.
+
+              *perf-torch_profiling-scheduling-the-update-loop-s-mini-batches*
+3. Scheduling the update loop's mini-batches
+
+The unit `global_profiler.steps` selects is one RL step, and by default a
+profiled step is collected whole: everything the worker runs lands in one
+trace, with each stage and each update mini-batch annotated inside it:
+
+- the update loop wraps each iteration in a `mini_batch<i>` row nested under
+  `update_actor` / `critic_update`, numbered from `0` within the step; the
+  engine splits each mini-batch into gradient-accumulation micro-batches,
+  shown as `micro_batch<j>` rows nested inside;
+- a forward-only stage (`compute_log_prob`, `compute_ref_log_prob`, critic
+  values) is one row named after the stage, and the engine splits its batch
+  into `micro_batch<j>` rows inside -- one per forward. If you see a single
+  `micro_batch0`, the batch fit in one micro-batch (common when the
+  inference token budget `log_prob_max_token_len_per_gpu` /
+  `*_micro_batch_size_per_gpu` is large); lower it to split the forward into
+  more micro-batches.
+
+When the update loop has many identical mini-batches, recording all of them
+bloats the trace. `tool_config.torch.schedule` sub-samples them: it only
+ever narrows the update stage's mini-batches (`prof.step()` is advanced
+there only, never on the log-prob forwards or rollout) and is active only
+when `active > 0`. It never writes torch's `ProfilerStep#<n>` rows -- a
+step() here is a single mini-batch, not a meaningful RL step, so those rows
+    would only add noise. What the schedule sub-samples depends on `discrete`:
+
+- `discrete: False` (one continuous trace per process). The schedule selects
+  which update mini-batches are kept: `skip_first`/`wait`/`warmup` skip
+  ahead to a later mini-batch and `active` sets how many are recorded.
+  Because `step()` is advanced once per mini-batch, a window boundary always
+  lands between mini-batches, so the captured ones stay intact. The catch is
+  that torch only persists a window ending in `RECORD_AND_SAVE`, so skipping
+  ahead also drops the rollout/log-prob stages that run before the active
+  window. Leave `skip_first`/`wait`/`warmup` at 0 (the default) to record
+  from the start, keeping every earlier stage in full plus the first
+  `active` update mini-batches. Leave the schedule unset (or `active: 0`) to
+  keep every mini-batch.
+
+  >yaml
+      actor_rollout_ref:
+        actor:
+          profiler:
+            enable: True
+            all_ranks: True
+            tool_config:
+              torch:
+                discrete: False   # one continuous trace per process
+                schedule:
+                  active: 1       # keep every earlier stage in full, plus mini_batch0 of the update loop
+                  # skip_first: 1 # ...or skip ahead: capture only mini_batch1 (earlier stages dropped)
+<
+
+- `discrete: True` (one trace per stage). The update stage is profiled in
+  isolation, so the full schedule applies to its mini-batches:
+  `skip_first`/`wait`/`warmup` drop the leading ones and only the `active`
+  window is kept, repeated `repeat` times (`0` = until the loop ends). The
+  log-prob, rollout and ref stages each get their own full trace, untouched
+  by the schedule. The update-stage files are tagged with the mini-batch
+  window they hold, e.g. `..._mb3-4`.
+
+  >yaml
+      actor_rollout_ref:
+        actor:
+          profiler:
+            enable: True
+            all_ranks: True
+            tool_config:
+              torch:
+                discrete: True
+                schedule:
+                  skip_first: 1
+                  wait: 1
+                  warmup: 1
+                  active: 2   # actor_update trace holds only mini_batch3..4; log-prob/ref traces stay full
+                  repeat: 0
+<
+
+Either way the trace carries no `ProfilerStep#<n>` rows: navigate it by the
+stage rows and the `mini_batch<i>` rows inside the update loop. In
+`discrete: False` a schedule keeps `active` update mini-batches starting at
+the one `skip_first`/`wait`/`warmup` point to (skipping ahead drops the
+earlier stages); leave those at 0 to keep every earlier stage in full, or
+unset the schedule to keep every mini-batch. With
+`global_profiler.profile_continuous_steps: True` a run of consecutive
+profiled steps shares one file.
+
+If a step's trace is too large to be workable, narrow it with
+`discrete: True` (one file per stage) and sub-sample its update loop with
+`schedule`, or profile fewer ranks (`ranks`/`all_ranks`).
+
+OUTPUT FILE NAMING                   *perf-torch_profiling-output-file-naming*
+
+Because profiling runs in every training process, each trace file is named
+so it can be attributed to a specific process without opening it. The stem
+is:
+
+>text
+    [<role>_][<scope>_][step<S>_]rank<r>[-of-<world>][_tp<..>-pp<..>-dp<..>-cp<..>]_pid<pid>_<timestamp>.json.gz
+<
+- `role`: the worker role (e.g. `actor`, `ref`, `value-model` for the
+  critic), so results from different roles at the same rank are
+  distinguishable. A colocated hybrid worker reports its combined role,
+  `actor-rollout-ref` (underscores in labels become hyphens, since
+  underscore separates the fields).
+- `scope`: the profiled region passed to `start_profile`/`annotate` --
+  `train` for a training worker's whole-step window, or a stage name such as
+  `actor-update` in discrete mode.
+- `step<S>`: the RL step (`global_steps`) being profiled, i.e. one of
+  `global_profiler.steps`. With `profile_continuous_steps` this is the first
+  step of the run of steps the file holds.
+- `rank`/`world`: the global `torch.distributed` rank and world size.
+- `tp/pp/dp/cp`: tensor/pipeline/data/context parallel ranks, included when
+  Megatron's parallel state is initialized (plain FSDP data parallelism only
+  reports `rank`).
+
+                    *perf-torch_profiling-what-one-rl-step-looks-like-on-disk*
+What one RL step looks like on disk
+
+No single trace file covers a whole RL step end to end, because the step
+does not run in a single process. A profiled step leaves you with:
+
+- Training-side traces (`scope` = `train`), written by the actor/ref/critic
+  workers. These hold the work those workers actually run: the log-prob
+  forwards and the actor update's forward/backward/optimizer. This is why
+  the scope is called `train` and not `e2e`.
+- Rollout traces, written by the inference engines themselves into
+  `<save_path>/agent_loop_rollout_replica_<n>/` (or into `save_path` with
+  `relocate_results: True`), on the node hosting each replica. Generation
+  never appears in a training-side trace: with Agent Loop the engines run in
+  their own processes, and in the V1 trainer generation is decoupled from
+  the step entirely (the trainer samples already-generated data from the
+  replay buffer), so the actor process is simply idle while the rollout
+  happens.
+
+To reason about the full step, read the timings that the trainer logs
+(`gen`, `old_log_prob`, `ref`, `update_actor`, ...) and open the per-process
+traces for whichever part you're drilling into. Trace timestamps are wall
+clock, so training and rollout traces from the same step can be lined up
+side by side in Perfetto.
+
+Telling stages apart               *perf-torch_profiling-telling-stages-apart*
+
+Within a training-side trace, `discrete` decides whether the stage shows up
+in the file name or inside the trace:
+
+- `discrete: True` writes one file per stage, and the stage lands in
+  `scope`:
+  `actor-rollout-ref_actor-update_step2_rank0-of-8_pid123_<ts>.json.gz`,
+  plus siblings for `actor-compute-log-prob`, `ref-compute-log-prob`,
+  `train-batch` and so on. Use this when you want to attribute time to a
+  stage from the file name alone.
+- `discrete: False` (the default) collects the worker's whole step into one
+  trace, so `scope` is `train` and cannot name a single stage. The stages
+  are still separated inside the trace: each one is wrapped in a
+  `torch.profiler.record_function` carrying its stage label, which names the
+  role and the function together -- `actor_compute_log_prob`,
+  `ref_compute_log_prob`, `actor_update` -- so searching for it in
+  Perfetto/Chrome tracing gives that stage's window. Stages that declare no
+  role, such as the inner engine's `train_batch`, appear under the method
+  name, and each iteration of the update loop adds a `mini_batch<i>` row.
+
+Note that verl asks the profiler to write exactly `<stem>.json.gz`. If your
+files carry an extra segment (e.g. `<stem>.json.1785391501.gz`), it was
+added after the fact by whatever post-processes or uploads them, such as a
+`finish_hook_cmd`.
+
+Missing roles or stages         *perf-torch_profiling-missing-roles-or-stages*
+
+Seeing a single `actor...` file per rank, with no separate reference/critic
+file and no `compute_log_prob` anywhere, is usually one of the following
+rather than a lost trace:
+
+- One file per process, not per role. The PyTorch profiler is
+  process-global, so a colocated hybrid worker records actor and reference
+  work into one trace named after the combined role (`actor-rollout-ref`). A
+  separate file appears only for a role that runs in its own process, e.g. a
+  critic (`value-model`), or a reference model that is not colocated.
+- The hybrid worker follows `actor.profiler`. It builds its profiler from
+  `actor_rollout_ref.actor.profiler`, so `ref.profiler.enable: True` on its
+  own profiles nothing, and turning the actor's profiler off also drops the
+  reference stages that share the process.
+- The role may not exist. There is no critic unless the algorithm uses a
+  value model (GRPO and friends do not), and no reference model unless a KL
+  term needs one.
+- A schedule can only sub-sample the update loop, never the log-prob
+  forwards. `tool_config.torch.schedule` narrows the update stage's
+  mini-batches only (`step()` is advanced there). In `discrete: False` it
+  selects which update mini-batches to keep: with
+  `skip_first`/`wait`/`warmup` at 0 it records from the start so every
+  earlier stage (rollout, log-prob) is kept, but skipping ahead to a later
+  mini-batch drops those earlier stages (torch only persists a window ending
+  in `RECORD_AND_SAVE`). In `discrete: True` the schedule applies only to
+  the isolated update stage, and the log-prob/rollout stages keep their own
+  full traces. So if a continuous trace shows only update forward/backward
+  and no log-prob forwards, check first whether the schedule skipped ahead;
+  otherwise confirm a log-prob stage actually ran (e.g. that a reference
+  model exists) and that CPU activity was collected (see the next bullet).
+- Traces collected before CPU activity became unconditional. A device-only
+  run (`contents: [cuda]` on an older verl) has no `record_function` ranges
+  and no operator names, so no stage can be located in it even though the
+  kernels of every stage are there, and a log-prob forward looks just like
+  the forward half of the update.
+- `compute_log_prob` can legitimately be skipped. With
+  `algorithm.rollout_correction.bypass_mode=True` the trainer reuses the
+  rollout's log probs instead of recomputing them, so the actor forward
+  never runs. With LoRA (`ref_in_actor`) the reference forward is served by
+  `compute_log_prob` on the actor worker, so it appears under that name
+  instead of `compute_ref_log_prob`.
+
+TRACES WITH NO GPU KERNELS   *perf-torch_profiling-traces-with-no-gpu-kernels*
+
+If a trace only contains CPU operators and no CUDA kernels, the profiler's
+CUPTI subscription most likely lost a race. CUPTI accepts a single
+subscriber per process, and some CUDA images install a startup hook that
+points `NVTX_INJECTION64_PATH` at `libcupti.so`. The first NVTX range in the
+process then loads libcupti as the NVTX handler and takes that slot, after
+which Kineto fails with `CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTED` and
+drops every CUDA activity. verl emits NVTX ranges itself, so
+`NCCL_NVTX_DISABLE=1` does not avoid it.
+
+verl therefore points `NVTX_INJECTION64_PATH` at an unloadable path for all
+workers when `global_profiler.tool=torch`, and logs a warning when it does.
+Set `VERL_KEEP_NVTX_INJECTION=1` to keep the inherited value, e.g. when you
+rely on that injection for another tool and accept traces without CUDA
+activity.
+
+VISUALIZATION                             *perf-torch_profiling-visualization*
+
+Collected trace files (usually `.json` or `.json.gz`) are stored flat in the
+configured `save_path`: every role, rank and scope writes there directly,
+since the naming scheme above already keeps the files unique and
+self-describing. Rollout engine traces are the one exception, because the
+engines are given a directory to write to; `relocate_results: True` pulls
+them into `save_path` as well.
+
+To ship the traces off the node, set the hook once on `global_profiler`
+(every role inherits it). It runs once, after the last profiled step, on
+each selected rank -- not once per step.
+
+`save_path` is one flat directory that accumulates every profiled step's
+traces (backend `stop()` and `relocate_results` still run every step, so by
+the last step everything is there). Because the command runs a single time
+rather than once per step, a command that uploads the whole directory sends
+each trace exactly once:
+
+>python
+        global_profiler.save_path="$PROFILE_SAVE_PATH" \
+        global_profiler.relocate_results=True \
+        global_profiler.finish_hook_cmd='my-upload-tool "$VERL_PROFILE_SAVE_PATH"'
+<
+Running once is also what avoids the “N copies of the same trace” problem.
+If the command instead ran every profiled step, a directory upload would
+re-send step 1's file at step 2, again at step 3, and so on -- verl writes
+each trace once, but the upload re-sends the older ones -- and an uploader
+that versions by upload time then stores that one trace as several `*.gz`
+differing only in the trailing timestamp. A single upload at the end sends
+each trace once, so there are no duplicate versions.
+
+`save_path` is usually node-local, so the command runs on every selected
+rank/node. Choose the finish-hook ranks so exactly one rank per node uploads
+that node's directory (otherwise several ranks sharing a node's directory
+would each upload it). When unset, the finish-hook ranks default to the
+profiled ranks; narrow them with `finish_hook_ranks=[...]` (see
+|verl-perf-nsight_profiling| for choosing ranks).
+
+The command runs through the shell, so the context variables
+`VERL_PROFILE_SAVE_PATH`, `VERL_PROFILE_TOOL`, `VERL_PROFILE_RANK`,
+`VERL_PROFILE_PID` and `VERL_PROFILE_ROLE` are all available (quote them in
+single quotes so your shell does not expand them early). Hydra's override
+parser rejects a value that contains its own quotes, so a command that needs
+quoting belongs in a small script that the hook calls.
+
+The hook prints the command, its output and its exit code to the worker's
+log. Rollout replicas do not run the command themselves: they relocate their
+traces into `save_path` (with `relocate_results`), and the colocated
+training worker's single end-of-run upload covers them too. See
+|verl-perf-nsight_profiling| for the full description of the hook, including
+how to choose which ranks run it.
+
+You can visualize them using:
+
+1. Chrome Tracing: Open `chrome://tracing` in a Chrome browser and load the
+   JSON file.
+2. Perfetto: Open ui.perfetto.dev https://ui.perfetto.dev/ and load the file
+   (recommended for large traces).
+3. TensorBoard: If using the TensorBoard plugin for PyTorch Profiler.
+
+----------------------------------------------------------------------------
+verl Profiler System                          *verl-perf-verl_profiler_system*
+
+Last updated: 09/07/2026.
+
+ARCHITECTURE                          *perf-verl_profiler_system-architecture*
+
+The architecture of verl profiler system is like below:
+
+There is a global profiler and tool configuration to set some common config
+in single controller level, deciding
+
+- `tool`: which tool to use
+- `steps`: which steps to profile
+- `save_path`: results saving path
+
+When some tool need to profile behavior of each role, configurations in
+role-level is needed:
+
+- `tool`: which tool to use
+- `enable`: whether enable profiling on this role
+- rank info: `all_ranks` and `rank` to decide which rank to profile or log
+  output
+
+For tool config in role-level, there are some detailed behavior needed to
+control, like the `discrete` mode in nsys profiler.
+
+Every role has a profiler config, and by default, rollout/ref/reward models
+follow the Actor's behavior.
+
+                         *perf-verl_profiler_system-cuda-npu-memory-snapshots*
+CUDA/NPU MEMORY SNAPSHOTS
+
+Selecting `global_profiler.tool=torch_memory` automatically enables
+best-effort OOM snapshot dumping on the selected profiler ranks when the
+CUDA/NPU allocator observer is available. The callback logs the Python stack
+and allocator memory summary, then writes a snapshot under
+`<save_path>/oom_<timestamp>/` without synchronizing the device. It remains
+active outside the scheduled profiling steps once registered; it cannot run
+after `SIGKILL`. Unsupported devices or PyTorch builds emit a warning and
+continue without the OOM callback.
+
+NPU support requires `torch_npu._C._npu_attach_out_of_memory_observer` and
+the memory history/snapshot APIs (present in `torch-npu==2.10.0.post4`).
+Both regular and OOM NPU snapshots directly serialize `memory._snapshot()`
+to a pickle file, skipping the extra device memory CSV/profiler operations
+in `memory._dump_snapshot()`. Regular step-boundary dumps still synchronize
+the device; OOM dumps do not. CUDA snapshots continue to use the native dump
+helper. The callback logs NPU's third argument as `total_or_limit`, since it
+represents the process memory limit when configured, otherwise the device
+total.
+
+Normal step-boundary snapshots remain controlled by `global_profiler.steps`
+and
+`global_profiler.global_tool_config.torch_memory.memory_snapshot_num_steps`
+(default: `1`). Set `global_profiler.profile_continuous_steps=False` when
+using this step count so each profiled step contributes one start/stop cycle
+to the window. Training that does not select the `torch_memory` tool is
+unaffected.
+
+                       *perf-verl_profiler_system-to-add-a-new-profiling-tool*
+TO ADD A NEW PROFILING TOOL
+
+New added profiling tool shall reuse the current APIs as much as possible.
+
+1. The logic of whether to use the tool: `tool == [new tool]`.
+2. Add the global and local tool config to
+   `ppo_trainer.yaml`/`ppo_megatron_trainer.yaml` and each `[role].yaml`,
+   under `global_tool_config.[new tool]` and `tool_config.[new tool]`
+3. The tool config should be implemented in `verl/utils/profiler/config.py`,
+   inherit the `BaseConfig` class.
+4. Implement profiling tool initialization logic using configurations in
+   `global_profiler.global_tool_config.[new tool]` and the results saving
+   logics (can also save in role-level profile)
+5. For role function-level profiling, please follow the nsys profiler way in
+   `nvtx_profiler.py`, implement a profiler class inherit `DistProfiler` and
+   import new profiler in `verl/utils/profiler/__init__.py`
+6. Add unit test and examples for others to use in convinience.
+
+ vim:tw=78:ts=8:ft=help:norl:

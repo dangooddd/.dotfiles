@@ -1,0 +1,1687 @@
+*vllm.txt* *vllm*	vLLM documentation
+Version latest — https://docs.vllm.ai/en/latest/
+License: Apache-2.0
+
+TABLE OF CONTENTS	*vllm-toc*
+
+api ..................................................... |vllm-section-api|
+api (part 2) ..................................... |vllm-section-api-part-2|
+api (part 3) ..................................... |vllm-section-api-part-3|
+api (part 4) ..................................... |vllm-section-api-part-4|
+cli ..................................................... |vllm-section-cli|
+configuration ................................. |vllm-section-configuration|
+deployment ....................................... |vllm-section-deployment|
+design ............................................... |vllm-section-design|
+examples ........................................... |vllm-section-examples|
+features ........................................... |vllm-section-features|
+getting_started ............................. |vllm-section-getting_started|
+main ................................................... |vllm-section-main|
+models ............................................... |vllm-section-models|
+serving ............................................. |vllm-section-serving|
+training ........................................... |vllm-section-training|
+usage ................................................. |vllm-section-usage|
+
+==============================================================================
+API
+
+Summary ................................................... |vllm-api-index|
+vllm.assets.audio ...................................... |vllm.assets.audio|
+vllm.assets.base ........................................ |vllm.assets.base|
+vllm.assets.image ...................................... |vllm.assets.image|
+vllm.assets .................................................. |vllm.assets|
+vllm.assets.video ...................................... |vllm.assets.video|
+vllm.benchmarks.datasets.datasets ...... |vllm.benchmarks.datasets.datasets|
+vllm.benchmarks.datasets ........................ |vllm.benchmarks.datasets|
+vllm.benchmarks.forward .......................... |vllm.benchmarks.forward|
+vllm.benchmarks .......................................... |vllm.benchmarks|
+vllm.benchmarks.latency .......................... |vllm.benchmarks.latency|
+vllm.benchmarks.lib .................................. |vllm.benchmarks.lib|
+vllm.benchmarks.mm_processor ................ |vllm.benchmarks.mm_processor|
+vllm.benchmarks.plot ................................ |vllm.benchmarks.plot|
+vllm.benchmarks.serve .............................. |vllm.benchmarks.serve|
+vllm.benchmarks.startup .......................... |vllm.benchmarks.startup|
+vllm.benchmarks.sweep .............................. |vllm.benchmarks.sweep|
+vllm.benchmarks.throughput .................... |vllm.benchmarks.throughput|
+vllm.collect_env ........................................ |vllm.collect_env|
+vllm.compilation.backends ...................... |vllm.compilation.backends|
+vllm.compilation.breakable_cudagraph ... |vllm.compilation.breakable_cudagraph|
+vllm.compilation.caching ........................ |vllm.compilation.caching|
+vllm.compilation.codegen ........................ |vllm.compilation.codegen|
+vllm.compilation.compiler_interface ... |vllm.compilation.compiler_interface|
+vllm.compilation.counter ........................ |vllm.compilation.counter|
+vllm.compilation.cuda_graph .................. |vllm.compilation.cuda_graph|
+vllm.compilation.cudagraph_pool .......... |vllm.compilation.cudagraph_pool|
+vllm.compilation.decorators .................. |vllm.compilation.decorators|
+vllm.compilation.depyf_compat .............. |vllm.compilation.depyf_compat|
+vllm.compilation ........................................ |vllm.compilation|
+vllm.compilation.monitor ........................ |vllm.compilation.monitor|
+vllm.compilation.partition_rules ........ |vllm.compilation.partition_rules|
+vllm.compilation.passes.fusion.act_quant_fusion ... |vllm.compilation.passes.fusion.act_quant_fusion|
+vllm.compilation.passes.fusion.add_rms_fusion ... |vllm.compilation.passes.fusion.add_rms_fusion|
+vllm.compilation.passes.fusion.allreduce_rms_fusion ... |vllm.compilation.passes.fusion.allreduce_rms_fusion|
+vllm.compilation.passes.fusion.attn_quant_fusion ... |vllm.compilation.passes.fusion.attn_quant_fusion|
+vllm.compilation.passes.fusion ............ |vllm.compilation.passes.fusion|
+vllm.compilation.passes.fusion.matcher_utils ... |vllm.compilation.passes.fusion.matcher_utils|
+vllm.compilation.passes.fusion.mla_attn_quant_fusion ... |vllm.compilation.passes.fusion.mla_attn_quant_fusion|
+vllm.compilation.passes.fusion.mla_rope_kvcache_cat_fusion ... |vllm.compilation.passes.fusion.mla_rope_kvcache_cat_fusion|
+vllm.compilation.passes.fusion.muse_glimmer_qk_rope_cache_fusion ... |vllm.compilation.passes.fusion.muse_glimmer_qk_rope_cache_fusion|
+vllm.compilation.passes.fusion.muse_glimmer_sandwich_norm_fusion ... |vllm.compilation.passes.fusion.muse_glimmer_sandwich_norm_fusion|
+vllm.compilation.passes.fusion.qk_norm_rope_fusion ... |vllm.compilation.passes.fusion.qk_norm_rope_fusion|
+vllm.compilation.passes.fusion.qk_norm_rope_kvcache_fusion ... |vllm.compilation.passes.fusion.qk_norm_rope_kvcache_fusion|
+vllm.compilation.passes.fusion.rms_quant_fusion ... |vllm.compilation.passes.fusion.rms_quant_fusion|
+vllm.compilation.passes.fusion.rocm_aiter_fusion ... |vllm.compilation.passes.fusion.rocm_aiter_fusion|
+vllm.compilation.passes.fusion.rope_kvcache_fusion ... |vllm.compilation.passes.fusion.rope_kvcache_fusion|
+vllm.compilation.passes.fx_utils ........ |vllm.compilation.passes.fx_utils|
+vllm.compilation.passes .......................... |vllm.compilation.passes|
+vllm.compilation.passes.inductor_pass ... |vllm.compilation.passes.inductor_pass|
+vllm.compilation.passes.ir.clone_elimination ... |vllm.compilation.passes.ir.clone_elimination|
+vllm.compilation.passes.ir .................... |vllm.compilation.passes.ir|
+vllm.compilation.passes.ir.lowering_pass ... |vllm.compilation.passes.ir.lowering_pass|
+vllm.compilation.passes.pass_manager ... |vllm.compilation.passes.pass_manager|
+vllm.compilation.passes.utility .......... |vllm.compilation.passes.utility|
+vllm.compilation.passes.vllm_inductor_pass ... |vllm.compilation.passes.vllm_inductor_pass|
+vllm.compilation.piecewise_backend .... |vllm.compilation.piecewise_backend|
+vllm.compilation.wrapper ........................ |vllm.compilation.wrapper|
+vllm.config.attention .............................. |vllm.config.attention|
+vllm.config.aux_output ............................ |vllm.config.aux_output|
+vllm.config.cache ...................................... |vllm.config.cache|
+vllm.config.compilation .......................... |vllm.config.compilation|
+vllm.config.device .................................... |vllm.config.device|
+vllm.config.diffusion .............................. |vllm.config.diffusion|
+vllm.config.ec_manager_config .............. |vllm.config.ec_manager_config|
+vllm.config.ec_transfer .......................... |vllm.config.ec_transfer|
+vllm.config.engram .................................... |vllm.config.engram|
+vllm.config.fault_tolerance .................. |vllm.config.fault_tolerance|
+vllm.config .................................................. |vllm.config|
+vllm.config.kernel .................................... |vllm.config.kernel|
+vllm.config.kv_events .............................. |vllm.config.kv_events|
+vllm.config.kv_transfer .......................... |vllm.config.kv_transfer|
+vllm.config.load ........................................ |vllm.config.load|
+vllm.config.logging .................................. |vllm.config.logging|
+vllm.config.lora ........................................ |vllm.config.lora|
+vllm.config.mamba ...................................... |vllm.config.mamba|
+vllm.config.model ...................................... |vllm.config.model|
+vllm.config.model_arch ............................ |vllm.config.model_arch|
+vllm.config.multimodal ............................ |vllm.config.multimodal|
+vllm.config.observability ...................... |vllm.config.observability|
+vllm.config.offload .................................. |vllm.config.offload|
+vllm.config.parallel ................................ |vllm.config.parallel|
+vllm.config.pooler .................................... |vllm.config.pooler|
+vllm.config.profiler ................................ |vllm.config.profiler|
+vllm.config.quantization ........................ |vllm.config.quantization|
+vllm.config.reasoning .............................. |vllm.config.reasoning|
+vllm.config.scheduler .............................. |vllm.config.scheduler|
+vllm.config.speculative .......................... |vllm.config.speculative|
+vllm.config.speech_to_text .................... |vllm.config.speech_to_text|
+vllm.config.structured_outputs ............ |vllm.config.structured_outputs|
+vllm.config.utils ...................................... |vllm.config.utils|
+vllm.config.vllm ........................................ |vllm.config.vllm|
+vllm.config.watchdog_config .................. |vllm.config.watchdog_config|
+vllm.config.watermarking ........................ |vllm.config.watermarking|
+vllm.config.weight_transfer .................. |vllm.config.weight_transfer|
+vllm.connections ........................................ |vllm.connections|
+vllm.cute_utils.cvt .................................. |vllm.cute_utils.cvt|
+vllm.cute_utils .......................................... |vllm.cute_utils|
+vllm.cute_utils.mbarrier ........................ |vllm.cute_utils.mbarrier|
+vllm.device_allocator.alloc_conf ........ |vllm.device_allocator.alloc_conf|
+vllm.device_allocator.cumem .................. |vllm.device_allocator.cumem|
+vllm.device_allocator .............................. |vllm.device_allocator|
+vllm.device_allocator.sleep_mode_backend ... |vllm.device_allocator.sleep_mode_backend|
+vllm.device_allocator.xpumem ................ |vllm.device_allocator.xpumem|
+vllm.distributed.aux_output_connector ... |vllm.distributed.aux_output_connector|
+vllm.distributed.communication_op ...... |vllm.distributed.communication_op|
+vllm.distributed.device_communicators.aiter_custom_all_reduce ... |vllm.distributed.device_communicators.aiter_custom_all_reduce|
+vllm.distributed.device_communicators.all2all ... |vllm.distributed.device_communicators.all2all|
+vllm.distributed.device_communicators.all_reduce_utils ... |vllm.distributed.device_communicators.all_reduce_utils|
+vllm.distributed.device_communicators.base_device_communicator ... |vllm.distributed.device_communicators.base_device_communicator|
+vllm.distributed.device_communicators.cpu_communicator ... |vllm.distributed.device_communicators.cpu_communicator|
+vllm.distributed.device_communicators.cuda_communicator ... |vllm.distributed.device_communicators.cuda_communicator|
+vllm.distributed.device_communicators.cuda_wrapper ... |vllm.distributed.device_communicators.cuda_wrapper|
+vllm.distributed.device_communicators.custom_all_reduce ... |vllm.distributed.device_communicators.custom_all_reduce|
+vllm.distributed.device_communicators.flashinfer_all_reduce ... |vllm.distributed.device_communicators.flashinfer_all_reduce|
+vllm.distributed.device_communicators.flashinfer_pcie_ipc_all_reduce ... |vllm.distributed.device_communicators.flashinfer_pcie_ipc_all_reduce|
+vllm.distributed.device_communicators ... |vllm.distributed.device_communicators|
+vllm.distributed.device_communicators.mnnvl_compat ... |vllm.distributed.device_communicators.mnnvl_compat|
+vllm.distributed.device_communicators.nvlink_fabric ... |vllm.distributed.device_communicators.nvlink_fabric|
+vllm.distributed.device_communicators.pynccl ... |vllm.distributed.device_communicators.pynccl|
+vllm.distributed.device_communicators.pynccl_allocator ... |vllm.distributed.device_communicators.pynccl_allocator|
+vllm.distributed.device_communicators.pynccl_wrapper ... |vllm.distributed.device_communicators.pynccl_wrapper|
+vllm.distributed.device_communicators.quick_all_reduce ... |vllm.distributed.device_communicators.quick_all_reduce|
+vllm.distributed.device_communicators.shm_broadcast ... |vllm.distributed.device_communicators.shm_broadcast|
+vllm.distributed.device_communicators.shm_object_storage ... |vllm.distributed.device_communicators.shm_object_storage|
+vllm.distributed.device_communicators.shm_tensor_arena ... |vllm.distributed.device_communicators.shm_tensor_arena|
+vllm.distributed.device_communicators.symm_mem ... |vllm.distributed.device_communicators.symm_mem|
+vllm.distributed.device_communicators.xpu_communicator ... |vllm.distributed.device_communicators.xpu_communicator|
+vllm.distributed.ec_transfer.ec_connector.cpu.common ... |vllm.distributed.ec_transfer.ec_connector.cpu.common|
+vllm.distributed.ec_transfer.ec_connector.cpu.connector ... |vllm.distributed.ec_transfer.ec_connector.cpu.connector|
+vllm.distributed.ec_transfer.ec_connector.cpu.control ... |vllm.distributed.ec_transfer.ec_connector.cpu.control|
+vllm.distributed.ec_transfer.ec_connector.cpu.data.base ... |vllm.distributed.ec_transfer.ec_connector.cpu.data.base|
+vllm.distributed.ec_transfer.ec_connector.cpu.data ... |vllm.distributed.ec_transfer.ec_connector.cpu.data|
+vllm.distributed.ec_transfer.ec_connector.cpu.data.nixl ... |vllm.distributed.ec_transfer.ec_connector.cpu.data.nixl|
+vllm.distributed.ec_transfer.ec_connector.cpu.ec_shared_region ... |vllm.distributed.ec_transfer.ec_connector.cpu.ec_shared_region|
+vllm.distributed.ec_transfer.ec_connector.cpu.protocol ... |vllm.distributed.ec_transfer.ec_connector.cpu.protocol|
+vllm.distributed.ec_transfer.ec_connector.cpu.scheduler.embedding_cache ... |vllm.distributed.ec_transfer.ec_connector.cpu.scheduler.embedding_cache|
+vllm.distributed.ec_transfer.ec_connector.cpu.scheduler ... |vllm.distributed.ec_transfer.ec_connector.cpu.scheduler|
+vllm.distributed.ec_transfer.ec_connector.cpu.session ... |vllm.distributed.ec_transfer.ec_connector.cpu.session|
+vllm.distributed.ec_transfer.ec_connector.cpu.utils ... |vllm.distributed.ec_transfer.ec_connector.cpu.utils|
+vllm.distributed.ec_transfer.ec_connector.cpu.worker ... |vllm.distributed.ec_transfer.ec_connector.cpu.worker|
+vllm.distributed.ec_transfer.ec_connector.mooncake_ec_connector ... |vllm.distributed.ec_transfer.ec_connector.mooncake_ec_connector|
+vllm.distributed.ec_transfer ................ |vllm.distributed.ec_transfer|
+vllm.distributed.elastic_ep .................. |vllm.distributed.elastic_ep|
+vllm.distributed.engram_pool ................ |vllm.distributed.engram_pool|
+vllm.distributed.eplb.async_worker .... |vllm.distributed.eplb.async_worker|
+vllm.distributed.eplb.eplb_communicator ... |vllm.distributed.eplb.eplb_communicator|
+vllm.distributed.eplb.eplb_state ........ |vllm.distributed.eplb.eplb_state|
+vllm.distributed.eplb.eplb_utils ........ |vllm.distributed.eplb.eplb_utils|
+vllm.distributed.eplb .............................. |vllm.distributed.eplb|
+vllm.distributed.eplb.migration_scheduler ... |vllm.distributed.eplb.migration_scheduler|
+vllm.distributed.eplb.policy.abstract ... |vllm.distributed.eplb.policy.abstract|
+vllm.distributed.eplb.policy.default ... |vllm.distributed.eplb.policy.default|
+vllm.distributed.eplb.policy ................ |vllm.distributed.eplb.policy|
+vllm.distributed.eplb.rebalance_execute ... |vllm.distributed.eplb.rebalance_execute|
+vllm.distributed ........................................ |vllm.distributed|
+vllm.distributed.kv_events .................... |vllm.distributed.kv_events|
+vllm.distributed.kv_transfer ................ |vllm.distributed.kv_transfer|
+vllm.distributed.kv_transfer.kv_connector.v1.base ... |vllm.distributed.kv_transfer.kv_connector.v1.base|
+vllm.distributed.kv_transfer.kv_connector.v1.hisparse.connector ... |vllm.distributed.kv_transfer.kv_connector.v1.hisparse.connector|
+vllm.distributed.kv_transfer.kv_connector.v1.hisparse.stats ... |vllm.distributed.kv_transfer.kv_connector.v1.hisparse.stats|
+vllm.distributed.kv_transfer.kv_connector.v1.hisparse.worker ... |vllm.distributed.kv_transfer.kv_connector.v1.hisparse.worker|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.connector ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.connector|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.coordinator ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.coordinator|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.data ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.data|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.layout ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.layout|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.metrics ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.metrics|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.protocol ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.protocol|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.rdma_utils ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.rdma_utils|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.scheduler ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.scheduler|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.selective_lease ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.selective_lease|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.store_service ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.store_service|
+vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.worker ... |vllm.distributed.kv_transfer.kv_connector.v1.mooncake_store.worker|
+vllm.distributed.kv_transfer.kv_connector.v1.moriio ... |vllm.distributed.kv_transfer.kv_connector.v1.moriio|
+vllm.distributed.kv_transfer.kv_connector.v1.multi_connector ... |vllm.distributed.kv_transfer.kv_connector.v1.multi_connector|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.base_scheduler ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.base_scheduler|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.base_worker ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.base_worker|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.connector ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.connector|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.metadata ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.metadata|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.pull_scheduler ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.pull_scheduler|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.pull_worker ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.pull_worker|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.push_scheduler ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.push_scheduler|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.push_worker ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.push_worker|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.scheduler ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.scheduler|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.stats ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.stats|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.tp_mapping ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.tp_mapping|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.utils ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.utils|
+vllm.distributed.kv_transfer.kv_connector.v1.nixl.worker ... |vllm.distributed.kv_transfer.kv_connector.v1.nixl.worker|
+vllm.distributed.kv_transfer.kv_connector.v1.offloading ... |vllm.distributed.kv_transfer.kv_connector.v1.offloading|
+vllm.distributed.kv_transfer.kv_connector.v1.simple_cpu_offload_connector ... |vllm.distributed.kv_transfer.kv_connector.v1.simple_cpu_offload_connector|
+vllm.distributed.kv_transfer.kv_connector.v1.umbp.connector ... |vllm.distributed.kv_transfer.kv_connector.v1.umbp.connector|
+vllm.distributed.kv_transfer.kv_connector.v1.umbp.data ... |vllm.distributed.kv_transfer.kv_connector.v1.umbp.data|
+vllm.distributed.kv_transfer.kv_connector.v1.umbp ... |vllm.distributed.kv_transfer.kv_connector.v1.umbp|
+vllm.distributed.kv_transfer.kv_connector.v1.umbp.runtime ... |vllm.distributed.kv_transfer.kv_connector.v1.umbp.runtime|
+vllm.distributed.kv_transfer.kv_connector.v1.umbp.scheduler ... |vllm.distributed.kv_transfer.kv_connector.v1.umbp.scheduler|
+vllm.distributed.kv_transfer.kv_connector.v1.umbp.stats ... |vllm.distributed.kv_transfer.kv_connector.v1.umbp.stats|
+vllm.distributed.kv_transfer.kv_connector.v1.umbp.worker ... |vllm.distributed.kv_transfer.kv_connector.v1.umbp.worker|
+vllm.distributed.localization .............. |vllm.distributed.localization|
+vllm.distributed.mooncake_store .......... |vllm.distributed.mooncake_store|
+vllm.distributed.nixl_utils .................. |vllm.distributed.nixl_utils|
+vllm.distributed.parallel_state .......... |vllm.distributed.parallel_state|
+vllm.distributed.pp_transport .............. |vllm.distributed.pp_transport|
+vllm.distributed.stateless_coordinator ... |vllm.distributed.stateless_coordinator|
+vllm.distributed.utils ............................ |vllm.distributed.utils|
+vllm.distributed.weight_transfer.base ... |vllm.distributed.weight_transfer.base|
+vllm.distributed.weight_transfer.clients ... |vllm.distributed.weight_transfer.clients|
+vllm.distributed.weight_transfer ........ |vllm.distributed.weight_transfer|
+vllm.distributed.weight_transfer.ipc_engine ... |vllm.distributed.weight_transfer.ipc_engine|
+vllm.distributed.weight_transfer.nccl_engine ... |vllm.distributed.weight_transfer.nccl_engine|
+vllm.distributed.weight_transfer.sharded_rdt_fake ... |vllm.distributed.weight_transfer.sharded_rdt_fake|
+vllm.distributed.weight_transfer.sharded_rdt_trainer ... |vllm.distributed.weight_transfer.sharded_rdt_trainer|
+vllm.engine.arg_utils .............................. |vllm.engine.arg_utils|
+vllm.engine.async_llm_engine ................ |vllm.engine.async_llm_engine|
+vllm.engine .................................................. |vllm.engine|
+vllm.engine.llm_engine ............................ |vllm.engine.llm_engine|
+vllm.engine.protocol ................................ |vllm.engine.protocol|
+vllm.entrypoints.anthropic .................... |vllm.entrypoints.anthropic|
+vllm.entrypoints.cli ................................ |vllm.entrypoints.cli|
+vllm.entrypoints.cohere .......................... |vllm.entrypoints.cohere|
+vllm.entrypoints.common .......................... |vllm.entrypoints.common|
+vllm.entrypoints.common.offline .......... |vllm.entrypoints.common.offline|
+vllm.entrypoints.generate.api_router ... |vllm.entrypoints.generate.api_router|
+vllm.entrypoints.generate.base ............ |vllm.entrypoints.generate.base|
+vllm.entrypoints.generate.beam_search ... |vllm.entrypoints.generate.beam_search|
+vllm.entrypoints.generate.beam_search.offline ... |vllm.entrypoints.generate.beam_search.offline|
+vllm.entrypoints.generate.beam_search.online ... |vllm.entrypoints.generate.beam_search.online|
+vllm.entrypoints.generate.beam_search.utils ... |vllm.entrypoints.generate.beam_search.utils|
+vllm.entrypoints.generate.factories ... |vllm.entrypoints.generate.factories|
+vllm.entrypoints.generate.generative_scoring ... |vllm.entrypoints.generate.generative_scoring|
+vllm.entrypoints.generate ...................... |vllm.entrypoints.generate|
+vllm.entrypoints.generate.label_reads ... |vllm.entrypoints.generate.label_reads|
+vllm.entrypoints.generate.structured_decisions ... |vllm.entrypoints.generate.structured_decisions|
+vllm.entrypoints.grpc_server ................ |vllm.entrypoints.grpc_server|
+vllm.entrypoints ........................................ |vllm.entrypoints|
+vllm.entrypoints.launchers .................... |vllm.entrypoints.launchers|
+vllm.entrypoints.llm ................................ |vllm.entrypoints.llm|
+vllm.entrypoints.mcp ................................ |vllm.entrypoints.mcp|
+vllm.entrypoints.openai.api_server .... |vllm.entrypoints.openai.api_server|
+vllm.entrypoints.openai.chat_completion ... |vllm.entrypoints.openai.chat_completion|
+vllm.entrypoints.openai.completion .... |vllm.entrypoints.openai.completion|
+vllm.entrypoints.openai.completion.protocol ... |vllm.entrypoints.openai.completion.protocol|
+vllm.entrypoints.openai.decisions.adapters ... |vllm.entrypoints.openai.decisions.adapters|
+vllm.entrypoints.openai.decisions.api_router ... |vllm.entrypoints.openai.decisions.api_router|
+vllm.entrypoints.openai.decisions ...... |vllm.entrypoints.openai.decisions|
+vllm.entrypoints.openai.decisions.protocol ... |vllm.entrypoints.openai.decisions.protocol|
+vllm.entrypoints.openai.decisions.question_types ... |vllm.entrypoints.openai.decisions.question_types|
+vllm.entrypoints.openai.decisions.serving ... |vllm.entrypoints.openai.decisions.serving|
+vllm.entrypoints.openai.decisions.slot_prompt ... |vllm.entrypoints.openai.decisions.slot_prompt|
+vllm.entrypoints.openai.decisions.state ... |vllm.entrypoints.openai.decisions.state|
+vllm.entrypoints.openai.decisions.strategies ... |vllm.entrypoints.openai.decisions.strategies|
+vllm.entrypoints.openai .......................... |vllm.entrypoints.openai|
+vllm.entrypoints.openai.models ............ |vllm.entrypoints.openai.models|
+vllm.entrypoints.openai.parser ............ |vllm.entrypoints.openai.parser|
+vllm.entrypoints.openai.responses ...... |vllm.entrypoints.openai.responses|
+vllm.entrypoints.openai.run_batch ...... |vllm.entrypoints.openai.run_batch|
+vllm.entrypoints.pooling.base .............. |vllm.entrypoints.pooling.base|
+vllm.entrypoints.pooling.classify ...... |vllm.entrypoints.pooling.classify|
+vllm.entrypoints.pooling.embed ............ |vllm.entrypoints.pooling.embed|
+vllm.entrypoints.pooling.factories .... |vllm.entrypoints.pooling.factories|
+vllm.entrypoints.pooling ........................ |vllm.entrypoints.pooling|
+vllm.entrypoints.pooling.offline ........ |vllm.entrypoints.pooling.offline|
+vllm.entrypoints.pooling.pooling ........ |vllm.entrypoints.pooling.pooling|
+vllm.entrypoints.pooling.scoring ........ |vllm.entrypoints.pooling.scoring|
+vllm.entrypoints.pooling.token_embed ... |vllm.entrypoints.pooling.token_embed|
+vllm.entrypoints.pooling.types ............ |vllm.entrypoints.pooling.types|
+vllm.entrypoints.pooling.utils ............ |vllm.entrypoints.pooling.utils|
+vllm.entrypoints.rl .................................. |vllm.entrypoints.rl|
+vllm.entrypoints.rl.offline .................. |vllm.entrypoints.rl.offline|
+vllm.entrypoints.scale_out.derender ... |vllm.entrypoints.scale_out.derender|
+vllm.entrypoints.scale_out.factories ... |vllm.entrypoints.scale_out.factories|
+vllm.entrypoints.scale_out .................... |vllm.entrypoints.scale_out|
+vllm.entrypoints.scale_out.render ...... |vllm.entrypoints.scale_out.render|
+vllm.entrypoints.scale_out.token_in_token_out.api_router ... |vllm.entrypoints.scale_out.token_in_token_out.api_router|
+vllm.entrypoints.scale_out.token_in_token_out ... |vllm.entrypoints.scale_out.token_in_token_out|
+vllm.entrypoints.scale_out.token_in_token_out.logprobs_render ... |vllm.entrypoints.scale_out.token_in_token_out.logprobs_render|
+vllm.entrypoints.scale_out.token_in_token_out.mm_features ... |vllm.entrypoints.scale_out.token_in_token_out.mm_features|
+vllm.entrypoints.scale_out.token_in_token_out.mm_serde ... |vllm.entrypoints.scale_out.token_in_token_out.mm_serde|
+vllm.entrypoints.scale_out.token_in_token_out.protocol ... |vllm.entrypoints.scale_out.token_in_token_out.protocol|
+vllm.entrypoints.scale_out.token_in_token_out.serving ... |vllm.entrypoints.scale_out.token_in_token_out.serving|
+vllm.entrypoints.serve ............................ |vllm.entrypoints.serve|
+vllm.entrypoints.speech_to_text .......... |vllm.entrypoints.speech_to_text|
+vllm.env_override ...................................... |vllm.env_override|
+vllm.envs ...................................................... |vllm.envs|
+vllm.exceptions .......................................... |vllm.exceptions|
+vllm.forward_context ................................ |vllm.forward_context|
+vllm ................................................. |vllm-api-vllm-index|
+vllm.inputs.engine .................................... |vllm.inputs.engine|
+vllm.inputs .................................................. |vllm.inputs|
+vllm.inputs.llm .......................................... |vllm.inputs.llm|
+vllm.ir .......................................................... |vllm.ir|
+vllm.ir.op .................................................... |vllm.ir.op|
+vllm.ir.ops .................................................. |vllm.ir.ops|
+vllm.ir.tolerances .................................... |vllm.ir.tolerances|
+vllm.ir.util ................................................ |vllm.ir.util|
+vllm.kernels.aiter_ops ............................ |vllm.kernels.aiter_ops|
+vllm.kernels.helion .................................. |vllm.kernels.helion|
+vllm.kernels ................................................ |vllm.kernels|
+vllm.kernels.oink_ops .............................. |vllm.kernels.oink_ops|
+vllm.kernels.triton .................................. |vllm.kernels.triton|
+vllm.kernels.vllm_c .................................. |vllm.kernels.vllm_c|
+vllm.logger .................................................. |vllm.logger|
+vllm.logging_utils.dump_input .............. |vllm.logging_utils.dump_input|
+vllm.logging_utils.formatter ................ |vllm.logging_utils.formatter|
+vllm.logging_utils .................................... |vllm.logging_utils|
+vllm.logging_utils.lazy .......................... |vllm.logging_utils.lazy|
+vllm.logging_utils.log_time .................. |vllm.logging_utils.log_time|
+vllm.logging_utils.torch_tensor .......... |vllm.logging_utils.torch_tensor|
+vllm.logging_utils.uvicorn_logging .... |vllm.logging_utils.uvicorn_logging|
+vllm.logits_process .................................. |vllm.logits_process|
+vllm.logprobs .............................................. |vllm.logprobs|
+vllm.lora ...................................................... |vllm.lora|
+vllm.lora.layers ........................................ |vllm.lora.layers|
+vllm.lora.lora_model ................................ |vllm.lora.lora_model|
+vllm.lora.lora_weights ............................ |vllm.lora.lora_weights|
+vllm.lora.model_manager .......................... |vllm.lora.model_manager|
+vllm.lora.ops .............................................. |vllm.lora.ops|
+vllm.lora.peft_helper .............................. |vllm.lora.peft_helper|
+vllm.lora.punica_wrapper ........................ |vllm.lora.punica_wrapper|
+vllm.lora.request ...................................... |vllm.lora.request|
+vllm.lora.resolver .................................... |vllm.lora.resolver|
+vllm.lora.utils .......................................... |vllm.lora.utils|
+vllm.lora.worker_manager ........................ |vllm.lora.worker_manager|
+vllm.model_executor.custom_op .............. |vllm.model_executor.custom_op|
+vllm.model_executor.determinism .......... |vllm.model_executor.determinism|
+vllm.model_executor.hw_agnostic .......... |vllm.model_executor.hw_agnostic|
+vllm.model_executor .................................. |vllm.model_executor|
+vllm.model_executor.kernels.attention ... |vllm.model_executor.kernels.attention|
+vllm.model_executor.kernels .................. |vllm.model_executor.kernels|
+vllm.model_executor.kernels.linear.base ... |vllm.model_executor.kernels.linear.base|
+vllm.model_executor.kernels.linear.cute_dsl ... |vllm.model_executor.kernels.linear.cute_dsl|
+vllm.model_executor.kernels.linear .... |vllm.model_executor.kernels.linear|
+vllm.model_executor.kernels.linear.mixed_precision.MPLinearKernel ... |vllm.model_executor.kernels.linear.mixed_precision.MPLinearKernel|
+vllm.model_executor.kernels.linear.mixed_precision.conch ... |vllm.model_executor.kernels.linear.mixed_precision.conch|
+vllm.model_executor.kernels.linear.mixed_precision.cpu ... |vllm.model_executor.kernels.linear.mixed_precision.cpu|
+vllm.model_executor.kernels.linear.mixed_precision.cutlass ... |vllm.model_executor.kernels.linear.mixed_precision.cutlass|
+vllm.model_executor.kernels.linear.mixed_precision.dynamic_4bit ... |vllm.model_executor.kernels.linear.mixed_precision.dynamic_4bit|
+vllm.model_executor.kernels.linear.mixed_precision.exllama ... |vllm.model_executor.kernels.linear.mixed_precision.exllama|
+vllm.model_executor.kernels.linear.mixed_precision.humming ... |vllm.model_executor.kernels.linear.mixed_precision.humming|
+vllm.model_executor.kernels.linear.mixed_precision ... |vllm.model_executor.kernels.linear.mixed_precision|
+vllm.model_executor.kernels.linear.mixed_precision.machete ... |vllm.model_executor.kernels.linear.mixed_precision.machete|
+vllm.model_executor.kernels.linear.mixed_precision.marlin ... |vllm.model_executor.kernels.linear.mixed_precision.marlin|
+vllm.model_executor.kernels.linear.mixed_precision.rdna3_w4a16 ... |vllm.model_executor.kernels.linear.mixed_precision.rdna3_w4a16|
+vllm.model_executor.kernels.linear.mixed_precision.rdna_hybrid_w4a16 ... |vllm.model_executor.kernels.linear.mixed_precision.rdna_hybrid_w4a16|
+vllm.model_executor.kernels.linear.mixed_precision.triton_w4a16 ... |vllm.model_executor.kernels.linear.mixed_precision.triton_w4a16|
+vllm.model_executor.kernels.linear.mixed_precision.xpu ... |vllm.model_executor.kernels.linear.mixed_precision.xpu|
+vllm.model_executor.kernels.linear.mixed_precision.zentorch ... |vllm.model_executor.kernels.linear.mixed_precision.zentorch|
+vllm.model_executor.kernels.linear.mxfp4 ... |vllm.model_executor.kernels.linear.mxfp4|
+vllm.model_executor.kernels.linear.mxfp6 ... |vllm.model_executor.kernels.linear.mxfp6|
+vllm.model_executor.kernels.linear.mxfp8 ... |vllm.model_executor.kernels.linear.mxfp8|
+vllm.model_executor.kernels.linear.nvfp4 ... |vllm.model_executor.kernels.linear.nvfp4|
+vllm.model_executor.kernels.linear.requantization_source ... |vllm.model_executor.kernels.linear.requantization_source|
+vllm.model_executor.kernels.linear.scaled_mm ... |vllm.model_executor.kernels.linear.scaled_mm|
+vllm.model_executor.kernels.linear.zentorch_utils ... |vllm.model_executor.kernels.linear.zentorch_utils|
+vllm.model_executor.kernels.mhc .......... |vllm.model_executor.kernels.mhc|
+vllm.model_executor.layers.activation ... |vllm.model_executor.layers.activation|
+vllm.model_executor.layers.attention.attention ... |vllm.model_executor.layers.attention.attention|
+vllm.model_executor.layers.attention ... |vllm.model_executor.layers.attention|
+vllm.model_executor.layers.attention.mla_attention ... |vllm.model_executor.layers.attention.mla_attention|
+vllm.model_executor.layers.attention.mm_encoder_attention ... |vllm.model_executor.layers.attention.mm_encoder_attention|
+vllm.model_executor.layers.attention_layer_base ... |vllm.model_executor.layers.attention_layer_base|
+vllm.model_executor.layers.conv .......... |vllm.model_executor.layers.conv|
+vllm.model_executor.layers.dash_attention ... |vllm.model_executor.layers.dash_attention|
+vllm.model_executor.layers.fused_allreduce_gemma_rms_norm ... |vllm.model_executor.layers.fused_allreduce_gemma_rms_norm|
+vllm.model_executor.layers.fused_embed_norm ... |vllm.model_executor.layers.fused_embed_norm|
+vllm.model_executor.layers.fused_moe.activation ... |vllm.model_executor.layers.fused_moe.activation|
+vllm.model_executor.layers.fused_moe.all2all_utils ... |vllm.model_executor.layers.fused_moe.all2all_utils|
+vllm.model_executor.layers.fused_moe.b12x ... |vllm.model_executor.layers.fused_moe.b12x|
+vllm.model_executor.layers.fused_moe.config ... |vllm.model_executor.layers.fused_moe.config|
+vllm.model_executor.layers.fused_moe.deep_gemm_mega_moe ... |vllm.model_executor.layers.fused_moe.deep_gemm_mega_moe|
+vllm.model_executor.layers.fused_moe.deep_gemm_utils ... |vllm.model_executor.layers.fused_moe.deep_gemm_utils|
+vllm.model_executor.layers.fused_moe.eep_reconfigure ... |vllm.model_executor.layers.fused_moe.eep_reconfigure|
+vllm.model_executor.layers.fused_moe.eplb_triton ... |vllm.model_executor.layers.fused_moe.eplb_triton|
+vllm.model_executor.layers.fused_moe.expert_map_manager ... |vllm.model_executor.layers.fused_moe.expert_map_manager|
+vllm.model_executor.layers.fused_moe.expert_substitution ... |vllm.model_executor.layers.fused_moe.expert_substitution|
+vllm.model_executor.layers.fused_moe.experts.aiter_mxfp4_w4a16_moe ... |vllm.model_executor.layers.fused_moe.experts.aiter_mxfp4_w4a16_moe|
+vllm.model_executor.layers.fused_moe.experts.aiter_mxfp4_w4a4_moe ... |vllm.model_executor.layers.fused_moe.experts.aiter_mxfp4_w4a4_moe|
+vllm.model_executor.layers.fused_moe.experts.aiter_mxfp4_w4a8_moe ... |vllm.model_executor.layers.fused_moe.experts.aiter_mxfp4_w4a8_moe|
+vllm.model_executor.layers.fused_moe.experts.aiter_mxfp8_moe ... |vllm.model_executor.layers.fused_moe.experts.aiter_mxfp8_moe|
+vllm.model_executor.layers.fused_moe.experts.batched_deep_gemm_moe ... |vllm.model_executor.layers.fused_moe.experts.batched_deep_gemm_moe|
+vllm.model_executor.layers.fused_moe.experts.cpu_int4_moe ... |vllm.model_executor.layers.fused_moe.experts.cpu_int4_moe|
+vllm.model_executor.layers.fused_moe.experts.cpu_moe ... |vllm.model_executor.layers.fused_moe.experts.cpu_moe|
+vllm.model_executor.layers.fused_moe.experts.cutlass_moe ... |vllm.model_executor.layers.fused_moe.experts.cutlass_moe|
+vllm.model_executor.layers.fused_moe.experts.deep_gemm_moe ... |vllm.model_executor.layers.fused_moe.experts.deep_gemm_moe|
+vllm.model_executor.layers.fused_moe.experts.fallback ... |vllm.model_executor.layers.fused_moe.experts.fallback|
+vllm.model_executor.layers.fused_moe.experts.flashinfer_b12x_moe ... |vllm.model_executor.layers.fused_moe.experts.flashinfer_b12x_moe|
+vllm.model_executor.layers.fused_moe.experts.flashinfer_cutedsl_batched_moe ... |vllm.model_executor.layers.fused_moe.experts.flashinfer_cutedsl_batched_moe|
+vllm.model_executor.layers.fused_moe.experts.flashinfer_cutlass_moe ... |vllm.model_executor.layers.fused_moe.experts.flashinfer_cutlass_moe|
+vllm.model_executor.layers.fused_moe.experts.fused_batched_moe ... |vllm.model_executor.layers.fused_moe.experts.fused_batched_moe|
+vllm.model_executor.layers.fused_moe.experts.gpt_oss_triton_kernels_moe ... |vllm.model_executor.layers.fused_moe.experts.gpt_oss_triton_kernels_moe|
+vllm.model_executor.layers.fused_moe.experts.marlin_moe ... |vllm.model_executor.layers.fused_moe.experts.marlin_moe|
+vllm.model_executor.layers.fused_moe.experts.rocm_aiter_moe ... |vllm.model_executor.layers.fused_moe.experts.rocm_aiter_moe|
+vllm.model_executor.layers.fused_moe.experts.triton_deep_gemm_moe ... |vllm.model_executor.layers.fused_moe.experts.triton_deep_gemm_moe|
+vllm.model_executor.layers.fused_moe.experts.triton_moe ... |vllm.model_executor.layers.fused_moe.experts.triton_moe|
+vllm.model_executor.layers.fused_moe.experts.trtllm_mxfp4_moe ... |vllm.model_executor.layers.fused_moe.experts.trtllm_mxfp4_moe|
+vllm.model_executor.layers.fused_moe.experts.trtllm_nvfp4_moe ... |vllm.model_executor.layers.fused_moe.experts.trtllm_nvfp4_moe|
+vllm.model_executor.layers.fused_moe.flashinfer_moe_ep ... |vllm.model_executor.layers.fused_moe.flashinfer_moe_ep|
+vllm.model_executor.layers.fused_moe.fused_flydsl_moe ... |vllm.model_executor.layers.fused_moe.fused_flydsl_moe|
+vllm.model_executor.layers.fused_moe.fused_globalize_align_block_size ... |vllm.model_executor.layers.fused_moe.fused_globalize_align_block_size|
+vllm.model_executor.layers.fused_moe.fused_moe ... |vllm.model_executor.layers.fused_moe.fused_moe|
+vllm.model_executor.layers.fused_moe.fused_moe_method_base ... |vllm.model_executor.layers.fused_moe.fused_moe_method_base|
+vllm.model_executor.layers.fused_moe.fused_moe_modular_method ... |vllm.model_executor.layers.fused_moe.fused_moe_modular_method|
+vllm.model_executor.layers.fused_moe.hpc_moe ... |vllm.model_executor.layers.fused_moe.hpc_moe|
+vllm.model_executor.layers.fused_moe ... |vllm.model_executor.layers.fused_moe|
+vllm.model_executor.layers.fused_moe.layer ... |vllm.model_executor.layers.fused_moe.layer|
+vllm.model_executor.layers.fused_moe.modular_kernel ... |vllm.model_executor.layers.fused_moe.modular_kernel|
+vllm.model_executor.layers.fused_moe.moe_align_block_size ... |vllm.model_executor.layers.fused_moe.moe_align_block_size|
+vllm.model_executor.layers.fused_moe.moe_fused_mul_sum ... |vllm.model_executor.layers.fused_moe.moe_fused_mul_sum|
+vllm.model_executor.layers.fused_moe.moe_output ... |vllm.model_executor.layers.fused_moe.moe_output|
+vllm.model_executor.layers.fused_moe.moe_permute_unpermute ... |vllm.model_executor.layers.fused_moe.moe_permute_unpermute|
+vllm.model_executor.layers.fused_moe.prepare_finalize.alltoall_batched ... |vllm.model_executor.layers.fused_moe.prepare_finalize.alltoall_batched|
+vllm.model_executor.layers.fused_moe.prepare_finalize.batched ... |vllm.model_executor.layers.fused_moe.prepare_finalize.batched|
+vllm.model_executor.layers.fused_moe.prepare_finalize.deepep_ht ... |vllm.model_executor.layers.fused_moe.prepare_finalize.deepep_ht|
+vllm.model_executor.layers.fused_moe.prepare_finalize.deepep_ll ... |vllm.model_executor.layers.fused_moe.prepare_finalize.deepep_ll|
+vllm.model_executor.layers.fused_moe.prepare_finalize.deepep_v2 ... |vllm.model_executor.layers.fused_moe.prepare_finalize.deepep_v2|
+vllm.model_executor.layers.fused_moe.prepare_finalize.flashinfer_nvlink_one_sided ... |vllm.model_executor.layers.fused_moe.prepare_finalize.flashinfer_nvlink_one_sided|
+vllm.model_executor.layers.fused_moe.prepare_finalize.flashinfer_nvlink_two_sided ... |vllm.model_executor.layers.fused_moe.prepare_finalize.flashinfer_nvlink_two_sided|
+vllm.model_executor.layers.fused_moe.prepare_finalize.moonep ... |vllm.model_executor.layers.fused_moe.prepare_finalize.moonep|
+vllm.model_executor.layers.fused_moe.prepare_finalize.mori ... |vllm.model_executor.layers.fused_moe.prepare_finalize.mori|
+vllm.model_executor.layers.fused_moe.prepare_finalize.mori_epv2 ... |vllm.model_executor.layers.fused_moe.prepare_finalize.mori_epv2|
+vllm.model_executor.layers.fused_moe.prepare_finalize.naive_dp_ep ... |vllm.model_executor.layers.fused_moe.prepare_finalize.naive_dp_ep|
+vllm.model_executor.layers.fused_moe.prepare_finalize.nixl_ep ... |vllm.model_executor.layers.fused_moe.prepare_finalize.nixl_ep|
+vllm.model_executor.layers.fused_moe.prepare_finalize.no_dp_ep ... |vllm.model_executor.layers.fused_moe.prepare_finalize.no_dp_ep|
+vllm.model_executor.layers.fused_moe.prepare_finalize.passthrough ... |vllm.model_executor.layers.fused_moe.prepare_finalize.passthrough|
+vllm.model_executor.layers.fused_moe.routed_experts ... |vllm.model_executor.layers.fused_moe.routed_experts|
+vllm.model_executor.layers.fused_moe.router.fused_moe_router ... |vllm.model_executor.layers.fused_moe.router.fused_moe_router|
+vllm.model_executor.layers.fused_moe.runner.moe_runner ... |vllm.model_executor.layers.fused_moe.runner.moe_runner|
+vllm.model_executor.layers.fused_moe.topk_weight_and_reduce ... |vllm.model_executor.layers.fused_moe.topk_weight_and_reduce|
+vllm.model_executor.layers.fused_moe.unquantized_fused_moe_method ... |vllm.model_executor.layers.fused_moe.unquantized_fused_moe_method|
+vllm.model_executor.layers.fused_qk_norm_rope ... |vllm.model_executor.layers.fused_qk_norm_rope|
+vllm.model_executor.layers.fusion.act_nvfp4_quant ... |vllm.model_executor.layers.fusion.act_nvfp4_quant|
+vllm.model_executor.layers.fusion.fused_act_quant ... |vllm.model_executor.layers.fusion.fused_act_quant|
+vllm.model_executor.layers.fusion.mm_input_norm ... |vllm.model_executor.layers.fusion.mm_input_norm|
+vllm.model_executor.layers.fusion.quant_activation ... |vllm.model_executor.layers.fusion.quant_activation|
+vllm.model_executor.layers.fusion.relu2_fp8_quant ... |vllm.model_executor.layers.fusion.relu2_fp8_quant|
+vllm.model_executor.layers .................... |vllm.model_executor.layers|
+vllm.model_executor.layers.indexer_topk ... |vllm.model_executor.layers.indexer_topk|
+vllm.model_executor.layers.layernorm ... |vllm.model_executor.layers.layernorm|
+vllm.model_executor.layers.lightning_attn ... |vllm.model_executor.layers.lightning_attn|
+vllm.model_executor.layers.linear ...... |vllm.model_executor.layers.linear|
+vllm.model_executor.layers.logits_processor ... |vllm.model_executor.layers.logits_processor|
+vllm.model_executor.layers.mamba.abstract ... |vllm.model_executor.layers.mamba.abstract|
+vllm.model_executor.layers.mamba.checkpoint ... |vllm.model_executor.layers.mamba.checkpoint|
+vllm.model_executor.layers.mamba.gdn ... |vllm.model_executor.layers.mamba.gdn|
+vllm.model_executor.layers.mamba.kda_checkpoint ... |vllm.model_executor.layers.mamba.kda_checkpoint|
+vllm.model_executor.layers.mamba.linear ... |vllm.model_executor.layers.mamba.linear|
+vllm.model_executor.layers.mamba.mamba_mixer ... |vllm.model_executor.layers.mamba.mamba_mixer|
+vllm.model_executor.layers.mamba.mamba_mixer2 ... |vllm.model_executor.layers.mamba.mamba_mixer2|
+vllm.model_executor.layers.mamba.mamba_utils ... |vllm.model_executor.layers.mamba.mamba_utils|
+vllm.model_executor.layers.mamba.ops ... |vllm.model_executor.layers.mamba.ops|
+vllm.model_executor.layers.mamba.short_conv ... |vllm.model_executor.layers.mamba.short_conv|
+vllm.model_executor.layers.mhc ............ |vllm.model_executor.layers.mhc|
+vllm.model_executor.layers.mla ............ |vllm.model_executor.layers.mla|
+vllm.model_executor.layers.pooler.abstract ... |vllm.model_executor.layers.pooler.abstract|
+vllm.model_executor.layers.pooler.activations ... |vllm.model_executor.layers.pooler.activations|
+vllm.model_executor.layers.pooler.common ... |vllm.model_executor.layers.pooler.common|
+vllm.model_executor.layers.pooler ...... |vllm.model_executor.layers.pooler|
+vllm.model_executor.layers.pooler.seqwise ... |vllm.model_executor.layers.pooler.seqwise|
+vllm.model_executor.layers.pooler.special ... |vllm.model_executor.layers.pooler.special|
+vllm.model_executor.layers.pooler.tokwise ... |vllm.model_executor.layers.pooler.tokwise|
+vllm.model_executor.layers.quantization.auto_awq ... |vllm.model_executor.layers.quantization.auto_awq|
+vllm.model_executor.layers.quantization.auto_gptq ... |vllm.model_executor.layers.quantization.auto_gptq|
+vllm.model_executor.layers.quantization.awq_triton ... |vllm.model_executor.layers.quantization.awq_triton|
+vllm.model_executor.layers.quantization.base_config ... |vllm.model_executor.layers.quantization.base_config|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_embedding ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_embedding|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a16_flydsl ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a16_flydsl|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a4_mxfp4 ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a4_mxfp4|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a4_nvfp4 ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a4_nvfp4|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a8_fp8 ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a8_fp8|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a8_int8 ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a8_int8|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a8_mxfp4 ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w4a8_mxfp4|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w8a8_fp8 ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w8a8_fp8|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w8a8_int8 ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w8a8_int8|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w8a8_mxfp8 ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_w8a8_mxfp8|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_wna16 ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe.compressed_tensors_moe_wna16|
+vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe ... |vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_moe|
+vllm.model_executor.layers.quantization.compressed_tensors ... |vllm.model_executor.layers.quantization.compressed_tensors|
+vllm.model_executor.layers.quantization.compressed_tensors.schemes ... |vllm.model_executor.layers.quantization.compressed_tensors.schemes|
+vllm.model_executor.layers.quantization.compressed_tensors.transform ... |vllm.model_executor.layers.quantization.compressed_tensors.transform|
+vllm.model_executor.layers.quantization.compressed_tensors.triton_scaled_mm ... |vllm.model_executor.layers.quantization.compressed_tensors.triton_scaled_mm|
+vllm.model_executor.layers.quantization.compressed_tensors.utils ... |vllm.model_executor.layers.quantization.compressed_tensors.utils|
+vllm.model_executor.layers.quantization.dequant_linear ... |vllm.model_executor.layers.quantization.dequant_linear|
+vllm.model_executor.layers.quantization.experts_int8 ... |vllm.model_executor.layers.quantization.experts_int8|
+vllm.model_executor.layers.quantization.fbgemm_fp8 ... |vllm.model_executor.layers.quantization.fbgemm_fp8|
+vllm.model_executor.layers.quantization.fp8 ... |vllm.model_executor.layers.quantization.fp8|
+vllm.model_executor.layers.quantization.humming ... |vllm.model_executor.layers.quantization.humming|
+vllm.model_executor.layers.quantization.inc.config_parser ... |vllm.model_executor.layers.quantization.inc.config_parser|
+vllm.model_executor.layers.quantization.inc.inc ... |vllm.model_executor.layers.quantization.inc.inc|
+vllm.model_executor.layers.quantization.inc.inc_linear ... |vllm.model_executor.layers.quantization.inc.inc_linear|
+vllm.model_executor.layers.quantization.inc ... |vllm.model_executor.layers.quantization.inc|
+vllm.model_executor.layers.quantization.inc.schemes ... |vllm.model_executor.layers.quantization.inc.schemes|
+vllm.model_executor.layers.quantization ... |vllm.model_executor.layers.quantization|
+vllm.model_executor.layers.quantization.input_hadamard ... |vllm.model_executor.layers.quantization.input_hadamard|
+vllm.model_executor.layers.quantization.input_quant_fp8 ... |vllm.model_executor.layers.quantization.input_quant_fp8|
+vllm.model_executor.layers.quantization.kv_cache ... |vllm.model_executor.layers.quantization.kv_cache|
+vllm.model_executor.layers.quantization.modelopt ... |vllm.model_executor.layers.quantization.modelopt|
+vllm.model_executor.layers.quantization.modelopt_block_quant ... |vllm.model_executor.layers.quantization.modelopt_block_quant|
+vllm.model_executor.layers.quantization.moe_wna16 ... |vllm.model_executor.layers.quantization.moe_wna16|
+vllm.model_executor.layers.quantization.mxfp4 ... |vllm.model_executor.layers.quantization.mxfp4|
+vllm.model_executor.layers.quantization.online.base ... |vllm.model_executor.layers.quantization.online.base|
+vllm.model_executor.layers.quantization.online.fp8 ... |vllm.model_executor.layers.quantization.online.fp8|
+vllm.model_executor.layers.quantization.online.fp8_requant ... |vllm.model_executor.layers.quantization.online.fp8_requant|
+vllm.model_executor.layers.quantization.online ... |vllm.model_executor.layers.quantization.online|
+vllm.model_executor.layers.quantization.online.int4 ... |vllm.model_executor.layers.quantization.online.int4|
+vllm.model_executor.layers.quantization.online.int8 ... |vllm.model_executor.layers.quantization.online.int8|
+vllm.model_executor.layers.quantization.online.lm_head ... |vllm.model_executor.layers.quantization.online.lm_head|
+vllm.model_executor.layers.quantization.online.loading ... |vllm.model_executor.layers.quantization.online.loading|
+vllm.model_executor.layers.quantization.online.lut_b ... |vllm.model_executor.layers.quantization.online.lut_b|
+vllm.model_executor.layers.quantization.online.moe_base ... |vllm.model_executor.layers.quantization.online.moe_base|
+vllm.model_executor.layers.quantization.online.mxfp4 ... |vllm.model_executor.layers.quantization.online.mxfp4|
+vllm.model_executor.layers.quantization.online.mxfp8 ... |vllm.model_executor.layers.quantization.online.mxfp8|
+vllm.model_executor.layers.quantization.online.nvfp4 ... |vllm.model_executor.layers.quantization.online.nvfp4|
+vllm.model_executor.layers.quantization.online.requantization ... |vllm.model_executor.layers.quantization.online.requantization|
+vllm.model_executor.layers.quantization.online.shared_expert ... |vllm.model_executor.layers.quantization.online.shared_expert|
+vllm.model_executor.layers.quantization.quark ... |vllm.model_executor.layers.quantization.quark|
+vllm.model_executor.layers.quantization.torchao ... |vllm.model_executor.layers.quantization.torchao|
+vllm.model_executor.layers.quantization.turboquant ... |vllm.model_executor.layers.quantization.turboquant|
+vllm.model_executor.layers.quantization.utils.b12x_moe ... |vllm.model_executor.layers.quantization.utils.b12x_moe|
+vllm.model_executor.layers.quantization.utils.config_utils ... |vllm.model_executor.layers.quantization.utils.config_utils|
+vllm.model_executor.layers.quantization.utils.flashinfer_fp4_moe ... |vllm.model_executor.layers.quantization.utils.flashinfer_fp4_moe|
+vllm.model_executor.layers.quantization.utils.flashinfer_mxint4_moe ... |vllm.model_executor.layers.quantization.utils.flashinfer_mxint4_moe|
+vllm.model_executor.layers.quantization.utils.flashinfer_utils ... |vllm.model_executor.layers.quantization.utils.flashinfer_utils|
+vllm.model_executor.layers.quantization.utils.fp8_utils ... |vllm.model_executor.layers.quantization.utils.fp8_utils|
+vllm.model_executor.layers.quantization.utils.gptq_utils ... |vllm.model_executor.layers.quantization.utils.gptq_utils|
+vllm.model_executor.layers.quantization.utils.humming ... |vllm.model_executor.layers.quantization.utils.humming|
+vllm.model_executor.layers.quantization.utils ... |vllm.model_executor.layers.quantization.utils|
+vllm.model_executor.layers.quantization.utils.int8_utils ... |vllm.model_executor.layers.quantization.utils.int8_utils|
+vllm.model_executor.layers.quantization.utils.layer_utils ... |vllm.model_executor.layers.quantization.utils.layer_utils|
+vllm.model_executor.layers.quantization.utils.lut_b_utils ... |vllm.model_executor.layers.quantization.utils.lut_b_utils|
+vllm.model_executor.layers.quantization.utils.machete_utils ... |vllm.model_executor.layers.quantization.utils.machete_utils|
+vllm.model_executor.layers.quantization.utils.marlin_utils ... |vllm.model_executor.layers.quantization.utils.marlin_utils|
+vllm.model_executor.layers.quantization.utils.marlin_utils_fp4 ... |vllm.model_executor.layers.quantization.utils.marlin_utils_fp4|
+vllm.model_executor.layers.quantization.utils.marlin_utils_fp8 ... |vllm.model_executor.layers.quantization.utils.marlin_utils_fp8|
+vllm.model_executor.layers.quantization.utils.marlin_utils_test ... |vllm.model_executor.layers.quantization.utils.marlin_utils_test|
+vllm.model_executor.layers.quantization.utils.mxfp4_utils ... |vllm.model_executor.layers.quantization.utils.mxfp4_utils|
+vllm.model_executor.layers.quantization.utils.mxfp6_utils ... |vllm.model_executor.layers.quantization.utils.mxfp6_utils|
+vllm.model_executor.layers.quantization.utils.mxfp8_utils ... |vllm.model_executor.layers.quantization.utils.mxfp8_utils|
+vllm.model_executor.layers.quantization.utils.nvfp4_emulation_utils ... |vllm.model_executor.layers.quantization.utils.nvfp4_emulation_utils|
+vllm.model_executor.layers.quantization.utils.nvfp4_utils ... |vllm.model_executor.layers.quantization.utils.nvfp4_utils|
+vllm.model_executor.layers.quantization.utils.ocp_mx_utils ... |vllm.model_executor.layers.quantization.utils.ocp_mx_utils|
+vllm.model_executor.layers.quantization.utils.quant_utils ... |vllm.model_executor.layers.quantization.utils.quant_utils|
+vllm.model_executor.layers.quantization.utils.w8a8_utils ... |vllm.model_executor.layers.quantization.utils.w8a8_utils|
+vllm.model_executor.layers.quantization.w4afp8 ... |vllm.model_executor.layers.quantization.w4afp8|
+vllm.model_executor.layers.resampler ... |vllm.model_executor.layers.resampler|
+vllm.model_executor.layers.rocm_paged_mxfp4_indexer ... |vllm.model_executor.layers.rocm_paged_mxfp4_indexer|
+vllm.model_executor.layers.sparse_attn_indexer ... |vllm.model_executor.layers.sparse_attn_indexer|
+vllm.model_executor.layers.sparse_mqa_indexer ... |vllm.model_executor.layers.sparse_mqa_indexer|
+vllm.model_executor.layers.utils ........ |vllm.model_executor.layers.utils|
+vllm.model_executor.layers.vocab_parallel_embedding ... |vllm.model_executor.layers.vocab_parallel_embedding|
+vllm.model_executor.model_loader.base_loader ... |vllm.model_executor.model_loader.base_loader|
+vllm.model_executor.model_loader.checkpoint_weight_patch ... |vllm.model_executor.model_loader.checkpoint_weight_patch|
+vllm.model_executor.model_loader.default_loader ... |vllm.model_executor.model_loader.default_loader|
+vllm.model_executor.model_loader.dummy_loader ... |vllm.model_executor.model_loader.dummy_loader|
+vllm.model_executor.model_loader.ep_weight_filter ... |vllm.model_executor.model_loader.ep_weight_filter|
+vllm.model_executor.model_loader ........ |vllm.model_executor.model_loader|
+vllm.model_executor.model_loader.modelexpress_loader ... |vllm.model_executor.model_loader.modelexpress_loader|
+vllm.model_executor.model_loader.reload ... |vllm.model_executor.model_loader.reload|
+vllm.model_executor.model_loader.runai_streamer_loader ... |vllm.model_executor.model_loader.runai_streamer_loader|
+vllm.model_executor.model_loader.sharded_state_loader ... |vllm.model_executor.model_loader.sharded_state_loader|
+vllm.model_executor.model_loader.tensorizer ... |vllm.model_executor.model_loader.tensorizer|
+vllm.model_executor.model_loader.tensorizer_loader ... |vllm.model_executor.model_loader.tensorizer_loader|
+vllm.model_executor.model_loader.utils ... |vllm.model_executor.model_loader.utils|
+vllm.model_executor.model_loader.weight_cache.artifact_store ... |vllm.model_executor.model_loader.weight_cache.artifact_store|
+vllm.model_executor.model_loader.weight_cache.daemon ... |vllm.model_executor.model_loader.weight_cache.daemon|
+vllm.model_executor.model_loader.weight_cache ... |vllm.model_executor.model_loader.weight_cache|
+vllm.model_executor.model_loader.weight_cache.ipc_backends.base ... |vllm.model_executor.model_loader.weight_cache.ipc_backends.base|
+vllm.model_executor.model_loader.weight_cache.ipc_backends ... |vllm.model_executor.model_loader.weight_cache.ipc_backends|
+vllm.model_executor.model_loader.weight_cache.ipc_backends.serial_utils ... |vllm.model_executor.model_loader.weight_cache.ipc_backends.serial_utils|
+vllm.model_executor.model_loader.weight_cache.ipc_backends.torch_ipc ... |vllm.model_executor.model_loader.weight_cache.ipc_backends.torch_ipc|
+vllm.model_executor.model_loader.weight_cache.ipc_backends.vmm_ipc ... |vllm.model_executor.model_loader.weight_cache.ipc_backends.vmm_ipc|
+vllm.model_executor.model_loader.weight_cache.ipc_loader ... |vllm.model_executor.model_loader.weight_cache.ipc_loader|
+vllm.model_executor.model_loader.weight_cache.protocol ... |vllm.model_executor.model_loader.weight_cache.protocol|
+vllm.model_executor.model_loader.weight_cache.transport ... |vllm.model_executor.model_loader.weight_cache.transport|
+vllm.model_executor.model_loader.weight_cache.utils ... |vllm.model_executor.model_loader.weight_cache.utils|
+vllm.model_executor.model_loader.weight_cache.warmup_cache ... |vllm.model_executor.model_loader.weight_cache.warmup_cache|
+vllm.model_executor.model_loader.weight_cache.weight_seed ... |vllm.model_executor.model_loader.weight_cache.weight_seed|
+vllm.model_executor.model_loader.weight_checksum ... |vllm.model_executor.model_loader.weight_checksum|
+vllm.model_executor.model_loader.weight_tying ... |vllm.model_executor.model_loader.weight_tying|
+vllm.model_executor.model_loader.weight_utils ... |vllm.model_executor.model_loader.weight_utils|
+vllm.model_executor.models.AXK1 .......... |vllm.model_executor.models.AXK1|
+vllm.model_executor.models.adapters ... |vllm.model_executor.models.adapters|
+vllm.model_executor.models.afmoe ........ |vllm.model_executor.models.afmoe|
+vllm.model_executor.models.aimv2 ........ |vllm.model_executor.models.aimv2|
+vllm.model_executor.models.alice_ai ... |vllm.model_executor.models.alice_ai|
+vllm.model_executor.models.alpamayo2_super ... |vllm.model_executor.models.alpamayo2_super|
+vllm.model_executor.models.apertus .... |vllm.model_executor.models.apertus|
+vllm.model_executor.models.audioflamingo3 ... |vllm.model_executor.models.audioflamingo3|
+vllm.model_executor.models.bagel ........ |vllm.model_executor.models.bagel|
+vllm.model_executor.models.bailing_moe ... |vllm.model_executor.models.bailing_moe|
+vllm.model_executor.models.bailing_moe_linear ... |vllm.model_executor.models.bailing_moe_linear|
+vllm.model_executor.models.bailing_moe_mtp ... |vllm.model_executor.models.bailing_moe_mtp|
+vllm.model_executor.models.bailing_moe_v3 ... |vllm.model_executor.models.bailing_moe_v3|
+vllm.model_executor.models.bailing_moe_v3_mtp ... |vllm.model_executor.models.bailing_moe_v3_mtp|
+vllm.model_executor.models.bailing_moe_v3_vl ... |vllm.model_executor.models.bailing_moe_v3_vl|
+vllm.model_executor.models.bee ............ |vllm.model_executor.models.bee|
+vllm.model_executor.models.bert .......... |vllm.model_executor.models.bert|
+vllm.model_executor.models.bert_with_rope ... |vllm.model_executor.models.bert_with_rope|
+vllm.model_executor.models.blip .......... |vllm.model_executor.models.blip|
+vllm.model_executor.models.blip2 ........ |vllm.model_executor.models.blip2|
+vllm.model_executor.models.bloom ........ |vllm.model_executor.models.bloom|
+vllm.model_executor.models.canary ...... |vllm.model_executor.models.canary|
+vllm.model_executor.models.chatglm .... |vllm.model_executor.models.chatglm|
+vllm.model_executor.models.clef_flash ... |vllm.model_executor.models.clef_flash|
+vllm.model_executor.models.clef_joint_schema ... |vllm.model_executor.models.clef_joint_schema|
+vllm.model_executor.models.clef_omni ... |vllm.model_executor.models.clef_omni|
+vllm.model_executor.models.clip .......... |vllm.model_executor.models.clip|
+vllm.model_executor.models.cohere2_moe ... |vllm.model_executor.models.cohere2_moe|
+vllm.model_executor.models.cohere2_vision ... |vllm.model_executor.models.cohere2_vision|
+vllm.model_executor.models.cohere_asr ... |vllm.model_executor.models.cohere_asr|
+vllm.model_executor.models.cohere_compass ... |vllm.model_executor.models.cohere_compass|
+vllm.model_executor.models.cohere_eagle ... |vllm.model_executor.models.cohere_eagle|
+vllm.model_executor.models.colbert .... |vllm.model_executor.models.colbert|
+vllm.model_executor.models.colmodernvbert ... |vllm.model_executor.models.colmodernvbert|
+vllm.model_executor.models.colpali .... |vllm.model_executor.models.colpali|
+vllm.model_executor.models.colqwen3 ... |vllm.model_executor.models.colqwen3|
+vllm.model_executor.models.colqwen3_5 ... |vllm.model_executor.models.colqwen3_5|
+vllm.model_executor.models.colultravbert ... |vllm.model_executor.models.colultravbert|
+vllm.model_executor.models.commandr ... |vllm.model_executor.models.commandr|
+vllm.model_executor.models.config ...... |vllm.model_executor.models.config|
+vllm.model_executor.models.conformer_encoder ... |vllm.model_executor.models.conformer_encoder|
+vllm.model_executor.models.cosmos3 .... |vllm.model_executor.models.cosmos3|
+vllm.model_executor.models.cosmos3_edge ... |vllm.model_executor.models.cosmos3_edge|
+vllm.model_executor.models.d3 .............. |vllm.model_executor.models.d3|
+vllm.model_executor.models.dbrx .......... |vllm.model_executor.models.dbrx|
+vllm.model_executor.models.deepencoder ... |vllm.model_executor.models.deepencoder|
+vllm.model_executor.models.deepencoder2 ... |vllm.model_executor.models.deepencoder2|
+vllm.model_executor.models.deepseek_eagle ... |vllm.model_executor.models.deepseek_eagle|
+vllm.model_executor.models.deepseek_eagle3 ... |vllm.model_executor.models.deepseek_eagle3|
+vllm.model_executor.models.deepseek_mtp ... |vllm.model_executor.models.deepseek_mtp|
+vllm.model_executor.models.deepseek_ocr ... |vllm.model_executor.models.deepseek_ocr|
+vllm.model_executor.models.deepseek_ocr2 ... |vllm.model_executor.models.deepseek_ocr2|
+vllm.model_executor.models.deepseek_v2 ... |vllm.model_executor.models.deepseek_v2|
+vllm.model_executor.models.deepseek_vl2 ... |vllm.model_executor.models.deepseek_vl2|
+vllm.model_executor.models.diffusion_gemma ... |vllm.model_executor.models.diffusion_gemma|
+vllm.model_executor.models.diffusion_gemma_sampler ... |vllm.model_executor.models.diffusion_gemma_sampler|
+vllm.model_executor.models.domyn_edge ... |vllm.model_executor.models.domyn_edge|
+vllm.model_executor.models.dory .......... |vllm.model_executor.models.dory|
+vllm.model_executor.models.dots_ocr ... |vllm.model_executor.models.dots_ocr|
+vllm.model_executor.models.eagle2_5_vl ... |vllm.model_executor.models.eagle2_5_vl|
+vllm.model_executor.models.embedding_gemma2 ... |vllm.model_executor.models.embedding_gemma2|
+vllm.model_executor.models.encoder_cudagraph_utils ... |vllm.model_executor.models.encoder_cudagraph_utils|
+vllm.model_executor.models.ernie45 .... |vllm.model_executor.models.ernie45|
+vllm.model_executor.models.ernie45_moe ... |vllm.model_executor.models.ernie45_moe|
+vllm.model_executor.models.ernie45_vl ... |vllm.model_executor.models.ernie45_vl|
+vllm.model_executor.models.ernie45_vl_moe ... |vllm.model_executor.models.ernie45_vl_moe|
+vllm.model_executor.models.ernie_mtp ... |vllm.model_executor.models.ernie_mtp|
+vllm.model_executor.models.exaone ...... |vllm.model_executor.models.exaone|
+vllm.model_executor.models.exaone4 .... |vllm.model_executor.models.exaone4|
+vllm.model_executor.models.exaone4_5 ... |vllm.model_executor.models.exaone4_5|
+vllm.model_executor.models.exaone4_5_mtp ... |vllm.model_executor.models.exaone4_5_mtp|
+vllm.model_executor.models.exaone_moe ... |vllm.model_executor.models.exaone_moe|
+vllm.model_executor.models.exaone_moe_mtp ... |vllm.model_executor.models.exaone_moe_mtp|
+vllm.model_executor.models.expert_substitution ... |vllm.model_executor.models.expert_substitution|
+vllm.model_executor.models.extract_hidden_states ... |vllm.model_executor.models.extract_hidden_states|
+vllm.model_executor.models.falcon ...... |vllm.model_executor.models.falcon|
+vllm.model_executor.models.falcon_h1 ... |vllm.model_executor.models.falcon_h1|
+vllm.model_executor.models.fireredasr2 ... |vllm.model_executor.models.fireredasr2|
+vllm.model_executor.models.funasr ...... |vllm.model_executor.models.funasr|
+vllm.model_executor.models.funaudiochat ... |vllm.model_executor.models.funaudiochat|
+vllm.model_executor.models.gemma2 ...... |vllm.model_executor.models.gemma2|
+vllm.model_executor.models.gemma3 ...... |vllm.model_executor.models.gemma3|
+vllm.model_executor.models.gemma3_mm ... |vllm.model_executor.models.gemma3_mm|
+vllm.model_executor.models.gemma3n .... |vllm.model_executor.models.gemma3n|
+vllm.model_executor.models.gemma3n_audio_utils ... |vllm.model_executor.models.gemma3n_audio_utils|
+vllm.model_executor.models.gemma3n_mm ... |vllm.model_executor.models.gemma3n_mm|
+vllm.model_executor.models.gemma4 ...... |vllm.model_executor.models.gemma4|
+vllm.model_executor.models.gemma4_dspark ... |vllm.model_executor.models.gemma4_dspark|
+vllm.model_executor.models.gemma4_mm ... |vllm.model_executor.models.gemma4_mm|
+vllm.model_executor.models.gemma4_mtp ... |vllm.model_executor.models.gemma4_mtp|
+vllm.model_executor.models.gemma4_unified ... |vllm.model_executor.models.gemma4_unified|
+vllm.model_executor.models.glm4 .......... |vllm.model_executor.models.glm4|
+vllm.model_executor.models.glm4_1v .... |vllm.model_executor.models.glm4_1v|
+vllm.model_executor.models.glm4_moe ... |vllm.model_executor.models.glm4_moe|
+vllm.model_executor.models.glm4_moe_lite ... |vllm.model_executor.models.glm4_moe_lite|
+vllm.model_executor.models.glm4_moe_lite_mtp ... |vllm.model_executor.models.glm4_moe_lite_mtp|
+vllm.model_executor.models.glm4_moe_mtp ... |vllm.model_executor.models.glm4_moe_mtp|
+vllm.model_executor.models.glm4v ........ |vllm.model_executor.models.glm4v|
+vllm.model_executor.models.glm_ocr .... |vllm.model_executor.models.glm_ocr|
+vllm.model_executor.models.glm_ocr_mtp ... |vllm.model_executor.models.glm_ocr_mtp|
+vllm.model_executor.models.glmasr ...... |vllm.model_executor.models.glmasr|
+vllm.model_executor.models.glmasr_utils ... |vllm.model_executor.models.glmasr_utils|
+vllm.model_executor.models.gpt2 .......... |vllm.model_executor.models.gpt2|
+vllm.model_executor.models.gpt_j ........ |vllm.model_executor.models.gpt_j|
+vllm.model_executor.models.gpt_oss .... |vllm.model_executor.models.gpt_oss|
+vllm.model_executor.models.granite .... |vllm.model_executor.models.granite|
+vllm.model_executor.models.granite4_vision ... |vllm.model_executor.models.granite4_vision|
+vllm.model_executor.models.granite_speech ... |vllm.model_executor.models.granite_speech|
+vllm.model_executor.models.granite_speech_plus ... |vllm.model_executor.models.granite_speech_plus|
+vllm.model_executor.models.granitemoe ... |vllm.model_executor.models.granitemoe|
+vllm.model_executor.models.granitemoehybrid ... |vllm.model_executor.models.granitemoehybrid|
+vllm.model_executor.models.granitemoeshared ... |vllm.model_executor.models.granitemoeshared|
+vllm.model_executor.models.h2ovl ........ |vllm.model_executor.models.h2ovl|
+vllm.model_executor.models.hrm_text ... |vllm.model_executor.models.hrm_text|
+vllm.model_executor.models.hy_v3 ........ |vllm.model_executor.models.hy_v3|
+vllm.model_executor.models.hy_v3_mtp ... |vllm.model_executor.models.hy_v3_mtp|
+vllm.model_executor.models.hyperclovax ... |vllm.model_executor.models.hyperclovax|
+vllm.model_executor.models.hyperclovax_vision_v2 ... |vllm.model_executor.models.hyperclovax_vision_v2|
+vllm.model_executor.models.idefics2_vision_model ... |vllm.model_executor.models.idefics2_vision_model|
+vllm.model_executor.models.idefics3 ... |vllm.model_executor.models.idefics3|
+vllm.model_executor.models .................... |vllm.model_executor.models|
+vllm.model_executor.models.interfaces ... |vllm.model_executor.models.interfaces|
+vllm.model_executor.models.interfaces_base ... |vllm.model_executor.models.interfaces_base|
+vllm.model_executor.models.intern_vit ... |vllm.model_executor.models.intern_vit|
+vllm.model_executor.models.internlm2 ... |vllm.model_executor.models.internlm2|
+vllm.model_executor.models.interns1 ... |vllm.model_executor.models.interns1|
+vllm.model_executor.models.interns1_pro ... |vllm.model_executor.models.interns1_pro|
+vllm.model_executor.models.interns1_vit ... |vllm.model_executor.models.interns1_vit|
+vllm.model_executor.models.interns2_mobius ... |vllm.model_executor.models.interns2_mobius|
+vllm.model_executor.models.interns2_preview ... |vllm.model_executor.models.interns2_preview|
+vllm.model_executor.models.internvl ... |vllm.model_executor.models.internvl|
+vllm.model_executor.models.iquest_loopcoder ... |vllm.model_executor.models.iquest_loopcoder|
+vllm.model_executor.models.isaac ........ |vllm.model_executor.models.isaac|
+vllm.model_executor.models.jamba ........ |vllm.model_executor.models.jamba|
+vllm.model_executor.models.jina .......... |vllm.model_executor.models.jina|
+vllm.model_executor.models.jina_vl .... |vllm.model_executor.models.jina_vl|
+vllm.model_executor.models.k2_horizon ... |vllm.model_executor.models.k2_horizon|
+vllm.model_executor.models.kanana_v ... |vllm.model_executor.models.kanana_v|
+vllm.model_executor.models.kimi_audio ... |vllm.model_executor.models.kimi_audio|
+vllm.model_executor.models.kimi_k25 ... |vllm.model_executor.models.kimi_k25|
+vllm.model_executor.models.kimi_k25_vit ... |vllm.model_executor.models.kimi_k25_vit|
+vllm.model_executor.models.kimi_vl .... |vllm.model_executor.models.kimi_vl|
+vllm.model_executor.models.laguna ...... |vllm.model_executor.models.laguna|
+vllm.model_executor.models.laguna_dflash ... |vllm.model_executor.models.laguna_dflash|
+vllm.model_executor.models.lfm2 .......... |vllm.model_executor.models.lfm2|
+vllm.model_executor.models.lfm2_moe ... |vllm.model_executor.models.lfm2_moe|
+vllm.model_executor.models.lfm2_siglip2 ... |vllm.model_executor.models.lfm2_siglip2|
+vllm.model_executor.models.lfm2_vl .... |vllm.model_executor.models.lfm2_vl|
+vllm.model_executor.models.lfm3 .......... |vllm.model_executor.models.lfm3|
+vllm.model_executor.models.lfm3_audio ... |vllm.model_executor.models.lfm3_audio|
+vllm.model_executor.models.lfm3_omni ... |vllm.model_executor.models.lfm3_omni|
+vllm.model_executor.models.lfm3_vl .... |vllm.model_executor.models.lfm3_vl|
+vllm.model_executor.models.lightonocr ... |vllm.model_executor.models.lightonocr|
+vllm.model_executor.models.lilicorr ... |vllm.model_executor.models.lilicorr|
+vllm.model_executor.models.llama ........ |vllm.model_executor.models.llama|
+vllm.model_executor.models.llama4 ...... |vllm.model_executor.models.llama4|
+vllm.model_executor.models.llama4_eagle ... |vllm.model_executor.models.llama4_eagle|
+vllm.model_executor.models.llama_eagle ... |vllm.model_executor.models.llama_eagle|
+vllm.model_executor.models.llama_eagle3 ... |vllm.model_executor.models.llama_eagle3|
+vllm.model_executor.models.llava ........ |vllm.model_executor.models.llava|
+vllm.model_executor.models.llava_next ... |vllm.model_executor.models.llava_next|
+vllm.model_executor.models.llava_next_video ... |vllm.model_executor.models.llava_next_video|
+vllm.model_executor.models.llava_onevision ... |vllm.model_executor.models.llava_onevision|
+vllm.model_executor.models.llava_onevision2 ... |vllm.model_executor.models.llava_onevision2|
+vllm.model_executor.models.longcat_flash ... |vllm.model_executor.models.longcat_flash|
+vllm.model_executor.models.longcat_flash_mtp ... |vllm.model_executor.models.longcat_flash_mtp|
+vllm.model_executor.models.longcat_flash_ngram ... |vllm.model_executor.models.longcat_flash_ngram|
+vllm.model_executor.models.mamba ........ |vllm.model_executor.models.mamba|
+vllm.model_executor.models.mamba2 ...... |vllm.model_executor.models.mamba2|
+vllm.model_executor.models.midashenglm ... |vllm.model_executor.models.midashenglm|
+vllm.model_executor.models.mimo .......... |vllm.model_executor.models.mimo|
+vllm.model_executor.models.mimo_audio ... |vllm.model_executor.models.mimo_audio|
+vllm.model_executor.models.mimo_mtp ... |vllm.model_executor.models.mimo_mtp|
+vllm.model_executor.models.mimo_v2 .... |vllm.model_executor.models.mimo_v2|
+vllm.model_executor.models.mimo_v2_mtp ... |vllm.model_executor.models.mimo_v2_mtp|
+vllm.model_executor.models.mimo_v2_omni ... |vllm.model_executor.models.mimo_v2_omni|
+vllm.model_executor.models.ming_audio ... |vllm.model_executor.models.ming_audio|
+vllm.model_executor.models.ming_v3_asr ... |vllm.model_executor.models.ming_v3_asr|
+vllm.model_executor.models.ming_v3_asr_logits_processor ... |vllm.model_executor.models.ming_v3_asr_logits_processor|
+vllm.model_executor.models.minicpm .... |vllm.model_executor.models.minicpm|
+vllm.model_executor.models.minicpm3 ... |vllm.model_executor.models.minicpm3|
+vllm.model_executor.models.minicpm_eagle ... |vllm.model_executor.models.minicpm_eagle|
+vllm.model_executor.models.minicpm_ocr ... |vllm.model_executor.models.minicpm_ocr|
+vllm.model_executor.models.minicpmo ... |vllm.model_executor.models.minicpmo|
+vllm.model_executor.models.minicpmv ... |vllm.model_executor.models.minicpmv|
+vllm.model_executor.models.minicpmv4_6 ... |vllm.model_executor.models.minicpmv4_6|
+vllm.model_executor.models.minicpmv4_7 ... |vllm.model_executor.models.minicpmv4_7|
+vllm.model_executor.models.minimax_m2 ... |vllm.model_executor.models.minimax_m2|
+vllm.model_executor.models.mistral .... |vllm.model_executor.models.mistral|
+vllm.model_executor.models.mistral3 ... |vllm.model_executor.models.mistral3|
+vllm.model_executor.models.mistral_eagle ... |vllm.model_executor.models.mistral_eagle|
+vllm.model_executor.models.mistral_large_3 ... |vllm.model_executor.models.mistral_large_3|
+vllm.model_executor.models.mistral_large_3_eagle ... |vllm.model_executor.models.mistral_large_3_eagle|
+vllm.model_executor.models.mixtral .... |vllm.model_executor.models.mixtral|
+vllm.model_executor.models.mllama4 .... |vllm.model_executor.models.mllama4|
+vllm.model_executor.models.modernbert ... |vllm.model_executor.models.modernbert|
+vllm.model_executor.models.module_mapping ... |vllm.model_executor.models.module_mapping|
+vllm.model_executor.models.molmo ........ |vllm.model_executor.models.molmo|
+vllm.model_executor.models.molmo2 ...... |vllm.model_executor.models.molmo2|
+vllm.model_executor.models.moondream3 ... |vllm.model_executor.models.moondream3|
+vllm.model_executor.models.moonvit .... |vllm.model_executor.models.moonvit|
+vllm.model_executor.models.moss_audio ... |vllm.model_executor.models.moss_audio|
+vllm.model_executor.models.moss_transcribe_diarize ... |vllm.model_executor.models.moss_transcribe_diarize|
+vllm.model_executor.models.muse_glimmer ... |vllm.model_executor.models.muse_glimmer|
+vllm.model_executor.models.nano_nemotron_vl ... |vllm.model_executor.models.nano_nemotron_vl|
+vllm.model_executor.models.nemotron ... |vllm.model_executor.models.nemotron|
+vllm.model_executor.models.nemotron3_5_transcribe ... |vllm.model_executor.models.nemotron3_5_transcribe|
+vllm.model_executor.models.nemotron3_5_transcribe_audio ... |vllm.model_executor.models.nemotron3_5_transcribe_audio|
+vllm.model_executor.models.nemotron_dllm ... |vllm.model_executor.models.nemotron_dllm|
+vllm.model_executor.models.nemotron_h ... |vllm.model_executor.models.nemotron_h|
+vllm.model_executor.models.nemotron_h_mtp ... |vllm.model_executor.models.nemotron_h_mtp|
+vllm.model_executor.models.nemotron_nas ... |vllm.model_executor.models.nemotron_nas|
+vllm.model_executor.models.nemotron_parse ... |vllm.model_executor.models.nemotron_parse|
+vllm.model_executor.models.nemotron_parse3_5 ... |vllm.model_executor.models.nemotron_parse3_5|
+vllm.model_executor.models.nemotron_parse3_5_mtp ... |vllm.model_executor.models.nemotron_parse3_5_mtp|
+vllm.model_executor.models.nemotron_vl ... |vllm.model_executor.models.nemotron_vl|
+vllm.model_executor.models.nvlm_d ...... |vllm.model_executor.models.nvlm_d|
+vllm.model_executor.models.olmo_hybrid ... |vllm.model_executor.models.olmo_hybrid|
+vllm.model_executor.models.openai_privacy_filter ... |vllm.model_executor.models.openai_privacy_filter|
+vllm.model_executor.models.opencua .... |vllm.model_executor.models.opencua|
+vllm.model_executor.models.openpangu ... |vllm.model_executor.models.openpangu|
+vllm.model_executor.models.openpangu_mtp ... |vllm.model_executor.models.openpangu_mtp|
+vllm.model_executor.models.openvla .... |vllm.model_executor.models.openvla|
+vllm.model_executor.models.opt ............ |vllm.model_executor.models.opt|
+vllm.model_executor.models.orion ........ |vllm.model_executor.models.orion|
+vllm.model_executor.models.ovis .......... |vllm.model_executor.models.ovis|
+vllm.model_executor.models.ovis2_5 .... |vllm.model_executor.models.ovis2_5|
+vllm.model_executor.models.paddleocr_vl ... |vllm.model_executor.models.paddleocr_vl|
+vllm.model_executor.models.paligemma ... |vllm.model_executor.models.paligemma|
+vllm.model_executor.models.parakeet ... |vllm.model_executor.models.parakeet|
+vllm.model_executor.models.param2moe ... |vllm.model_executor.models.param2moe|
+vllm.model_executor.models.phi3v ........ |vllm.model_executor.models.phi3v|
+vllm.model_executor.models.phi4mm ...... |vllm.model_executor.models.phi4mm|
+vllm.model_executor.models.phi4mm_audio ... |vllm.model_executor.models.phi4mm_audio|
+vllm.model_executor.models.phi4mm_utils ... |vllm.model_executor.models.phi4mm_utils|
+vllm.model_executor.models.phi4siglip ... |vllm.model_executor.models.phi4siglip|
+vllm.model_executor.models.phimoe ...... |vllm.model_executor.models.phimoe|
+vllm.model_executor.models.pixtral .... |vllm.model_executor.models.pixtral|
+vllm.model_executor.models.plamo3 ...... |vllm.model_executor.models.plamo3|
+vllm.model_executor.models.qianfan_ocr ... |vllm.model_executor.models.qianfan_ocr|
+vllm.model_executor.models.qwen2_5_omni_thinker ... |vllm.model_executor.models.qwen2_5_omni_thinker|
+vllm.model_executor.models.qwen2_5_vl ... |vllm.model_executor.models.qwen2_5_vl|
+vllm.model_executor.models.qwen2_audio ... |vllm.model_executor.models.qwen2_audio|
+vllm.model_executor.models.qwen2_rm ... |vllm.model_executor.models.qwen2_rm|
+vllm.model_executor.models.qwen2_vl ... |vllm.model_executor.models.qwen2_vl|
+vllm.model_executor.models.qwen3 ........ |vllm.model_executor.models.qwen3|
+vllm.model_executor.models.qwen3_5 .... |vllm.model_executor.models.qwen3_5|
+vllm.model_executor.models.qwen3_5_mtp ... |vllm.model_executor.models.qwen3_5_mtp|
+vllm.model_executor.models.qwen3_5_slot ... |vllm.model_executor.models.qwen3_5_slot|
+vllm.model_executor.models.qwen3_asr ... |vllm.model_executor.models.qwen3_asr|
+vllm.model_executor.models.qwen3_asr_forced_aligner ... |vllm.model_executor.models.qwen3_asr_forced_aligner|
+vllm.model_executor.models.qwen3_asr_realtime ... |vllm.model_executor.models.qwen3_asr_realtime|
+vllm.model_executor.models.qwen3_dflash ... |vllm.model_executor.models.qwen3_dflash|
+vllm.model_executor.models.qwen3_dflash2 ... |vllm.model_executor.models.qwen3_dflash2|
+vllm.model_executor.models.qwen3_dspark ... |vllm.model_executor.models.qwen3_dspark|
+vllm.model_executor.models.qwen3_dspine ... |vllm.model_executor.models.qwen3_dspine|
+vllm.model_executor.models.qwen3_eagle3 ... |vllm.model_executor.models.qwen3_eagle3|
+vllm.model_executor.models.qwen3_moe ... |vllm.model_executor.models.qwen3_moe|
+vllm.model_executor.models.qwen3_next ... |vllm.model_executor.models.qwen3_next|
+vllm.model_executor.models.qwen3_next_mtp ... |vllm.model_executor.models.qwen3_next_mtp|
+vllm.model_executor.models.qwen3_omni_moe_thinker ... |vllm.model_executor.models.qwen3_omni_moe_thinker|
+vllm.model_executor.models.qwen3_vl ... |vllm.model_executor.models.qwen3_vl|
+vllm.model_executor.models.qwen3_vl_moe ... |vllm.model_executor.models.qwen3_vl_moe|
+vllm.model_executor.models.qwen3_xpress ... |vllm.model_executor.models.qwen3_xpress|
+vllm.model_executor.models.radio ........ |vllm.model_executor.models.radio|
+vllm.model_executor.models.registry ... |vllm.model_executor.models.registry|
+vllm.model_executor.models.ricursive ... |vllm.model_executor.models.ricursive|
+vllm.model_executor.models.ricursive_dflash2 ... |vllm.model_executor.models.ricursive_dflash2|
+vllm.model_executor.models.rnj1 .......... |vllm.model_executor.models.rnj1|
+vllm.model_executor.models.roberta .... |vllm.model_executor.models.roberta|
+vllm.model_executor.models.rvl ............ |vllm.model_executor.models.rvl|
+vllm.model_executor.models.sarvam ...... |vllm.model_executor.models.sarvam|
+vllm.model_executor.models.shieldgemma2 ... |vllm.model_executor.models.shieldgemma2|
+vllm.model_executor.models.siglip ...... |vllm.model_executor.models.siglip|
+vllm.model_executor.models.siglip2navit ... |vllm.model_executor.models.siglip2navit|
+vllm.model_executor.models.skyworkr1v ... |vllm.model_executor.models.skyworkr1v|
+vllm.model_executor.models.smolvlm .... |vllm.model_executor.models.smolvlm|
+vllm.model_executor.models.solar ........ |vllm.model_executor.models.solar|
+vllm.model_executor.models.step1 ........ |vllm.model_executor.models.step1|
+vllm.model_executor.models.step3_text ... |vllm.model_executor.models.step3_text|
+vllm.model_executor.models.step3_vl ... |vllm.model_executor.models.step3_vl|
+vllm.model_executor.models.step3p5 .... |vllm.model_executor.models.step3p5|
+vllm.model_executor.models.step3p5_mtp ... |vllm.model_executor.models.step3p5_mtp|
+vllm.model_executor.models.step3p7 .... |vllm.model_executor.models.step3p7|
+vllm.model_executor.models.step_vl .... |vllm.model_executor.models.step_vl|
+vllm.model_executor.models.teleflm .... |vllm.model_executor.models.teleflm|
+vllm.model_executor.models.terratorch ... |vllm.model_executor.models.terratorch|
+vllm.model_executor.models.transformers.base ... |vllm.model_executor.models.transformers.base|
+vllm.model_executor.models.transformers.causal ... |vllm.model_executor.models.transformers.causal|
+vllm.model_executor.models.transformers.fuser ... |vllm.model_executor.models.transformers.fuser|
+vllm.model_executor.models.transformers.fusers.attention ... |vllm.model_executor.models.transformers.fusers.attention|
+vllm.model_executor.models.transformers.fusers.base ... |vllm.model_executor.models.transformers.fusers.base|
+vllm.model_executor.models.transformers.fusers.glu ... |vllm.model_executor.models.transformers.fusers.glu|
+vllm.model_executor.models.transformers.fusers ... |vllm.model_executor.models.transformers.fusers|
+vllm.model_executor.models.transformers.fusers.merged_column ... |vllm.model_executor.models.transformers.fusers.merged_column|
+vllm.model_executor.models.transformers.fusers.mla ... |vllm.model_executor.models.transformers.fusers.mla|
+vllm.model_executor.models.transformers.fusers.moe ... |vllm.model_executor.models.transformers.fusers.moe|
+vllm.model_executor.models.transformers.fusers.packed_qkv ... |vllm.model_executor.models.transformers.fusers.packed_qkv|
+vllm.model_executor.models.transformers.fusers.qkv ... |vllm.model_executor.models.transformers.fusers.qkv|
+vllm.model_executor.models.transformers.fusers.rms_norm ... |vllm.model_executor.models.transformers.fusers.rms_norm|
+vllm.model_executor.models.transformers.fx_utils ... |vllm.model_executor.models.transformers.fx_utils|
+vllm.model_executor.models.transformers ... |vllm.model_executor.models.transformers|
+vllm.model_executor.models.transformers.layers ... |vllm.model_executor.models.transformers.layers|
+vllm.model_executor.models.transformers.legacy ... |vllm.model_executor.models.transformers.legacy|
+vllm.model_executor.models.transformers.moe ... |vllm.model_executor.models.transformers.moe|
+vllm.model_executor.models.transformers.mtp ... |vllm.model_executor.models.transformers.mtp|
+vllm.model_executor.models.transformers.multimodal ... |vllm.model_executor.models.transformers.multimodal|
+vllm.model_executor.models.transformers.pooling ... |vllm.model_executor.models.transformers.pooling|
+vllm.model_executor.models.transformers.transcription ... |vllm.model_executor.models.transformers.transcription|
+vllm.model_executor.models.transformers.utils ... |vllm.model_executor.models.transformers.utils|
+vllm.model_executor.models.ultravox ... |vllm.model_executor.models.ultravox|
+vllm.model_executor.models.unlimited_ocr ... |vllm.model_executor.models.unlimited_ocr|
+vllm.model_executor.models.unlimited_ocr2 ... |vllm.model_executor.models.unlimited_ocr2|
+vllm.model_executor.models.utils ........ |vllm.model_executor.models.utils|
+vllm.model_executor.models.vision ...... |vllm.model_executor.models.vision|
+vllm.model_executor.models.voxtral .... |vllm.model_executor.models.voxtral|
+vllm.model_executor.models.voxtral_realtime ... |vllm.model_executor.models.voxtral_realtime|
+vllm.model_executor.models.voyage ...... |vllm.model_executor.models.voyage|
+vllm.model_executor.models.whisper .... |vllm.model_executor.models.whisper|
+vllm.model_executor.models.whisper_causal ... |vllm.model_executor.models.whisper_causal|
+vllm.model_executor.models.whisper_utils ... |vllm.model_executor.models.whisper_utils|
+vllm.model_executor.models.zamba2 ...... |vllm.model_executor.models.zamba2|
+vllm.model_executor.models.zaya .......... |vllm.model_executor.models.zaya|
+vllm.model_executor.offloader .............. |vllm.model_executor.offloader|
+vllm.model_executor.parameter .............. |vllm.model_executor.parameter|
+vllm.model_executor.utils ...................... |vllm.model_executor.utils|
+vllm.model_executor.warmup.attention_warmup ... |vllm.model_executor.warmup.attention_warmup|
+vllm.model_executor.warmup.b12x_warmup ... |vllm.model_executor.warmup.b12x_warmup|
+vllm.model_executor.warmup.cutedsl_warmup ... |vllm.model_executor.warmup.cutedsl_warmup|
+vllm.model_executor.warmup.deep_gemm_warmup ... |vllm.model_executor.warmup.deep_gemm_warmup|
+vllm.model_executor.warmup.flashinfer_autotune_cache ... |vllm.model_executor.warmup.flashinfer_autotune_cache|
+vllm.model_executor.warmup.flashinfer_sparse_mla_warmup ... |vllm.model_executor.warmup.flashinfer_sparse_mla_warmup|
+vllm.model_executor.warmup .................... |vllm.model_executor.warmup|
+vllm.model_executor.warmup.jit_warmup ... |vllm.model_executor.warmup.jit_warmup|
+vllm.model_executor.warmup.jit_warmup_cutedsl_helper ... |vllm.model_executor.warmup.jit_warmup_cutedsl_helper|
+vllm.model_executor.warmup.jit_warmup_tilelang_helper ... |vllm.model_executor.warmup.jit_warmup_tilelang_helper|
+vllm.model_executor.warmup.jit_warmup_triton_helper ... |vllm.model_executor.warmup.jit_warmup_triton_helper|
+vllm.model_executor.warmup.kernel_warmup ... |vllm.model_executor.warmup.kernel_warmup|
+vllm.model_executor.warmup.kimi_k3_triton_warmup ... |vllm.model_executor.warmup.kimi_k3_triton_warmup|
+vllm.model_executor.warmup.minimax_m3_msa_warmup ... |vllm.model_executor.warmup.minimax_m3_msa_warmup|
+vllm.model_executor.warmup.qwen4_exp_qsa_warmup ... |vllm.model_executor.warmup.qwen4_exp_qsa_warmup|
+vllm.model_executor.warmup.qwen_triton_warmup ... |vllm.model_executor.warmup.qwen_triton_warmup|
+vllm.model_executor.warmup.qwen_vl_triton_warmup ... |vllm.model_executor.warmup.qwen_vl_triton_warmup|
+vllm.model_executor.warmup.replayssm_warmup ... |vllm.model_executor.warmup.replayssm_warmup|
+vllm.model_executor.warmup.rocm_segmented_attn_autotune_warmup ... |vllm.model_executor.warmup.rocm_segmented_attn_autotune_warmup|
+vllm.model_executor.warmup.step5_dsa_warmup ... |vllm.model_executor.warmup.step5_dsa_warmup|
+vllm.model_executor.warmup.watermark_sample_warmup ... |vllm.model_executor.warmup.watermark_sample_warmup|
+vllm.model_inspection .............................. |vllm.model_inspection|
+vllm.models.beam.amd.model .................... |vllm.models.beam.amd.model|
+vllm.models.beam ........................................ |vllm.models.beam|
+vllm.models.common .................................... |vllm.models.common|
+vllm.models.deepseek_v32 ........................ |vllm.models.deepseek_v32|
+vllm.models.deepseek_v32.nvidia.model ... |vllm.models.deepseek_v32.nvidia.model|
+vllm.models.deepseek_v4.common.vl_model ... |vllm.models.deepseek_v4.common.vl_model|
+vllm.models.deepseek_v4 .......................... |vllm.models.deepseek_v4|
+vllm.models.deepseek_v4.quant_config ... |vllm.models.deepseek_v4.quant_config|
+vllm.models.deepseek_v41.amd.dspark ... |vllm.models.deepseek_v41.amd.dspark|
+vllm.models.deepseek_v41.amd.engram ... |vllm.models.deepseek_v41.amd.engram|
+vllm.models.deepseek_v41.amd ................ |vllm.models.deepseek_v41.amd|
+vllm.models.deepseek_v41.amd.mhc ........ |vllm.models.deepseek_v41.amd.mhc|
+vllm.models.deepseek_v41.amd.model .... |vllm.models.deepseek_v41.amd.model|
+vllm.models.deepseek_v41.amd.mono ...... |vllm.models.deepseek_v41.amd.mono|
+vllm.models.deepseek_v41.amd.mono_decode ... |vllm.models.deepseek_v41.amd.mono_decode|
+vllm.models.deepseek_v41.amd.ops ........ |vllm.models.deepseek_v41.amd.ops|
+vllm.models.deepseek_v41.amd.rocm ...... |vllm.models.deepseek_v41.amd.rocm|
+vllm.models.deepseek_v41.amd.vl_model ... |vllm.models.deepseek_v41.amd.vl_model|
+vllm.models.deepseek_v41.attention .... |vllm.models.deepseek_v41.attention|
+vllm.models.deepseek_v41.common .......... |vllm.models.deepseek_v41.common|
+vllm.models.deepseek_v41.common.vl_cudagraph ... |vllm.models.deepseek_v41.common.vl_cudagraph|
+vllm.models.deepseek_v41.compressor ... |vllm.models.deepseek_v41.compressor|
+vllm.models.deepseek_v41.decoder_replay_layers ... |vllm.models.deepseek_v41.decoder_replay_layers|
+vllm.models.deepseek_v41 ........................ |vllm.models.deepseek_v41|
+vllm.models.deepseek_v41.nvidia .......... |vllm.models.deepseek_v41.nvidia|
+vllm.models.deepseek_v41.quant_config ... |vllm.models.deepseek_v41.quant_config|
+vllm.models.deepseek_v41.sparse_mla ... |vllm.models.deepseek_v41.sparse_mla|
+vllm.models.dots3_note.common .............. |vllm.models.dots3_note.common|
+vllm.models.dots3_note ............................ |vllm.models.dots3_note|
+vllm.models.dots3_note.nvidia.attention ... |vllm.models.dots3_note.nvidia.attention|
+vllm.models.dots3_note.nvidia.audio ... |vllm.models.dots3_note.nvidia.audio|
+vllm.models.dots3_note.nvidia.audio_encoder ... |vllm.models.dots3_note.nvidia.audio_encoder|
+vllm.models.dots3_note.nvidia .............. |vllm.models.dots3_note.nvidia|
+vllm.models.dots3_note.nvidia.model ... |vllm.models.dots3_note.nvidia.model|
+vllm.models.dots3_note.nvidia.mtp ...... |vllm.models.dots3_note.nvidia.mtp|
+vllm.models.dots3_note.nvidia.multimodal ... |vllm.models.dots3_note.nvidia.multimodal|
+vllm.models.dots3_note.nvidia.vision ... |vllm.models.dots3_note.nvidia.vision|
+vllm.models.dots3_note.nvidia.vision_attention ... |vllm.models.dots3_note.nvidia.vision_attention|
+vllm.models.dots3_note.nvidia.vision_moe ... |vllm.models.dots3_note.nvidia.vision_moe|
+vllm.models.flint ...................................... |vllm.models.flint|
+vllm.models.glm5next ................................ |vllm.models.glm5next|
+vllm.models.hy_v4 ...................................... |vllm.models.hy_v4|
+vllm.models.hy_v4.nvidia.vl_model ...... |vllm.models.hy_v4.nvidia.vl_model|
+vllm.models.hy_v4_flash .......................... |vllm.models.hy_v4_flash|
+vllm.models .................................................. |vllm.models|
+vllm.models.inkling .................................. |vllm.models.inkling|
+vllm.models.inkling2 ................................ |vllm.models.inkling2|
+vllm.models.inkling2.nvidia.loop ........ |vllm.models.inkling2.nvidia.loop|
+vllm.models.inkling2.nvidia.ops .......... |vllm.models.inkling2.nvidia.ops|
+vllm.models.inkling2.nvidia.sconv ...... |vllm.models.inkling2.nvidia.sconv|
+vllm.models.inkling2.nvidia.vision .... |vllm.models.inkling2.nvidia.vision|
+vllm.models.kimi_k3.amd.dsa .................. |vllm.models.kimi_k3.amd.dsa|
+vllm.models.kimi_k3.amd.encoder_cudagraph ... |vllm.models.kimi_k3.amd.encoder_cudagraph|
+vllm.models.kimi_k3.amd .......................... |vllm.models.kimi_k3.amd|
+vllm.models.kimi_k3.amd.kda .................. |vllm.models.kimi_k3.amd.kda|
+vllm.models.kimi_k3.amd.kda_metadata ... |vllm.models.kimi_k3.amd.kda_metadata|
+vllm.models.kimi_k3.amd.latent_moe_runner ... |vllm.models.kimi_k3.amd.latent_moe_runner|
+vllm.models.kimi_k3.amd.linear ............ |vllm.models.kimi_k3.amd.linear|
+vllm.models.kimi_k3.amd.mla .................. |vllm.models.kimi_k3.amd.mla|
+vllm.models.kimi_k3.amd.model .............. |vllm.models.kimi_k3.amd.model|
+vllm.models.kimi_k3.amd.mtp .................. |vllm.models.kimi_k3.amd.mtp|
+vllm.models.kimi_k3.amd.ops .................. |vllm.models.kimi_k3.amd.ops|
+vllm.models.kimi_k3.amd.specialized_decode ... |vllm.models.kimi_k3.amd.specialized_decode|
+vllm.models.kimi_k3.common .................... |vllm.models.kimi_k3.common|
+vllm.models.kimi_k3 .................................. |vllm.models.kimi_k3|
+vllm.models.kimi_k3.nvidia .................... |vllm.models.kimi_k3.nvidia|
+vllm.models.minimax_m3.amd.model ........ |vllm.models.minimax_m3.amd.model|
+vllm.models.minimax_m3 ............................ |vllm.models.minimax_m3|
+vllm.models.mistral .................................. |vllm.models.mistral|
+vllm.models.muse_spark.amd.dspark ...... |vllm.models.muse_spark.amd.dspark|
+vllm.models.muse_spark.amd .................... |vllm.models.muse_spark.amd|
+vllm.models.muse_spark.amd.model ........ |vllm.models.muse_spark.amd.model|
+vllm.models.muse_spark.amd.mono .......... |vllm.models.muse_spark.amd.mono|
+vllm.models.muse_spark.amd.multimodal ... |vllm.models.muse_spark.amd.multimodal|
+vllm.models.muse_spark.amd.muse_moe_runner ... |vllm.models.muse_spark.amd.muse_moe_runner|
+vllm.models.muse_spark.amd.ops ............ |vllm.models.muse_spark.amd.ops|
+vllm.models.muse_spark.common .............. |vllm.models.muse_spark.common|
+vllm.models.muse_spark.common.omni .... |vllm.models.muse_spark.common.omni|
+vllm.models.muse_spark ............................ |vllm.models.muse_spark|
+vllm.models.muse_spark.nvidia .............. |vllm.models.muse_spark.nvidia|
+vllm.models.qwen3_5 .................................. |vllm.models.qwen3_5|
+vllm.models.qwen4_exp.amd.hyperconnection ... |vllm.models.qwen4_exp.amd.hyperconnection|
+vllm.models.qwen4_exp.amd ...................... |vllm.models.qwen4_exp.amd|
+vllm.models.qwen4_exp.amd.low_latency_gemm ... |vllm.models.qwen4_exp.amd.low_latency_gemm|
+vllm.models.qwen4_exp.amd.model .......... |vllm.models.qwen4_exp.amd.model|
+vllm.models.qwen4_exp.amd.model_state ... |vllm.models.qwen4_exp.amd.model_state|
+vllm.models.qwen4_exp.amd.mtp .............. |vllm.models.qwen4_exp.amd.mtp|
+vllm.models.qwen4_exp.amd.ops .............. |vllm.models.qwen4_exp.amd.ops|
+vllm.models.qwen4_exp.amd.ple_layer ... |vllm.models.qwen4_exp.amd.ple_layer|
+vllm.models.qwen4_exp.amd.qsa .............. |vllm.models.qwen4_exp.amd.qsa|
+vllm.models.qwen4_exp.amd.qsa_indexer ... |vllm.models.qwen4_exp.amd.qsa_indexer|
+vllm.models.qwen4_exp.common ................ |vllm.models.qwen4_exp.common|
+vllm.models.qwen4_exp .............................. |vllm.models.qwen4_exp|
+vllm.models.qwen4_exp.nvidia ................ |vllm.models.qwen4_exp.nvidia|
+vllm.models.step5.amd.checks ................ |vllm.models.step5.amd.checks|
+vllm.models.step5.amd.csa_attention ... |vllm.models.step5.amd.csa_attention|
+vllm.models.step5.amd.csa_cache .......... |vllm.models.step5.amd.csa_cache|
+vllm.models.step5.amd .............................. |vllm.models.step5.amd|
+vllm.models.step5.amd.model .................. |vllm.models.step5.amd.model|
+vllm.models.step5.amd.mtp ...................... |vllm.models.step5.amd.mtp|
+vllm.models.step5.amd.ops ...................... |vllm.models.step5.amd.ops|
+vllm.models.step5.amd.vl ........................ |vllm.models.step5.amd.vl|
+vllm.models.step5.amd.warmup ................ |vllm.models.step5.amd.warmup|
+vllm.models.step5.common ........................ |vllm.models.step5.common|
+vllm.models.step5 ...................................... |vllm.models.step5|
+vllm.models.step5.nvidia ........................ |vllm.models.step5.nvidia|
+vllm.multimodal.audio .............................. |vllm.multimodal.audio|
+vllm.multimodal.cache .............................. |vllm.multimodal.cache|
+vllm.multimodal.encoder_budget ............ |vllm.multimodal.encoder_budget|
+vllm.multimodal.gpu_ipc_memory ............ |vllm.multimodal.gpu_ipc_memory|
+vllm.multimodal.hasher ............................ |vllm.multimodal.hasher|
+vllm.multimodal.image .............................. |vllm.multimodal.image|
+vllm.multimodal .......................................... |vllm.multimodal|
+vllm.multimodal.inputs ............................ |vllm.multimodal.inputs|
+vllm.multimodal.media .............................. |vllm.multimodal.media|
+vllm.multimodal.parse .............................. |vllm.multimodal.parse|
+vllm.multimodal.processing.context .... |vllm.multimodal.processing.context|
+vllm.multimodal.processing.dummy_inputs ... |vllm.multimodal.processing.dummy_inputs|
+vllm.multimodal.processing .................... |vllm.multimodal.processing|
+vllm.multimodal.processing.inputs ...... |vllm.multimodal.processing.inputs|
+vllm.multimodal.processing.processor ... |vllm.multimodal.processing.processor|
+vllm.multimodal.registry ........................ |vllm.multimodal.registry|
+vllm.multimodal.utils .............................. |vllm.multimodal.utils|
+vllm.multimodal.video .............................. |vllm.multimodal.video|
+vllm.multimodal.video_decoders ............ |vllm.multimodal.video_decoders|
+vllm.outputs ................................................ |vllm.outputs|
+vllm.parser .................................................. |vllm.parser|
+vllm.platforms ............................................ |vllm.platforms|
+vllm.platforms.interface ........................ |vllm.platforms.interface|
+vllm.platforms.zen_cpu ............................ |vllm.platforms.zen_cpu|
+vllm.plugins.endpoint_plugins.interface ... |vllm.plugins.endpoint_plugins.interface|
+vllm.plugins ................................................ |vllm.plugins|
+vllm.plugins.io_processors.interface ... |vllm.plugins.io_processors.interface|
+vllm.pooling_params .................................. |vllm.pooling_params|
+vllm.profiler .............................................. |vllm.profiler|
+vllm.ray ........................................................ |vllm.ray|
+vllm.reasoning.abs_reasoning_parsers ... |vllm.reasoning.abs_reasoning_parsers|
+vllm.reasoning ............................................ |vllm.reasoning|
+vllm.renderers.base .................................. |vllm.renderers.base|
+vllm.renderers ............................................ |vllm.renderers|
+vllm.sampling_params ................................ |vllm.sampling_params|
+vllm.scalar_type ........................................ |vllm.scalar_type|
+vllm.sequence .............................................. |vllm.sequence|
+vllm.snapshot .............................................. |vllm.snapshot|
+vllm.tasks .................................................... |vllm.tasks|
+vllm.tilelang_utils .................................. |vllm.tilelang_utils|
+vllm.tokenizers.hf .................................... |vllm.tokenizers.hf|
+vllm.tokenizers .......................................... |vllm.tokenizers|
+vllm.tool_parsers ...................................... |vllm.tool_parsers|
+vllm.tracing ................................................ |vllm.tracing|
+vllm.transformers_utils.chat_templates ... |vllm.transformers_utils.chat_templates|
+vllm.transformers_utils .......................... |vllm.transformers_utils|
+vllm.transformers_utils.s3_utils ........ |vllm.transformers_utils.s3_utils|
+vllm.transformers_utils.utils .............. |vllm.transformers_utils.utils|
+vllm.triton_utils.allocation ................ |vllm.triton_utils.allocation|
+vllm.triton_utils.dispatcher ................ |vllm.triton_utils.dispatcher|
+vllm.triton_utils.force_first_config ... |vllm.triton_utils.force_first_config|
+vllm.triton_utils.importing .................. |vllm.triton_utils.importing|
+vllm.triton_utils ...................................... |vllm.triton_utils|
+vllm.triton_utils.tensor_descriptor ... |vllm.triton_utils.tensor_descriptor|
+vllm.usage .................................................... |vllm.usage|
+vllm.usage.usage_lib ................................ |vllm.usage.usage_lib|
+vllm.utils.argparse_utils ...................... |vllm.utils.argparse_utils|
+vllm.utils.async_utils ............................ |vllm.utils.async_utils|
+vllm.utils.b12x .......................................... |vllm.utils.b12x|
+vllm.utils.cache ........................................ |vllm.utils.cache|
+vllm.utils.collection_utils .................. |vllm.utils.collection_utils|
+vllm.utils.counter .................................... |vllm.utils.counter|
+vllm.utils.cpu_resource_utils .............. |vllm.utils.cpu_resource_utils|
+vllm.utils.cuda_process_checkpoint .... |vllm.utils.cuda_process_checkpoint|
+vllm.utils.deep_gemm ................................ |vllm.utils.deep_gemm|
+vllm.utils.diffusion ................................ |vllm.utils.diffusion|
+vllm.utils.extensible_tensor ................ |vllm.utils.extensible_tensor|
+vllm.utils.file_utils .............................. |vllm.utils.file_utils|
+vllm.utils.flashinfer .............................. |vllm.utils.flashinfer|
+vllm.utils.func_utils .............................. |vllm.utils.func_utils|
+vllm.utils.gc_utils .................................. |vllm.utils.gc_utils|
+vllm.utils.gpu_sync_debug ...................... |vllm.utils.gpu_sync_debug|
+vllm.utils.hashing .................................... |vllm.utils.hashing|
+vllm.utils.host_memory ............................ |vllm.utils.host_memory|
+vllm.utils.hpc ............................................ |vllm.utils.hpc|
+vllm.utils.humming .................................... |vllm.utils.humming|
+vllm.utils.import_utils .......................... |vllm.utils.import_utils|
+vllm.utils .................................................... |vllm.utils|
+vllm.utils.jit_monitor ............................ |vllm.utils.jit_monitor|
+vllm.utils.jsontree .................................. |vllm.utils.jsontree|
+vllm.utils.math_utils .............................. |vllm.utils.math_utils|
+vllm.utils.mem_constants ........................ |vllm.utils.mem_constants|
+vllm.utils.mem_utils ................................ |vllm.utils.mem_utils|
+vllm.utils.mistral .................................... |vllm.utils.mistral|
+vllm.utils.multi_stream_utils .............. |vllm.utils.multi_stream_utils|
+vllm.utils.nccl .......................................... |vllm.utils.nccl|
+vllm.utils.network_utils ........................ |vllm.utils.network_utils|
+vllm.utils.numa_utils .............................. |vllm.utils.numa_utils|
+vllm.utils.nvtx_pytorch_hooks .............. |vllm.utils.nvtx_pytorch_hooks|
+vllm.utils.ompmultiprocessing .............. |vllm.utils.ompmultiprocessing|
+vllm.utils.platform_utils ...................... |vllm.utils.platform_utils|
+vllm.utils.print_utils ............................ |vllm.utils.print_utils|
+vllm.utils.registry .................................. |vllm.utils.registry|
+vllm.utils.serial_utils .......................... |vllm.utils.serial_utils|
+vllm.utils.sparse_utils .......................... |vllm.utils.sparse_utils|
+vllm.utils.system_utils .......................... |vllm.utils.system_utils|
+vllm.utils.tensor_schema ........................ |vllm.utils.tensor_schema|
+vllm.utils.torch_utils ............................ |vllm.utils.torch_utils|
+vllm.utils.torch_version ........................ |vllm.utils.torch_version|
+vllm.utils.tqdm_utils .............................. |vllm.utils.tqdm_utils|
+vllm.utils.vmm_driver .............................. |vllm.utils.vmm_driver|
+vllm.utils.watch_dog ................................ |vllm.utils.watch_dog|
+vllm.v1.attention.backend ...................... |vllm.v1.attention.backend|
+vllm.v1.attention.backends.b12x .......... |vllm.v1.attention.backends.b12x|
+vllm.v1.attention.backends.composite ... |vllm.v1.attention.backends.composite|
+vllm.v1.attention.backends.cpu_attn ... |vllm.v1.attention.backends.cpu_attn|
+vllm.v1.attention.backends.fa_utils ... |vllm.v1.attention.backends.fa_utils|
+vllm.v1.attention.backends.flash_attn ... |vllm.v1.attention.backends.flash_attn|
+vllm.v1.attention.backends.flash_attn_diffkv ... |vllm.v1.attention.backends.flash_attn_diffkv|
+vllm.v1.attention.backends.flashinfer ... |vllm.v1.attention.backends.flashinfer|
+vllm.v1.attention.backends.flashinfer_ts ... |vllm.v1.attention.backends.flashinfer_ts|
+vllm.v1.attention.backends.flex_attention ... |vllm.v1.attention.backends.flex_attention|
+vllm.v1.attention.backends.gdn_attn ... |vllm.v1.attention.backends.gdn_attn|
+vllm.v1.attention.backends.hpc_attn ... |vllm.v1.attention.backends.hpc_attn|
+vllm.v1.attention.backends .................... |vllm.v1.attention.backends|
+vllm.v1.attention.backends.linear_attn ... |vllm.v1.attention.backends.linear_attn|
+vllm.v1.attention.backends.mamba1_attn ... |vllm.v1.attention.backends.mamba1_attn|
+vllm.v1.attention.backends.mamba2_attn ... |vllm.v1.attention.backends.mamba2_attn|
+vllm.v1.attention.backends.mamba_attn ... |vllm.v1.attention.backends.mamba_attn|
+vllm.v1.attention.backends.mla ............ |vllm.v1.attention.backends.mla|
+vllm.v1.attention.backends.mla.prefill.registry ... |vllm.v1.attention.backends.mla.prefill.registry|
+vllm.v1.attention.backends.mla.sparse_utils ... |vllm.v1.attention.backends.mla.sparse_utils|
+vllm.v1.attention.backends.recoverssm_metadata ... |vllm.v1.attention.backends.recoverssm_metadata|
+vllm.v1.attention.backends.registry ... |vllm.v1.attention.backends.registry|
+vllm.v1.attention.backends.rocm_aiter_fa ... |vllm.v1.attention.backends.rocm_aiter_fa|
+vllm.v1.attention.backends.rocm_aiter_unified_attn ... |vllm.v1.attention.backends.rocm_aiter_unified_attn|
+vllm.v1.attention.backends.rocm_attn ... |vllm.v1.attention.backends.rocm_attn|
+vllm.v1.attention.backends.rocm_octave_attn ... |vllm.v1.attention.backends.rocm_octave_attn|
+vllm.v1.attention.backends.rocm_rdna_attn ... |vllm.v1.attention.backends.rocm_rdna_attn|
+vllm.v1.attention.backends.rocm_segmented_attn ... |vllm.v1.attention.backends.rocm_segmented_attn|
+vllm.v1.attention.backends.short_conv_attn ... |vllm.v1.attention.backends.short_conv_attn|
+vllm.v1.attention.backends.triton_attn ... |vllm.v1.attention.backends.triton_attn|
+vllm.v1.attention.backends.triton_attn_diffkv ... |vllm.v1.attention.backends.triton_attn_diffkv|
+vllm.v1.attention.backends.triton_flash_attn ... |vllm.v1.attention.backends.triton_flash_attn|
+vllm.v1.attention.backends.triton_flashinfer ... |vllm.v1.attention.backends.triton_flashinfer|
+vllm.v1.attention.backends.turboquant_attn ... |vllm.v1.attention.backends.turboquant_attn|
+vllm.v1.attention.backends.ultraquant_attn ... |vllm.v1.attention.backends.ultraquant_attn|
+vllm.v1.attention.backends.utils ........ |vllm.v1.attention.backends.utils|
+vllm.v1.attention.backends.zentorch_sdpa ... |vllm.v1.attention.backends.zentorch_sdpa|
+vllm.v1.attention ...................................... |vllm.v1.attention|
+vllm.v1.attention.ops.dcp ...................... |vllm.v1.attention.ops.dcp|
+vllm.v1.attention.ops .............................. |vllm.v1.attention.ops|
+vllm.v1.attention.selector .................... |vllm.v1.attention.selector|
+vllm.v1.conf_compute_utils .................... |vllm.v1.conf_compute_utils|
+vllm.v1.core.block_pool .......................... |vllm.v1.core.block_pool|
+vllm.v1.core.encoder_cache_manager .... |vllm.v1.core.encoder_cache_manager|
+vllm.v1.core ................................................ |vllm.v1.core|
+vllm.v1.core.kv_cache_config_builder ... |vllm.v1.core.kv_cache_config_builder|
+vllm.v1.core.kv_cache_coordinator ...... |vllm.v1.core.kv_cache_coordinator|
+vllm.v1.core.kv_cache_manager .............. |vllm.v1.core.kv_cache_manager|
+vllm.v1.core.kv_cache_metrics .............. |vllm.v1.core.kv_cache_metrics|
+vllm.v1.core.kv_cache_planning ............ |vllm.v1.core.kv_cache_planning|
+vllm.v1.core.kv_cache_utils .................. |vllm.v1.core.kv_cache_utils|
+vllm.v1.core.sched .................................... |vllm.v1.core.sched|
+vllm.v1.core.sched.output ...................... |vllm.v1.core.sched.output|
+vllm.v1.core.single_type_kv_cache_manager ... |vllm.v1.core.single_type_kv_cache_manager|
+vllm.v1.engine.async_llm ........................ |vllm.v1.engine.async_llm|
+vllm.v1.engine.core .................................. |vllm.v1.engine.core|
+vllm.v1.engine ............................................ |vllm.v1.engine|
+vllm.v1.engine.llm_engine ...................... |vllm.v1.engine.llm_engine|
+vllm.v1.executor.abstract ...................... |vllm.v1.executor.abstract|
+vllm.v1.executor.cuda_checkpoint_executor ... |vllm.v1.executor.cuda_checkpoint_executor|
+vllm.v1.executor ........................................ |vllm.v1.executor|
+vllm.v1.executor.multiproc_executor ... |vllm.v1.executor.multiproc_executor|
+vllm.v1.executor.ray_env_utils ............ |vllm.v1.executor.ray_env_utils|
+vllm.v1.executor.ray_executor_v2 ........ |vllm.v1.executor.ray_executor_v2|
+vllm.v1.executor.ray_utils .................... |vllm.v1.executor.ray_utils|
+vllm.v1.executor.uniproc_executor ...... |vllm.v1.executor.uniproc_executor|
+vllm.v1.executor.vllm_net_devices ...... |vllm.v1.executor.vllm_net_devices|
+vllm.v1.fault_tolerance .......................... |vllm.v1.fault_tolerance|
+vllm.v1.hisparse.backend ........................ |vllm.v1.hisparse.backend|
+vllm.v1.hisparse.binding ........................ |vllm.v1.hisparse.binding|
+vllm.v1.hisparse.block_pool .................. |vllm.v1.hisparse.block_pool|
+vllm.v1.hisparse.coordinator ................ |vllm.v1.hisparse.coordinator|
+vllm.v1.hisparse ........................................ |vllm.v1.hisparse|
+vllm.v1.hisparse.layout .......................... |vllm.v1.hisparse.layout|
+vllm.v1.hisparse.runtime ........................ |vllm.v1.hisparse.runtime|
+vllm.v1.hisparse.types ............................ |vllm.v1.hisparse.types|
+vllm.v1 .......................................................... |vllm.v1|
+vllm.v1.kv_cache_interface .................... |vllm.v1.kv_cache_interface|
+vllm.v1.kv_cache_layout .......................... |vllm.v1.kv_cache_layout|
+vllm.v1.kv_hints ........................................ |vllm.v1.kv_hints|
+vllm.v1.kv_offload.base .......................... |vllm.v1.kv_offload.base|
+vllm.v1.kv_offload.config ...................... |vllm.v1.kv_offload.config|
+vllm.v1.kv_offload.cpu.common .............. |vllm.v1.kv_offload.cpu.common|
+vllm.v1.kv_offload.cpu.gpu_worker ...... |vllm.v1.kv_offload.cpu.gpu_worker|
+vllm.v1.kv_offload.cpu.host_register ... |vllm.v1.kv_offload.cpu.host_register|
+vllm.v1.kv_offload.cpu ............................ |vllm.v1.kv_offload.cpu|
+vllm.v1.kv_offload.cpu.manager ............ |vllm.v1.kv_offload.cpu.manager|
+vllm.v1.kv_offload.cpu.policies.arc ... |vllm.v1.kv_offload.cpu.policies.arc|
+vllm.v1.kv_offload.cpu.policies.base ... |vllm.v1.kv_offload.cpu.policies.base|
+vllm.v1.kv_offload.cpu.policies.factory ... |vllm.v1.kv_offload.cpu.policies.factory|
+vllm.v1.kv_offload.cpu.policies .......... |vllm.v1.kv_offload.cpu.policies|
+vllm.v1.kv_offload.cpu.policies.lru ... |vllm.v1.kv_offload.cpu.policies.lru|
+vllm.v1.kv_offload.cpu.shared_offload_region ... |vllm.v1.kv_offload.cpu.shared_offload_region|
+vllm.v1.kv_offload.cpu.spec .................. |vllm.v1.kv_offload.cpu.spec|
+vllm.v1.kv_offload.cpu.swap_blocks_triton ... |vllm.v1.kv_offload.cpu.swap_blocks_triton|
+vllm.v1.kv_offload.factory .................... |vllm.v1.kv_offload.factory|
+vllm.v1.kv_offload.file_mapper ............ |vllm.v1.kv_offload.file_mapper|
+vllm.v1.kv_offload.fs .............................. |vllm.v1.kv_offload.fs|
+vllm.v1.kv_offload .................................... |vllm.v1.kv_offload|
+vllm.v1.kv_offload.pointer_utils ........ |vllm.v1.kv_offload.pointer_utils|
+vllm.v1.kv_offload.tiering.async_lookup ... |vllm.v1.kv_offload.tiering.async_lookup|
+vllm.v1.kv_offload.tiering.backpressure ... |vllm.v1.kv_offload.tiering.backpressure|
+vllm.v1.kv_offload.tiering.base .......... |vllm.v1.kv_offload.tiering.base|
+vllm.v1.kv_offload.tiering.example .... |vllm.v1.kv_offload.tiering.example|
+vllm.v1.kv_offload.tiering.factory .... |vllm.v1.kv_offload.tiering.factory|
+vllm.v1.kv_offload.tiering.fs .............. |vllm.v1.kv_offload.tiering.fs|
+vllm.v1.kv_offload.tiering .................... |vllm.v1.kv_offload.tiering|
+vllm.v1.kv_offload.tiering.kvcr .......... |vllm.v1.kv_offload.tiering.kvcr|
+vllm.v1.kv_offload.tiering.manager .... |vllm.v1.kv_offload.tiering.manager|
+vllm.v1.kv_offload.tiering.metrics .... |vllm.v1.kv_offload.tiering.metrics|
+vllm.v1.kv_offload.tiering.obj ............ |vllm.v1.kv_offload.tiering.obj|
+vllm.v1.kv_offload.tiering.p2p.control ... |vllm.v1.kv_offload.tiering.p2p.control|
+vllm.v1.kv_offload.tiering.p2p.data ... |vllm.v1.kv_offload.tiering.p2p.data|
+vllm.v1.kv_offload.tiering.p2p ............ |vllm.v1.kv_offload.tiering.p2p|
+vllm.v1.kv_offload.tiering.p2p.manager ... |vllm.v1.kv_offload.tiering.p2p.manager|
+vllm.v1.kv_offload.tiering.p2p.session.client ... |vllm.v1.kv_offload.tiering.p2p.session.client|
+vllm.v1.kv_offload.tiering.p2p.session ... |vllm.v1.kv_offload.tiering.p2p.session|
+vllm.v1.kv_offload.tiering.p2p.session.protocol ... |vllm.v1.kv_offload.tiering.p2p.session.protocol|
+vllm.v1.kv_offload.tiering.p2p.session.server ... |vllm.v1.kv_offload.tiering.p2p.session.server|
+vllm.v1.kv_offload.tiering.p2p.session.session ... |vllm.v1.kv_offload.tiering.p2p.session.session|
+vllm.v1.kv_offload.tiering.spec .......... |vllm.v1.kv_offload.tiering.spec|
+vllm.v1.metrics.buckets .......................... |vllm.v1.metrics.buckets|
+vllm.v1.metrics.cache_hit_source ........ |vllm.v1.metrics.cache_hit_source|
+vllm.v1.metrics .......................................... |vllm.v1.metrics|
+vllm.v1.metrics.loggers .......................... |vllm.v1.metrics.loggers|
+vllm.v1.metrics.perf ................................ |vllm.v1.metrics.perf|
+vllm.v1.metrics.prometheus .................... |vllm.v1.metrics.prometheus|
+vllm.v1.metrics.ray_wrappers ................ |vllm.v1.metrics.ray_wrappers|
+vllm.v1.metrics.reader ............................ |vllm.v1.metrics.reader|
+vllm.v1.metrics.stats .............................. |vllm.v1.metrics.stats|
+vllm.v1.metrics.utils .............................. |vllm.v1.metrics.utils|
+vllm.v1.outputs .......................................... |vllm.v1.outputs|
+vllm.v1.pool ................................................ |vllm.v1.pool|
+vllm.v1.request .......................................... |vllm.v1.request|
+vllm.v1.sample ............................................ |vllm.v1.sample|
+vllm.v1.serial_utils ................................ |vllm.v1.serial_utils|
+vllm.v1.simple_kv_offload ...................... |vllm.v1.simple_kv_offload|
+vllm.v1.spec_decode .................................. |vllm.v1.spec_decode|
+vllm.v1.structured_output ...................... |vllm.v1.structured_output|
+vllm.v1.token_buffer ................................ |vllm.v1.token_buffer|
+vllm.v1.utils .............................................. |vllm.v1.utils|
+vllm.v1.watermarking ................................ |vllm.v1.watermarking|
+vllm.v1.worker.cp_utils .......................... |vllm.v1.worker.cp_utils|
+vllm.v1.worker.cpu .................................... |vllm.v1.worker.cpu|
+vllm.v1.worker.cpu_worker ...................... |vllm.v1.worker.cpu_worker|
+vllm.v1.worker.dp_utils .......................... |vllm.v1.worker.dp_utils|
+vllm.v1.worker.encoder_cudagraph ........ |vllm.v1.worker.encoder_cudagraph|
+vllm.v1.worker.encoder_cudagraph_defs ... |vllm.v1.worker.encoder_cudagraph_defs|
+vllm.v1.worker.extensible_kv_cache .... |vllm.v1.worker.extensible_kv_cache|
+vllm.v1.worker.gpu.async_utils ............ |vllm.v1.worker.gpu.async_utils|
+vllm.v1.worker.gpu.attn_utils .............. |vllm.v1.worker.gpu.attn_utils|
+vllm.v1.worker.gpu.block_table ............ |vllm.v1.worker.gpu.block_table|
+vllm.v1.worker.gpu.buffer_utils .......... |vllm.v1.worker.gpu.buffer_utils|
+vllm.v1.worker.gpu.cp_utils .................. |vllm.v1.worker.gpu.cp_utils|
+vllm.v1.worker.gpu.cudagraph_utils .... |vllm.v1.worker.gpu.cudagraph_utils|
+vllm.v1.worker.gpu.dp_utils .................. |vllm.v1.worker.gpu.dp_utils|
+vllm.v1.worker.gpu.ec_connector .......... |vllm.v1.worker.gpu.ec_connector|
+vllm.v1.worker.gpu.eplb_utils .............. |vllm.v1.worker.gpu.eplb_utils|
+vllm.v1.worker.gpu .................................... |vllm.v1.worker.gpu|
+vllm.v1.worker.gpu.input_batch ............ |vllm.v1.worker.gpu.input_batch|
+vllm.v1.worker.gpu.kv_connector .......... |vllm.v1.worker.gpu.kv_connector|
+vllm.v1.worker.gpu.lora_utils .............. |vllm.v1.worker.gpu.lora_utils|
+vllm.v1.worker.gpu.metrics .................... |vllm.v1.worker.gpu.metrics|
+vllm.v1.worker.gpu.mm .............................. |vllm.v1.worker.gpu.mm|
+vllm.v1.worker.gpu.model_runner .......... |vllm.v1.worker.gpu.model_runner|
+vllm.v1.worker.gpu.model_states .......... |vllm.v1.worker.gpu.model_states|
+vllm.v1.worker.gpu.pcp_manager ............ |vllm.v1.worker.gpu.pcp_manager|
+vllm.v1.worker.gpu.pool .......................... |vllm.v1.worker.gpu.pool|
+vllm.v1.worker.gpu.pp_utils .................. |vllm.v1.worker.gpu.pp_utils|
+vllm.v1.worker.gpu.sample.bad_words ... |vllm.v1.worker.gpu.sample.bad_words|
+vllm.v1.worker.gpu.sample.batch_shard ... |vllm.v1.worker.gpu.sample.batch_shard|
+vllm.v1.worker.gpu.sample.greedy_argmax ... |vllm.v1.worker.gpu.sample.greedy_argmax|
+vllm.v1.worker.gpu.sample.gumbel ........ |vllm.v1.worker.gpu.sample.gumbel|
+vllm.v1.worker.gpu.sample ...................... |vllm.v1.worker.gpu.sample|
+vllm.v1.worker.gpu.sample.logit_bias ... |vllm.v1.worker.gpu.sample.logit_bias|
+vllm.v1.worker.gpu.sample.logits_processor ... |vllm.v1.worker.gpu.sample.logits_processor|
+vllm.v1.worker.gpu.sample.logits_processor.interface ... |vllm.v1.worker.gpu.sample.logits_processor.interface|
+vllm.v1.worker.gpu.sample.logprob ...... |vllm.v1.worker.gpu.sample.logprob|
+vllm.v1.worker.gpu.sample.min_p .......... |vllm.v1.worker.gpu.sample.min_p|
+vllm.v1.worker.gpu.sample.output ........ |vllm.v1.worker.gpu.sample.output|
+vllm.v1.worker.gpu.sample.penalties ... |vllm.v1.worker.gpu.sample.penalties|
+vllm.v1.worker.gpu.sample.prompt_logprob ... |vllm.v1.worker.gpu.sample.prompt_logprob|
+vllm.v1.worker.gpu.sample.sampler ...... |vllm.v1.worker.gpu.sample.sampler|
+vllm.v1.worker.gpu.sample.states ........ |vllm.v1.worker.gpu.sample.states|
+vllm.v1.worker.gpu.sample.thinking_budget ... |vllm.v1.worker.gpu.sample.thinking_budget|
+vllm.v1.worker.gpu.sample.trace_replay ... |vllm.v1.worker.gpu.sample.trace_replay|
+vllm.v1.worker.gpu.sample.watermark ... |vllm.v1.worker.gpu.sample.watermark|
+vllm.v1.worker.gpu.shutdown .................. |vllm.v1.worker.gpu.shutdown|
+vllm.v1.worker.gpu.spec_decode.acceptance_estimator ... |vllm.v1.worker.gpu.spec_decode.acceptance_estimator|
+vllm.v1.worker.gpu.spec_decode.adaptive_verification ... |vllm.v1.worker.gpu.spec_decode.adaptive_verification|
+vllm.v1.worker.gpu.spec_decode.autoregressive ... |vllm.v1.worker.gpu.spec_decode.autoregressive|
+vllm.v1.worker.gpu.spec_decode.autoregressive.speculator ... |vllm.v1.worker.gpu.spec_decode.autoregressive.speculator|
+vllm.v1.worker.gpu.spec_decode.dflash ... |vllm.v1.worker.gpu.spec_decode.dflash|
+vllm.v1.worker.gpu.spec_decode.dflash2 ... |vllm.v1.worker.gpu.spec_decode.dflash2|
+vllm.v1.worker.gpu.spec_decode.dfly ... |vllm.v1.worker.gpu.spec_decode.dfly|
+vllm.v1.worker.gpu.spec_decode.draft_logits ... |vllm.v1.worker.gpu.spec_decode.draft_logits|
+vllm.v1.worker.gpu.spec_decode.dspark ... |vllm.v1.worker.gpu.spec_decode.dspark|
+vllm.v1.worker.gpu.spec_decode.dspine ... |vllm.v1.worker.gpu.spec_decode.dspine|
+vllm.v1.worker.gpu.spec_decode.eagle ... |vllm.v1.worker.gpu.spec_decode.eagle|
+vllm.v1.worker.gpu.spec_decode.extract_hidden_states ... |vllm.v1.worker.gpu.spec_decode.extract_hidden_states|
+vllm.v1.worker.gpu.spec_decode.extract_hidden_states_config ... |vllm.v1.worker.gpu.spec_decode.extract_hidden_states_config|
+vllm.v1.worker.gpu.spec_decode.fly .... |vllm.v1.worker.gpu.spec_decode.fly|
+vllm.v1.worker.gpu.spec_decode.gemma4 ... |vllm.v1.worker.gpu.spec_decode.gemma4|
+vllm.v1.worker.gpu.spec_decode ............ |vllm.v1.worker.gpu.spec_decode|
+vllm.v1.worker.gpu.spec_decode.lilicorr ... |vllm.v1.worker.gpu.spec_decode.lilicorr|
+vllm.v1.worker.gpu.spec_decode.mtp .... |vllm.v1.worker.gpu.spec_decode.mtp|
+vllm.v1.worker.gpu.spec_decode.multi_module_mtp ... |vllm.v1.worker.gpu.spec_decode.multi_module_mtp|
+vllm.v1.worker.gpu.spec_decode.ngram ... |vllm.v1.worker.gpu.spec_decode.ngram|
+vllm.v1.worker.gpu.spec_decode.rejection_sampler ... |vllm.v1.worker.gpu.spec_decode.rejection_sampler|
+vllm.v1.worker.gpu.spec_decode.rejection_sampler_utils ... |vllm.v1.worker.gpu.spec_decode.rejection_sampler_utils|
+vllm.v1.worker.gpu.spec_decode.speculator ... |vllm.v1.worker.gpu.spec_decode.speculator|
+vllm.v1.worker.gpu.spec_decode.speculator_config ... |vllm.v1.worker.gpu.spec_decode.speculator_config|
+vllm.v1.worker.gpu.spec_decode.standalone_ar ... |vllm.v1.worker.gpu.spec_decode.standalone_ar|
+vllm.v1.worker.gpu.spec_decode.suffix ... |vllm.v1.worker.gpu.spec_decode.suffix|
+vllm.v1.worker.gpu.spec_decode.target_dependent_ar ... |vllm.v1.worker.gpu.spec_decode.target_dependent_ar|
+vllm.v1.worker.gpu.spec_decode.target_dependent_ar.speculator ... |vllm.v1.worker.gpu.spec_decode.target_dependent_ar.speculator|
+vllm.v1.worker.gpu.spec_decode.utils ... |vllm.v1.worker.gpu.spec_decode.utils|
+vllm.v1.worker.gpu.spec_decode.xpress ... |vllm.v1.worker.gpu.spec_decode.xpress|
+vllm.v1.worker.gpu.states ...................... |vllm.v1.worker.gpu.states|
+vllm.v1.worker.gpu.structured_outputs ... |vllm.v1.worker.gpu.structured_outputs|
+vllm.v1.worker.gpu.ubatch_utils .......... |vllm.v1.worker.gpu.ubatch_utils|
+vllm.v1.worker.gpu.warmup ...................... |vllm.v1.worker.gpu.warmup|
+vllm.v1.worker.gpu_worker ...................... |vllm.v1.worker.gpu_worker|
+vllm.v1.worker ............................................ |vllm.v1.worker|
+vllm.v1.worker.iteration_timing .......... |vllm.v1.worker.iteration_timing|
+vllm.v1.worker.lora_model_runner_mixin ... |vllm.v1.worker.lora_model_runner_mixin|
+vllm.v1.worker.mamba_utils .................... |vllm.v1.worker.mamba_utils|
+vllm.v1.worker.mm_encoder_model_runner ... |vllm.v1.worker.mm_encoder_model_runner|
+vllm.v1.worker.replayssm_utils ............ |vllm.v1.worker.replayssm_utils|
+vllm.v1.worker.sentinel .......................... |vllm.v1.worker.sentinel|
+vllm.v1.worker.startup_plan .................. |vllm.v1.worker.startup_plan|
+vllm.v1.worker.ubatch_utils .................. |vllm.v1.worker.ubatch_utils|
+vllm.v1.worker.ubatching ........................ |vllm.v1.worker.ubatching|
+vllm.v1.worker.utils ................................ |vllm.v1.worker.utils|
+vllm.v1.worker.worker_base .................... |vllm.v1.worker.worker_base|
+vllm.v1.worker.workspace ........................ |vllm.v1.worker.workspace|
+vllm.v1.worker.xpu_model_runner .......... |vllm.v1.worker.xpu_model_runner|
+vllm.v1.worker.xpu_worker ...................... |vllm.v1.worker.xpu_worker|
+vllm.version ................................................ |vllm.version|
+
+==============================================================================
+CLI
+
+vllm bench .......................................... |vllm-cli-bench-index|
+vllm bench latency .............................. |vllm-bench-latency-index|
+vllm bench serve .................................. |vllm-bench-serve-index|
+vllm bench throughput ........................ |vllm-bench-throughput-index|
+vllm chat ............................................ |vllm-cli-chat-index|
+vllm complete .................................... |vllm-cli-complete-index|
+vllm download-kernels .................... |vllm-cli-download-kernels-index|
+vLLM CLI Guide ............................................ |vllm-cli-index|
+vllm launch ........................................ |vllm-cli-launch-index|
+vllm preload ...................................... |vllm-cli-preload-index|
+vllm run-batch .................................. |vllm-cli-run-batch-index|
+vllm serve .......................................... |vllm-cli-serve-index|
+
+==============================================================================
+CONFIGURATION
+
+Conserving Memory ............. |vllm-configuration-conserving_memory-index|
+Engine Arguments .................... |vllm-configuration-engine_args-index|
+Environment Variables .................. |vllm-configuration-env_vars-index|
+Configuration Options ........................... |vllm-configuration-index|
+Model Resolution ............... |vllm-configuration-model_resolution-index|
+Optimization and Tuning ............ |vllm-configuration-optimization-index|
+Server Arguments ..................... |vllm-configuration-serve_args-index|
+
+==============================================================================
+DEPLOYMENT
+
+Using Docker ................................ |vllm-deployment-docker-index|
+Using Kubernetes ............................... |vllm-deployment-k8s-index|
+Using Nginx .................................. |vllm-deployment-nginx-index|
+
+==============================================================================
+DESIGN
+
+Architecture Overview .................... |vllm-design-arch_overview-index|
+Attention Backend Feature Support ... |vllm-design-attention_backends-index|
+CUDA Graphs ................................ |vllm-design-cuda_graphs-index|
+Endpoint Plugins ...................... |vllm-design-endpoint_plugins-index|
+Integration with Hugging Face ... |vllm-design-huggingface_integration-index|
+Hybrid KV Cache Manager ........ |vllm-design-hybrid_kv_cache_manager-index|
+LoRA Resolver Plugins ............ |vllm-design-lora_resolver_plugins-index|
+Metrics ........................................ |vllm-design-metrics-index|
+Multi-Modal Data Processing .............. |vllm-design-mm_processing-index|
+Python Multiprocessing ................. |vllm-design-multiprocessing-index|
+Optimization Levels ................ |vllm-design-optimization_levels-index|
+Paged Attention ........................ |vllm-design-paged_attention-index|
+Plugin System ............................ |vllm-design-plugin_system-index|
+Automatic Prefix Caching ................ |vllm-design-prefix_caching-index|
+torch.compile integration ................ |vllm-design-torch_compile-index|
+
+==============================================================================
+EXAMPLES
+
+API Server ............................ |vllm-applications-api_server-index|
+Offline Inference ..................... |vllm-basic-offline_inference-index|
+Online Serving ........................... |vllm-basic-online_serving-index|
+Async LLM Streaming ............ |vllm-deployment-async_llm_streaming-index|
+Helm Charts ............................. |vllm-deployment-chart-helm-index|
+LLM Engine Example .............. |vllm-deployment-llm_engine_example-index|
+Sagemaker-Entrypoint .......... |vllm-deployment-sagemaker-entrypoint-index|
+Disaggregated Encoder ..... |vllm-disaggregated-disaggregated_encoder-index|
+Disaggregated Serving ..... |vllm-disaggregated-disaggregated_serving-index|
+Ec Both Encoder ................. |vllm-disaggregated-ec_both_encoder-index|
+Disaggregated Prefill V1 ...... |vllm-disaggregated-example_connector-index|
+Flexkv Connector ............... |vllm-disaggregated-flexkv_connector-index|
+KV Load Failure Recovery Test ... |vllm-disaggregated-kv_load_failure_recovery_offline-index|
+LMCache Examples ........................ |vllm-disaggregated-lmcache-index|
+Mooncake Connector ........... |vllm-disaggregated-mooncake_connector-index|
+Mooncake Store ................... |vllm-disaggregated-mooncake_store-index|
+Automatic Prefix Caching .... |vllm-features-automatic_prefix_caching-index|
+Context Extension .................. |vllm-features-context_extension-index|
+Data Parallel .......................... |vllm-features-data_parallel-index|
+Kv Events .................................. |vllm-features-kv_events-index|
+Logging Configuration .......... |vllm-features-logging_configuration-index|
+Custom Logits Processors ............ |vllm-features-logits_processor-index|
+LoRA ............................................ |vllm-features-lora-index|
+Offline Inference with the OpenAI Batch file format ... |vllm-features-openai_batch-index|
+Profiling .................................. |vllm-features-profiling-index|
+Prompt Embed ............................ |vllm-features-prompt_embed-index|
+Reset Kv .................................... |vllm-features-reset_kv-index|
+Sharded State .......................... |vllm-features-sharded_state-index|
+Speculative Decoding ............ |vllm-features-speculative_decoding-index|
+Structured reads on DiffusionGemma ... |vllm-features-structured_diffusion-index|
+Structured Outputs ................ |vllm-features-structured_outputs-index|
+Tensorize vLLM Model ............ |vllm-features-tensorize_vllm_model-index|
+Torchrun .................................... |vllm-features-torchrun-index|
+Batched Chat Completions Online ... |vllm-generate-batched_chat_completions_online-index|
+Multimodal ................................ |vllm-generate-multimodal-index|
+Qwen 1M Offline ...................... |vllm-generate-qwen_1m_offline-index|
+Trace Replay Offline ............ |vllm-generate-trace_replay_offline-index|
+Examples ............................................. |vllm-examples-index|
+Metrics ................................. |vllm-observability-metrics-index|
+Setup OpenTelemetry POC ........... |vllm-observability-opentelemetry-index|
+Prometheus and Grafana ....... |vllm-observability-prometheus_grafana-index|
+Classify ................................... |vllm-pooling-classify-index-2|
+Embed ......................................... |vllm-pooling-embed-index-2|
+Plugin ......................................... |vllm-pooling-plugin-index|
+Reward ......................................... |vllm-pooling-reward-index|
+Score ........................................... |vllm-pooling-score-index|
+Token Classify ......................... |vllm-pooling-token_classify-index|
+Token Embed ............................. |vllm-pooling-token_embed-index-2|
+Batch LLM Inference ........... |vllm-ray_serving-batch_llm_inference-index|
+Elastic Ep ............................. |vllm-ray_serving-elastic_ep-index|
+Multi-Node-Serving ............. |vllm-ray_serving-multi-node-serving-index|
+Ray Serve Deepseek ............. |vllm-ray_serving-ray_serve_deepseek-index|
+Run Cluster ........................... |vllm-ray_serving-run_cluster-index|
+OpenAI Chat Completion Tool Calls With Reasoning ... |vllm-reasoning-openai_chat_completion_tool_calls_with_reasoning-index|
+OpenAI Chat Completion With Reasoning ... |vllm-reasoning-openai_chat_completion_with_reasoning-index|
+OpenAI Chat Completion With Reasoning Streaming ... |vllm-reasoning-openai_chat_completion_with_reasoning_streaming-index|
+OpenAI Responses Client ..... |vllm-reasoning-openai_responses_client-index|
+Example Mm Serve ................... |vllm-scale_out-example_mm_serve-index|
+Token Generation Client ..... |vllm-scale_out-token_generation_client-index|
+OpenAI .................................. |vllm-speech_to_text-openai-index|
+Realtime .............................. |vllm-speech_to_text-realtime-index|
+Chat With Tools Offline ... |vllm-tool_calling-chat_with_tools_offline-index|
+OpenAI Chat Completion Client With Tools ... |vllm-tool_calling-openai_chat_completion_client_with_tools-index|
+OpenAI Chat Completion Client With Tools Required ... |vllm-tool_calling-openai_chat_completion_client_with_tools_required-index|
+OpenAI Chat Completion Client With Tools Xlam ... |vllm-tool_calling-openai_chat_completion_client_with_tools_xlam-index|
+OpenAI Chat Completion Client With Tools Xlam Streaming ... |vllm-tool_calling-openai_chat_completion_client_with_tools_xlam_streaming-index|
+OpenAI Responses Client With Mcp Tools ... |vllm-tool_calling-openai_responses_client_with_mcp_tools-index|
+OpenAI Responses Client With Tools ... |vllm-tool_calling-openai_responses_client_with_tools-index|
+
+==============================================================================
+FEATURES
+
+Automatic Prefix Caching ... |vllm-features-automatic_prefix_caching-index-2|
+Batch Invariance .................... |vllm-features-batch_invariance-index|
+Context Extension ................ |vllm-features-context_extension-index-2|
+Cross-Encoder Output Reuse ....... |vllm-features-cross_encoder_cache-index|
+Custom Arguments .................... |vllm-features-custom_arguments-index|
+Custom Logits Processors .......... |vllm-features-custom_logitsprocs-index|
+Disaggregated Encoder ................. |vllm-features-disagg_encoder-index|
+Disaggregated Prefilling (experimental) ... |vllm-features-disagg_prefill-index|
+CPU EC Connector Usage Guide ........ |vllm-features-ec_cpu_connector-index|
+Engram: conditional memory via n-gram lookups ... |vllm-features-engram-index|
+Features ............................................. |vllm-features-index|
+IndexCache ............................... |vllm-features-index_cache-index|
+Initialized engine snapshots ... |vllm-features-initialized_snapshots-index|
+Interleaved Thinking ............ |vllm-features-interleaved_thinking-index|
+KV Offloading Usage Guide ........ |vllm-features-kv_offloading_usage-index|
+LoRA Adapters ................................. |vllm-features-lora-index-2|
+MooncakeConnector Usage Guide ... |vllm-features-mooncake_connector_usage-index|
+ECMooncakeConnector Usage Guide ... |vllm-features-mooncake_ec_connector_usage-index|
+MooncakeStoreConnector Usage Guide ... |vllm-features-mooncake_store_connector_usage-index|
+MoRIIOConnector Usage Guide ... |vllm-features-moriio_connector_usage-index|
+Multimodal Inputs .................. |vllm-features-multimodal_inputs-index|
+NixlConnector Compatibility Matrix ... |vllm-features-nixl_connector_compatibility-index|
+NixlConnector Usage Guide ....... |vllm-features-nixl_connector_usage-index|
+Per-Request Metrics .............. |vllm-features-per_request_metrics-index|
+Preload ...................................... |vllm-features-preload-index|
+Prompt Embedding Inputs ................ |vllm-features-prompt_embeds-index|
+AutoAWQ ............................... |vllm-quantization-auto_awq-index-2|
+b12x Linear and MoE Backends ................ |vllm-quantization-b12x-index|
+BitsAndBytes ................................. |vllm-quantization-bnb-index|
+Methods and Schemes ...................... |vllm-quantization-formats-index|
+FP8 ViT Encoder Attention ........... |vllm-quantization-fp8_vit_attn-index|
+GGUF ........................................ |vllm-quantization-gguf-index|
+GPTQModel .............................. |vllm-quantization-gptqmodel-index|
+Intel Quantization Support ................. |vllm-quantization-inc-index-3|
+Quantization ............................ |vllm-features-quantization-index|
+Kernel Backends .......................... |vllm-quantization-kernels-index|
+FP8 W8A8 ................................... |vllm-llm_compressor-fp8-index|
+LLM Compressor .................... |vllm-quantization-llm_compressor-index|
+INT4 W4A16 ................................ |vllm-llm_compressor-int4-index|
+INT8 W4A8 ............................ |vllm-llm_compressor-int8_w4a8-index|
+INT8 W8A8 ............................ |vllm-llm_compressor-int8_w8a8-index|
+NVIDIA Model Optimizer ................ |vllm-quantization-modelopt-index-2|
+Online Quantization ..................... |vllm-quantization-online-index-2|
+Quantized KV Cache ............. |vllm-quantization-quantized_kvcache-index|
+AMD Quark ................................ |vllm-quantization-quark-index-2|
+TorchAO ................................ |vllm-quantization-torchao-index-2|
+Reasoning Outputs .................. |vllm-features-reasoning_outputs-index|
+Sleep Mode ................................ |vllm-features-sleep_mode-index|
+Per-Request Acceptance Metrics ... |vllm-speculative_decoding-acceptance_metrics-index|
+Adaptive Verification ... |vllm-speculative_decoding-adaptive_verification-index|
+DFly ................................ |vllm-speculative_decoding-dfly-index|
+Draft Models ................. |vllm-speculative_decoding-draft_model-index|
+Dynamic Speculative Decoding ... |vllm-speculative_decoding-dynamic_speculative_decoding-index|
+EAGLE Draft Models ................. |vllm-speculative_decoding-eagle-index|
+Hidden State Extraction ... |vllm-speculative_decoding-extract_hidden_states-index|
+FLy Verification ..................... |vllm-speculative_decoding-fly-index|
+Speculative Decoding .......... |vllm-features-speculative_decoding-index-2|
+LiLiCorr ........................ |vllm-speculative_decoding-lilicorr-index|
+MTP (Multi-Token Prediction) ......... |vllm-speculative_decoding-mtp-index|
+N-Gram Speculation ................ |vllm-speculative_decoding-n_gram-index|
+vLLM-Project/Speculators ..... |vllm-speculative_decoding-speculators-index|
+Suffix Decoding ................... |vllm-speculative_decoding-suffix-index|
+Structured Outputs .............. |vllm-features-structured_outputs-index-2|
+Tool Calling ............................ |vllm-features-tool_calling-index|
+UMBPStoreConnector Usage Guide ... |vllm-features-umbp_store_connector_usage-index|
+Text watermarking ....................... |vllm-features-watermarking-index|
+
+==============================================================================
+GETTING_STARTED
+
+CPU .......................................... |vllm-installation-cpu-index|
+GPU .......................................... |vllm-installation-gpu-index|
+Installation ..................... |vllm-getting_started-installation-index|
+Quickstart ......................... |vllm-getting_started-quickstart-index|
+
+==============================================================================
+MAIN
+
+Welcome to vLLM ............................................... |vllm-index|
+
+==============================================================================
+MODELS
+
+Loading model weights with fastsafetensors ... |vllm-extensions-fastsafetensor-index|
+Loading Model Weights with InstantTensor ... |vllm-extensions-instanttensor-index|
+Loading models with Run:ai Model Streamer ... |vllm-extensions-runai_model_streamer-index|
+Loading models with CoreWeave's Tensorizer ... |vllm-extensions-tensorizer-index|
+Generative Models .................... |vllm-models-generative_models-index|
+CPU - Intel® Xeon® .............. |vllm-hardware_supported_models-cpu-index|
+XPU - Intel® GPUs ............... |vllm-hardware_supported_models-xpu-index|
+Classification Usages ................. |vllm-pooling_models-classify-index|
+Embedding Usages ......................... |vllm-pooling_models-embed-index|
+Pooling Models .......................... |vllm-models-pooling_models-index|
+Reward Usages ........................... |vllm-pooling_models-reward-index|
+Scoring Usages ......................... |vllm-pooling_models-scoring-index|
+Specific Model Examples ........ |vllm-pooling_models-specific_models-index|
+Token Classification Usages ..... |vllm-pooling_models-token_classify-index|
+Token Embedding Usages ............. |vllm-pooling_models-token_embed-index|
+Structured Decisions Models ... |vllm-models-structured_decisions_models-index|
+Supported Models ...................... |vllm-models-supported_models-index|
+
+==============================================================================
+SERVING
+
+Context Parallel Deployment ... |vllm-serving-context_parallel_deployment-index|
+Data Parallel Deployment ..... |vllm-serving-data_parallel_deployment-index|
+Troubleshooting distributed deployments ... |vllm-serving-distributed_troubleshooting-index|
+Expert Parallel Deployment ... |vllm-serving-expert_parallel_deployment-index|
+Claude Code .......................... |vllm-integrations-claude_code-index|
+Codex ...................................... |vllm-integrations-codex-index|
+LangChain .............................. |vllm-integrations-langchain-index|
+LlamaIndex ............................ |vllm-integrations-llamaindex-index|
+Offline Inference ................... |vllm-serving-offline_inference-index|
+Derenderer APIs ..................... |vllm-online_serving-derenderer-index|
+Generative Scoring .......... |vllm-online_serving-generative_scoring-index|
+Online Serving ......................... |vllm-serving-online_serving-index|
+OpenAI-Compatible Server ... |vllm-online_serving-openai_compatible_server-index|
+Renderer APIs ......................... |vllm-online_serving-renderer-index|
+Speech to Text APIs ............. |vllm-online_serving-speech_to_text-index|
+Tokens In <> Tokens Out API ... |vllm-online_serving-token_in_token_out-index|
+Trace Replay ...................... |vllm-online_serving-trace_replay-index|
+Parallelism and Scaling ........... |vllm-serving-parallelism_scaling-index|
+
+==============================================================================
+TRAINING
+
+Async Reinforcement Learning ................ |vllm-training-async_rl-index|
+Direct Weight Reload ................... |vllm-training-direct_reload-index|
+What is Layerwise (Re)loading? ............. |vllm-training-layerwise-index|
+Prompt Token ID Logprobs (Teacher Scoring) ... |vllm-training-prompt_token_id_logprobs-index|
+Reinforcement Learning from Human Feedback ...... |vllm-training-rlhf-index|
+Routed Experts Return (MoE Routing Replay / R3) ... |vllm-training-routed_experts-index|
+Sampling Mask (Distribution Replay) .... |vllm-training-sampling_mask-index|
+Transformers Reinforcement Learning .............. |vllm-training-trl-index|
+Weight Checker ........................ |vllm-training-weight_checker-index|
+Base Classes and Custom Engines ........ |vllm-weight_transfer-base-index-2|
+Weight Transfer ...................... |vllm-training-weight_transfer-index|
+IPC Engine ................................ |vllm-weight_transfer-ipc-index|
+NCCL M2N Engine ........................... |vllm-weight_transfer-m2n-index|
+ModelExpress Engine .............. |vllm-weight_transfer-modelexpress-index|
+NCCL Engine .............................. |vllm-weight_transfer-nccl-index|
+Sharded RDT Engine ................ |vllm-weight_transfer-sharded_rdt-index|
+
+==============================================================================
+USAGE
+
+Frequently Asked Questions .......................... |vllm-usage-faq-index|
+Using vLLM .............................................. |vllm-usage-index|
+Production Metrics .............................. |vllm-usage-metrics-index|
+Reproducibility ......................... |vllm-usage-reproducibility-index|
+Security ....................................... |vllm-usage-security-index|
+Troubleshooting ......................... |vllm-usage-troubleshooting-index|
+Usage Stats Collection ...................... |vllm-usage-usage_stats-index|
+vLLM V1 ........................................ |vllm-usage-v1_guide-index|
+
+ vim:tw=78:ts=8:ft=help:norl:

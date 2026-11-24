@@ -1,0 +1,194 @@
+*verl.txt* *verl*	verl documentation
+Version latest — https://verl.readthedocs.io/en/latest/
+License: Apache-2.0
+
+TABLE OF CONTENTS	*verl-toc*
+
+advance ............................................. |verl-section-advance|
+algo ................................................... |verl-section-algo|
+amd_tutorial ................................... |verl-section-amd_tutorial|
+api ..................................................... |verl-section-api|
+ascend_tutorial ............................. |verl-section-ascend_tutorial|
+data ................................................... |verl-section-data|
+examples ........................................... |verl-section-examples|
+faq ..................................................... |verl-section-faq|
+hardware ........................................... |verl-section-hardware|
+low_precision ................................. |verl-section-low_precision|
+main ................................................... |verl-section-main|
+perf ................................................... |verl-section-perf|
+preparation ..................................... |verl-section-preparation|
+sglang_multiturn ........................... |verl-section-sglang_multiturn|
+start ................................................. |verl-section-start|
+workers ............................................. |verl-section-workers|
+
+==============================================================================
+ADVANCE
+
+Agent Loop ....................................... |verl-advance-agent_loop|
+Recipe: Async On-Policy Knowledge Distillation Trainer ... |verl-advance-async-on-policy-distill|
+Attention Implementation Override ... |verl-advance-attention_implementation|
+Using Checkpoints to Support Fault Tolerance Training ... |verl-advance-checkpoint|
+Adding DeepSeek V4 support .......... |verl-advance-deepseek_v4_integration|
+Delta Weight Sync ......................... |verl-advance-delta_weight_sync|
+Full Determinism for Reproducible RL Training ... |verl-advance-determinism|
+Extend to other RL(HF) algorithms ............. |verl-advance-dpo_extension|
+Dynamic Context Parallelism ........ |verl-advance-dynamic_context_parallel|
+Add models with the FSDP backend ............. |verl-advance-fsdp_extension|
+FSDP-Turbo backend ....................... |verl-advance-fsdp_turbo_backend|
+Use Prometheus and Grafana to Monitor Rollout ... |verl-advance-grafana_prometheus|
+Experimental Megatron Agent Compose preview ... |verl-advance-megatron_lite_backend|
+Guide to Using MTP in SFT/RL Training and Inference ..... |verl-advance-mtp|
+RL(HF) algorithms with LoRA Support ................ |verl-advance-ppo_lora|
+Reward Loop ..................................... |verl-advance-reward_loop|
+Use RL-Insight to Monitor Training ............... |verl-advance-rl_insight|
+Trace Function Usage Instructions ............. |verl-advance-rollout_trace|
+RoPE Scaling override .................................. |verl-advance-rope|
+SkipManager: Cache and Replay Rollouts ......... |verl-advance-skip_manager|
+V1 Async Trainer ........................... |verl-advance-v1_async_trainer|
+
+==============================================================================
+ALGO
+
+Algorithm Baselines ................................... |verl-algo-baseline|
+Recipe: Decoupled Clip and Dynamic Sampling Policy Optimization (DAPO) ... |verl-algo-dapo|
+Divergence Proximal Policy Optimization (DPPO) ............ |verl-algo-dppo|
+Direct Reward Optimization ................................. |verl-algo-dro|
+Recipe: Entropy Mechanism .............................. |verl-algo-entropy|
+GPG: Group Policy Gradient ................................. |verl-algo-gpg|
+Group Relative Policy Optimization (GRPO) ................. |verl-algo-grpo|
+On-Policy Distillation (OPD) ............................... |verl-algo-opd|
+On-Policy RL with Optimal Reward Baseline (OPO) ............ |verl-algo-opo|
+Optimal Token Baseline (OTB) ............................... |verl-algo-otb|
+Proximal Policy Optimization (PPO) ......................... |verl-algo-ppo|
+Rollout Correction ................................ |verl-algo-rollout_corr|
+Recipe: Self-Play Fine-Tuning (SPIN) ...................... |verl-algo-spin|
+Recipe: Self-Play Preference Optimization (SPPO) .......... |verl-algo-sppo|
+
+==============================================================================
+AMD_TUTORIAL
+
+Getting started with AMD ROCm .......... |verl-amd_tutorial-amd_quick_start|
+verl performance tuning for AMD (ROCm Kernel) ... |verl-amd_tutorial-amd_vllm_page|
+
+==============================================================================
+API
+
+Data interface ............................................ |verl.DataProto|
+Single Controller interface ................ |verl.single_controller.Worker|
+Trainer Interface ...................... |verl.utils.tokenizer.hf_tokenizer|
+Utilities ........................ |verl.utils.py_functional.append_to_dict|
+
+==============================================================================
+ASCEND_TUTORIAL
+
+Ascend Tutorial ........................... |verl-ascend_tutorial-en-README|
+Model Evaluation ..................... |verl-dev_guide-model_dev-evaluation|
+Training Configuration Parameters and Metrics ... |verl-dev_guide-model_dev-parameter_and_metrics|
+Guide to Migrating Models to NPU ... |verl-dev_guide-model_dev-transfer_to_npu_guide|
+Ascend Performance Analysis Guide ... |verl-dev_guide-performance-ascend_performance_analysis_guide|
+Profiling Collection Guide ... |verl-dev_guide-performance-ascend_profiling|
+Ascend Performance Tuning Guide ... |verl-dev_guide-performance-perf_tuning_on_ascend|
+Precision Alignment Guide ... |verl-dev_guide-precision_analysis-precision_alignment|
+Precision Debugger (msprobe) in verl ... |verl-dev_guide-precision_analysis-precision_debugger|
+NPU FAQ .................................................. |verl-en-faq-faq|
+Ascend Backend Feature Guide ... |verl-en-feature_support-ascend_backend_features|
+NPU Advanced Feature Guide ... |verl-en-feature_support-npu_advance_features|
+Ascend Image Guide ........... |verl-en-get_start-dockerfile_build_guidance|
+Ascend Installation Guide ............. |verl-en-get_start-install_guidance|
+Ascend Installation Guide (Ascend 950PR&950DT products) ... |verl-en-get_start-install_guidance_950|
+Ascend Quick Start Guide ................... |verl-en-get_start-quick_start|
+Ascend ReTool Best Practices ... |verl-model_support-examples-ascend_retool_best_practice|
+Ascend SGLang Best Practices ... |verl-model_support-examples-ascend_sglang_best_practices|
+Ascend vLLM Best Practices ... |verl-model_support-examples-ascend_vllm_best_practices|
+DAPO Model Optimization Practice ... |verl-model_support-examples-dapo_multi_model_optimization_practice|
+NPU Qwen3-32B GSPO Optimization Practice ... |verl-model_support-examples-gspo_optimization_practice|
+Multi-Node Task Startup Guide ... |verl-model_support-examples-multi-machine_task_startup_practice|
+Qwen3.5 Megatron NPU Usage Guide ... |verl-model_support-examples-qwen3_5_megatron_npu|
+NPU Model and Algorithm Support ... |verl-en-model_support-model_and_algorithm_support|
+
+==============================================================================
+DATA
+
+TransferQueue Data System ....................... |verl-data-transfer_queue|
+
+==============================================================================
+EXAMPLES
+
+Config Explanation .................................. |verl-examples-config|
+GSM8K Example ................................ |verl-examples-gsm8k_example|
+Megatron-FSDP Example ................ |verl-examples-megatron_fsdp_example|
+Multi-Modal Example Architecture ....... |verl-examples-multi_modal_example|
+PPO Code Architecture ................ |verl-examples-ppo_code_architecture|
+
+==============================================================================
+FAQ
+
+Frequently Asked Questions .................................. |verl-faq-faq|
+
+==============================================================================
+HARDWARE
+
+Multi-Chip Support ...................... |verl-hardware-multi_chip_support|
+
+==============================================================================
+LOW_PRECISION
+
+FP8 RL in verl .................................... |verl-low_precision-fp8|
+MXFP4 MoE QAT on Blackwell .................. |verl-low_precision-mxfp4_qat|
+MXFP8 RL on Blackwell ........................... |verl-low_precision-mxfp8|
+NVFP4 RL on Blackwell ........................... |verl-low_precision-nvfp4|
+Low-Precision Rollout and Quantization-Aware Training ... |verl-low_precision-qat|
+
+==============================================================================
+MAIN
+
+How to Extend verl ..................................... |verl-extend_guide|
+HybridFlow Programming Guide ............................ |verl-hybrid_flow|
+The Design of verl.single_controller .............. |verl-single_controller|
+
+==============================================================================
+PERF
+
+Verl LLM Best Practices (DAPO + Qwen3-235B) ..... |verl-perf-best_practices|
+Hardware Resource Needed for RL .................. |verl-perf-device_tuning|
+Training DeepSeek 671b .................................... |verl-perf-dpsk|
+NVIDIA Nsight Systems profiling in verl ....... |verl-perf-nsight_profiling|
+Performance Tuning Guide ........................... |verl-perf-perf_tuning|
+Rollout KV Cache Offload via Mooncake-Store ... |verl-perf-rollout_kv_offload|
+PyTorch Profiling in verl ...................... |verl-perf-torch_profiling|
+verl Profiler System ...................... |verl-perf-verl_profiler_system|
+
+==============================================================================
+PREPARATION
+
+Prepare Data for Post-Training ............. |verl-preparation-prepare_data|
+Implement Reward Function for Dataset ... |verl-preparation-reward_function|
+
+==============================================================================
+SGLANG_MULTITURN
+
+Multi-turn Rollout Support ............... |verl-sglang_multiturn-multiturn|
+Sandbox Fusion Tool Integration ..... |verl-sglang_multiturn-sandbox_fusion|
+Search Tool Integration ........ |verl-sglang_multiturn-search_tool_example|
+
+==============================================================================
+START
+
+Agentic RL Training ................................ |verl-start-agentic_rl|
+Installation .......................................... |verl-start-install|
+More Resources ................................. |verl-start-more_resources|
+Multinode Training .................................. |verl-start-multinode|
+Quickstart: PPO training on GSM8K dataset .......... |verl-start-quickstart|
+
+==============================================================================
+WORKERS
+
+Automodel Backend ......................... |verl-workers-automodel_workers|
+Engine Workers ............................... |verl-workers-engine_workers|
+Model Engine ................................... |verl-workers-model_engine|
+PPO Trainer ..................................... |verl-workers-ray_trainer|
+SGLang Backend ................................ |verl-workers-sglang_worker|
+TorchTitan Backend ....................... |verl-workers-torchtitan_workers|
+TensorRT-LLM Backend .......................... |verl-workers-trtllm_worker|
+
+ vim:tw=78:ts=8:ft=help:norl:

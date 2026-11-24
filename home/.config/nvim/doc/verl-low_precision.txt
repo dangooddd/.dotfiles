@@ -1,0 +1,1175 @@
+*verl-low_precision.txt*	verl documentation: low_precision
+Version latest — https://verl.readthedocs.io/en/latest/
+
+==============================================================================
+LOW_PRECISION                                     *verl-section-low_precision*
+
+
+----------------------------------------------------------------------------
+FP8 RL in verl                                        *verl-low_precision-fp8*
+
+Last updated: 11/02/2026
+
+verl supports two FP8 modes for accelerating RL training:
+
+Mode                     Training Precision           Rollout Precision
+-----------------------  ---------------------------  ------------------------
+FP8 Rollout Only         BF16                         FP8
+FP8 End-to-End           FP8 (Megatron)               FP8 (vLLM)
+
+  [!TIP] For ready-to-run scripts, see the low-precision recipe directory
+  https://github.com/verl-project/verl-recipe/tree/main/low_precision.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+FP8 ROLLOUT ONLY                          *low_precision-fp8-fp8-rollout-only*
+
+FP8 rollout-only mode keeps training in BF16 and quantizes rollout inference
+to FP8. This reduces GPU memory during generation and speeds up rollout
+without affecting training precision.
+
+Implementation                              *low_precision-fp8-implementation*
+
+The rollout engine starts from a compressed-tensors `quantization_config`
+with dummy weights, and the trainer quantizes every weight sync to that
+config with the compressed-tensors compressors
+(`verl/utils/qat/compressed_tensors.py`). On the vLLM side we monkey patch
+`process_weights_after_loading` of the compressed-tensors FP8 linear/MoE
+methods so refits are written back into the live parameters
+(`verl/utils/vllm/vllm_fp8_utils.py`).
+
+Support Matrix                              *low_precision-fp8-support-matrix*
+
+- FP8 blockwise quantization for rollout (compressed-tensors preset
+  `FP8_BLOCK`)
+
+  - Used in Deepseek, which is 1x128 quantization for activations and
+    128x128 quantization for model weights
+
+- Dense models and MoE models
+- Async rollout interfaces
+- vLLM or SGLang rollout (SGLang validated on Hopper only) with the Megatron
+  training backend; TRT-LLM and FSDP are not supported
+
+Usage                                                *low_precision-fp8-usage*
+
+Enable in config file:
+
+>yaml
+    rollout:
+      quantization:
+        linear: FP8_BLOCK  # dense linear layers (attention, dense MLP, shared experts)
+        moe: FP8_BLOCK     # routed experts
+        ignore: []         # extra "re:" patterns kept in BF16
+<
+Or via command line:
+
+>python
+    actor_rollout_ref.rollout.quantization.linear=FP8_BLOCK \
+    actor_rollout_ref.rollout.quantization.moe=FP8_BLOCK
+<
+Routers, `lm_head`, embeddings, vision towers and MTP layers stay in BF16 by
+default, as do layers whose weight shape is not a multiple of the 128x128
+block. To provide a complete compressed-tensors `quantization_config`
+instead, set
+`actor_rollout_ref.rollout.quantization.config_file=/path/to/quantization_config.json`
+(exclusive with `linear` / `moe` / `ignore`).
+
+Experiments and Outcomes          *low_precision-fp8-experiments-and-outcomes*
+
+Qwen3-8B-Base Dense Model        *low_precision-fp8-qwen3-8b-base-dense-model*
+
+Configuration
+
+- DAPO recipe. AIME24 online validation.
+- vLLM(FP8 spmd rollout) + FSDP
+
+  - Note that SPMD rollout has been deprecated, so we removed the FP8 SPMD
+    rollout.
+
+- Prompt batch size 32, n=16.
+- Rollout batch size: 32*3*16
+- Train_batch_size & ppo_mini_batch_size 32
+- Max response length 20K
+- Token-level TIS, C=2
+- 8*H100
+- vLLM 0.10.0+CUDA 12.6 vs vLLM 0.11.0+CUDA 12.9
+
+Accuracy dark green: BF16, orange: FP8 rollout + token-level TIS, light
+green: FP8 rollout without TIS
+
+Results and observations:
+
+- With TIS, FP8 rollout aligns with BF16
+- Obvious accuracy drop when TIS is not enabled
+- Higher mismatch kl but within acceptable range throughout the training
+
+Performance
+
+green: BF16, orange: FP8 rollout + CUDA12.6 + DeepGemm, purple: FP8 rollout
++ CUDA 12.9 + DeepGemm
+
+Results and observations:
+
+- FP8 rollout leads to around ~12% rollout speedup with CUDA 12.6 + DeepGemm
+- When upgrading to CUDA 12.9, speedup can be up to ~18%
+
+Qwen3-30B-A3B-Base MoE Model  *low_precision-fp8-qwen3-30b-a3b-base-moe-model*
+
+Configuration
+
+- DAPO recipe. AIME24 online validation.
+- FP8 async rollout, vLLM+FSDP
+- Prompt batch size 32
+- Rollout batch size: 32*3*16
+- Train_batch_size & ppo_mini_batch_size 32
+- Max response length 20K
+- Token-level TIS, C=2
+- 2*8*H100
+- vLLM 0.10.0+CUDA 12.6
+
+Accuracy grey: BF16 + token-level TIS, red: FP8 rollout + token-level TIS
+
+Results and observations:
+
+- Rollout & training distribution mismatch is in general higher for MoE
+- Rollout correction required even for BF16
+- FP8 rollout with token-level TIS aligns with BF16
+
+Performance
+
+grey: BF16 + token-level TIS, red: FP8 rollout + token-level TIS​
+
+Results and observations:
+
+- FP8 rollout : over 35% rollout speedup
+- Expecting more perf gain with CUDA 12.9
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+                           *low_precision-fp8-fp8-end-to-end-training-rollout*
+FP8 END-TO-END (TRAINING + ROLLOUT)
+
+FP8 E2E applies FP8 to the entire RL pipeline: forward/backward passes via
+Transformer Engine, FP8 optimizer states, and FP8 rollout inference via
+vLLM. This maximizes memory savings and throughput.
+
+Requirements                                  *low_precision-fp8-requirements*
+
+- CUDA 12.9+ (required for block-wise FP8 scaling)
+- Transformer Engine with block-wise FP8 support
+- Environment variable: `NVTE_FP8_BLOCK_SCALING_FP32_SCALES=1`, on Hopper
+  only. Do not set it on Blackwell (SM100+): there Transformer Engine runs
+  block-wise scaling through MXFP8 GEMMs, whose E8M0 scales hold only an
+  exponent, so it requires power-of-two block scales and stops at the first
+  FP8 quantization with
+  `Assertion failed: pow2_scale ... requires using power of two scaling factors`
+  when the variable is set (see #6172
+  https://github.com/verl-project/verl/issues/6172). Leaving it unset gives
+  power-of-two scales, the Transformer Engine default.
+
+Key Configuration                        *low_precision-fp8-key-configuration*
+
+>yaml
+    # FP8 training via Transformer Engine
+    actor_rollout_ref.actor.megatron.override_transformer_config:
+      fp8: "hybrid"              # FP8 forward + backward; also supports "e4m3"
+      fp8_recipe: "blockwise"    # block-wise scaling
+
+    # FP8 optimizer
+    actor_rollout_ref.actor.optim.override_optimizer_config:
+      fp8_recipe: "blockwise"
+
+    # FP8 rollout inference (vLLM)
+    actor_rollout_ref.rollout.quantization:
+      linear: FP8_BLOCK
+      moe: FP8_BLOCK
+<
+
+FP8 KV Cache (Optional)              *low_precision-fp8-fp8-kv-cache-optional*
+
+The rollout KV cache can also be stored in FP8 by passing vLLM's
+`kv_cache_dtype` through `engine_kwargs`:
+
+>bash
+    +actor_rollout_ref.rollout.engine_kwargs.vllm.kv_cache_dtype=fp8_e4m3
+<
+- Only the rollout side changes. Training-side core attention stays in BF16,
+  so the extra train/rollout mismatch is corrected by TIS like the rest of
+  the FP8 rollout error.
+- The q/k/v scales are uncalibrated (1.0): verl does not export KV cache
+  scales, so the values are cast to FP8 directly. On Hopper, vLLM's
+  FlashAttention-3 backend then runs attention in FP8 and quantizes Q as
+  well.
+- Combined with `quantization.linear/moe=FP8_BLOCK`, this needs #8483
+  https://github.com/verl-project/verl/pull/8483. Without it, the attention
+  scales keep the random values from the dummy load and the rollout
+  generates garbage.
+- Validated with vLLM only.
+
+Support Matrix                                         *low_precision-fp8-id1*
+
+- Megatron training backend (via Megatron-Bridge)
+- Verified on Qwen3-30B-A3B and Qwen3-8B (H100); Qwen3-30B-A3B also on H20
+- Block-wise FP8 scaling (`fp8_recipe: "blockwise"`)
+- Optional FP8 KV cache in vLLM rollout
+
+Experiments and Results            *low_precision-fp8-experiments-and-results*
+
+Qwen3-30B-A3B MoE Model            *low_precision-fp8-qwen3-30b-a3b-moe-model*
+
+Configuration
+
+- DAPO recipe. AIME24 online validation.
+- Megatron + Megatron-Bridge, FP8 async rollout with vLLM
+- MoE router in BF16 for both vLLM and Megatron-Core
+- Prompt batch size 128, n=16
+- Max response length 20K
+- Token-level TIS, C=2
+- 2*8*H100, CUDA 12.9
+
+Orange: BF16, Green: FP8 E2E, Red: FP8 rollout + BF16 training
+
+Results and observations:
+
+- FP8 E2E achieves comparable accuracy to the BF16 baseline, with the two
+  curves closely aligned throughout training.
+- The training/inference precision mismatch (measured by KL divergence)
+  follows the ordering: FP8 rollout-only > FP8 E2E > BF16 E2E. This is
+  expected, as FP8 E2E maintains consistent precision across both training
+  and inference, resulting in lower distribution mismatch than the FP8
+  rollout-only setting where training remains in BF16.
+
+          *low_precision-fp8-qwen3-30b-a3b-moe-model-on-h20-with-fp8-kv-cache*
+Qwen3-30B-A3B MoE Model on H20, with FP8 KV Cache
+
+Configuration
+
+- Same recipe as above (DAPO-Math-17k, prompt batch size 128, n=16, max
+  prompt / response length 2K / 20K, token-level TIS with C=2, dynamic
+  sampling), 100 steps
+- AIME24 online validation every 10 steps (32 samples per problem,
+  temperature 0.6)
+- Megatron + Megatron-Bridge, vLLM 0.29 rollout, Transformer Engine 2.16
+- 1*8*H20 per run, CUDA 13.0
+- Three runs: BF16 training + BF16 rollout; FP8 E2E; FP8 E2E + FP8 KV cache
+  (`kv_cache_dtype=fp8_e4m3`, scales 1.0)
+
+                     BF16               FP8 E2E            FP8 E2E + FP8 KV
+                                                           cache
+-------------------  -----------------  -----------------  -------------------
+AIME24 at step 0 /   5.4 / 20.1 / 23.9  4.4 / 19.4 / 22.5  4.6 / 19.0 / 22.0
+50 / 100
+rollout_corr/k3_kl,  0.00127 / 0.00065  0.00264 / 0.00131  0.00534 / 0.00290
+steps 1--10 / last
+20 steps
+Step time (s)        396                376                357
+Rollout generation   182                164                143
+(s)
+Actor update (s)     151                146                147
+Peak training        110                127                127
+memory reserved
+(GB)
+
+Times are steady-state means over steps without validation or checkpointing.
+Generation time includes dynamic-sampling refills.
+
+Results and observations:
+
+- All three runs train stably for 100 steps. Accuracy, reward, entropy,
+  response length and grad norm overlap; the AIME24 gap at step 100 is
+  within the evaluation noise of about ±2--3 points.
+- FP8 E2E roughly doubles the train/rollout mismatch of BF16, and the FP8 KV
+  cache doubles it again (about 4.5× BF16). It does not grow over training.
+  In a single-step probe, BF16 rollout with an FP8 KV cache alone gives a
+  larger mismatch (0.0050) than FP8 E2E without it (0.0029), so the
+  uncalibrated KV scales are the larger error source.
+- The FP8 KV cache cuts rollout generation by another 13% over FP8 E2E and
+  the whole step by 5% (10% versus BF16). Training time and memory do not
+  change. Responses here average about 1K tokens; longer responses spend
+  more time reading the KV cache, so the gain should be larger.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+CITATION                                          *low_precision-fp8-citation*
+
+For more extensive experiments, ablation studies, and analysis on FP8
+reinforcement learning, please refer to our technical report:
+
+>bib
+    @article{qiu2026fp8rl,
+      title={FP8-RL: A Practical and Stable Low-Precision Stack for LLM Reinforcement Learning},
+      author={Qiu, Zhaopeng and Yu, Shuang and Zhang, Jingqi and Zhang, Shuai and Huang, Xue and Yang, Jingyi and Lai, Junjie},
+      journal={arXiv preprint arXiv:2601.18150},
+      year={2026},
+      url={https://arxiv.org/abs/2601.18150}
+    }
+<
+
+----------------------------------------------------------------------------
+MXFP4 MoE QAT on Blackwell                      *verl-low_precision-mxfp4_qat*
+
+Last updated: 11/06/2026
+
+MXFP4 is the OCP microscaling FP4 format: E2M1 elements with one E8M0 scale
+per 32-element block. In verl it covers the routed experts of MoE models.
+The rollout serves MXFP4 expert weights, quantized on the trainer side, and
+DeepGEMM quantizes the expert activations to FP8 at run time. Transformer
+Engine has no MXFP4 training, so training stays in BF16; with QAT, the
+routed experts are fake-quantized during training: their weights exactly as
+the exported rollout weights, their inputs to MXFP8, close to the rollout's
+FP8 activations.
+
+The rollout quantization interface shared by all formats, the kernel
+defaults and the format details are described in |verl-low_precision-qat|.
+For MXFP8 end to end, see |verl-low_precision-mxfp8|.
+
+REQUIREMENTS                            *low_precision-mxfp4_qat-requirements*
+
+- Blackwell GPUs for the rollout: the MXFP4-weight × FP8-activation experts
+  are served by vLLM's DeepGEMM FP4 MoE kernel (SM100/SM120). Hopper has no
+  such kernel and is outside this recipe; see |verl-low_precision-qat|.
+- Training: the Megatron-Bridge model path; QAT uses NVIDIA ModelOpt.
+- Rollout: vLLM (the version verl locks).
+
+CONFIGURATION                          *low_precision-mxfp4_qat-configuration*
+
+>yaml
+    # MXFP4 rollout experts; dense layers stay in BF16
+    actor_rollout_ref.rollout.quantization:
+      linear: null
+      moe: MXFP4
+
+    # optional: MXFP4 QAT on the routed experts
+    actor_rollout_ref.actor.megatron.qat:
+      enable: True
+      mode: mxfp4        # mxfp4_mxfp8 also trains the dense layers with MXFP8 QAT (vLLM: linear: MXFP8)
+<
+Notes:
+
+- `lm_head`, the token embedding, MoE routers and every dense layer stay in
+  BF16 on the rollout and in training.
+- ModelOpt installs the fake quantizers; they run verl's TileLang MXFP4
+  kernel, the one the trainer-side exporter uses without dequantization, so
+  the QAT forward and the exported rollout weights agree bit for bit (see
+  |verl-low_precision-qat|). The experts' inputs are fake-quantized to MXFP8
+  (1x32 blocks), while the rollout's DeepGEMM kernel quantizes them to FP8
+  in 1x128 groups with E8M0 scales.
+- QAT quantizes the Transformer Engine modules of the layer spec that
+  Megatron-Bridge builds for the model, the grouped expert linears included,
+  so tensor and expert parallelism can be combined. All expert weights of a
+  grouped linear are fake-quantized in one kernel launch.
+- QAT and Transformer Engine FP8 training are mutually exclusive; the engine
+  refuses the combination.
+
+              *low_precision-mxfp4_qat-example-qwen3-30b-a3b-on-dapo-math-17k*
+EXAMPLE: QWEN3-30B-A3B ON DAPO-MATH-17K
+
+`examples/mxfp4/run_qwen3_30b_a3b_megatron.sh`
+https://github.com/verl-project/verl/blob/main/examples/mxfp4/run_qwen3_30b_a3b_megatron.sh
+is the MXFP4 counterpart of the MXFP8 Qwen3-30B-A3B example, with the same
+data and hyper-parameters on one 4-GPU Blackwell node (tested on 4×B300;
+4×B200 untested): training TP2 × EP2 with full recompute and the whole
+optimizer on the CPU, the rollout vLLM with TP2. `PRECISION` selects the
+arm: `mxfp4_qat` (MXFP4 rollout experts and MXFP4 QAT), `mxfp4` (MXFP4
+rollout experts only) and `bf16` (the baseline). The script reads
+DAPO-Math-17k in verl's format from `TRAIN_FILE`, as
+verl-recipe's `dapo/prepare_dapo_data.sh`
+https://github.com/verl-project/verl-recipe/blob/main/dapo/prepare_dapo_data.sh
+downloads it, and runs without a validation set.
+
+>bash
+    PRECISION=mxfp4_qat TOTAL_TRAINING_STEPS=10 bash examples/mxfp4/run_qwen3_30b_a3b_megatron.sh
+    PRECISION=mxfp4 TOTAL_TRAINING_STEPS=10 bash examples/mxfp4/run_qwen3_30b_a3b_megatron.sh
+    PRECISION=bf16 TOTAL_TRAINING_STEPS=10 bash examples/mxfp4/run_qwen3_30b_a3b_megatron.sh
+<
+
+Results                                      *low_precision-mxfp4_qat-results*
+
+Configuration
+
+- One 4×B300 machine for every arm, the same seed and data order, so steps
+  pair across arms; 10 steps
+- The script's hyper-parameters, as in the MXFP8 example: 64 prompts × 8
+  responses per step, prompts and responses up to 1024 and 8192 tokens,
+  dynamic batching at 20,480 tokens per GPU, learning rate 1e-6;
+  DAPO-Math-17k deduplicated to its 17,398 unique prompts
+- verl main `e41dd697` plus this PR; the versions verl locks: vLLM 0.32.0,
+  Transformer Engine 2.20.2, Megatron-Core 0.19.2, Megatron-Bridge 0.6.2,
+  ModelOpt 0.47.0, TileLang 0.1.15
+
+“X/Y” is training precision X, rollout precision Y; BF16+QAT trains in BF16
+with MXFP4 QAT on the routed experts.
+
+mean of steps 1--10              BF16/BF16  BF16/MXFP4  BF16+QAT/MXFP4
+------------------------------  ---------  ----------  -----------------------
+step time (s)                   827        848         1000
+generation (s)                  107        114         115
+old_log_prob (s)                118        118         149
+ref (s)                         113        117         130
+update_actor (s)                476        477         582
+update_weights (s)              8          18          19
+rollout_corr/kl                 0.0018     0.0150      0.0030
+score                           −0.195     −0.161      −0.183
+response length                 6517       6411        6438
+
+The QAT arm's steps 1--4 overlapped another tenant on the same node (the
+machine's other four GPUs at 100 %), so they are slower than the rest; its
+steps 5--10 ran on an idle machine. The same six steps for all three arms:
+
+mean of steps 5--10              BF16/BF16  BF16/MXFP4  BF16+QAT/MXFP4
+------------------------------  ---------  ----------  -----------------------
+step time (s)                   818        833         900
+old_log_prob (s)                117        116         135
+update_actor (s)                472        468         511
+rollout_corr/kl                 0.0018     0.0153      0.0030
+
+Per step on one 4×B300 machine; the shaded steps of the QAT arm shared the
+node. wandb: QAT
+https://wandb.ai/train0z5a/verl_grpo_dapo_mxfp4/runs/z52e8qr2, MXFP4
+https://wandb.ai/train0z5a/verl_grpo_dapo_mxfp4/runs/mzx5r4ys, BF16
+https://wandb.ai/train0z5a/verl_grpo_dapo_mxfp4/runs/xd7yxpnw
+
+Results and observations:
+
+- QAT cuts the rollout--trainer mismatch of the MXFP4 rollout by 80 %, to
+  1.7× the BF16 arm's. Per step, `rollout_corr/kl` ranged 0.0028--0.0033
+  with QAT, 0.0135--0.0173 without it and 0.0016--0.0020 in BF16.
+- On the six idle steps QAT costs 8 % over the MXFP4 rollout alone (900 s vs
+  833 s; `old_log_prob` +19 s, `update_actor` +43 s); the ten-step means
+  above include four contended QAT steps and show 18 %.
+- The TileLang grouped export of the expert weights is why the MXFP4 arms'
+  `update_weights` is 18--19 s here; the earlier per-expert export cost
+  45--46 s.
+- The MXFP4 rollout does not speed this job up: generation takes about as
+  long as in BF16 (+6 s) and the expert export adds about 10 s per step.
+- Ten steps are enough for speed and mismatch, not for the score.
+
+----------------------------------------------------------------------------
+MXFP8 RL on Blackwell                               *verl-low_precision-mxfp8*
+
+Last updated: 10/22/2026
+
+MXFP8 is the OCP microscaling FP8 format: E4M3 elements with one E8M0 scale
+per 32-element block, decoded natively by Blackwell tensor cores. This
+recipe trains with Transformer Engine's MXFP8 recipe and serves the rollout
+in MXFP8, with the rollout's weights quantized on the trainer side with the
+learner's block rule.
+
+For FP8 on Hopper (the `blockwise` recipe), see |verl-low_precision-fp8|.
+The rollout quantization interface shared by all formats, and the vLLM and
+SGLang specifics, are described in |verl-low_precision-qat|.
+
+REQUIREMENTS                                *low_precision-mxfp8-requirements*
+
+- Blackwell GPUs (SM100+)
+- Training: Megatron-Core >= 0.13 and Transformer Engine >= 2.1, on the
+  Megatron-Bridge model path
+- Rollout: vLLM 0.29 or SGLang 0.5.20 (the versions verl locks)
+
+CONFIGURATION                              *low_precision-mxfp8-configuration*
+
+>yaml
+    # MXFP8 training via Transformer Engine
+    actor_rollout_ref.actor.megatron.override_transformer_config:
+      fp8: "e4m3"                # element format; "hybrid" (e4m3 fwd + e5m2 bwd) also supported
+      fp8_recipe: "mxfp8"        # 32-element block scaling
+
+    # MXFP8 rollout
+    actor_rollout_ref.rollout.quantization:
+      linear: MXFP8
+      moe: MXFP8
+<
+Notes:
+
+- Weights stay in BF16 (`fp8_param` is not supported); only the GEMM inputs
+  are cast to MXFP8, so checkpoints are unchanged.
+- With `fp8_recipe: "mxfp8"`, verl pads packed sequences to the 32-token
+  blocks MXFP8 needs.
+- QAT and Transformer Engine FP8 training are mutually exclusive; the engine
+  refuses the combination.
+- `lm_head`, the token embedding and MoE routers stay in BF16 on the
+  rollout, as in training. Further layers can be kept in BF16 with
+  `rollout.quantization.ignore`.
+- Given the same BF16 weight, the trainer-side exporter (compressed-tensors)
+  and Transformer Engine pick the same E8M0 scale for every block except
+  those whose amax is exactly `448 * 2**k`, where compressed-tensors picks
+  the next one up; in such a block only elements below `amax / 14336`
+  dequantize differently, by at most about `4.4e-6 * amax`. This compares
+  the weight quantizers only, not activations, reduction order or the KV
+  cache.
+
+ROLLOUT KERNELS                          *low_precision-mxfp8-rollout-kernels*
+
+verl defaults the MXFP8 dense and MoE kernels of vLLM and SGLang to
+DeepGEMM; for details, see |verl-low_precision-qat|.
+
+EXAMPLE: QWEN3-8B ON GSM8K     *low_precision-mxfp8-example-qwen3-8b-on-gsm8k*
+
+`examples/mxfp8/run_qwen3_8b_megatron.sh`
+https://github.com/verl-project/verl/blob/main/examples/mxfp8/run_qwen3_8b_megatron.sh
+runs GRPO on Qwen3-8B with GSM8K, MXFP8 end to end; `PRECISION=bf16` runs
+the same job in BF16. Its defaults fit one B200: the whole optimizer stays
+on the CPU, and parameters are offloaded while the rollout runs.
+
+>bash
+    python3 examples/data_preprocess/gsm8k.py --local_save_dir ~/data/gsm8k
+    PRECISION=mxfp8 bash examples/mxfp8/run_qwen3_8b_megatron.sh
+    PRECISION=bf16 bash examples/mxfp8/run_qwen3_8b_megatron.sh
+<
+
+Results                                          *low_precision-mxfp8-results*
+
+Configuration
+
+- One B200; verl's locked environment (vLLM 0.29.0, Transformer Engine
+  2.16.1, Megatron-Core 0.19.2, Megatron-Bridge 0.6.2)
+- The script's defaults: 64 prompts × 8 responses per step, prompts and
+  responses up to 1024 and 2048 tokens, learning rate 1e-6; 10 steps
+  (`TOTAL_TRAINING_STEPS=10`)
+- Validation on the GSM8K test set (1,319 problems, greedy decoding) at
+  steps 0, 5 and 10
+- vLLM rollout with FlashInfer available to the workers (`nvcc` on their
+  `PATH`), where vLLM picks FlashInfer CuTe-DSL for the MXFP8 dense GEMMs
+
+Blue: BF16, vermillion: MXFP8 end to end. wandb: BF16
+https://forge.coreweave.com/wandb/wengeezhang-bytedance/verl_grpo_gsm8k_mxfp8/runs/zodbg1pr,
+MXFP8
+https://forge.coreweave.com/wandb/wengeezhang-bytedance/verl_grpo_gsm8k_mxfp8/runs/cr5dk8fs
+
+Results and observations:
+
+- GSM8K test accuracy at steps 0, 5 and 10 is 0.372, 0.616 and 0.803 with
+  MXFP8, against 0.329, 0.610 and 0.819 with BF16, and the training reward
+  follows the BF16 curve. Both are single runs of 10 steps, too few to
+  resolve the 1.6-point gap at step 10 (21 of 1,319 problems).
+- The mismatch between the rollout and the trainer (`rollout_corr/kl`) is
+  0.0063--0.0071 with MXFP8, against 0.0006--0.0008 with BF16, and stays
+  flat over the run.
+
+                  *low_precision-mxfp8-example-qwen3-30b-a3b-on-dapo-math-17k*
+EXAMPLE: QWEN3-30B-A3B ON DAPO-MATH-17K
+
+`examples/mxfp8/run_qwen3_30b_a3b_megatron.sh`
+https://github.com/verl-project/verl/blob/main/examples/mxfp8/run_qwen3_30b_a3b_megatron.sh
+runs GRPO on Qwen3-30B-A3B (MoE) with DAPO-Math-17k on one 4×B200 node,
+MXFP8 end to end, experts included; `PRECISION=bf16` runs the same job in
+BF16. Training runs TP2 × EP2 with full recompute and the whole optimizer on
+the CPU, the rollout vLLM with TP2. The script reads DAPO-Math-17k in verl's
+format from `TRAIN_FILE`, as verl-recipe's `dapo/prepare_dapo_data.sh`
+https://github.com/verl-project/verl-recipe/blob/main/dapo/prepare_dapo_data.sh
+downloads it, and runs without a validation set.
+
+>bash
+    PRECISION=mxfp8 TOTAL_TRAINING_STEPS=10 bash examples/mxfp8/run_qwen3_30b_a3b_megatron.sh
+    PRECISION=bf16 TOTAL_TRAINING_STEPS=10 bash examples/mxfp8/run_qwen3_30b_a3b_megatron.sh
+<
+
+Results                                              *low_precision-mxfp8-id1*
+
+Configuration
+
+- One 4×B200 machine for every arm, the same seed and data order, so steps
+  pair across arms; 10 steps
+- The script's hyper-parameters: 64 prompts × 8 responses per step, prompts
+  and responses up to 1024 and 8192 tokens, dynamic batching at 20,480
+  tokens per GPU, learning rate 1e-6; DAPO-Math-17k deduplicated to its
+  17,398 unique prompts; FlashInfer autotuning off
+- An earlier version of this integration: vLLM 0.24 served MXFP8 through
+  ModelOpt and FP8 blockwise through its own FP8 method, before the rollout
+  weights were quantized on the trainer side with compressed-tensors
+
+“X/Y” is training precision X, rollout precision Y: FP8-TW is Transformer
+Engine's per-tensor FP8 with a BF16 rollout, FP8-BW verl's FP8 blockwise
+recipe end to end.
+
+mean of steps 1--10       BF16/BF16  FP8-TW/BF16  FP8-BW/FP8-BW     MXFP8/MXFP8
+-----------------------  ---------  -----------  ----------------  -----------
+step time (s)            506        487          489               452
+generation (s)           134        133          115               102
+update_actor (s)         244        225          241               221
+rollout_corr/kl          0.0018     0.0058       0.0090            0.0045
+score                    −0.130     −0.150       −0.169            −0.160
+
+Per step on one 4×B200 machine. wandb: verl_mxfp8_b200
+https://forge.coreweave.com/wandb/wengeezhang-bytedance/verl_mxfp8_b200,
+group “D: Qwen3-30B-A3B, DAPO-Math-17k”
+
+Results and observations:
+
+- MXFP8 cuts the step time by 11% against BF16 (generation −24%,
+  `update_actor` −9%), more than either FP8 recipe, with the lowest
+  rollout--trainer mismatch of the three low-precision arms.
+- Ten steps are enough for speed and mismatch, not for the score.
+- The MXFP8 arm, rerun for 5 steps on the compressed-tensors path (vLLM
+  0.29, verl's locked environment, another 4×B200 machine), read
+  `rollout_corr/kl` 0.0037--0.0040.
+
+QWEN3-8B ON DAPO-MATH-17K      *low_precision-mxfp8-qwen3-8b-on-dapo-math-17k*
+
+The dense model on the same data and per-step hyper-parameters: 2×B200
+(TP2), dynamic batching at 12,288 tokens per GPU, 32 steps, the earlier
+version of the integration as above. Two more differences:
+
+- Every arm, BF16 included, ran vLLM with an FP8 KV cache
+  (`kv_cache_dtype=fp8`; vLLM 0.24 then also quantizes Q). It raises the
+  mismatch of every arm, so these KL values do not compare with the other
+  runs on this page.
+- The MXFP8 rollout kept `gate_up_proj` in BF16, through a layer-exclusion
+  bug fixed since.
+
+mean of steps 23--32                        BF16/BF16  FP8-TW/BF16  MXFP8/MXFP8
+-----------------------------------------  ---------  -----------  -----------
+rollout_corr/kl                            0.0088     0.0297       0.0088
+entropy                                    0.220      0.083        0.338
+score                                      0.150      0.240        0.135
+response length                            6198       5748         6202
+step time (s)                              407        345          386
+
+Per step on 2×B200, with an FP8 KV cache in every arm. wandb:
+verl_mxfp8_b200
+https://forge.coreweave.com/wandb/wengeezhang-bytedance/verl_mxfp8_b200,
+group “B: Qwen3-8B, DAPO-Math-17k”
+
+Results and observations:
+
+- The MXFP8 arm's mismatch stays at the BF16 arm's level, while FP8-TW with
+  a BF16 rollout drifts from 0.009 at step 1 to 0.037 at step 32.
+- Entropy falls by a third with BF16 (0.304 at step 1, 0.206 at step 32),
+  nearly collapses with FP8-TW (0.307, 0.062), and rises slightly with MXFP8
+  (0.309, 0.344). FP8-TW's higher score and shorter responses come with that
+  collapse; without a validation set, these runs do not show which arm
+  generalizes better.
+
+----------------------------------------------------------------------------
+NVFP4 RL on Blackwell                               *verl-low_precision-nvfp4*
+
+Last updated: 11/02/2026
+
+This recipe trains the routed experts of an MoE model in real NVFP4 with
+Megatron and Transformer Engine, and serves the rollout in the same
+precision. Activations are quantized per token on both sides. Parameters
+stay BF16; attention, dense MLPs, shared experts, router, norms, embeddings
+and the LM head run in BF16.
+
+For NVFP4 fake-quantization training, see the NVFP4 QAT section of
+|verl-low_precision-qat|, which also describes the rollout quantization
+interface shared by all formats.
+
+REQUIREMENTS                                *low_precision-nvfp4-requirements*
+
+- Blackwell (SM100) GPUs
+- Validated with PyTorch 2.13 / CUDA 13, Transformer Engine 2.20.2,
+  Megatron-Core 0.19.2, Megatron-Bridge 0.6.2 and vLLM 0.32.0
+  (`uv sync --frozen --extra megatron --extra vllm`)
+- Megatron backend, PP=1 without virtual pipeline parallelism
+- vLLM rollout with TP and EP=1 or EP=TP, the colocated `naive` checkpoint
+  engine and `FULL_DECODE_ONLY` CUDA graphs. Data-parallel EP, EPLB, context
+  parallelism (DCP/PCP) and speculative decoding are not supported.
+
+CONFIGURATION                              *low_precision-nvfp4-configuration*
+
+>yaml
+    actor_rollout_ref:
+      actor:
+        megatron:
+          override_transformer_config:
+            fp4: e2m1
+            fp4_recipe: nvfp4
+            first_last_layers_bf16: true
+            num_layers_at_start_in_bf16: 2   # whole decoder layers kept in BF16
+            num_layers_at_end_in_bf16: 4
+      rollout:
+        quantization:
+          moe: NVFP4   # activations quantized per token, as in training
+          ignore: ["re:.*layers\\.(0|1|44|45|46|47)\\.mlp\\.experts\\..*"]  # same layers, 48-layer model
+<
+- `fp4` applies only to the routed experts and cannot be combined with
+  `qat`. Training quantizes their activations per token in the forward pass
+  and runs the backward GEMMs on the dequantized forward operands;
+  `NVTE_BACKWARD_OVERRIDE=high_precision` uses the BF16 operands instead.
+- The rollout must keep exactly the training BF16 layers; the trainer checks
+  every exported expert weight against them.
+- Transformer Engine reads its NVFP4 recipe from `NVTE_*` environment
+  variables; the trainer rejects a recipe that differs. See
+  `examples/real_nvfp4/runtime_env.yaml`.
+- Routed experts are found by name, so the recipe is not tied to one
+  architecture. It is validated on Qwen3-30B-A3B, Qwen3.5-35B-A3B and a
+  small model with the DeepSeek-V3 layout (dense first layer, MLA, shared
+  expert).
+
+ROLLOUT                                          *low_precision-nvfp4-rollout*
+
+`moe: NVFP4` runs with `moe_activation: nvfp4_per_token` (vLLM's
+`quantization_config.moe.activation`), the default. It exports NVFP4 expert
+weights on the trainer side, bit-identical to vLLM's online
+`nvfp4_per_token` quantization, and runs them on FlashInfer's TRT-LLM MoE
+kernel with per-token activation scales. Refits load each bucket in place
+into the storage the CUDA graphs captured, so the extra memory is one MoE
+layer's post-processing. With rollout TP and EP off, each rank holds a slice
+of every expert and computes the per-token scale of the `down_proj` input
+over its slice, so results differ slightly from TP=1.
+
+MISMATCH                                        *low_precision-nvfp4-mismatch*
+
+Qwen3.5-35B-A3B, EP=4 on 4 GPUs, vLLM rollout TP=1, measured with the script
+in |low_precision-qat-measuring-the-mismatch|:
+
+Rollout                     Training      Backend                      k3_kl
+--------------------------  ------------  ---------------------------  -------
+NVFP4 MoE, nvfp4_per_token  BF16          FlashInfer TRT-LLM (MoE;     0.01025
+                                          BF16 Linear)
+NVFP4 MoE, nvfp4_per_token  native NVFP4  FlashInfer TRT-LLM (MoE;     0.00740
+                                          BF16 Linear)
+
+                    *low_precision-nvfp4-example-qwen3-30b-a3b-base-with-dapo*
+EXAMPLE: QWEN3-30B-A3B-BASE WITH DAPO
+
+`examples/real_nvfp4/run_qwen3_30b_megatron.sh`
+https://github.com/verl-project/verl/blob/main/examples/real_nvfp4/run_qwen3_30b_megatron.sh
+runs DAPO with routing replay (R3) and token-level TIS on 8 nodes × 4 GB200,
+keeping the first two and last four of the 48 layers in BF16;
+`PRECISION_MODE=bf16` runs the same job in BF16. With a Ray cluster running:
+
+>bash
+    MODEL_PATH=/shared/models/Qwen3-30B-A3B-Base \
+    TRAIN_FILE=/shared/data/train.parquet \
+    TEST_FILE=/shared/data/validation.parquet \
+    PRECISION_MODE=real_nvfp4 EXP_NAME=qwen3-nvfp4 NNODES=8 \
+      bash examples/real_nvfp4/run_qwen3_30b_megatron.sh
+<
+See the example README
+https://github.com/verl-project/verl/blob/main/examples/real_nvfp4/README.md
+for the dataset format, runtime environment and tests.
+
+Results                                          *low_precision-nvfp4-results*
+
+700 steps of NVFP4 and BF16 with the example script, on an earlier version
+of this integration (vLLM 0.29).
+
+`critic/score/mean`. Orange: NVFP4, red: BF16
+
+`actor/entropy`. Orange: NVFP4, red: BF16
+
+`rollout_corr/kl`. Orange: NVFP4, red: BF16
+
+`actor/grad_norm`. Orange: NVFP4, red: BF16
+
+Results and observations:
+
+- The training score follows BF16 for the first ~450 steps and is lower
+  afterwards.
+- The rollout--training mismatch is 0.003--0.01 with NVFP4, against about
+  0.0003 with BF16.
+- NVFP4 rollout generation is about 1.3× faster than BF16 once the mean
+  response exceeds ~2.5k tokens, giving roughly 1.2× shorter steps; NVFP4
+  training itself is still slower than BF16 in Transformer Engine.
+
+----------------------------------------------------------------------------
+Low-Precision Rollout and Quantization-Aware Training *verl-low_precision-qat*
+
+Last updated: 11/2/2026
+
+In RL training, rollout usually dominates the step time, and for large MoE
+models it is bound by memory capacity and bandwidth. Running rollout in low
+precision:
+
+- shrinks weight memory, leaving more room for KV cache and higher
+  concurrency;
+- reduces memory traffic during decode, improving throughput;
+- uses FP8/FP4 Tensor Cores on Hopper/Blackwell to speed up prefill.
+
+The cost is a numerical gap between the high-precision trainer and the
+low-precision rollout (training-inference mismatch). It makes importance
+sampling and off-policy correction less accurate and, in bad cases,
+destabilizes training. Quantization-Aware Training (QAT) narrows this gap by
+training the model against the same quantization the rollout uses.
+
+                           *low_precision-qat-background-model-weight-formats*
+BACKGROUND: MODEL WEIGHT FORMATS
+
+HuggingFace checkpoints come in two flavors:
+
+1. High precision: BF16 weights, no `quantization_config` in `config.json`.
+2. Low precision: `config.json` carries a `quantization_config` describing
+   how each layer is quantized. Models often use different formats for
+   linear layers (attention, dense MLP, shared experts) and MoE (routed
+   experts).
+
+Model                            Architecture  quant_method        Linear               MoE (routed     Not quantized
+                                                                                        experts)
+-------------------------------  ------------  ------------------  -------------------  --------------  ------------------------
+Qwen/Qwen3.8-2.4T-A95B           92 layers,    none                BF16                 BF16            -
+                                 512 experts,
+                                 top-10
+zai-org/GLM-5.2                  78 layers,    none                BF16                 BF16            -
+                                 256 experts,
+                                 top-8, first
+                                 3 dense
+zai-org/GLM-5.3                  same as       fp8                 FP8 E4M3, 128x128    same as linear  router mlp.gate,
+                                 GLM-5.2                           block, FP32 scale                    indexers_proj,
+                                                                   (weight_scale_inv),                  embed_tokens, lm_head,
+                                                                   dynamic activation                   MTP eh_proj, norms
+                                                                                                        (modules_to_not_convert)
+moonshotai/Kimi-K3               93 layers,    compressed-tensors  BF16                 MXFP4 W4A16:    self_attn,
+                                 896 experts,                                           FP4 E2M1, 1x32  shared_experts, dense
+                                 first layer                                            group,          mlp, lm_head,
+                                 dense                                                  standard MX     vision_tower,
+                                                                                        E8M0 scale      mm_projector (ignore
+                                                                                        (weight_packed  regex)
+                                                                                        +
+                                                                                        weight_scale)
+deepseek-ai/DeepSeek-V4.1-Flash  40 layers,    fp8                 FP8 E4M3, 32x32      FP4 E2M1, 1x32  router ffn.gate, indexer
+                                 384 experts,                      block (wo_a may be   group, UE8M0    wk/weights_proj,
+                                 top-6                             128x128), UE8M0      scale           compressor
+                                                                   scale (scale_fmt:    (expert_dtype:
+                                                                   ue8m0)               fp4), same
+                                                                                        layout as
+                                                                                        MXFP4
+
+- GLM-5.3 uses the standard HF FineGrainedFP8 format (same as DeepSeek-V3),
+  which both vLLM and SGLang parse.
+- Kimi-K3 uses compressed-tensors: a `Linear`-targeted config group plus an
+  `ignore` list that excludes non-expert layers yields “linear BF16 + MoE
+  MXFP4”.
+- DeepSeek-V4.1-Flash's `fp8` config has private fields (`scale_fmt`,
+  `expert_dtype`) and needs dedicated engine support.
+
+The trainer always trains in high precision; low-precision checkpoints are
+dequantized before training. The rollout uses the model's own
+`quantization_config` if it has one; a BF16 model can run rollout in BF16
+or, for higher throughput, in low precision through `rollout.quantization`.
+
+HOW IT WORKS                                  *low_precision-qat-how-it-works*
+
+- Trainer: always trains in high precision (BF16). With QAT enabled, the
+  forward pass uses fake-quantized weights (quantize then dequantize) and
+  gradients flow through a straight-through estimator.
+- Rollout: the inference engine starts with dummy weights and either the
+  model's native `quantization_config` or a `rollout.quantization` override.
+  It allocates parameters as if it were loading that low-precision
+  checkpoint (for example FP8 `weight` + `weight_scale_inv`).
+- Weight refit export: the training backend first exports weights under
+  canonical HuggingFace names. A trainer-side `WeightQuantizer`, selected
+  from the effective rollout `quantization_config`, converts each sync
+  bucket into exactly the checkpoint tensors expected by the rollout engine.
+  Standard native FP8 is quantized to the `Fp8Config` layout; native and
+  overridden compressed-tensors configs use the same compressed-tensors
+  exporter. FP8_BLOCK, MXFP8 and MXFP4 use the same TileLang quantize/pack
+  kernels as QAT, while NVFP4 retains its global-scale-aware
+  compressed-tensors path. DeepSeek-V4 is already quantized by
+  Megatron-Bridge, so its exporter only normalizes the packed byte dtype.
+  The rollout worker therefore loads pre-quantized tensors and is not
+  responsible for quantization.
+
+This exporter/loader boundary is intended to decouple the two sides. The
+target architecture is the Cartesian product of training backends
+`[Megatron, VeOmni, TorchTitan]` and rollout engines `[vLLM, SGLang]`: each
+trainer exports canonical named tensors, each `WeightQuantizer` defines a
+checkpoint wire format, and each rollout engine only implements
+loading/refit for that format. The support matrix below records the
+combinations currently validated; it does not imply that the full target
+matrix is implemented yet.
+
+For an override-based rollout, the HuggingFace checkpoint stays in BF16; no
+offline quantization or calibration step is needed. The override format is
+described using the open compressed-tensors
+https://github.com/neuralmagic/compressed-tensors schema, which can express
+different schemes for linear and routed MoE layers.
+
+SUPPORT MATRIX                              *low_precision-qat-support-matrix*
+
+The trainer must be Megatron (FSDP is not yet supported for this feature).
+The rollout engine can be vLLM or SGLang; TRT-LLM raises an error if
+`rollout.quantization` is set. The engine columns list the
+compressed-tensors scheme each engine implements.
+
+verl defaults supported FP8, MXFP8 and MXFP4 Linear/MoE kernels to DeepGEMM.
+The training path is moving to the same backend, so this default avoids
+backend-dependent activation quantization, scale layouts and fused-MoE
+epilogues drifting between training and inference. It also prevents an
+engine's `auto` policy from changing kernels across versions or GPU
+architectures. Explicit rollout engine kwargs take precedence and can select
+Linear and MoE backends independently. The exceptions are vLLM MXFP8 Linear,
+for which vLLM 0.29 has no DeepGEMM kernel, and NVFP4, for which neither
+engine provides a DeepGEMM implementation.
+
+Precision     Preset     QAT mode     GPU        vLLM Linear                       vLLM MoE                             SGLang Linear                         SGLang MoE                            vLLM        SGLang
+                                                                                                                                                                                                    status in   status in
+                                                                                                                                                                                                    verl        verl
+------------  ---------  -----------  ---------  --------------------------------  -----------------------------------  ------------------------------------  ------------------------------------  ----------  ---------
+FP8 block     FP8_BLOCK  fp8          Hopper /   W8A8Fp8linear_backend=deep_gemm²  W8A8Fp8MoEmoe_backend=deep_gemm      W8A8Fp8fp8_gemm_runner_backend=deep_gemm  W8A8Fp8MoEmoe_runner_backend=deep_gemm  ✅ Hopper /  ✅ Hopper
+(E4M3,                                Blackwell                                                                                                                                                     Blackwell²
+128x128
+weight
+blocks,
+dynamic
+1x128
+activations)
+MXFP8         MXFP8      mxfp8        Blackwell  W8A8Mxfp8FlashInfer CuteDSL¹      W8A8Mxfp8MoEmoe_backend=deep_gemm    native                                native                                ✅           ✅
+                                                                                                                        quant_method=mxfp8fp8_gemm_runner_backend=deep_gemm  quant_method=mxfp8moe_runner_backend=deep_gemm  Blackwell   Blackwell
+MXFP4 (MoE    MXFP4      mxfp4 /      Blackwell  ❌ (BF16 dense)                    MXFP4×FP8moe_backend=deep_gemm       ❌ (BF16 dense)                        MXFP4×FP8moe_runner_backend=deep_gemm  ✅           ✅
+only)                    mxfp4_mxfp8                                                                                                                                                                Blackwell   Blackwell
+                                                                                                                                                                                                    (MoE only)  (MoE
+                                                                                                                                                                                                                only)
+NVFP4 (MoE    NVFP4      nvfp4        Blackwell  ❌                                 W4A4(moe_backend=flashinfer_trtllm)  ❌                                     ❌                                     ✅           ❌
+only,                                                                                                                                                                                               Blackwell
+per-token                                                                                                                                                                                           (MoE only)
+activations)
+
+MXFP8, MXFP4 and NVFP4 need Blackwell (SM100) for the validated paths above.
+On Hopper, vLLM may fall back to Marlin weight-only kernels, whose numerics
+differ from Blackwell W8A8 / W4A4; those paths are outside this support and
+validation matrix. The `MXFP4` preset has no such fallback: its MXFP4-weight
+× FP8-activation experts are served only by vLLM's DeepGEMM FP4 MoE kernel
+(SM100/SM120), and Marlin and Triton reject the FP8 1x128 activation scheme,
+so on Hopper the rollout fails at engine start.
+
+¹ verl passes `linear_backend=deep_gemm`, but vLLM 0.29 has no DeepGEMM
+MXFP8 Linear kernel and deliberately falls back to its MXFP8 auto-selection.
+On Blackwell this selects FlashInfer CuteDSL. The routed MoE path does use
+DeepGEMM.
+
+² On Hopper, verl sets `VLLM_USE_DEEP_GEMM_E8M0=0` for FP32 block-scale
+configs so DeepGEMM preserves their scale values. On other architectures
+verl does not override the option: vLLM's default selects packed E8M0 on
+Blackwell.
+
+MXFP4 and NVFP4 support is scoped to routed experts. Both engines support
+BF16 linear + MXFP4 MoE, and vLLM BF16 linear + NVFP4 MoE; vLLM additionally
+supports MXFP8 linear + MXFP4 MoE with QAT mode `mxfp4_mxfp8`. SGLang does
+not support that mixed override. FP4 linear QAT, export and refit are out of
+scope. verl's `MXFP4` checkpoint preset stores MXFP4 expert weights with
+group size 32 and E8M0 scales. DeepGEMM dynamically quantizes their expert
+activations to FP8 with group size 128; the training-side MXFP4 mode uses
+the same runtime recipe. This differs from compressed-tensors' `MXFP4`
+preset, which is W4A4, and from vLLM's native `Mxfp4Config`, whose
+checkpoint format is nominally W4A16.
+
+CONFIGURATION                                *low_precision-qat-configuration*
+
+Rollout quantization                  *low_precision-qat-rollout-quantization*
+
+>yaml
+    actor_rollout_ref:
+      rollout:
+        quantization:
+          linear: FP8_BLOCK   # attention, dense MLP, shared experts
+          moe: FP8_BLOCK      # routed experts
+          ignore: []          # extra layers kept in BF16: exact names or "re:<regex>"
+          config_file: null   # path to a compressed-tensors quantization_config JSON
+<
+- When `linear`, `moe` and `config_file` are all `null` (the default), the
+  rollout runs in the model's native precision.
+- `linear` and `moe` can be set independently. Setting one of them to `null`
+  keeps those layers in BF16, e.g. `linear: null, moe: FP8_BLOCK` quantizes
+  only the routed experts.
+- `MXFP4` and `NVFP4` are valid only for `moe`. Use `linear: null` for BF16
+  dense layers. `NVFP4` always quantizes expert activations per token
+  (`moe_activation: nvfp4_per_token`, the default). vLLM also supports
+  `linear: MXFP8, moe: MXFP4`; that mixed override is not supported by
+  SGLang.
+- The following layers are always kept in BF16: `lm_head`, embeddings, MoE
+  routers (`mlp.gate`, `shared_expert_gate`), vision towers and MTP layers.
+- `ignore` adds more layers on top of these, using HuggingFace layer names.
+  Layers incompatible with the selected scheme are not detected
+  automatically: list them explicitly. For example, MXFP8 on Qwen3.5
+  requires `["re:.*linear_attn\\.in_proj_[ab]$"]` because these projections
+  are too small for the vLLM kernel.
+- For an all-MXFP8 SGLang rollout, regex ignores must have a known SGLang
+  module-name translation. Use an exact SGLang module name for other
+  ignores; unsupported regex patterns are rejected before launch.
+
+From the command line:
+
+>python
+    actor_rollout_ref.rollout.quantization.linear=FP8_BLOCK \
+    actor_rollout_ref.rollout.quantization.moe=FP8_BLOCK
+<
+For Qwen3.5 MXFP8:
+
+>python
+    actor_rollout_ref.rollout.quantization.linear=MXFP8 \
+    actor_rollout_ref.rollout.quantization.moe=MXFP8 \
+    'actor_rollout_ref.rollout.quantization.ignore=["re:.*linear_attn\\.in_proj_[ab]$"]'
+<
+
+Custom `quantization_config`    *low_precision-qat-custom-quantization-config*
+
+For full control, point `config_file` at a compressed-tensors
+`quantization_config`. It can be either the `quantization_config` object
+itself or a HuggingFace `config.json` that contains one. `config_file`
+cannot be combined with `linear`, `moe` or `ignore`, and it is used as-is
+(the default ignore list is not added). Every config group must numerically
+match a supported preset.
+
+Example equivalent to `linear: FP8_BLOCK, moe: FP8_BLOCK` for Qwen3.5:
+
+>json
+    {
+      "quant_method": "compressed-tensors",
+      "format": "float-quantized",
+      "config_groups": {
+        "group_0": {
+          "targets": ["Linear"],
+          "weights": {"num_bits": 8, "type": "float", "symmetric": true,
+                      "strategy": "block", "block_structure": [128, 128], "dynamic": false},
+          "input_activations": {"num_bits": 8, "type": "float", "symmetric": true,
+                                "strategy": "group", "group_size": 128, "dynamic": true},
+          "format": "float-quantized"
+        }
+      },
+      "ignore": [
+        "re:.*lm_head$", "re:.*embed_tokens$", "re:.*visual\\..*", "re:^mtp\\..*",
+        "re:.*mlp\\.gate$", "re:.*shared_expert_gate$",
+        "re:.*linear_attn\\.in_proj_a$", "re:.*linear_attn\\.in_proj_b$"
+      ]
+    }
+<
+
+QAT (Megatron)                                *low_precision-qat-qat-megatron*
+
+QAT is optional. Enable it on the actor and pick the mode that matches the
+rollout preset:
+
+>yaml
+    actor_rollout_ref:
+      actor:
+        megatron:
+          qat:
+            enable: true
+            mode: fp8   # FP8_BLOCK -> fp8, MXFP8 -> mxfp8, MXFP4 -> mxfp4, NVFP4 -> nvfp4
+<
+QAT requires a quantized rollout: set `rollout.quantization` or use a
+checkpoint with a native `quantization_config` that verl supports for export
+and refit. verl checks at startup that the QAT mode matches the effective
+rollout configuration. Megatron QAT uses NVIDIA ModelOpt
+https://github.com/NVIDIA/Model-Optimizer to install and dispatch fake
+quantizers. FP8_BLOCK, MXFP8 and MXFP4 dispatch to verl's TileLang kernels
+with fused quantize-dequantize and straight-through gradients; parameter
+export invokes the same kernels without dequantization, making their
+quantized values and scales bit-exact by construction. NVFP4 is described
+below. Both FP4 modes apply only to routed experts. MXFP8 and MXFP4 generate
+E8M0 scales with DeepSeek's upward power-of-two rounding recipe. MXFP4
+expert activations use the MXFP8 1x32 kernel rather than FP4. Use
+`mxfp4_mxfp8` for the vLLM combination where dense linear layers also use
+MXFP8. Its `ignore_patterns` use Megatron module names and `fnmatch` syntax.
+Keep them aligned with the rollout ignore list; for Qwen3.5 MXFP8, add
+`*linear_attn.in_proj_a` and `*linear_attn.in_proj_b`.
+
+NVFP4 QAT                                        *low_precision-qat-nvfp4-qat*
+
+`mode: nvfp4` with `rollout.quantization.moe: NVFP4` trains W4A4 routed
+experts against the rollout that |verl-low_precision-nvfp4| uses, with the
+same requirements and expert tensor parallel size 1.
+
+- Weights: E2M1 values in groups of 16 with E4M3 scales and one global scale
+  per expert matrix; `gate_proj` and `up_proj` share one. Fake quantization
+  and the trainer-side export run the same kernel, so the rollout gets the
+  weights training used.
+- Activations: each token gets a global scale from its own amax, as in the
+  rollout's MoE kernel. Fake quantization matches FlashInfer's per-token
+  quantization bitwise, including `FLASHINFER_DISABLE_FP4_QUANT_FAST_MATH`;
+  set it the same way for the trainer and the rollout. The rollout quantizes
+  the `down_proj` input inside the fused kernel, so that input matches only
+  approximately.
+
+Engine notes                                  *low_precision-qat-engine-notes*
+
+- vLLM: quantized FP8/MXFP8/MXFP4 rollouts default to
+  `linear_backend=deep_gemm` and `moe_backend=deep_gemm` when those options
+  are omitted. Set either option under `engine_kwargs.vllm` to override it
+  independently. MXFP8 Linear falls back as noted above, while the MXFP4
+  preset has BF16 dense layers. Hopper FP8 block configs with FP32 scales
+  explicitly disable DeepGEMM E8M0; all other cases retain vLLM's
+  architecture-specific default. On AMD ROCm, which has no DeepGEMM, verl
+  sets neither option and vLLM selects its AITER or Triton kernels.
+- SGLang: quantized FP8/MXFP8/MXFP4 rollouts similarly default
+  `fp8_gemm_runner_backend` and `moe_runner_backend` to `deep_gemm`.
+  Explicit values under `engine_kwargs.sglang` take precedence.
+- vLLM MXFP4: vLLM 0.29's compressed-tensors path otherwise ignores the
+  requested expert activation scheme. verl routes MXFP4 experts through the
+  DeepGEMM FP4 backend, whose dynamic FP8 activations use group size 128.
+- vLLM NVFP4: verl supports only W4A4 routed experts with per-token
+  activations on FlashInfer TRT-LLM. W4A16, static activation scales, dense
+  NVFP4 and other MoE backends are rejected.
+
+EXAMPLE                                            *low_precision-qat-example*
+
+Qwen3.5-35B-A3B on 8 GPUs with FP8 block rollout and FP8 QAT:
+
+>bash
+    python3 -m verl.trainer.main_ppo \
+        model_engine=megatron \
+        actor_rollout_ref.model.path=Qwen/Qwen3.5-35B-A3B \
+        actor_rollout_ref.actor.megatron.expert_model_parallel_size=8 \
+        actor_rollout_ref.actor.megatron.qat.enable=True \
+        actor_rollout_ref.actor.megatron.qat.mode=fp8 \
+        actor_rollout_ref.rollout.name=vllm \
+        actor_rollout_ref.rollout.quantization.linear=FP8_BLOCK \
+        actor_rollout_ref.rollout.quantization.moe=FP8_BLOCK \
+        ...
+<
+
+MEASURING THE MISMATCH              *low_precision-qat-measuring-the-mismatch*
+
+`scripts/rollout_logprob_diff.py` runs one rollout, recomputes the log-probs
+with the Megatron actor, and reports the gap (`kl`, `k3_kl`, absolute
+log-prob difference, etc.). Use it to check a configuration before a long
+run:
+
+>bash
+    python scripts/rollout_logprob_diff.py --model-path ~/models/Qwen3.5-35B-A3B --ep 8 \
+        --quant-linear FP8_BLOCK --quant-moe FP8_BLOCK \
+        --quant-ignore 're:.*linear_attn\.in_proj_[ab]$' \
+        --qat-mode fp8 \
+        --qat-ignore '*linear_attn.in_proj_a' --qat-ignore '*linear_attn.in_proj_b' \
+        --r3-router-replay
+<
+Pass `--engine sglang` for SGLang, and any extra Hydra overrides as trailing
+arguments. Reference `k3_kl` on Qwen3.5-35B-A3B (EP=8; vLLM and Blackwell
+SGLang rollout TP=2; Blackwell SGLang uses the default CUDA Graph
+configuration):
+
+GPU        Engine  R3  Rollout                 Backend                 k3_kl
+---------  ------  --  ----------------------  ----------------------  -------
+Hopper     vLLM    ✅   BF16                    -                       0.00031
+Hopper     SGLang  ✅   BF16                    -                       0.00031
+Hopper     vLLM    ✅   FP8_BLOCK               DeepGEMM                0.00225
+Hopper     SGLang  ✅   FP8_BLOCK               DeepGEMM                0.00231
+Hopper     vLLM    ✅   FP8_BLOCK + FP8 QAT     DeepGEMM                0.00187
+Hopper     SGLang  ✅   FP8_BLOCK + FP8 QAT     DeepGEMM                0.00188
+Blackwell  vLLM    ❌   MXFP8 linear + MoE      FlashInfer CuteDSL /    0.00387
+                                               DeepGEMM
+Blackwell  vLLM    ❌   MXFP8 linear + MoE +    FlashInfer CuteDSL /    0.00325
+                       MXFP8 QAT               DeepGEMM
+Blackwell  SGLang  ❌   MXFP8 linear + MoE      DeepGEMM (Linear +      0.00324
+                                               MoE)
+Blackwell  SGLang  ❌   MXFP8 linear + MoE +    DeepGEMM (Linear +      0.00327
+                       MXFP8 QAT               MoE)
+Blackwell  vLLM    ❌   MXFP4 MoE               DeepGEMM (MoE; BF16     0.00790
+                                               Linear)
+Blackwell  vLLM    ❌   MXFP4 MoE + MXFP4 QAT   DeepGEMM (MoE; BF16     0.00140
+                                               Linear)
+Blackwell  SGLang  ❌   MXFP4 MoE               DeepGEMM (MoE; BF16     0.00571
+                                               Linear)
+Blackwell  SGLang  ❌   MXFP4 MoE + MXFP4 QAT   DeepGEMM (MoE; BF16     0.00200
+                                               Linear)
+Blackwell  vLLM    ❌   NVFP4 MoE               FlashInfer TRT-LLM      0.00966
+                                               (MoE; BF16 Linear)
+Blackwell  vLLM    ❌   NVFP4 MoE + NVFP4 QAT   FlashInfer TRT-LLM      0.00766
+                                               (MoE; BF16 Linear)
+
+LIMITATIONS                                    *low_precision-qat-limitations*
+
+- SGLang MXFP8 and MXFP4 custom refit requires the default bucketed weight
+  sync so all derived kernel layouts can be rebuilt after the final bucket.
+  The checkpoint engine's `delta_flush` wire format is not supported.
+- Native vLLM `Fp8Config` rollout is supported without a rollout override.
+  Standard 128x128 block-FP8 models are quantized by the trainer-side
+  exporter; DeepSeek-V4 keeps the private mixed FP8/FP4 layout already
+  exported by Megatron-Bridge.
+- Megatron QAT and the rollout use separate ignore lists and naming
+  conventions. Users must keep them aligned.
+
+ vim:tw=78:ts=8:ft=help:norl:

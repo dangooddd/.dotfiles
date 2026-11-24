@@ -1,0 +1,4115 @@
+*verl-algo.txt*	verl documentation: algo
+Version latest — https://verl.readthedocs.io/en/latest/
+
+==============================================================================
+ALGO                                                       *verl-section-algo*
+
+
+----------------------------------------------------------------------------
+Algorithm Baselines                                       *verl-algo-baseline*
+
+Last updated: 06/18/2025.
+
+MATH RELATED DATASETS                    *algo-baseline-math-related-datasets*
+
+GSM8k                                                    *algo-baseline-gsm8k*
+
+Assuming GSM8k/math dataset is preprocessed via:
+
+>bash
+    python3 examples/data_preprocess/*.py
+<
+Refer to the table below to reproduce RL training from different pre-trained
+checkpoints. Below is the performance on the GSM8k dataset if not specified
+otherwise. More comprehensive benchmark results areavailable in the recipe
+folder.
+
+Hardware  Model                             Method      Test       Details
+                                                        score
+--------  --------------------------------  ----------  ---------  -----------
+NVIDIA    google/gemma-2-2b-it              hf          23.9       Huggingface
+GPU                                         checkpoint
+NVIDIA    google/gemma-2-2b-it              SFT         52.06      command and
+GPU                                                                logs
+NVIDIA    google/gemma-2-2b-it              SFT + PPO   64.02      command and
+GPU                                                                logs, wandb
+NVIDIA    Qwen/Qwen2.5-0.5B-Instruct        hf          49.6       Qwen blog
+GPU                                         checkpoint
+NVIDIA    Qwen/Qwen2.5-0.5B-Instruct        PPO         56.7       command and
+GPU                                                                log
+NVIDIA    Qwen/Qwen2.5-0.5B-Instruct        PRIME       58.7       script,
+GPU                                                                wandb
+NVIDIA    Qwen/Qwen2.5-0.5B-Instruct        GRPO-LoRA   54.3       command and
+GPU                                                                logs
+NVIDIA    Qwen/Qwen2.5-1.5B-Instruct        GRPO-LoRA   77.9       command and
+GPU                                                                logs
+NVIDIA    Qwen/Qwen2.5-3B-Instruct          GRPO-LoRA   86.1       command and
+GPU                                                                logs
+NVIDIA    deepseek-ai/deepseek-llm-7b-chat  PPO         69.5 [1]   log, wandb
+GPU                                         (Megatron)
+NVIDIA    Qwen/Qwen2-7B-Instruct            GRPO        89         script
+GPU
+NVIDIA    Qwen/Qwen2-7B-Instruct            GRPO        89.8       log
+GPU                                         (FSDP2)
+NVIDIA    Qwen/Qwen2-7B-Instruct            GRPO        89.6       log
+GPU                                         (Megatron)
+NVIDIA    Qwen/Qwen2.5-7B-Instruct          ReMax       97         script,
+GPU                                                                wandb
+NVIDIA    Qwen/Qwen2.5-7B-Instruct          SPPO        65.6       SPPO script
+GPU                                                     (MATH)
+NVIDIA    Qwen/Qwen2.5-7B-Instruct          GRPO-LoRA   93.4       command and
+GPU                                                                logs
+NVIDIA    Mixtral-8x22B-Instruct-v0.1       Instruct    83.7       Qwen Blog
+GPU                                         model
+NVIDIA    Mixtral-8x22B-Instruct-v0.1       RLOO        92.3       wandb
+GPU                                         (Megatron)
+NVIDIA    Qwen/Qwen2.5-7B-Instruct          SPIN        92         script
+GPU
+NVIDIA    Qwen/Qwen2-7B-Instruct            GPG         88         log, wandb
+GPU
+NVIDIA    Qwen/Qwen2-7B-Instruct            GPG         88         log, wandb
+GPU                                         (Megatron)
+NVIDIA    Qwen/Qwen2.5-VL-7B-Instruct       GRPO        65.4       script,
+GPU                                         (Megatron)  (GEO3k)    wandb
+AMD       deepseek-ai/deepseek-llm-7b-chat  PPO         70.5 [1]   log
+MI300
+AMD       deepseek-ai/deepseek-llm-7b-chat  GRPO        71.4 [1]   log
+MI300
+NVIDIA    Qwen/Qwen2.5-14B-Instruct         GRPO-LoRA   94.6       command and
+GPU                                                                logs
+NVIDIA    Qwen/Qwen2.5-32B-Instruct         GRPO-LoRA   95.8       command and
+GPU                                                                logs
+NVIDIA    Qwen/Qwen2.5-72B-Instruct         GRPO-LoRA   96.0       command and
+GPU                                                                logs
+
+DAPO math-17k                                    *algo-baseline-dapo-math-17k*
+
+- Training DAPO math-17k dataset:
+  https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k
+- Testing: AIME'24:
+  https://huggingface.co/datasets/BytedTsinghua-SIA/AIME-2024
+
+Note:
+
+- For Qwen/Qwen2.5-Math-7B, we directly modify the max_position_embeddings
+  to 32768 without observing performance degradation in order to train
+  longer response length.
+
+Hardware    Model                     Method         Test score  Details
+----------  ------------------------  -------------  ----------  -------------
+NVIDIA GPU  Qwen/Qwen2.5-Math-7B      DAPO           36.3        command, logs
+            (32k)
+NVIDIA GPU  Qwen/Qwen2.5-7B-Instruct  DAPO + Code    40.0        command
+                                      Interpreter
+
+CODING RELATED DATASETS                *algo-baseline-coding-related-datasets*
+
+Below is the result on leetcode if not specified otherwise.
+
+Hardware    Model                        Method  Test score  Details
+----------  ---------------------------  ------  ----------  -----------------
+NVIDIA GPU  PRIME-RL/Eurus-2-7B-SFT      RPIME   36.1        script, swanlab
+
+Notes                                                    *algo-baseline-notes*
+
+[1] During evaluation, we have only extracted answers following the format
+`"####"`. A more flexible answer extraction, longer response length, and
+better prompt engineering may lead to a higher score.
+
+[2] The default value of `actor_rollout_ref.actor.entropy_coeff` is set to
+`0.0` since verl 0.3.x on 2025-05-30, which is different from previous
+versions.
+
+----------------------------------------------------------------------------
+                                                              *verl-algo-dapo*
+Recipe: Decoupled Clip and Dynamic Sampling Policy Optimization (DAPO)
+
+Last updated: 06/19/2025.
+
+  Open-Source Algorithm Implementation & Expriement Running: Yuxuan Tong
+  https://tongyx361.github.io/, Guangming Sheng
+  https://hk.linkedin.com/in/guangming-sheng-b50640211
+
+🏠 Homepage https://dapo-sia.github.io/ | 📝 Paper@arXiv
+https://arxiv.org/abs/2503.14476 | 🤗 Datasets&Models@HF
+https://huggingface.co/collections/BytedTsinghua-SIA/dapo-67d7f1517ee33c8aed059da0
+| 🐱 Code@GitHub https://github.com/verl-project/verl-recipe/tree/main/dapo
+| 🐱 Repo@GitHub https://github.com/BytedTsinghua-SIA/DAPO
+
+  We propose the Decoupled Clip and Dynamic sAmpling Policy Optimization
+  (DAPO) algorithm. By making our work publicly available, we provide the
+  broader research community and society with practical access to scalable
+  reinforcement learning, enabling all to benefit from these advancements.
+  Our system is based on the awesome verl
+  https://github.com/verl-project/verl framework. Thanks for their great
+  work! Applying DAPO training to Qwen2.5-32B base model proves to
+  outperform the previous state-of-the-art DeepSeek-R1-Zero-Qwen-32B on AIME
+  2024, achieving 50% accuracy with 50% less training steps.
+
+QUICKSTART                                              *algo-dapo-quickstart*
+
+1. Prepare the datasets on the Ray cluster:
+
+>bash
+    bash prepare_dapo_data.sh # This downloads the datasets to ${HOME}/verl/data by default
+<
+2. Submit the job to the Ray cluster from any machine:
+
+>bash
+    cd verl # Repo root
+    export RAY_ADDRESS="http://${RAY_IP:-localhost}:8265" # The Ray cluster address to connect to
+    export WORKING_DIR="${PWD}" # The local directory to package to the Ray cluster
+    # Set the runtime environment like env vars and pip packages for the Ray cluster in yaml
+    export RUNTIME_ENV="./recipe/dapo/runtime_env.yaml" # This sets environment variables for the Ray cluster
+    bash recipe/dapo/run_dapo_qwen2.5_32b.sh # or other scripts
+<
+
+REPRODUCTION RUNS                                *algo-dapo-reproduction-runs*
+
+Setup        AIME  Hardware   Image                                 Commit  Environment       Training Script                Training
+             2024                                                           Variables                                        Record
+             Acc.
+-----------  ----  ---------  ------------------------------------  ------  ----------------  -----------------------------  --------
+DAPO         52%   16x8xH800  hiyouga/verl:ngc-th2.6.0-cu126-vllm0.8.3-flashinfer0.2.2-cxx11abi0  4f80e4  runtime_env.yaml  run_dapo_qwen2.5_32b.sh        W&B
+DAPO w/o     50%   16x8xH800  hiyouga/verl:ngc-th2.6.0-cu126-vllm0.8.3-flashinfer0.2.2-cxx11abi0  4f80e4  runtime_env.yaml  run_dapo_wo_ds_qwen2.5_32b.sh  W&B
+Dynamic
+Sampling
+DAPO w/o     44%   16x8xH20   hiyouga/verl:ngc-th2.5.1-cu120-vllm0.7.4-hotfix  4f80e4  runtime_env.yaml  run_dapo_early_qwen2.5_32b.sh  W&B
+Token-level
+Loss &
+Dynamic
+Sampling
+
+  [!IMPORTANT]
+
+  📢 Call for Contribution!
+
+  Welcome to submit your reproduction runs and setups!
+
+CONFIGURATION                                        *algo-dapo-configuration*
+
+                               *algo-dapo-separated-clip-epsilons-clip-higher*
+Separated Clip Epsilons (-> Clip-Higher)
+
+An example configuration:
+
+>yaml
+    actor_rollout_ref:
+      actor:
+        clip_ratio_low: 0.2
+        clip_ratio_high: 0.28
+<
+`clip_ratio_low` and `clip_ratio_high` specify the
+`\(\varepsilon_{\text {low }}\)` and `\(\varepsilon_{\text {high }}\)` in
+the DAPO objective.
+
+Core relevant code:
+
+>python
+    pg_losses1 = -advantages * ratio
+    pg_losses2 = -advantages * torch.clamp(ratio, 1 - cliprange_low, 1 + cliprange_high)
+    pg_losses = torch.maximum(pg_losses1, pg_losses2)
+<
+
+                             *algo-dapo-dynamic-sampling-with-group-filtering*
+Dynamic Sampling (with Group Filtering)
+
+An example configuration:
+
+>yaml
+    data:
+      gen_batch_size: 1536
+      train_batch_size: 512
+    algorithm:
+      filter_groups:
+        enable: True
+        metric: acc # score / seq_reward / seq_final_reward / ...
+        max_num_gen_batches: 10 # Non-positive values mean no upper limit
+<
+Setting `filter_groups.enable` to `True` will filter out groups whose
+outputs' `metric` are all the same, e.g., for `acc`, groups whose outputs'
+accuracies are all 1 or 0.
+
+The trainer will repeat sampling with `gen_batch_size` until there are
+enough qualified groups for `train_batch_size` or reaching the upper limit
+specified by `max_num_gen_batches`.
+
+Core relevant code:
+
+>python
+    prompt_bsz = self.config.data.train_batch_size
+    if num_prompt_in_batch < prompt_bsz:
+        print(f'{num_prompt_in_batch=} < {prompt_bsz=}')
+        num_gen_batches += 1
+        max_num_gen_batches = self.config.algorithm.filter_groups.max_num_gen_batches
+        if max_num_gen_batches <= 0 or num_gen_batches < max_num_gen_batches:
+            print(f'{num_gen_batches=} < {max_num_gen_batches=}. Keep generating...')
+            continue
+        else:
+            raise ValueError(
+                f'{num_gen_batches=} >= {max_num_gen_batches=}. Generated too many. Please check your data.'
+            )
+    else:
+        # Align the batch
+        traj_bsz = self.config.data.train_batch_size * self.config.actor_rollout_ref.rollout.n
+        batch = batch[:traj_bsz]
+<
+
+                   *algo-dapo-flexible-loss-aggregation-mode-token-level-loss*
+Flexible Loss Aggregation Mode (-> Token-level Loss)
+
+An example configuration:
+
+>yaml
+    actor_rollout_ref:
+      actor:
+        loss_agg_mode: "token-mean" # / "seq-mean-token-sum" / "seq-mean-token-mean"
+        # NOTE: "token-mean" is the default behavior
+<
+Setting `loss_agg_mode` to `token-mean` will mean the (policy gradient) loss
+across all the tokens in all the sequences in a mini-batch.
+
+Core relevant code:
+
+>python
+    if loss_agg_mode == "token-mean":
+        loss = verl_F.masked_mean(loss_mat, loss_mask)
+    elif loss_agg_mode == "seq-mean-token-sum":
+        seq_losses = torch.sum(loss_mat * loss_mask, dim=-1)  # token-sum
+        loss = torch.mean(seq_losses)  # seq-mean
+    elif loss_agg_mode == "seq-mean-token-mean":
+        seq_losses = torch.sum(loss_mat * loss_mask, dim=-1) / torch.sum(loss_mask, dim=-1)  # token-mean
+        loss = torch.mean(seq_losses)  # seq-mean
+    else:
+        raise ValueError(f"Invalid loss_agg_mode: {loss_agg_mode}")
+<
+
+Overlong Reward Shaping                    *algo-dapo-overlong-reward-shaping*
+
+An example configuration:
+
+>yaml
+    data:
+      max_response_length: 20480 # 16384 + 4096
+    reward_model:
+      overlong_buffer:
+        enable: True
+        len: 4096
+        penalty_factor: 1.0
+<
+Setting `overlong_buffer.enable` to `True` will penalize the outputs whose
+lengths are overlong but still within the hard context limit.
+
+Specifically, the penalty increases linearly from `0` to
+`overlong_buffer.penalty_factor` when the length of the output exceeds the
+`max_response_length - overlong_buffer.len` by `0` to `overlong_buffer.len`
+tokens.
+
+Core relevant code:
+
+>python
+    if self.overlong_buffer_cfg.enable:
+        overlong_buffer_len = self.overlong_buffer_cfg.len
+        expected_len = self.max_resp_len - overlong_buffer_len
+        exceed_len = valid_response_length - expected_len
+        overlong_penalty_factor = self.overlong_buffer_cfg.penalty_factor
+        overlong_reward = min(-exceed_len / overlong_buffer_len * overlong_penalty_factor, 0)
+        reward += overlong_reward
+<
+
+FAQ                                                            *algo-dapo-faq*
+
+                      *algo-dapo-where-is-the-overlong-filtering-in-the-paper*
+Where is the “Overlong Filtering” in the paper?
+
+Most experiments in the paper, including the best-performant one, are run
+without Overlong Filtering because it's somehow overlapping with Overlong
+Reward Shaping in terms of properly learning from the longest outputs. So we
+don't implement it here.
+
+*algo-dapo-what-s-the-difference-between-the-recipe-dapo-directory-in-the-main-branch-and-the-recipe-dapo-branch*
+What's the difference between the recipe/dapo directory in the main branch
+and the recipe/dapo branch?
+
+The `recipe/dapo` branch
+https://github.com/verl-project/verl-recipe/tree/main/dapo/recipe/dapo is
+for as-is reproduction and thus won't be updated with new features.
+
+The `recipe/dapo` directory in the `main` branch
+https://github.com/verl-project/verl-recipe/tree/main/dapo works as an
+example of how to extend the latest `verl` to implement an algorithm recipe,
+which will be maintained with new features.
+
+           *algo-dapo-why-can-t-i-produce-similar-results-after-modifications*
+Why can't I produce similar results after modifications?
+
+RL infrastructures nowadays still have inherent unrobustness, on which we
+are still working hard to improve.
+
+We strongly recommend to only modify one thing at a time.
+
+We also list some known problems here:
+
+1. Enabling CUDA graph (`enforce_eager=False`) might cause model performance
+   degradation, whose cause is still under investigation.
+
+----------------------------------------------------------------------------
+Divergence Proximal Policy Optimization (DPPO)                *verl-algo-dppo*
+
+Last updated: 02/25/2026.
+
+✨GETTING STARTED                                   *algo-dppo-getting-started*
+
+1. Prepare the datasets by running prepare_dapo_data.sh
+   https://github.com/verl-project/verl-recipe/blob/3490a22a0a3adeb7e4787fe70b1060b642efbae4/dapo/prepare_dapo_data.sh:
+
+>bash
+    bash prepare_dapo_data.sh # This downloads the datasets to ${HOME}/verl/data by default
+<
+2. Prepare the model:
+
+>bash
+    hf download Qwen/Qwen3-30B-A3B-Base --local-dir ${HOME}/verl/models/Qwen3-30B-A3B-Base
+<
+3. Run the script:
+
+>bash
+    # run DPPO-Binary-KL
+    LOSS_MODE=dppo_kl bash examples/dppo_trainer/run_qwen3_30b_a3b_megatron.sh
+
+    # run DPPO-Binary-TV
+    LOSS_MODE=dppo_tv bash examples/dppo_trainer/run_qwen3_30b_a3b_megatron.sh
+
+    # run GRPO baseline
+    LOSS_MODE=vanilla CLIP_LOW=0.2 CLIP_HIGH=0.2 bash examples/dppo_trainer/run_qwen3_30b_a3b_megatron.sh
+    # or GRPO with clip higher
+    LOSS_MODE=vanilla CLIP_LOW=0.2 CLIP_HIGH=0.28 bash examples/dppo_trainer/run_qwen3_30b_a3b_megatron.sh
+<
+
+📖INTRODUCTION                                         *algo-dppo-introduction*
+
+Comparison of PPO and the proposed DPPO (the Binary-TV variant). (Left) The
+surrogate objective and corresponding masks for PPO and DPPO. PPO (and
+variants like GRPO) employs a heuristic mask based on the probability ratio.
+In contrast, DPPO utilizes a more principled mask based on a direct
+approximation of policy divergence (e.g., Total Variation), ensuring updates
+stay within a theoretically grounded trust region. (Right) Experimental
+results on the AIME24 using Qwen3-30B-A3B-Base. DPPO significantly
+outperforms GRPO baselines, achieving superior training stability and final
+performance even without rollout routing replay (R3).
+
+DPPO variants achieve stable training while controlling the
+training-inference mismatch at a low level. In contrast, methods without a
+trust region (PG-IS, CISPO) or with a misspecified one (MiniRL) suffer from
+growing mismatch and eventual collapse.
+
+The plots show numerical differences between a training and an inference
+engine for Qwen3-30B-A3B-Base with identical parameters. (Left) The
+probability ratio (used in PPO) is highly volatile for low-probability
+tokens. (Right) In contrast, the TV divergence is more stable. This
+highlights a key flaw of PPO's clipping mechanism: it over-penalizes
+low-probability tokens, which can slow down learning; and under-penalizes
+high-probability tokens, which can permit large, destabilizing updates.
+
+The most frequently clipped tokens (by GRPO) are important to the reasoning
+task! They are dominated by:
+
+- numbers, like 1, 4
+- mathematical symbols, like +, -, =
+- reasoning and structural Words: Wait, Thus, Next
+
+TOP-K DIVERGENCE APPROXIMATION      *algo-dppo-top-k-divergence-approximation*
+
+We only implement the DPPO-Binary-TV/DPPO-Binary-KL here due to their
+simplicity.
+
+For the TopK divergence approximation, please refer to the the original repo
+https://github.com/sail-sg/Stable-RL for a complete implementation.
+
+CITATION                                                  *algo-dppo-citation*
+
+If you find our works useful for your research, please consider citing:
+
+>bib
+    @article{qi2026dppo,
+      title={Rethinking the Trust Region in LLM Reinforcement Learning},
+      author={Qi, Penghui and Zhou, Xiangxin and Liu, Zichen and Pang, Tianyu and Du, Chao and Lin, Min and Lee, Wee Sun},
+      journal={arXiv preprint arXiv:2602.04879},
+      year={2026}
+    }
+<
+
+🌻ACKNOWLEDGEMENT                                   *algo-dppo-acknowledgement*
+
+We implement our reinforcement learning algorithm extending from verl
+https://github.com/verl-project/verl. We utilize vLLM
+https://github.com/vllm-project/vllm and sglang
+https://github.com/sgl-project/sglang for inference. Our models are trained
+primarily on Qwen3 family https://huggingface.co/collections/Qwen/qwen3. Our
+training data is built from DAPO-MATH
+https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k. Thanks for
+their great contributions!
+
+----------------------------------------------------------------------------
+Direct Reward Optimization                                     *verl-algo-dro*
+
+Last updated: 07/29/2026.
+
+Select `actor_rollout_ref.actor.policy_loss.loss_mode=dro` and set a
+positive `actor_rollout_ref.actor.policy_loss.dro_beta`. The token loss is
+
+\[L_{\mathrm{DRO}} = -\sum_t \left[\log \pi_\theta(a_t\mid s_t) A_t - \frac{\beta}{2}\left(\log\pi_\theta(a_t\mid s_t)-\log\pi_{old}(a_t\mid s_t)\right)^2\right].\]
+DRO expects the caller to construct advantages appropriate for its soft
+off-policy formulation. The objective honors `response_mask`, global loss
+aggregation, and optional rollout-correction weights in the same way as the
+other registered policy losses.
+
+----------------------------------------------------------------------------
+Recipe: Entropy Mechanism                                  *verl-algo-entropy*
+
+Last updated: 06/27/2025.
+
+🎉NEWS                                                      *algo-entropy-news*
+
+- [2025/05/29] 🎉 Ranked #1 of the day on Huggingface Daily Papers
+  https://huggingface.co/papers?date=2025-05-29.
+- [2025/05/29] Released our Paper on arXiv. See here
+  https://arxiv.org/pdf/2505.22617. We provide insights into the entropy
+  mechanism of RL for LLMs and propose two simple yet effective strategies
+  to alleviate the entropy collapse.
+
+✨GETTING STARTED                                *algo-entropy-getting-started*
+
+After preparing the training data, for training Qwen2.5-7B on a single node,
+taking the KL-Cov approach as an example, you can simply run:
+
+>bash
+    cd verl
+    conda activate your_env
+    bash recipe/dapo/7b_kl_cov.sh
+<
+While for training Qwen2.5-32B on multi nodes, you can run the following
+commands:
+
+>bash
+    cd verl
+    conda activate your_env
+    bash recipe/dapo/32b_kl_cov.sh
+<
+
+📖INTRODUCTION                                      *algo-entropy-introduction*
+
+This paper addresses the entropy collapse issue in scaling reinforcement
+learning (RL) for large language models (LLMs), where policy entropy drops
+sharply during training, leading to overconfidence and performance
+saturation. We empirically establish a relationship between entropy
+(`\(H\)`) and performance (`\(R\)`): `\(R=−aexp(H)+b\)`, showing performance
+is bottlenecked by entropy exhaustion.
+
+Theoretically, we find entropy changes are driven by the covariance between
+action probability and logit updates, which correlates with advantage in
+Policy Gradient methods. High-probability, high-advantage actions reduce
+entropy, while rare, high-advantage actions increase it. Empirically, the
+covariance term remains positive, explaining entropy's monotonic decline. To
+mitigate this, we propose ​​Clip-Cov​​ and ​​KL-Cov​​, which restrict updates for
+high-covariance tokens. These methods effectively prevent entropy collapse,
+and improve performance.
+
+📃EVALUATION                                          *algo-entropy-evaluation*
+
+Our method is able to maintain a considerably higher level of entropy
+throughout training. For example, when the baseline's entropy reaches a
+plateau and can no longer be consumed, the KL-Cov method still sustains an
+entropy level over 10 times higher. Meanwhile, the response length of the
+policy model steadily increases, and its performance on the test set
+consistently surpasses that of the baseline. This indicates that our model
+is able to explore more freely during training, learning better policy
+through RL.
+
+Method       AIME24  AIME25  AMC   MATH-500  OMNI-MATH  OlympiadBench  Minerva  Avg.
+-----------  ------  ------  ----  --------  ---------  -------------  -------  ----
+Qwen2.5-7B
+GRPO         21.2    9.6     58.7  78.8      27.9       40.7           36.7     38.6
+w.           18.1    11.5    56.6  79.2      29.8       43.3           40.4     38.8
+Clip-higher
+w. CLIP-Cov  22.1    15.8    58.2  80.4      30.5       44.1           41.1     40.4
+w. KL-Cov    22.6    12.9    61.4  80.8      29.1       42.6           38.2     40.6
+Qwen2.5-32B
+GRPO         21.8    16.2    69.7  84.2      35.2       43.6           45.5     45.8
+w.           35.6    22.3    69.5  77.2      35.1       42.5           43.0     47.2
+Clip-higher
+w. CLIP-Cov  32.3    22.7    67.2  87.0      42.0       57.2           46.0     50.3
+w. KL-Cov    36.8    30.8    74.5  84.6      39.1       49.0           46.3     52.2
+
+Our two approaches both achieve non-trivial improvements across all
+benchmarks. Compared to GRPO, our method outperforms it by 2.0% on average
+for the 7B model and by 6.4% for the 32B model. Moreover, we observe that
+our method yields more substantial gains on the larger Qwen2.5-32B.
+Specifically, our method achieves improvements of 15.0% and 14.6% compared
+to GRPO on the most challenging benchmarks, AIME24 and AIME25, respectively.
+
+🎈CITATION                                              *algo-entropy-citation*
+
+If you find this paper or repo helpful, please cite us.
+
+>bib
+    @article{cui2025entropy,
+      title={The Entropy Mechanism of Reinforcement Learning for Reasoning Language Models},
+      author={Cui, Ganqu and Zhang, Yuchen and Chen, Jiacheng and Yuan, Lifan and Wang, Zhi and Zuo, Yuxin and Li, Haozhan and Fan, Yuchen and Chen, Huayu and Chen, Weize and others},
+      journal={arXiv preprint arXiv:2505.22617},
+      year={2025}
+    }
+<
+
+🌻ACKNOWLEDGEMENT                                *algo-entropy-acknowledgement*
+
+We implement our reinforcement learning algorithm extending from verl
+https://github.com/verl-project/verl. We utilize vLLM
+https://github.com/vllm-project/vllm for inference. Our models are trained
+primarily on Qwen2.5 family https://github.com/QwenLM/Qwen2.5. Our training
+data is built from DAPO-MATH
+https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k. Thanks for
+their great contributions!
+
+📬 CONTACT                                               *algo-entropy-contact*
+
+For questions, discussion, or collaboration opportunities, feel free to
+contact:
+
+- Ganqu Cui: cuiganqu@pjlab.org.cn
+- Yuchen Zhang: yuchen.zhang2003@gmail.com
+- Jiacheng Chen: jackchan9345@gmail.com
+- Ning Ding: ningding.cs@gmail.com
+
+----------------------------------------------------------------------------
+GPG: Group Policy Gradient                                     *verl-algo-gpg*
+
+Last updated: 07/03/2025.
+
+Group Policy Gradient (GPG) is a minimalist reinforcement learning (RL)
+method that enhances the reasoning ability of large language models without
+relying on supervised fine-tuning or complex tricks. GPG revisits
+traditional policy gradients and directly optimizes the RL objective---no
+surrogate losses, no KL penalties, no critic, and no reference model.
+Compared to GRPO, GPG is simpler, more efficient, and achieves better
+results on many tasks. For more details, please refer to the original paper
+GPG: A Simple and Strong Reinforcement Learning Baseline for Model Reasoning
+https://arxiv.org/abs/2504.02546 .
+
+KEY COMPONENTS                                       *algo-gpg-key-components*
+
+- Use a corrected advantage function to improve policy gradient accuracy and
+  training efficiency.
+- By eliminating the critic and reference models, avoiding KL divergence
+  constraints, significantly simplifies the training process compared to
+  Group Relative Policy Optimization (GRPO)
+
+CONFIGURATION                                         *algo-gpg-configuration*
+
+To configure GPG within the framework, use the following YAML settings.
+
+>yaml
+    algorithm:
+      adv_estimator: gpg 
+    actor_rollout_ref:
+      actor:
+        policy_loss:
+          loss_mode: "gpg"
+<
+
+ADVANCED EXTENSIONS                             *algo-gpg-advanced-extensions*
+
+GPG is a simple and strong baseline for model reasoning. Although it avoids
+using KL loss in its original form, you can still use KL loss to further
+improve the performance.
+
+>yaml
+    algorithm:
+      adv_estimator: gpg
+    actor_rollout_ref:
+      actor:
+        use_kl_loss: True # enable kl regularization
+        kl_loss_coef: 0.01
+        policy_loss:
+          loss_mode: "gpg"
+<
+
+----------------------------------------------------------------------------
+Group Relative Policy Optimization (GRPO)                     *verl-algo-grpo*
+
+Last updated: 05/31/2025.
+
+In reinforcement learning, classic algorithms like PPO rely on a “critic”
+model to estimate the value of actions, guiding the learning process.
+However, training this critic model can be resource-intensive.
+
+GRPO simplifies this process by eliminating the need for a separate critic
+model. Instead, it operates as follows:
+
+- Group Sampling: For a given problem, the model generates multiple possible
+  solutions, forming a “group” of outputs.
+- Reward Assignment: Each solution is evaluated and assigned a reward based
+  on its correctness or quality.
+- Baseline Calculation: The average reward of the group serves as a
+  baseline.
+- Policy Update: The model updates its parameters by comparing each
+  solution's reward to the group baseline, reinforcing better-than-average
+  solutions and discouraging worse-than-average ones.
+
+This approach reduces computational overhead by avoiding the training of a
+separate value estimation model, making the learning process more efficient.
+For more details, refer to the original paper
+DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models
+https://arxiv.org/pdf/2402.03300
+
+KEY COMPONENTS                                      *algo-grpo-key-components*
+
+- No Value Function (Critic-less): unlike PPO, GRPO does not train a
+  separate value network (critic)
+- Group Sampling (Grouped Rollouts): instead of evaluating one rollout per
+  input, GRPO generates multiple completions (responses) from the current
+  policy for each prompt. This set of completions is referred to as a group.
+- Relative Rewards: within each group, completions are scored (e.g., based
+  on correctness), and rewards are normalized relative to the group.
+
+CONFIGURATION                                        *algo-grpo-configuration*
+
+Note that all configs containing `micro_batch_size` are used to configure
+the maximum sample or token count per forward or backward pass to avoid GPU
+OOMs, whose value should not change algorithmic/convergence behavior.
+
+Despite that many configurations start with the `ppo_` prefix, they work
+across different RL algorithms in verl, as the GRPO training loop is similar
+to that of PPO (without critic).
+
+- `actor_rollout.ref.rollout.n`: For each prompt, sample n times. Default to
+  1. For GRPO, please set it to a value larger than 1 for group sampling.
+
+- `data.train_batch_size`: The global batch size of prompts used to generate
+  a set of sampled trajectories/rollouts. The number of
+  responses/trajectories is
+  `data.train_batch_size * actor_rollout.ref.rollout.n`
+- `actor_rollout_ref.actor.ppo_mini_batch_size`: The set of sampled
+  trajectories is split into multiple mini-batches with
+  batch_size=ppo_mini_batch_size for PPO actor updates. The
+  ppo_mini_batch_size is a global size across all workers.
+- `actor_rollout_ref.actor.ppo_epochs`: Number of epochs for GRPO updates on
+  one set of sampled trajectories for actor
+- `actor_rollout_ref.actor.clip_ratio`: The GRPO clip range. Default to 0.2
+- `algorithm.adv_estimator`: Default is gae. Please set it to grpo instead
+- `actor_rollout_ref.actor.loss_agg_mode`: Default is “token-mean”. Options
+  include “token-mean”, “seq-mean-token-sum”, “seq-mean-token-mean”. The
+  original GRPO paper takes the sample-level loss (seq-mean-token-mean),
+  which may be unstable in long-CoT scenarios. All GRPO example scripts
+  provided in verl uses the default configuration “token-mean” for loss
+  aggregation instead.
+
+Instead of adding KL penalty in the reward, GRPO regularizes by directly
+adding the KL divergence between the trained policy and the reference policy
+to the loss:
+
+- `actor_rollout_ref.actor.use_kl_loss`: To use kl loss in the actor. When
+  used, we are not applying KL in the reward function. Default is False.
+  Please set it to True for GRPO.
+- `actor_rollout_ref.actor.kl_loss_coef`: The coefficient of kl loss.
+  Default is 0.001.
+- `actor_rollout_ref.actor.kl_loss_type`: Support kl(k1), abs, mse(k2),
+  low_var_kl(k3) and full. Appending “+” in the end (e.g., ‘k1+' and ‘k3+')
+  would apply straight through to employ k2 for unbiased gradient
+  estimation, regardless of the kl value estimation (see
+  https://github.com/verl-project/verl/pull/2953#issuecomment-3162113848 for
+  more details). How to calculate the kl divergence between actor and
+  reference policy. See this blog post for detailed analysis:
+  http://joschu.net/blog/kl-approx.html
+
+ADVANCED EXTENSIONS                            *algo-grpo-advanced-extensions*
+
+DrGRPO                                                      *algo-grpo-drgrpo*
+
+Understanding R1-Zero-Like Training: A Critical Perspective
+https://arxiv.org/pdf/2503.20783 claims there's optimization bias in GRPO,
+which leads to artificially longer responses, especially for incorrect
+outputs. This inefficiency stems from the way GRPO calculates advantages
+using group-based reward normalization. Instead, DrGRPO aggregates
+token-level losses by normalizing with a global constant to eliminate length
+bias.
+
+Configure the following to enable DrGRPO, with all other parameters the same
+as GRPO's:
+
+- `actor_rollout_ref.actor.loss_agg_mode`: “seq-mean-token-sum-norm”, which
+  turns off seq-dim averaging
+- `actor_rollout_ref.actor.loss_scale_factor`: (Optional) Set to a constant
+  integer (e.g., max response length) to ensure consistent normalization
+  throughout training. If not set, uses the current batch's response length.
+- `actor_rollout_ref.actor.use_kl_loss`: Please set it to False for DrGRPO
+- `algorithm.norm_adv_by_std_in_grpo`: False, which turns off standard
+  deviation norm
+
+REFERENCE EXAMPLE                                *algo-grpo-reference-example*
+
+Qwen2.5 GRPO training log and commands: link
+https://github.com/eric-haibin-lin/verl-data/blob/experiments/gsm8k/qwen2-7b-fsdp2.log
+
+>bash
+    bash examples/grpo_trainer/run_qwen3_8b_fsdp.sh
+<
+For more reference performance, please see
+https://verl.readthedocs.io/en/latest/algo/baseline.html
+
+----------------------------------------------------------------------------
+On-Policy Distillation (OPD)                                   *verl-algo-opd*
+
+Author: Jacob Helwig https://jacobhelwig.github.io/
+
+Last updated: 10/30/2026.
+
+BACKGROUND                                               *algo-opd-background*
+
+Summary                                                     *algo-opd-summary*
+
+1. OPD distills knowledge from teacher model(s) into a student model on
+   states sampled from the student policy.
+2. Compared with SFT or standard KD, OPD reduces exposure bias by aligning
+   training-time states with inference-time states.
+3. Compared with RLVR, OPD provides dense, continuous, token-level
+   supervision rather than sparse outcome-level rewards.
+
+Knowledge Distillation                       *algo-opd-knowledge-distillation*
+
+Knowledge distillation (KD) transfers behavior from a teacher model to a
+student model. In mathematical reasoning, for example, standard KD samples
+reasoning traces and final answers from the teacher, then trains the student
+with a next-token prediction objective against the teacher distribution.
+
+This can introduce exposure bias. During training, the student observes
+states sampled from the teacher. At inference time, however, states are
+sampled from the student. Unless the teacher and student induce the same
+state distribution, the student may not learn how the teacher would act in
+the states the student actually visits.
+
+For example, the student may prefer algebraic proofs while the teacher
+prefers geometric proofs. Standard KD primarily distills the teacher's
+behavior along geometric-proof trajectories, even if the student continues
+to generate algebraic-proof trajectories at inference time.
+
+On-Policy RL                                           *algo-opd-on-policy-rl*
+
+RLVR has no train/inference state mismatch by construction: rollouts are
+sampled from the student policy, so the states the student trains on are
+exactly the states it would visit at inference time. If a rollout produces a
+correct final answer, the policy is updated to increase the likelihood of
+the sampled solution.
+
+This aligns training and inference states, but the reward is sparse and
+outcome-based. A rollout typically contributes a binary success signal at
+the sequence level rather than dense token-level feedback.
+
+On-Policy Distillation                       *algo-opd-on-policy-distillation*
+
+On-policy distillation (OPD) [1,2,3] combines the state alignment of
+on-policy RL with the dense supervision of KD. The student samples rollouts
+from its own policy. Given each student-generated state, the teacher
+provides next-token log-probabilities, and the student is trained to match
+the teacher distribution at those states.
+
+Intuitively, the teacher provides guidance conditioned on the trajectory the
+student actually chose. If the student follows an algebraic proof path, the
+teacher supplies supervision for what it would do from that algebraic state.
+
+Formally, let `\(x \sim p_{\mathrm{data}}\)` be a prompt,
+`\(y \sim \pi_{\theta}(\cdot \mid x)\)` be a student rollout, and
+`\(s_t = (x, y_{<t})\)` be the state at token `\(t\)`. OPD minimizes
+
+\[\mathcal{L}_{\mathrm{OPD}}(\theta) = \mathbb{E}_{x \sim p_{\mathrm{data}},\, y \sim \pi_{\theta}(\cdot \mid x)} \left[ \frac{1}{|y|} \sum_{t=1}^{|y|} D\!\left( \pi_{\theta}(\cdot \mid s_t), \nu(\cdot \mid s_t), y_t \right) \right],\]
+where `\(\pi_{\theta}\)` is the student policy, `\(\nu\)` is the teacher
+policy, and `\(D_t\)` is either a distribution-level divergence or a
+sampled-token estimator of a divergence.
+
+In practice, the sampled rollout is treated as fixed during the student
+update. The distinction between supervised OPD and policy-gradient OPD is
+how the per-token distillation signal is applied.
+
+Loss Variants                                         *algo-opd-loss-variants*
+
+We implement two OPD variants.
+
+GKD OPD                                                     *algo-opd-gkd-opd*
+
+GKD OPD [1] directly minimizes a KL divergence between the teacher and
+student distributions at student-induced states. For forward KL,
+
+\[D\!\left( \pi_{\theta}(\cdot \mid s_t), \nu(\cdot \mid s_t), y_t \right) = \sum_{v \in V} \nu(v \mid s_t) \log \frac{ \nu(v \mid s_t) }{ \pi_{\theta}(v \mid s_t) }.\]
+The distillation loss is optimized by direct backpropagation through the
+student probabilities. This uses the full distributional signal available
+from the teacher.
+
+PG OPD                                                       *algo-opd-pg-opd*
+
+PG OPD [3] treats an unbiased estimator of the reverse KL as a reward and
+applies a policy-gradient update. The reverse KL is given by:
+
+\[{\mathrm{KL}}\!\left(\pi_{\theta}(\cdot|s_t) \,\Vert \nu(\cdot| s_t)\right) = \mathbb{E}_{y_t \sim \pi_{\theta}(\cdot \mid s_t)} \left[ \log \pi_{\theta}(y_t \mid s_t) - \log \nu(y_t \mid s_t) \right].\]
+Since tokens are sampled from the student policy `\(\pi_\theta\)`, a Monte
+Carlo estimator can be used to approximate this divergence. PG OPD uses a
+single-sample estimator such as the k1 estimator [4] given by
+
+\[D\!\left( \pi_{\theta}(\cdot \mid s_t), \nu(\cdot \mid s_t), y_t \right) = \operatorname{sg}\!\left( \log \pi_{\theta}(y_t \mid s_t) - \log \nu(y_t \mid s_t) \right), \quad y_t \sim \pi_{\theta}(\cdot \mid s_t).\]
+PG OPD then uses the negative reverse KL estimator as a reward given by
+
+\[r_t = \operatorname{sg}\!\left( \log \nu(y_t \mid s_t) - \log \pi_{\theta}(y_t \mid s_t) \right).\]
+The stop-gradient is required because the reward is used inside a
+policy-gradient objective. Without it, differentiating through the estimator
+with respect to student parameters would zero the teacher's logprob, leading
+to a loss that is independent of the teacher signal.
+
+Multi-Teacher OPD                                 *algo-opd-multi-teacher-opd*
+
+Multi-teacher OPD (MOPD) extends OPD to multiple domain-specialized teachers
+[4,5,6,7]. This is useful when distilling knowledge to a student across
+multiple domains. In each domain, such as math, coding, or instruction
+following, different teachers specialized to the domain can be used.
+
+A base model can be trained or adapted independently on each domain,
+producing one expert teacher per domain. The student is then trained on a
+mixture of domains. For each example, the routing key selects the
+corresponding teacher, and the student matches that teacher's
+log-probabilities on student-induced states.
+
+MOPD consolidates multiple specialized policies into a single student model
+while preserving the on-policy state alignment of OPD.
+
+Bibliography                                           *algo-opd-bibliography*
+
+[1] Agarwal, Rishabh, et al. “On-policy distillation of language models:
+Learning from self-generated mistakes.” International Conference on Learning
+Representations, 2024.
+
+[2] Yang, An, et al. “Qwen3 Technical Report.” arXiv preprint
+arXiv:2505.09388, 2025.
+
+[3] Lu, Kevin and Thinking Machines Lab. “On-Policy Distillation.” Thinking
+Machines Lab: Connectionism, Oct. 2025.
+
+[4] DeepSeek-AI. “DeepSeek-V4: Towards Highly Efficient Million-Token
+Context Intelligence.” 2026.
+
+[5] Xiao, Bangjun, et al. “Mimo-v2-flash Technical Report.” arXiv preprint
+arXiv:2601, 2026.
+
+[6] Zeng, Aohan, et al. “GLM-5: From Vibe Coding to Agentic Engineering.”
+arXiv preprint arXiv:2602.15763, 2026.
+
+[7] Yang, Zhuolin, et al. “Nemotron-Cascade 2: Post-Training LLMs with
+Cascade RL and Multi-Domain On-Policy Distillation.” arXiv preprint
+arXiv:2603.19220, 2026.
+
+[8] Li, Yaxuan, et al. “Rethinking On-Policy Distillation of Large Language
+Models: Phenomenology, Mechanism, and Recipe.” arXiv preprint
+arXiv:2604.13016, 2026.
+
+CONFIGURATION PARAMETERS                   *algo-opd-configuration-parameters*
+
+OPD parameters live under three namespaces:
+
+- `distillation.*` --- top-level switches and the teacher resource pool
+  (`DistillationConfig`
+  https://verl.readthedocs.io/en/latest/_downloads/aae723c5dd7be3087ef038478caa73f9/distillation.py)
+- `distillation.teacher_models.<name>.*` --- one entry per teacher
+  (`DistillationTeacherModelConfig`
+  https://verl.readthedocs.io/en/latest/_downloads/aae723c5dd7be3087ef038478caa73f9/distillation.py)
+- `distillation.distillation_loss.*` --- loss-mode and aggregation settings
+  (`DistillationLossConfig`
+  https://verl.readthedocs.io/en/latest/_downloads/aae723c5dd7be3087ef038478caa73f9/distillation.py)
+
+Defaults below are the YAML defaults from
+`verl/trainer/config/distillation/distillation.yaml`
+https://verl.readthedocs.io/en/latest/_downloads/558044b52d4a65d09608b7f4ab25d646/distillation.yaml.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+`distillation.enabled` (bool)             *algo-opd-distillation-enabled-bool*
+
+Whether on-policy distillation is enabled. Default: `false`.
+
+When `true`, `main_ppo` allocates a separate teacher resource pool and spins
+up one or more teacher inference servers; the actor loss switches from
+`ppo_loss` to `distillation_ppo_loss`.
+
+                                   *algo-opd-distillation-n-gpus-per-node-int*
+`distillation.n_gpus_per_node` (int)
+
+Number of GPUs per node in the teacher resource pool. Default: `8`.
+
+`distillation.nnodes` (int)                 *algo-opd-distillation-nnodes-int*
+
+Number of nodes in the teacher resource pool. Default: `0` (effectively
+disables the pool --- must be set to `≥ 1` when `enabled=True`).
+
+Constraint: the total teacher pool size (`n_gpus_per_node × nnodes`) must
+exactly equal the sum of `(num_replicas × per_replica_world_size)` across
+all configured teachers, or `DistillationConfig.__post_init__` raises.
+
+`distillation.teacher_key` (str)       *algo-opd-distillation-teacher-key-str*
+
+Field on each sample's data proto used to route the sample to the right
+teacher in multi-teacher setups. Default: `"data_source"`.
+
+- Single-teacher: ignored (everything goes to the sole teacher).
+- Multi-teacher: the value of `sample[teacher_key]` must match the `key` of
+  one of the configured teachers, or
+  `AsyncTeacherLLMServerManager._resolve_teacher_key` raises.
+
+                                   *algo-opd-distillation-teacher-models-dict*
+`distillation.teacher_models` (dict)
+
+Map of teacher entries. Each value is a `DistillationTeacherModelConfig`.
+
+The single-teacher entry is named `teacher_model` by convention. Pitfall:
+when adding more named teachers, the `teacher_model` entry is silently
+popped --- so do not keep `teacher_model` as one entry alongside other named
+teachers. Either rely on it alone, or rename it (e.g. `teacher_model1`) and
+add the others.
+
+>bash
+    # WRONG: teacher_model is popped, only teacher_model2 is used
+    distillation.teacher_models.teacher_model.key=openai/gsm8k
+    distillation.teacher_models.teacher_model.model_path=Qwen/Qwen3-4B
+    +distillation.teacher_models.teacher_model2.key=hiyouga/geometry3k
+    +distillation.teacher_models.teacher_model2.model_path=Qwen/Qwen3-VL-4B-Instruct
+
+    # RIGHT: rename the first teacher
+    +distillation.teacher_models.teacher_model1.key=openai/gsm8k
+    +distillation.teacher_models.teacher_model1.model_path=Qwen/Qwen3-4B
+    +distillation.teacher_models.teacher_model2.key=hiyouga/geometry3k
+    +distillation.teacher_models.teacher_model2.model_path=Qwen/Qwen3-VL-4B-Instruct
+<
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+                           *algo-opd-distillation-teacher-models-name-key-str*
+`distillation.teacher_models.<name>.key` (str)
+
+Identifier used to route samples to this teacher in multi-teacher mode. Must
+match the value of `sample[distillation.teacher_key]`. Default: `null`
+(required for multi-teacher; auto-set to `"default"` for single-teacher).
+
+                    *algo-opd-distillation-teacher-models-name-model-path-str*
+`distillation.teacher_models.<name>.model_path` (str)
+
+Local path or Hugging Face model id for the teacher. Required.
+
+The teacher must share the student's tokenizer/vocab --- typically satisfied
+by picking a teacher in the same model family (e.g. `Qwen3-32B` teacher for
+a `Qwen3-8B` student).
+
+                  *algo-opd-distillation-teacher-models-name-num-replicas-int*
+`distillation.teacher_models.<name>.num_replicas` (int)
+
+Number of inference replicas of this teacher to launch. Default: `0`.
+
+Each replica occupies
+`per_replica_world_size = inference.tensor_model_parallel_size * inference.data_parallel_size * inference.pipeline_model_parallel_size`
+GPUs, so the teacher's total footprint is
+`num_replicas × per_replica_world_size`.
+
+For a single teacher, you may leave this at `0`: `_resolve_teacher_models`
+auto-fills it as `pool_size // per_replica_world_size`.
+
+                         *algo-opd-distillation-teacher-models-name-inference*
+`distillation.teacher_models.<name>.inference.*`
+
+Inference-engine config for this teacher; see `RolloutConfig`
+https://verl.readthedocs.io/en/latest/_downloads/04a11269e7132e98a82c7f564b11c589/rollout.py.
+Same shape as `actor_rollout_ref.rollout.*`. Notable defaults inherited from
+the YAML:
+
+- `inference.name` --- e.g. `vllm` or `sglang`.
+- `inference.tensor_model_parallel_size` --- default `2`.
+- `inference.gpu_memory_utilization` --- default `0.5`.
+- `inference.max_model_len` --- must accommodate
+  `student_prompt_length + student_response_length + 1`; otherwise
+  `validate_and_prepare_for_distillation` raises.
+- `inference.engine_kwargs.vllm.max_logprobs` --- auto-bumped to
+  `≥ distillation.distillation_loss.topk` whenever the active loss mode
+  requires top-k.
+
+`validate_and_prepare_for_distillation` rewrites
+`inference.prompt_length := prompt_length + response_length` and
+`inference.response_length := 1`, since the teacher only scores the (prompt
++ response) prefix and emits one dummy token.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+                       *algo-opd-distillation-distillation-loss-loss-mode-str*
+`distillation.distillation_loss.loss_mode` (str)
+
+Distillation divergence to use. Default: `"k3"`.
+
+Two registered families:
+
+- Top-k:
+
+  - `forward_kl_topk`: the existing truncated forward-KL contribution on the
+    teacher's top-k support.
+  - `forward_kl_topk_tail`: a coarse-grained forward KL that additionally
+    collapses every non-top-k token into one aggregate tail bucket.
+
+- Single-sample KL estimators (`kl`, `k1`, `abs`, `mse`, `k2`, `low_var_kl`,
+  `k3`): per-token Monte Carlo estimators of reverse KL computed from the
+  student's `log_probs` and the teacher's single `log_prob` at the sampled
+  token.
+
+                   *algo-opd-distillation-distillation-loss-topk-int-optional*
+`distillation.distillation_loss.topk` (int, optional)
+
+`k` for top-k distillation losses. Default: `32`.
+
+Only used when `loss_mode` requires top-`\(k\)` (e.g. `forward_kl_topk` or
+`forward_kl_topk_tail`). Drives both the teacher's `prompt_logprobs` request
+size and (for vLLM) the engine's `max_logprobs` cap.
+
+               *algo-opd-distillation-distillation-loss-use-task-rewards-bool*
+`distillation.distillation_loss.use_task_rewards` (bool)
+
+Whether to add the standard PPO/GRPO task-reward loss on top of the
+distillation loss. Default: `true`.
+
+- `true`: final loss is
+  `policy_loss + distillation_loss_coef × distill_loss`.
+- `false`: the PPO term is zeroed and only the distillation loss
+  contributes.
+
+Orthogonal to `use_policy_gradient` (which controls how the distillation
+signal itself is applied).
+
+        *algo-opd-distillation-distillation-loss-distillation-loss-coef-float*
+`distillation.distillation_loss.distillation_loss_coef` (float)
+
+Coefficient on the distillation loss when combined with task rewards.
+Default: `1.0`. Only takes effect when `use_task_rewards=true`.
+
+       *algo-opd-distillation-distillation-loss-loss-max-clamp-float-optional*
+`distillation.distillation_loss.loss_max_clamp` (float, optional)
+
+Per-token clamp on the distillation loss to `[-clamp, +clamp]`. Default:
+`null` (no clamp).
+
+   *algo-opd-distillation-distillation-loss-log-prob-min-clamp-float-optional*
+`distillation.distillation_loss.log_prob_min_clamp` (float, optional)
+
+Lower clamp on log probabilities used inside divergence computations, to
+prevent `log q − log p` from blowing up when `p` or `q` are near zero.
+Default: `null`.
+
+`forward_kl_topk_tail` requires this option to be `null`. Per-entry clamping
+changes the probability mass of the selected tokens and would invalidate the
+coarse-grained KL definition.
+
+                 *algo-opd-distillation-distillation-loss-tail-mass-eps-float*
+`distillation.distillation_loss.tail_mass_eps` (float)
+
+Minimum student probability mass used for the aggregate non-top-k bucket in
+`forward_kl_topk_tail`. Default: `1e-6`. This only guards `log(0)` when the
+student top-k mass rounds to one in finite precision.
+
+            *algo-opd-distillation-distillation-loss-use-policy-gradient-bool*
+`distillation.distillation_loss.use_policy_gradient` (bool)
+
+How the distillation signal is applied. `true` corresponds to PG OPD,
+`false` to GKD OPD. Default: `false`.
+
+Validation:
+
+- `use_policy_gradient=False` + `loss_mode="k1"` or `"kl"` `\(\to\)`
+  `ValueError`. The direct loss gradient is independent of the teacher log
+  probabilities.
+- `use_policy_gradient=True` with `abs`, `mse`, `k2`, `k3`, or `low_var_kl`
+  raises `ValueError`. Use `k1` or `kl` for reverse-KL policy gradients.
+  These non-negative losses can be large whether the student overestimates
+  or underestimates the teacher's token probability. As negative rewards,
+  they favor tokens with smaller penalties, which can move the student away
+  from the teacher. The k1 estimator keeps the sign of
+  `\(\log \pi_\theta(y_t \mid s_t) - \log \nu(y_t \mid s_t)\)`.
+- `use_policy_gradient=True` with either teacher-top-k forward KL mode
+  `\(\to\)` warning. The PG update only moves
+  `\(\nabla_\theta\log\pi_\theta(y_t|s_t)\)` for the sampled token
+  `\(y_t\)`, so the top-`\(k\)` distributional signal is largely unused.
+
+                *algo-opd-distillation-distillation-loss-policy-loss-mode-str*
+`distillation.distillation_loss.policy_loss_mode` (str)
+
+Name of the policy loss to use when `use_policy_gradient=True`. Default:
+`"vanilla"`. Currently only `"vanilla"` is supported; anything else raises
+`NotImplementedError`.
+
+                    *algo-opd-distillation-distillation-loss-clip-ratio-float*
+`distillation.distillation_loss.clip_ratio` (float)
+
+PPO clip ratio used by the policy-gradient update when
+`use_policy_gradient=True`. Default: `0.2`.
+
+                *algo-opd-distillation-distillation-loss-clip-ratio-low-float*
+`distillation.distillation_loss.clip_ratio_low` (float)
+
+Lower bound of the PPO clip range. Default: `0.2`.
+
+               *algo-opd-distillation-distillation-loss-clip-ratio-high-float*
+`distillation.distillation_loss.clip_ratio_high` (float)
+
+Upper bound of the PPO clip range. Default: `0.2`.
+
+     *algo-opd-distillation-distillation-loss-global-batch-info-loss-settings*
+`distillation.distillation_loss.global_batch_info` / `loss_settings`
+
+Internal fields populated at runtime --- do not set from the user side.
+`loss_settings` is auto-populated from `loss_mode` via
+`get_distillation_loss_settings`; `global_batch_info` is filled by the actor
+worker before the loss runs.
+
+USAGE                                                         *algo-opd-usage*
+
+Example scripts are available in `examples/on_policy_distillation_trainer`.
+This section shows how to configure different OPD recipes.
+
+Quick start                                             *algo-opd-quick-start*
+
+For single-teacher OPD, first enable distillation, allocate a teacher
+resource pool, and specify the teacher model and inference server settings:
+
+>yaml
+    distillation:
+       enabled: true
+
+       n_gpus_per_node: 2
+       nnodes: 1
+
+       teacher_models:
+          teacher_model:
+             model_path: Qwen/Qwen3-32B
+             inference:
+                name: vllm
+                gpu_memory_utilization: 0.8
+<
+The teacher must share the student's tokenizer and vocabulary. This is
+usually true for models from the same family, such as a `Qwen3-8B` student
+and a `Qwen3-32B` teacher.
+
+In most OPD runs, disable the standard PPO/GRPO reference-policy KL.
+Otherwise, the student is simultaneously regularized toward the reference
+policy and distilled from the teacher:
+
+>yaml
+    actor_rollout_ref:
+       actor:
+          use_kl_loss: false
+    algorithm:
+       use_kl_in_reward: false
+<
+
+GKD OPD                                                         *algo-opd-id1*
+
+For efficiency, the current implementation of GKD OPD uses a top-`\(k\)`
+approximation to forward KL using the top-`\(k\)` teacher logits and the
+forward KL:
+
+\[\mathcal{L}_{\mathrm{GKD}}^{(k)}(s_t) = \sum_{v \in \operatorname{TopK}(\nu(\cdot \mid s_t))} \nu(v \mid s_t) \bigl[ \log \nu(v \mid s_t) - \log \pi_\theta(v \mid s_t) \bigr].\]
+The reason GKD OPD is implemented only over the teacher top-`\(k\)` logits
+is because current inference servers return log-probabilities for the
+sampled token and the teacher top-`\(k\)` tokens, but do not support
+gathering log-probabilities at arbitrary token IDs. Therefore, the
+implementation supports teacher-top-`\(k\)` forward KL, but not
+student-top-`\(k\)` reverse KL.
+
+The truncated objective above is not itself a KL between normalized
+distributions: both the teacher and student top-`\(k\)` masses can be
+smaller than one, so an individual token loss can be negative. The existing
+`forward_kl_topk` mode clamps those negative per-token values to zero, which
+keeps the scalar loss well behaved but discards the gradient of every token
+whose student top-`\(k\)` mass exceeds the teacher's.
+
+`forward_kl_topk_tail` preserves the same teacher request and adds one
+aggregate category for every token outside the teacher top-`\(k\)`. Let
+`\(P_k=\sum_{v\in T_k}\nu(v\mid s_t)\)` and
+`\(Q_k=\sum_{v\in T_k}\pi_\theta(v\mid s_t)\)`. Its loss is
+
+\[\mathcal{L}_{\mathrm{tail}}^{(k)}(s_t) = \sum_{v\in T_k} \nu(v\mid s_t) \log\frac{\nu(v\mid s_t)}{\pi_\theta(v\mid s_t)} + (1-P_k)\log\frac{1-P_k}{1-Q_k}.\]
+This is the exact KL after coarse-graining the vocabulary into the `\(k\)`
+selected tokens plus one tail bucket. It is non-negative and is a lower
+bound on the full-vocabulary forward KL. It does not recover how teacher
+probability is distributed among individual tail tokens.
+
+The same decomposition appears as Decoupled Top-K Knowledge Distillation in
+the LFM2 Technical Report https://arxiv.org/abs/2511.23404v1: at temperature
+1, its Bernoulli membership KL plus the teacher-mass-weighted conditional
+Top-`\(k\)` KL are algebraically this loss, and it notes the same lower
+bound. The aggregate tail bucket is the Ghost token of
+Sparse Logit Sampling: Accelerating Knowledge Distillation in LLMs
+https://aclanthology.org/2025.acl-long.885.pdf. `forward_kl_topk_tail`
+brings that objective to the OPD path here: it keeps the existing teacher
+top-`\(k\)` payload and adds the analytic gradient on the out-of-top-`\(k\)`
+tokens.
+
+To use GKD OPD, set `loss_mode=forward_kl_topk`, choose `topk`, and disable
+policy-gradient distillation:
+
+>yaml
+    distillation:
+       distillation_loss:
+          loss_mode: forward_kl_topk
+          topk: 128
+          use_policy_gradient: false
+<
+To use the tail-aware coarse-grained objective without any additional
+overhead in the teacher log-probability computation (the teacher request and
+payload are unchanged):
+
+>yaml
+    distillation:
+       distillation_loss:
+          loss_mode: forward_kl_topk_tail
+          topk: 128
+          log_prob_min_clamp: null
+          tail_mass_eps: 1.0e-6
+          use_policy_gradient: false
+<
+Do not use `forward_kl_topk` or `forward_kl_topk_tail` with
+`use_policy_gradient=true`. These top-`\(k\)` losses contain distributional
+information for many teacher-preferred tokens, but a policy-gradient update
+only acts through the sampled token:
+
+\[\nabla_\theta \mathcal{L}_{\mathrm{PG}} \propto - A_t \nabla_\theta \log \pi_\theta(y_t \mid s_t).\]
+Thus, the update cannot directly assign credit to the non-sampled
+top-`\(k\)` tokens. This discards most of the distributional signal and can
+produce misleading updates. For example, if the student already matches the
+teacher on the sampled token but overestimates other teacher-top-`\(k\)`
+tokens, the forward KL is still positive; using it as a policy-gradient
+reward would incorrectly push on the sampled token.
+
+PG OPD                                                          *algo-opd-id2*
+
+PG OPD treats the negative reverse-KL estimate as a reward and applies a
+policy-gradient update. To use PG OPD with the `k1` estimator, set
+`loss_mode=k1`, enable policy-gradient distillation, and configure the PPO
+clipping range:
+
+>yaml
+    distillation:
+       distillation_loss:
+          loss_mode: k1
+          use_policy_gradient: true
+          policy_loss_mode: vanilla
+          clip_ratio_low: 0.2
+          clip_ratio_high: 0.28
+<
+Currently, only `policy_loss_mode=vanilla` is supported. Other policy-loss
+modes, such as `dppo_tv`, require additional parameters and are not
+implemented for OPD.
+
+Task rewards                                           *algo-opd-task-rewards*
+
+OPD can be optimized alone or combined with the standard PPO/GRPO
+task-reward loss.
+
+When `use_task_rewards=true`, the final loss is
+
+\[\mathcal{L} = \mathcal{L}_{\mathrm{policy}} + \lambda_{\mathrm{distill}} \mathcal{L}_{\mathrm{distill}},\]
+where `\(\mathcal{L}_{\mathrm{policy}}\)` is the PPO/GRPO task-reward loss,
+`\(\mathcal{L}_{\mathrm{distill}}\)` is the distillation loss, and
+`\(\lambda_{\mathrm{distill}}\)` is set by `distillation_loss_coef`.
+
+To combine task rewards with distillation:
+
+>yaml
+    distillation:
+       distillation_loss:
+          use_task_rewards: true
+          distillation_loss_coef: 1.5
+<
+When `use_task_rewards=false`, the PPO/GRPO task-reward loss is zeroed and
+the update optimizes only the distillation loss.
+
+Multi-teacher OPD                                               *algo-opd-id3*
+
+Multiple teachers can be configured by adding one entry under
+`distillation.teacher_models` per teacher. Each teacher has a routing `key`,
+model path, replica count, and inference configuration.
+
+>yaml
+    distillation:
+       n_gpus_per_node: 8
+       nnodes: 2
+       teacher_key: data_source
+
+       teacher_models:
+          gsm8k:
+             key: "openai/gsm8k"
+             model_path: Qwen/Qwen3-32B
+             num_replicas: 2
+             inference:
+                name: vllm
+                tensor_model_parallel_size: 2
+                gpu_memory_utilization: 0.6
+
+          geo3k:
+             key: "hiyouga/geometry3k"
+             model_path: Qwen/Qwen3-VL-32B-Instruct
+             num_replicas: 3
+             inference:
+                name: vllm
+                tensor_model_parallel_size: 4
+                gpu_memory_utilization: 0.8
+
+    data:
+       shuffle: true
+       reward_fn_key: data_source
+<
+In this example, the teacher pool has `8 * 2 = 16` GPUs. Assuming
+`data_parallel_size=1` and `pipeline_model_parallel_size=1`, the teacher
+footprints are:
+
+\[\text{gsm8k}: 2 \text{ replicas} \times 2 \text{ GPUs} = 4 \text{ GPUs}\]
+\[\text{geo3k}: 3 \text{ replicas} \times 4 \text{ GPUs} = 12 \text{ GPUs}\]
+so the total teacher footprint is `\(4 + 12 = 16\)` GPUs, matching the
+resource pool.
+
+Teacher replicas are assigned by linearly splitting the teacher resource
+pool into contiguous GPU bundles. Each individual replica must occupy the
+expected number of nodes implied by its `per_replica_world_size`:
+
+>python
+    per_replica_world_size = tensor_model_parallel_size * data_parallel_size * pipeline_model_parallel_size
+<
+With `n_gpus_per_node=8`, the example above aligns cleanly:
+
+>text
+    node 0: [gsm8k replica 0: 2 GPUs] [gsm8k replica 1: 2 GPUs] [geo3k replica 0: 4 GPUs]
+    node 1: [geo3k replica 1: 4 GPUs] [geo3k replica 2: 4 GPUs]
+<
+No replica crosses a node boundary unless its `per_replica_world_size`
+requires multiple nodes.
+
+A similar-looking configuration can fail if a replica's GPU bundle does not
+fall entirely within a single node. For example, with the same
+`n_gpus_per_node=8`, `nnodes=2` (pool size 16) but two teachers configured
+as
+
+- `a`: `tensor_model_parallel_size=3`, `num_replicas=2` `\(\to\)` 6 GPUs
+  total
+- `b`: `tensor_model_parallel_size=5`, `num_replicas=2` `\(\to\)` 10 GPUs
+  total
+
+the pool size still matches (`6 + 10 = 16`), but the linear bundle layout
+becomes
+
+>text
+    node 0: [a_0: 0,1,2] [a_1: 3,4,5] [b_0: 6,7,...
+    node 1:                                     ...,8,9,10] [b_1: 11,12,13,14,15]
+<
+Replica `b_0` spans bundles `[6, 11)` --- straddling node 0 (bundles 6, 7)
+and node 1 (bundles 8, 9, 10). A 5-GPU replica with `n_gpus_per_node=8` is
+expected to fit on a single node (`ceil(5 / 8) = 1`), so
+`_validate_replica_node_alignment` raises. To fix it, adjust `num_replicas`
+and the per-teacher inference parallelism.
+
+Teacher routing                                     *algo-opd-teacher-routing*
+
+The `teacher_key` controls routing. It must name a top-level field on each
+sample's `non_tensor_batch`. `data_source` is one such field, set by the
+dataset loader. In the example above, `teacher_key=data_source`, so samples
+with `data_source="openai/gsm8k"` are routed to the `gsm8k` teacher, and
+samples with `data_source="hiyouga/geometry3k"` are routed to the `geo3k`
+teacher.
+
+When routing by data source, enable data shuffling. Without shuffling, a
+dataset created by concatenating other datasets may activate only one
+teacher for long contiguous stretches. For example, if GSM8K examples are
+followed by Geo3K examples, then training will use only the GSM8K teacher
+for the first portion of the epoch and only the Geo3K teacher for the
+remaining portion.
+
+METRICS                                                     *algo-opd-metrics*
+
+OPD logs metrics under `actor/distillation/*`.
+
+Core metrics                                           *algo-opd-core-metrics*
+
+- `actor/distillation/loss`
+  Unscaled distillation loss. When `use_task_rewards=true`, compare this
+  with `actor/pg_loss` to choose `distillation_loss_coef`.
+- `actor/distillation/abs_loss`
+  Absolute value of the distillation loss. This is mainly useful for signed
+  estimators such as `k1`, where divergences can be negative.
+- `actor/distillation/loss_min` / `actor/distillation/loss_max`
+  Minimum and maximum per-token distillation loss in the batch.
+
+Top-`\(k\)` metrics                                   *algo-opd-top-k-metrics*
+
+These metrics are logged for top-`\(k\)` loss modes such as
+`forward_kl_topk`.
+
+- `actor/distillation/student_mass`
+  Average student probability mass assigned to the teacher top-`\(k\)`
+  tokens.
+- `actor/distillation/teacher_mass`
+  Average teacher probability mass assigned to its own top-`\(k\)` tokens.
+- `actor/distillation/student_mass_min` /
+  `actor/distillation/student_mass_max`
+  Minimum and maximum student mass on the teacher top-`\(k\)` tokens within
+  the batch.
+- `actor/distillation/teacher_mass_min` /
+  `actor/distillation/teacher_mass_max`
+  Minimum and maximum teacher mass on the teacher top-`\(k\)` tokens within
+  the batch.
+- `actor/distillation/tail_loss` Mean contribution of the aggregate
+  non-top-k bucket. Emitted by `forward_kl_topk_tail`.
+- `actor/distillation/topk_loss` Mean contribution from the teacher
+  top-`\(k\)` tokens before adding the aggregate tail bucket. Emitted by
+  `forward_kl_topk_tail`.
+- `actor/distillation/teacher_tail_mass` /
+  `actor/distillation/student_tail_mass` Mean probability mass outside the
+  teacher-selected top-`\(k\)` support. Emitted by `forward_kl_topk_tail`.
+- `actor/distillation/overlap_ratio` Average fraction of teacher top-`\(k\)`
+  tokens that also appear in the student's top-`\(k\)` tokens, computed as
+  `\(|\operatorname{TopK}_{\nu}(s_t) \cap \operatorname{TopK}_{\pi_\theta}(s_t)| / k\)`
+  over response tokens. A value near `1.0` means the teacher and student
+  top-`\(k\)` token sets largely match at student-visited states.
+- `actor/distillation/overlap_token_advantage` Average negative
+  teacher-token KL contribution on teacher top-`\(k\)` tokens that also
+  appear in the student's top-`\(k\)` tokens. The per-token value is
+  averaged only over positions with at least one overlapping token; if no
+  response position has overlap, the metric is reported as `0.0`.
+
+`teacher_mass` indicates how much of the teacher distribution is covered by
+the selected top-`\(k\)`. Low `teacher_mass` means the top-`\(k\)`
+approximation is truncating substantial teacher probability mass. This can
+happen either by selecting too small `\(k\)`, or due to unstable
+optimization leading to the student generating low probability sequences.
+
+`student_mass` indicates how much probability the student assigns to the
+teacher-preferred tokens.
+
+The overlap metrics follow the token-level top-`\(k\)` overlap analysis in
+[8]. They are logging-only diagnostics and do not change the distillation
+loss or gradient.
+
+DEBUGGING                                                 *algo-opd-debugging*
+
+A useful technique for debugging modifications and additions to the
+distillation pipeline is to set the student to be the same model as the
+teacher. The loss should be approximately zero (not exact, due to
+differences between train/inference engines).
+
+ARCHITECTURE                                           *algo-opd-architecture*
+
+OPD has two components:
+
+1. Teacher logprob computation --- runs on a dedicated teacher resource pool
+   as part of the agent loop.
+2. Student optimization --- runs on the train workers, the same actor
+   workers that handle PPO/GRPO updates.
+
+Teacher logprob computation             *algo-opd-teacher-logprob-computation*
+
+Teacher logprob computation is interleaved with rollouts inside the Agent
+Loop. Each sample's teacher call fires as soon as its rollout finishes (no
+batch-wide barrier) so teacher work overlaps with the still-running rollouts
+on other samples.
+
+1. Input. `AgentLoopManager.generate_sequences(prompts: DataProto)` receives
+   a batch of prompts.
+2. Chunking across workers. The manager splits the batch evenly across its
+   `AgentLoopWorker` actors, then dispatches each chunk via
+   `worker.generate_sequences.remote(chunk)`.
+3. Per-sample fan-out inside a worker. Inside
+   `AgentLoopWorker.generate_sequences`, each sample in the chunk is
+   launched as its own asyncio task running `_run_agent_loop`. The agent
+   loop runs on the rollout GPUs and produces a rollout (prompt + response
+   token ids).
+4. Postprocess hook. `_run_agent_loop` calls
+   `self._agent_loop_postprocess(...)`. This is where teacher logprob
+   computation is triggered, per sample, as soon as that sample's rollout is
+   ready.
+5. Worker-side teacher dispatch. `_agent_loop_postprocess` calls
+   `self._compute_teacher_logprobs(...)`, which extracts the routing value
+   from the sample's non-tensor fields using
+   `sample_kwargs[self.teacher_key]` (default `teacher_key="data_source"`),
+   then calls
+   `self.teacher_server_manager.compute_teacher_logprobs_single(...)`.
+6. Teacher selection.
+   `AsyncTeacherLLMServerManager.compute_teacher_logprobs_single` resolves
+   the teacher via `_resolve_teacher_key`:
+
+   - Single-teacher: routing key is ignored; the sole configured teacher is
+     used.
+   - Multi-teacher: `routing_key` must match a configured teacher in
+     `distillation.teacher_models`; otherwise an error is raised.
+
+   The resolved key indexes into the per-teacher `LLMServerClient` dict to
+   pick the right client.
+
+7. Sampling params for logprob computation. The manager builds sampling
+   params with `max_tokens=1` plus `prompt_logprobs=topk` (or `0`), so the
+   teacher computes logprobs for the (prompt + response) sequence rather
+   than generating new tokens. `topk` is set to
+   `distillation.distillation_loss.topk` when the loss mode requires
+   top-`\(k\)` (e.g. `forward_kl_topk`); otherwise `0` (single-sample
+   logprob only).
+
+   Temperature is always forced to `1.0` regardless of the configured value.
+   `prompt_logprobs` is computed via a forward pass over the existing
+   (prompt + response) tokens --- no sampling occurs --- so temperature has
+   no effect on the result. The default distillation config copies the
+   student rollout temperature via Hydra interpolation
+   (`temperature: ${oc.select:actor_rollout_ref.rollout.temperature}`),
+   which would silently set a non-1.0 value when rollout temperature differs
+   from 1.0 (e.g. 0.7). The manager ignores the configured value and always
+   uses `temperature=1.0`, logging a warning if the configured value is not
+   1.0.
+8. Server-side load balancing. The manager calls `client.generate(...)`,
+   which acquires a backing server through the shared
+   `GlobalRequestLoadBalancer` actor.
+9. Backend execution. With the vLLM backend the selected server is a
+   `vLLMHttpServer` actor; its `generate` method runs the forward pass and
+   returns a `TokenOutput` containing `prompt_ids` and `prompt_logprobs` for
+   the full (prompt + response) sequence. The SGLang backend has an
+   analogous server class.
+10. Return path. `compute_teacher_logprobs_single` packs the response into
+    two tensors `teacher_ids` and `teacher_logprobs`, each of shape
+    `(S, 1 or K)` where `S` is the sequence length and `K` is `topk` (or
+    `1`). These are stashed on the rollout output and later concatenated
+    into the per-batch `DataProto` for the student training step.
+
+Student training                                   *algo-opd-student-training*
+
+Using the `DataProto` produced by the Agent Loop (rollouts + teacher
+logprobs in `teacher_logprobs`), the student step proceeds as follows.
+
+1. Train entry. `TrainingWorker.train_batch` invokes
+   `self.engine.train_batch(data, loss_function=self.loss_fn)`. When
+   distillation is enabled, `self.loss_fn` is bound to
+   `distillation_ppo_loss` at worker init; otherwise it is the standard
+   `ppo_loss`.
+2. Forward pass and (optional) inline top-k loss. The training engine's
+   forward step runs the model forward and, for top-`\(k\)` loss modes
+   (`distillation_use_topk=True`), invokes `distillation_ppo_loss` as a
+   logits processor while the full logits tensor is still in memory; this is
+   the `student_logits is not None` branch of `distillation_ppo_loss`. The
+   logits-processor branch dispatches to `compute_forward_kl_topk`, which
+   has a separate implementation per training engine (FSDP and Megatron).
+   Per-token `distillation_losses`, `student_mass`, `teacher_mass`,
+   `overlap_count`, and `overlap_token_advantage` tensors are written back
+   into `model_output` so the full logits can be freed before the final loss
+   step. The overlap tensors are used only for logging.
+3. Final loss. After the forward, the engine calls the loss function with
+   `model_output` (full logits already freed); this is the
+   `student_logits is None` branch of `distillation_ppo_loss`, where:
+
+   1. Per-token distillation loss is produced by `distillation_loss(...)`,
+      which dispatches via `get_distillation_loss_fn(loss_mode)` to one of
+      the registered distillation losses.
+   2. Optional clamp. If `loss_max_clamp` is set, per-token losses are
+      clamped to `[-clamp, +clamp]` (k1 in particular can be negative).
+   3. Aggregation mode --- controlled by `use_policy_gradient`:
+
+      - `False` (GKD OPD): straight backprop on `distillation_losses`.
+      - `True` (PG OPD): treat `-distillation_losses` as advantages and run
+        PPO-style clipped importance sampling.
+
+   4. Combine with task rewards. A standard PPO policy loss is computed from
+      the rollout's task rewards via `ppo_loss(...)`. If
+      `use_task_rewards=False` it is zeroed; otherwise the final loss is
+      `policy_loss + distillation_loss_coef * distill_loss`.
+
+The returned scalar loss is what `engine.train_batch` backpropagates.
+
+FILES                                                         *algo-opd-files*
+
+Core Implementation                             *algo-opd-core-implementation*
+
+- `verl/experimental/teacher_loop/teacher_model.py` ---
+  `MultiTeacherModelManager` and `TeacherModelManager`; spin up teacher
+  inference replicas on the dedicated teacher resource pool and expose
+  per-teacher `LLMServerClient` factories
+- `verl/experimental/teacher_loop/teacher_manager.py` ---
+  `AsyncTeacherLLMServerManager`; routes per-sample teacher calls (single-
+  or multi-teacher) and builds teacher sampling params
+- `verl/experimental/agent_loop/agent_loop.py` ---
+  `AgentLoopWorker._compute_teacher_logprobs`; per-sample teacher dispatch
+  from `_agent_loop_postprocess`, packs `teacher_logprobs` into the rollout
+  output
+- `verl/trainer/distillation/fsdp/losses.py` --- FSDP backend
+  `compute_forward_kl_topk`
+- `verl/trainer/distillation/megatron/losses.py` --- Megatron backend
+  `compute_forward_kl_topk`
+- `verl/trainer/distillation/tail_kl.py` --- shared tail-bucket value and
+  analytic logit-gradient helpers
+- `verl/workers/engine_workers.py` --- `ActorRolloutRefWorker.init_model`;
+  binds `distillation_ppo_loss` as the actor's `loss_fn` when distillation
+  is enabled
+- `verl/workers/engine/{fsdp,megatron}/transformer_impl.py` ---
+  training-engine forward steps; invoke `distillation_ppo_loss` first as a
+  logits processor (top-`\(k\)` modes) and again as the final loss
+- `verl/trainer/main_ppo.py` --- passes the trainer's teacher clients to
+  `AgentLoopManagerTQ`
+- `verl/trainer/ppo/v1/trainer_base.py` --- allocates `teacher_pool`,
+  constructs `MultiTeacherModelManager`, and exposes teacher clients through
+  `get_teacher_client()`
+- `verl/workers/rollout/llm_server.py` --- `LLMServerClient` used for both
+  student rollout and teacher logprob computation
+- `verl/workers/rollout/router.py` --- pluggable router
+  (`GlobalRequestLoadBalancer`, `get_router_handle`) selecting the backing
+  server
+
+Configuration Files                             *algo-opd-configuration-files*
+
+- `verl/trainer/config/distillation/distillation.yaml` --- YAML defaults for
+  the `distillation.*` config tree
+- `verl/workers/config/distillation.py` --- dataclass schema
+  (`DistillationConfig`, `DistillationLossConfig`,
+  `DistillationTeacherModelConfig`)
+
+Documentation                                         *algo-opd-documentation*
+
+- `docs/algo/opd.md` --- this document
+
+Example Scripts                                     *algo-opd-example-scripts*
+
+- `examples/on_policy_distillation_trainer/README.md` --- script index
+- `examples/on_policy_distillation_trainer/run_qwen3_8b_fsdp.sh` --- text,
+  vLLM rollout, FSDP student, single teacher
+- `examples/on_policy_distillation_trainer/run_qwen3_8b_megatron.sh` ---
+  text, vLLM rollout, Megatron student, single teacher
+- `examples/on_policy_distillation_trainer/run_qwen3_vl_8b_fsdp.sh` --- VL
+  student/teacher, vLLM rollout, FSDP student
+- `examples/on_policy_distillation_trainer/run_qwen3_8b_mopd_fsdp.sh` ---
+  multi-teacher (gsm8k text + geo3k VL), routed by `data_source`
+
+Tests                                                         *algo-opd-tests*
+
+- `tests/workers/test_distillation_topk_symmetry_on_cpu.py` --- top-k loss
+  symmetry and overlap metric checks
+- `tests/utils/test_special_megatron_kl_loss_tp.py` --- Megatron KL loss and
+  overlap metrics under tensor parallelism
+- `tests/special_e2e/run_v1_separate_async_opd.sh` --- end-to-end
+  multi-teacher OPD on the V1 separate_async trainer
+
+----------------------------------------------------------------------------
+On-Policy RL with Optimal Reward Baseline (OPO)                *verl-algo-opo*
+
+Last updated: 06/02/2025.
+
+Loose on-policy constraints and suboptimal baselines in reinforcement
+learning often lead to training instability such as large policy shifts and
+entropy collapse. OPO addresses these challenges by using exact on-policy
+training with the theretically optimal reward baseline for advantage
+estimation. It achieves lower policy shifts and higher output entropy,
+encouraging more diverse and less repetitive responses.
+
+OPO uses group sampling to generate multiple outputs for each input like
+GRPO. Unlike group-based algorithms which typically use the mean reward of a
+group as its baseline, OPO employs a theoretically optimal baseline: the
+length-weighted reward of the group. It also omits the standard deviation
+normalization. By adopting these two key components, OPO enables the
+training of a single policy model with the objective of maximizing only the
+expected reward. For more detailes, refer to the original paper
+On-Policy RL with Optimal Reward Baseline https://arxiv.org/pdf/2505.23585.
+
+KEY COMPONENTS                                       *algo-opo-key-components*
+
+- Exact On-Policy Training: always generates responses from the current
+  policy, without using any pre-generated data or off-policy data.
+- Optimal Reward Baseline: uses a length-weighted reward of the group as the
+  baseline for normalizing the rewards.
+
+CONFIGURATION                                         *algo-opo-configuration*
+
+To configure OPO within the framework, use the following YAML settings.
+These parameters are crucial for enabling exact on-policy training and
+activating the optimal reward baseline.
+
+>yaml
+    algorithm:
+      adv_estimator: opo  # Use OPO for optimal reward baseline 
+    data:
+      train_batch_size: 1024
+    actor_rollout_ref:
+      actor:
+        ppo_mini_batch_size: 1024 # ppo_mini_batch_size should equal to train_batch_size to enable exact on-policy training
+        entropy_coeff: 0 # disable entropy regularization
+        use_kl_loss: False # disable kl regularization
+        kl_loss_coef: 0 
+<
+
+ADVANCED EXTENSIONS                             *algo-opo-advanced-extensions*
+
+OPO can also be extended to other algorithms like RLOO and Reinforce++. It
+just needs to adjust their configurations to enable exact on-policy training
+and incorporate the optimal length-weighted reward baseline with minimal
+modifications to their advantage estimation functions.
+
+----------------------------------------------------------------------------
+Optimal Token Baseline (OTB)                                   *verl-algo-otb*
+
+Last updated: 02/23/2026.
+
+📝 ArXiv https://www.arxiv.org/abs/2602.07078 | 📒 Blog
+https://richardli.xyz/optimal-token-baseline | 🤗 Datasets
+https://huggingface.co/datasets/Jiawei415/DPAO_filter
+
+Optimal Token Baseline (OTB) is a dynamic token-level baseline for gradient
+variance reduction in policy-gradient reinforcement learning. It weights
+updates with the “Realized Energy” statistic that tracks how much
+uncertainty has accumulated up to each token, so noisy regions get
+downweighted while confident regions carry more weight.
+
+KEY PROPERTIES                                       *algo-otb-key-properties*
+
+- Token-level baselines: OTB adapts per token by tracking realized energy,
+  avoiding the padding artifacts that appear when group means dilute the
+  signal with `EOS` tokens.
+- Forward-only overhead: The realized-energy statistic is computed via the
+  Logit-Gradient Proxy, so OTB requires no extra backward passes or
+  gradient-norm kernels.
+
+LOGIT-GRADIENT PROXY                           *algo-otb-logit-gradient-proxy*
+
+Computing true uncertainty per token would normally mandate per-token
+backward passes. OTB sidesteps this by estimating realized energy entirely
+from forward probabilities, so it introduces negligible runtime overhead in
+practice.
+
+MECHANICS AT A GLANCE                         *algo-otb-mechanics-at-a-glance*
+
+For each prompt group of size `N`, OTB computes rewards-to-go `G_t` and
+cumulative variance weights `W_t`. The optimal baseline per token is
+
+>python
+    B*_t = (Σ_i G_t^{(i)} · W_t^{(i)}) / (Σ_i W_t^{(i)} + ε),
+    W_t = Σ_{j=1}^t (1 - 2π_j + Σπ_j²),
+    Σπ_j² = exp(logsumexp(2·logits_j) - 2·logsumexp(logits_j)).
+<
+The final advantage is `(G_t - B*_t) · mask_t`, so padding tokens stay at
+zero.
+
+INTEGRATION IN VERL                             *algo-otb-integration-in-verl*
+
+- `AdvantageEstimator.OPTIMAL_TOKEN_BASELINE` registers
+  `compute_optimal_token_baseline_advantage`, invoked whenever
+  `algorithm.adv_estimator` is set to `optimal_token_baseline`.
+- `ActorRolloutRefWorker.compute_log_prob` emits an additional tensor
+  `sum_pi_squared` (Σπ² per token) when
+  `actor.calculate_sum_pi_squared=True`. This requires disabling fused
+  log-prob kernels, because they do not surface logits.
+- Trainers assert `sum_pi_squared` exists, regroup trajectories by
+  `non_tensor_batch["uid"]`, and run the OTB calculation. If rollout IS is
+  active, they rescale the weights by `rollout_is_weights**2` before
+  aggregating.
+- In Ulysses sequence-parallel setups, the actor gathers, unpads, and
+  returns Σπ² in the same way it handles log-probabilities, so OTB supports
+  sharded sequence-parallel models out of the box.
+
+CONFIGURATION CHECKLIST                     *algo-otb-configuration-checklist*
+
+- `actor_rollout_ref.actor.calculate_sum_pi_squared: true` (mandatory).
+- `actor_rollout_ref.model.use_fused_kernels: false` (required until fused
+  kernels emit logits).
+- `algorithm.adv_estimator: optimal_token_baseline` for single-turn RL and
+  `tir_optimal_token_baseline` for multi-turn RL.
+- Group sampling (`actor_rollout_ref.rollout.n > 1`) to unlock OTB's
+  variance reduction; with `n=1` the baseline collapses to returns.
+
+Example OmegaConf overlay:
+
+>yaml
+    algorithm:
+      adv_estimator: optimal_token_baseline
+
+    actor_rollout_ref:
+      actor:
+        calculate_sum_pi_squared: true
+      rollout:
+        n: 8
+<
+
+EXAMPLE SCRIPT                                       *algo-otb-example-script*
+
+See `examples/otb_trainer/run_qwen3_8b_fsdp.sh` for a reference training
+loop.
+
+GRADIENT VARIANCE PROXY METRICS     *algo-otb-gradient-variance-proxy-metrics*
+
+All gradient-variance analysis in the Optimal Token Baseline work starts
+from the variance identity
+
+>python
+    Var(ĝ) = E[||ĝ||²] - ||E[ĝ]||²,
+<
+which states that the variance of any stochastic gradient equals the mean
+squared magnitude minus the squared norm of its expectation.
+
+For a trajectory `τ`, the policy-gradient estimator is
+
+>text
+    ĝ(τ) = ∇ log π_θ(τ) · A(τ),        A(τ) = R(τ) - B.
+<
+The logit-gradient proxy approximates the squared gradient norm without an
+extra backward pass:
+
+>text
+    ||ĝ(τ)||² ≈ Ŵ(τ) · A(τ)²,
+<
+where `Ŵ(τ)` is the realized energy built. Given a mini-batch `{τ_i}` of
+size `N`, we decompose its statistics into three diagnostics:
+
+- Signal strength (squared norm of the mean gradient)
+
+  >python
+      S = || (1/N) · Σ ĝ(τ_i) ||²
+<
+
+- Total power (signal + noise)
+
+  >python
+      P_total = (1/N) · Σ Ŵ(τ_i) · A(τ_i)²
+<
+
+- Pure noise (estimated variance of the batch mean)
+
+  >python
+      Var_proxy = (1/(N-1)) · (P_total - S)
+<
+
+`verl/trainer/ppo/metric_utils.py#L306` implements these diagnostics via
+`compute_variance_proxy_metrics`, emitting
+`variance_proxy/proxy1_signal_strength`,
+`variance_proxy/proxy2_total_power`, and `variance_proxy/proxy3_pure_noise`.
+
+Tracking these metrics provides a forward-only, low-overhead view of
+gradient health for any advantage estimator that supplies `sum_pi_squared`.
+
+----------------------------------------------------------------------------
+Proximal Policy Optimization (PPO)                             *verl-algo-ppo*
+
+Last updated: 06/19/2025.
+
+Proximal Policy Optimization (PPO) is a family of policy gradient methods
+for reinforcement learning, proposed by OpenAI in 2017. PPO strikes a
+balance between simplicity, stability, and performance, making it one of the
+most widely used algorithms in modern RL applications, including large-scale
+language model fine-tuning.
+
+Traditional policy gradient methods like REINFORCE or Vanilla Policy
+Gradient suffer from:
+
+- High variance and sample inefficiency.
+- Instability due to large policy updates.
+
+PPO addresses this problem using a clipped surrogate objective that avoids
+overly large updates without requiring second-order derivatives.
+
+For more technical details regarding PPO, we suggest reading the
+introduction in the OpenAI spinning up tutorial
+https://spinningup.openai.com/en/latest/algorithms/ppo.html, and the paper
+Proximal Policy Optimization Algorithms https://arxiv.org/abs/1707.06347.
+
+KEY COMPONENTS                                       *algo-ppo-key-components*
+
+- Actor-Critic Architecture: PPO requires both an actor model (policy) and a
+  critic model (value function). This differs from other algorithms like
+  GRPO and RLOO that don't require a critic model.
+- Generalized Advantage Estimation (GAE): PPO uses GAE for computing
+  advantage values, which helps reduce variance in policy gradient estimates
+  while maintaining low bias.
+- Clipped Surrogate Objective: The core of PPO is implemented through the
+  clipped surrogate objective function that limits policy updates.
+
+CONFIGURATION                                         *algo-ppo-configuration*
+
+Note that all configs containing `micro_batch_size` are used to configure
+the maximum sample or token count per forward or backward pass to avoid GPU
+OOMs, whose value should not change algorithmic/convergence behavior.
+
+Most critic configs are similar to those of actors. Note that the critic
+model is omitted from the figure below.
+
+- `data.train_batch_size`: The global batch size of prompts used to generate
+  a set of sampled trajectories/rollouts. The number of
+  responses/trajectories is
+  `data.train_batch_size * actor_rollout.ref.rollout.n`
+- `actor_rollout_ref.actor.ppo_mini_batch_size`: The set of sampled
+  trajectories is split into multiple mini-batches with
+  batch_size=ppo_mini_batch_size for PPO actor updates. The
+  ppo_mini_batch_size is a global size across all workers
+- `critic.ppo_mini_batch_size`: The set of sampled trajectories is split
+  into multiple mini-batches with batch_size=ppo_mini_batch_size for PPO
+  critic updates. The ppo_mini_batch_size is a global size across all
+  workers
+- `actor_rollout_ref.actor.clip_ratio`: The PPO clip range. Default to 0.2
+- `actor_rollout_ref.actor.ppo_epochs`: Number of epochs for PPO updates on
+  one set of sampled trajectories for actor
+- `critic.ppo_epochs`: Number of epochs for PPO updates on one set of
+  sampled trajectories for critic. Defaults to
+  `actor_rollout_ref.actor.ppo_epochs`
+- `algorithm.gemma`: discount factor
+- `algorithm.lam`: The lambda term that trades off between bias and variance
+  in the GAE estimator
+- `algorithm.adv_estimator`: Support gae, grpo, reinforce_plus_plus,
+  reinforce_plus_plus_baseline, rloo
+
+ADVANCED EXTENSIONS                             *algo-ppo-advanced-extensions*
+
+KL Divergence Control                         *algo-ppo-kl-divergence-control*
+
+Options to prevent the policy from diverging too far from a reference
+policy. Two mechanisms are available: KL reward penalty and KL loss. For
+more technical details, see
+Training language models to follow instructions with human feedback
+https://arxiv.org/abs/2203.02155
+
+Options to use KL loss for KL divergence control:
+
+- `actor_rollout_ref.actor.use_kl_loss`: to use kl loss in the actor. When
+  used, we are not applying KL in the reward function. Default is False
+- `actor_rollout_ref.actor.kl_loss_coef`: The coefficient of kl loss.
+  Default is 0.001.
+- `actor_rollout_ref.actor.kl_loss_type`: Support kl(k1), abs, mse(k2),
+  low_var_kl(k3) and full. Appending “+” in the end (e.g., ‘k1+' and ‘k3+')
+  would apply straight through to employ k2 for unbiased gradient
+  estimation, regardless of the kl value estimation (see
+  https://github.com/verl-project/verl/pull/2953#issuecomment-3162113848 for
+  more details). How to calculate the kl divergence between actor and
+  reference policy. See this blog post for detailed analysis:
+  http://joschu.net/blog/kl-approx.html
+
+Options to use KL penalty in the reward:
+
+- `algorithm.use_kl_in_reward`: Whether to enable in-reward kl penalty.
+  Default is False.
+- `algorithm.kl_penalty`: Support kl(k1), abs, mse(k2), low_var_kl(k3) and
+  full. This defines the way to calculate the kl divergence between actor
+  and reference policy. For specific options, refer to `kl_penalty` in
+  core_algos.py. See this blog post for detailed analysis:
+  http://joschu.net/blog/kl-approx.html
+- `algorithm.kl_ctrl.kl_coef`: The (initial) coefficient of in-reward
+  kl_penalty. Default is 0.001.
+- `algorithm.kl_ctrl.type`: ‘fixed' for FixedKLController and ‘adaptive' for
+  AdaptiveKLController.
+- `algorithm.kl_ctrl.horizon`: See source code of AdaptiveKLController for
+  details.
+- `algorithm.kl_ctrl.target_kl`: See source code of AdaptiveKLController for
+  details.
+
+Dual-clip PPO                                         *algo-ppo-dual-clip-ppo*
+
+The Dual-Clip PPO introduces a approach by applying a lower bound to the
+policy ratio when the advantage is less than zero, when multiplied by a
+large raito, does not exceed a specified lower bound.
+
+- `actor_rollout_ref.actor.clip_ratio_c`: lower bound of the value for
+  Dual-clip PPO, defaults to 3.0
+
+REFERENCE EXAMPLE                                 *algo-ppo-reference-example*
+
+Qwen2.5 training log and commands: link
+https://github.com/eric-haibin-lin/verl-data/blob/experiments/gsm8k/Qwen2.5-0.5B-bsz256_2-prompt1024-resp512-0.567.log
+
+>bash
+    bash run_gemma.sh
+      trainer.n_gpus_per_node=1 \
+      actor_rollout_ref.rollout.tensor_model_parallel_size=1 \
+      trainer.logger=console \
+      critic.model.path=Qwen/Qwen2.5-0.5B-Instruct \
+      actor_rollout_ref.model.path=Qwen/Qwen2.5-0.5B-Instruct \
+      data.train_batch_size=256 \
+      actor_rollout_ref.actor.ppo_mini_batch_size=64 \
+      actor_rollout_ref.actor.ppo_micro_batch_size=2 \
+      critic.ppo_micro_batch_size=2
+<
+Reference performance with verl v0.2:
+
+Model                          Method             Score  Link
+-----------------------------  -----------------  -----  ---------------------
+Qwen/Qwen2.5-0.5B-Instruct     pretrained model   36.4   Qwen Blog
+Qwen/Qwen2.5-0.5B-Instruct     PPO                56.7   PPO Command and Logs
+
+----------------------------------------------------------------------------
+Rollout Correction                                    *verl-algo-rollout_corr*
+
+Author: Yingru Li https://richardli.xyz/
+
+Last updated: 10/11/2026.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+  📖 Documentation Structure
+
+  - This document - Practical usage guide: configurations, presets,
+    troubleshooting
+  - Mathematical Formulations
+    https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html -
+    Theoretical foundations, derivations, and algorithmic details
+
+  Start here for implementation, refer to the math doc for theory and design
+  rationale.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+This document provides a comprehensive overview of the Rollout Correction
+implementation in verl.
+
+Note on Naming: This feature is called “Rollout Correction” to reflect the
+complete functionality: importance sampling (IS) weights and rejection
+sampling (RS). The internal variable `rollout_is_weights` retains its name
+as it specifically refers to the IS weights component.
+
+BIBTEX CITATION                            *algo-rollout_corr-bibtex-citation*
+
+>bib
+    @online{liu-li-2025-rl-collapse,
+      title = {When Speed Kills Stability: Demystifying {RL} Collapse from the Training-Inference Mismatch},
+      author = {Liu, Jiacai and Li, Yingru and Fu, Yuqian and Wang, Jiawei and Liu, Qian and Shen, Yu},
+      year = {2025},
+      month = sep,
+      url = {https://richardli.xyz/rl-collapse}
+    }
+
+    @article{li2025trust,
+      title={Trust Region Masking for Long-Horizon LLM Reinforcement Learning},
+      author={Li, Yingru and Liu, Jiacai and Xu, Jiawei and Tong, Yuxuan and Li, Ziniu and Liu, Qian and Wang, Baoxiang},
+      journal={arXiv preprint arXiv:2512.23075},
+      year={2025}
+    }
+<
+
+BLOG SERIES                                    *algo-rollout_corr-blog-series*
+
+- Main blog post: https://richardli.xyz/rl-collapse
+- Part 1: Why Mismatch Breaks LLM-RL https://richardli.xyz/rl-collapse-1
+  (analytical framework using TV distance for bias and χ²-divergence for
+  variance)
+- Part 2: The Gradient Estimator Trials https://richardli.xyz/rl-collapse-2
+  (token-level vs sequence-level correction bias-variance tradeoff)
+- Part 3: When Math Meets Reality---Toxic Tails and Length Traps
+  https://richardli.xyz/rl-collapse-3 (why rejection over clipping, and
+  geometric-level RS)
+- Latest Paper: https://arxiv.org/abs/2512.23075
+
+OVERVIEW                                          *algo-rollout_corr-overview*
+
+Rollout Correction provides a unified framework to handle general off-policy
+problems in RL training. Any scenario where the data collection distribution
+differs from the training distribution can benefit from these methods.
+
+Common off-policy scenarios:
+
+1. Policy Mismatch (Implementation Differences)
+
+   - Different precision: FP8 vs FP16 vs BF16 vs FP32
+   - Different backends: vLLM vs SGLang vs FSDP vs Megatron
+   - Different implementations even with identical weights
+
+2. Temporal Lag (Model Staleness)
+
+   - Rollout uses older checkpoint while training has progressed
+   - Asynchronous rollout workers with stale parameters
+   - Common in distributed/async RL systems
+
+3. Replay Buffers
+
+   - Training on historical trajectories from earlier iterations
+   - Experience replay from different policy versions
+   - Data augmentation or resampling strategies
+
+4. Off-Policy Algorithms
+
+   - Behavioral cloning from expert demonstrations
+   - DAPO (data from auxiliary policies)
+   - Any algorithm using trajectories from a different policy
+
+5. Data Quality Filtering
+
+   - Reweighting or filtering collected data
+   - Preference learning with modified distributions
+   - Curriculum learning with distribution shifts
+
+These off-policy gaps can cause training instability and policy collapse.
+Rollout Correction uses importance sampling (IS) weights and rejection
+sampling (RS) to correct for any distribution shift between data collection
+and training.
+
+Important Note on Common Implementation Mistakes:
+
+Many LLM-RL implementations incorrectly apply PPO by ignoring the actual
+rollout policy π_rollout and assuming the training reference policy π_old is
+the behavior policy. This is mathematically incorrect when π_rollout ≠ π_old
+(which is typical in LLM-RL due to precision/backend differences between
+rollout and training).
+
+This is not PPO's fault - PPO itself is mathematically correct. The issue is
+the incorrect assumption that π_old = π_rollout in naive implementations.
+
+This critical implementation mistake that leads to RL training collapse was
+identified in the blog post
+“When Speed Kills Stability: Demystifying RL Collapse from the Training-Inference Mismatch”
+https://richardli.xyz/rl-collapse and motivated the development of this
+rollout correction framework.
+
+Mathematically correct approaches:
+
+- Decoupled mode: Three policies (π_rollout, π_old, π_θ) with IS correction
+  from π_rollout to π_old
+- Bypass mode: Two policies (π_rollout = π_old, π_θ) using actual rollout
+  policy as PPO anchor
+- Bypass + Policy Gradient mode: Two policies (π_rollout, π_θ) with IS/RS
+  correction and no PPO clipping
+
+See Mathematical Formulations
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#37-common-implementation-mistake
+for detailed explanation.
+
+*algo-rollout_corr-key-design-principle-separation-of-is-weights-and-rejection-sampling*
+Key Design Principle: Separation of IS Weights and Rejection Sampling
+
+The implementation cleanly separates two orthogonal mechanisms:
+
+1. IS Weights (`rollout_is_weights`): Continuous reweighting for gradient
+   correction
+
+   - Policy ratio: π_old/π_rollout (decoupled) or π_θ/π_rollout (bypass)
+   - Safety-bounded: Clamped to [exp(-20), exp(20)] ≈ [2e-9, 5e8] to prevent
+     overflow
+
+     - Token level: Bounds per-token ratios
+     - Sequence level: Bounds product of ratios (broadcast to all tokens)
+
+   - Truncated: Upper clamped via `.clamp(max=rollout_is_threshold)` (TIS:
+     Truncated Importance Sampling)
+   - Zeroed at padding: Multiplied by response_mask to zero out padding
+     positions
+   - Used to weight policy gradients (variance reduction)
+
+2. Rejection Sampling (`modified_response_mask`): Binary filtering for
+   outlier exclusion
+
+   - Creates binary mask: 1 = keep, 0 = reject
+   - Rejects tokens/sequences with IS ratios outside [lower_threshold,
+     upper_threshold]
+   - Modifies response_mask to exclude rejected samples from training
+
+This separation ensures:
+
+- ✅ IS weights provide continuous reweighting (reduce variance)
+- ✅ Rejection sampling provides hard filtering (remove extreme outliers)
+- ✅ Both mechanisms can be enabled independently or together
+- ✅ Safety bounds prevent numerical overflow in all cases
+
+                        *algo-rollout_corr-quick-start-using-verified-presets*
+QUICK START: USING VERIFIED PRESETS
+
+NEW: We now provide typed configuration with verified presets for common
+scenarios. These presets have been validated with tens of thousands of GPU
+hours across various models and training scenarios.
+
+Python API                                      *algo-rollout_corr-python-api*
+
+>python
+    from verl.trainer.config.algorithm import RolloutCorrectionConfig
+
+    # === Decoupled PPO mode (3 policies: π_rollout, π_old, π_θ) ===
+    # IS weights correct for gap between π_old and π_rollout
+    config = RolloutCorrectionConfig.decoupled_token_is()           # Token-TIS
+    config = RolloutCorrectionConfig.decoupled_seq_is()             # Seq-TIS
+    config = RolloutCorrectionConfig.decoupled_seq_is_rs()          # Seq-MIS
+    config = RolloutCorrectionConfig.decoupled_geo_rs()             # Geo-RS (ratio mode)
+    config = RolloutCorrectionConfig.decoupled_geo_rs_token_tis()   # Geo-RS + Token-TIS
+
+    # === K3 KL Estimator presets (more stable for small KL) ===
+    config = RolloutCorrectionConfig.decoupled_k3_rs()              # K3-RS only
+    config = RolloutCorrectionConfig.decoupled_k3_rs_token_tis()    # K3-RS + Token-TIS
+
+    # === Bypass PPO mode (2 policies: π_rollout = π_old, π_θ) - fast ===
+    # PPO ratio handles IS, so no explicit IS weights needed
+    config = RolloutCorrectionConfig.bypass_ppo_clip()              # PPO-clip only
+    config = RolloutCorrectionConfig.bypass_ppo_clip_geo_rs()       # PPO-clip + Geo-RS
+    config = RolloutCorrectionConfig.bypass_ppo_clip_k3_rs()        # PPO-clip + K3-RS
+
+    # === Bypass PG mode (2 policies, no PPO clipping) - fast ===
+    # IS weights computed on-the-fly as π_θ / π_rollout
+    config = RolloutCorrectionConfig.bypass_pg_is()                 # Seq-TIS + PG
+    config = RolloutCorrectionConfig.bypass_pg_geo_rs()             # Geo-RS + PG
+    config = RolloutCorrectionConfig.bypass_pg_geo_rs_token_tis()   # Geo-RS + Token-TIS + PG
+
+    # === Bypass PG mode + score centering (arXiv 2609.20807) ===
+    config = RolloutCorrectionConfig.bypass_pg_sc()                 # PG + score centering
+    config = RolloutCorrectionConfig.bypass_pg_token_tis_sc()       # PG + token-TIS + score centering
+    config = RolloutCorrectionConfig.bypass_pg_token_icepop_sc()    # PG + token-IcePop + score centering
+
+    # === Other ===
+    config = RolloutCorrectionConfig.disabled()             # Metrics only (no correction)
+<
+
+YAML Configuration (Advanced)  *algo-rollout_corr-yaml-configuration-advanced*
+
+For advanced customization or YAML-based configs:
+
+>yaml
+    algorithm:
+      rollout_correction:
+        rollout_is: token # IS weights: "token", "sequence", or null
+        rollout_is_threshold: 2.0 # TIS upper bound, or "0.5_5.0" for IcePop
+        rollout_is_batch_normalize: false # Batch normalize IS weights to mean=1.0
+        rollout_rs: null # Rejection sampling: comma-separated canonical options (e.g. "token_k1,seq_max_k2")
+        rollout_rs_threshold: null # Threshold spec: float(s) or "lower_upper" string(s)
+        bypass_mode: false # Skip old_log_prob computation (sets π_old = π_rollout)
+        loss_type: ppo_clip # Loss type in bypass mode: "ppo_clip" (default) or "reinforce"
+        score_centering: false # Subtract the sampler's expected score (bypass + reinforce only)
+
+    # REQUIRED: Enable log prob calculation
+    actor_rollout_ref:
+      rollout:
+        calculate_log_probs: true
+        topk_log_probs: 128 # Sampler top-k log-probs per token, required by score_centering
+<
+
+FILES                                                *algo-rollout_corr-files*
+
+Core Implementation                    *algo-rollout_corr-core-implementation*
+
+- `verl/trainer/ppo/rollout_corr_helper.py` - Contains
+  `compute_rollout_correction_and_rejection_mask()` and
+  `compute_offpolicy_metrics()`
+- `verl/trainer/ppo/core_algos.py` - Rollout Correction integration with PPO
+  and REINFORCE modes (`compute_policy_loss_bypass_mode()`,
+  `compute_policy_loss_reinforce()`)
+- `verl/trainer/ppo/v1/trainer_base.py` - Bypass mode implementation (skips
+  `old_log_prob` computation)
+- `verl/workers/utils/losses.py` - `ppo_loss` loss function wired to actor
+  `TrainingWorker` via
+  `verl.workers.engine_workers.ActorRolloutRefWorker.init_model`
+- `verl/trainer/ppo/core_algos.py` - `@register_policy_loss("bypass_mode")`
+  policy loss that invokes `compute_rollout_correction_and_rejection_mask`
+  and emits off-policy metrics
+
+Configuration Files                    *algo-rollout_corr-configuration-files*
+
+- `verl/trainer/config/algorithm.py` - Rollout Correction parameters in
+  `RolloutCorrectionConfig`
+- `verl/workers/config/actor.py` - Rollout Correction parameters in
+  `PolicyLossConfig`
+- `verl/trainer/config/actor/actor.yaml` - Rollout Correction configuration
+  section
+- `verl/trainer/config/ppo_trainer.yaml` - Algorithm config with Rollout
+  Correction
+
+Documentation                                *algo-rollout_corr-documentation*
+
+- `docs/examples/config.rst` - Configuration parameter descriptions
+
+Example Scripts                            *algo-rollout_corr-example-scripts*
+
+- `recipe/dapo/run_dapo_qwen2.5_32b_rollout_corr.sh` - DAPO example with
+  Rollout Correction
+- `examples/rollout_correction/run_qwen2_5_7b_fsdp.sh` - Basic example
+- `examples/rollout_correction/run_qwen2_5_7b_fsdp_multi_rs.sh` - Multi-RS
+  example
+
+Tests                                                *algo-rollout_corr-tests*
+
+- `tests/trainer/ppo/test_rollout_corr.py` - Unit tests for IS/RS mechanisms
+- `tests/trainer/ppo/test_rollout_corr_integration.py` - Integration tests
+
+CONFIGURATION PARAMETERS          *algo-rollout_corr-configuration-parameters*
+
+All parameters are under `algorithm.rollout_correction`:
+
+`rollout_is` (str or null)          *algo-rollout_corr-rollout-is-str-or-null*
+
+Importance sampling weights aggregation level:
+
+- `null` = No IS weights computed (metrics-only mode)
+- `"token"`: Per-token IS weights
+
+  - Decoupled mode: ρ_t = π_old(t)/π_rollout(t)
+  - Bypass/Pure IS mode: ρ_t = π_θ(t)/π_rollout(t)
+  - Independent truncation per token
+  - Typical threshold: 1.5 - 5.0
+
+- `"sequence"`: Per-sequence weight ρ_seq = ∏_t ρ_t
+
+  - Multiplicative aggregation across sequence
+  - Typical threshold: 2.0 - 10.0
+
+All IS weights are safety-bounded to [exp(-20), exp(20)] ≈ [2e-9, 5e8]
+
+                         *algo-rollout_corr-rollout-is-threshold-str-or-float*
+`rollout_is_threshold` (str or float)
+
+Threshold specification for IS weighting. Default: `2.0`
+
+- Single float or float-like string: TIS via
+  `.clamp(max=rollout_is_threshold)`
+- `"lower_upper"` string such as `"0.5_5.0"`: IcePop, zero weights outside
+  `[lower, upper]`
+- Applied to IS weights for variance reduction
+- Separate from rejection sampling (controlled by `rollout_rs` parameters)
+- Unlike `rollout_rs`, IcePop does not modify `response_mask`; it only
+  changes the IS coefficients
+
+                           *algo-rollout_corr-rollout-is-batch-normalize-bool*
+`rollout_is_batch_normalize` (bool)
+
+Apply batch normalization to IS weights. Default: `False`
+
+- `True`: Normalize IS weights to have mean=1.0 within each batch
+
+  - Token-level IS: Normalizes over all token weights
+  - Sequence-level IS: Normalizes over sequence means (one weight per
+    sequence)
+
+- `False`: Use raw (truncated) IS weights
+- Reduces variance by ensuring average weight is 1.0 per batch
+- Applied AFTER truncation to preserve truncation semantics
+- Only affects IS weight values, not rejection sampling
+
+`rollout_rs` (str or null)          *algo-rollout_corr-rollout-rs-str-or-null*
+
+Rejection sampling aggregation modes. Supply a comma-separated string
+(spaces optional) using the canonical options implemented in
+`rollout_corr_helper`:
+
+- `token_k1`: Token-level rejection with `-log r` bounds (ratio thresholds
+  supplied as `lower_upper`). Example: `"0.6_1.4"`
+- `token_k2`: Token-level rejection with `0.5 * (log r)^2` (upper bound
+  only)
+- `token_k3`: Token-level rejection with `exp(log r) - 1 - log r` (upper
+  bound only)
+- `seq_sum_k1`: Sequence-level rejection with sum of `-log r` (ratio bounds)
+- `seq_sum_k2`: Sequence-level rejection with sum of `0.5 * (log r)^2`
+  (upper bound only)
+- `seq_sum_k3`: Sequence-level rejection with sum of
+  `exp(log r) - 1 - log r` (upper bound only)
+- `seq_mean_k1`: Sequence-level rejection with mean of `-log r` (ratio
+  bounds)
+- `seq_mean_k2`: Sequence-level rejection with mean of `0.5 * (log r)^2`
+  (upper bound only)
+- `seq_mean_k3`: Sequence-level rejection with mean of
+  `exp(log r) - 1 - log r` (upper bound only)
+- `seq_max_k2`: Sequence-level rejection with max of `0.5 * (log r)^2`
+  (upper bound only)
+- `seq_max_k3`: Sequence-level rejection with max of
+  `exp(log r) - 1 - log r` (upper bound only)
+
+                    *algo-rollout_corr-rollout-rs-threshold-str-float-or-null*
+`rollout_rs_threshold` (str, float, or null)
+
+Threshold specification for rejection sampling.
+
+- Provide one entry per option, separated by commas. A single entry is
+  broadcast to every option.
+- K1 KL modes (`*k1`): Use `"lower_upper"` strings (e.g. `"0.7_1.3"`).
+  Supplying a float implies only the upper bound; the lower bound defaults
+  to its reciprocal.
+- K2/K3 KL modes (`*k2`/`*k3`): Supply positive upper bounds (float or
+  numeric string).
+- Set to `null` to disable thresholds entirely (only valid when `rollout_rs`
+  is null).
+
+`score_centering` (bool)              *algo-rollout_corr-score-centering-bool*
+
+Subtract the expected score under the sampler from every token's score
+(Marek & Ryabinin, 2026 https://arxiv.org/abs/2609.20807). Default: `False`
+
+- `True`: Centers the score using the sampler's recorded probabilities; a
+  no-op on-policy when the represented sampler and trainer distributions
+  agree
+- Requires `bypass_mode=True` and `loss_type="reinforce"` (raises
+  `ValueError` otherwise)
+- Requires `rollout_is` to be `None` or `"token"` (raises `ValueError` for
+  `"sequence"`) and `rollout_is_batch_normalize=False`
+- Requires `actor_rollout_ref.rollout.topk_log_probs > 0` (sampler top-k
+  log-probs, vLLM only)
+- FSDP or Megatron actor; incompatible with `use_fused_kernels` and
+  distillation; single-turn agent loop only
+
+Score centering automatically tries to align with the actual sampling
+support. When the rollout provider verifies that the recorded head covers
+it, the trainer is normalized over that support for centering, sampled
+scoring, and applicable importance weights. Otherwise, the preset
+approximation uses the recorded sampler head and trainer log-probs. The
+recording head size is the current support budget; sampling parameters are
+never changed to fit it.
+
+The approximation retains the sampler's head probabilities and sampled-token
+probability. It models unrecorded probability using the full-vocabulary
+trainer tail, with the existing epsilon floors for near-zero tail masses.
+This also approximates an unknown sampling support: the modeled tail can
+include tokens outside that support. Its trainer score and importance
+weights consistently use full-vocabulary normalization. An incomplete head
+is never normalized as if it were the entire sampling support.
+
+When recorded `topk_log_probs` is smaller than an enabled finite sampling
+`top_k`, a warning recommends increasing the recording budget, because
+aligning a bounded head is usually cheap. This warning does not select the
+estimator: actual coverage determines alignment per token. Configured top-k
+values or head mass close to one alone do not prove complete coverage.
+
+   *algo-rollout_corr-understanding-the-framework-components-and-combinations*
+UNDERSTANDING THE FRAMEWORK: COMPONENTS AND COMBINATIONS
+
+The rollout correction framework is built from orthogonal components that
+can be combined flexibly. Understanding these components helps you choose
+the right configuration for your scenario.
+
+Key Components                              *algo-rollout_corr-key-components*
+
+1. Operating Mode (Section: |algo-rollout_corr-operation-modes|)
+
+   - Decoupled: Three policies (π_rollout, π_old, π_θ) with separate π_old
+     computation
+   - Bypass: Two policies (π_rollout = π_old, π_θ), skips π_old computation
+
+2. Loss Function (in bypass mode, controlled by `loss_type`)
+
+   - PPO-clip (`loss_type="ppo_clip"`, default): PPO clipped objective (IS
+     handled by ratio)
+   - REINFORCE (`loss_type="reinforce"`): Policy gradient with explicit IS
+     weights (no clipping)
+
+3. IS/RS Aggregation Level
+
+   - Token: Per-token IS weights/rejection
+   - Sequence: Sequence-level IS weights/rejection
+
+See Mathematical Formulations
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#3-algorithmic-components-and-combinations
+for detailed theory.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+PRESET CONFIGURATION GUIDE      *algo-rollout_corr-preset-configuration-guide*
+
+This section provides detailed guidance on choosing and using the verified
+presets. Each preset is a specific combination of components optimized for
+common scenarios.
+
+Understanding the Presets        *algo-rollout_corr-understanding-the-presets*
+
+Available Preset Methods          *algo-rollout_corr-available-preset-methods*
+
+Preset Method                 Estimator         Mode         IS Level  RS Level  Properties
+----------------------------  ----------------  -----------  --------  --------  --------------
+Decoupled PPO Mode (3
+policies: π_rollout, π_old,
+π_θ)
+decoupled_token_is()          Token-TIS         Decoupled    token     -         Token-level IS
+                                                                                 weights
+decoupled_seq_is()            Seq-TIS           Decoupled    sequence  -         Sequence-level
+                                                                                 IS weights
+decoupled_seq_is_rs()         Seq-MIS           Decoupled    sequence  sequence  Sequence IS +
+                                                                                 seq_sum_k1 RS
+decoupled_geo_rs()            Geo-RS            Decoupled    -         sequence  Geometric RS
+                                                                                 (seq_mean_k1)
+decoupled_geo_rs_token_tis()  Geo-RS-Token-TIS  Decoupled    token     sequence  Geometric RS +
+                                                                                 token IS
+K3 KL Estimator (more stable
+for small KL values)
+decoupled_k3_rs()             K3-RS             Decoupled    -         sequence  seq_mean_k3 RS
+    decoupled_k3_rs_token_tis()   K3-RS-Token-TIS   Decoupled    token     sequence  seq_mean_k3 RS
+                                                                                 + token IS
+Bypass Mode (PPO-clip) (2
+policies; ratio handles IS,
+RS masks outliers)
+bypass_ppo_clip()             -                 Bypass       -         -         PPO-clip only
+                                                (PPO-clip)
+bypass_ppo_clip_geo_rs()      Geo-RS            Bypass       -         sequence  PPO-clip +
+                                                (PPO-clip)                       Geo-RS
+bypass_ppo_clip_k3_rs()       K3-RS             Bypass       -         sequence  PPO-clip +
+                                                (PPO-clip)                       K3-RS
+Bypass Mode (REINFORCE) (2
+policies; explicit IS
+weights, no PPO clipping)
+bypass_pg_is()                Seq-TIS           Bypass       sequence  -         REINFORCE with
+                                                (REINFORCE)                      explicit IS
+bypass_pg_geo_rs()            Geo-RS            Bypass       -         sequence  REINFORCE with
+                                                (REINFORCE)                      Geo-RS
+bypass_pg_geo_rs_token_tis()  Geo-RS-Token-TIS  Bypass       token     sequence  REINFORCE +
+                                                (REINFORCE)                      Geo-RS + token
+                                                                                 IS
+Other
+disabled()                    -                 -            -         -         Metrics only,
+                                                                                 no correction
+
+Note:
+
+- Bypass mode sets π_old = π_rollout and uses `loss_type` to select the loss
+  function:
+
+  - `"ppo_clip"` (default): PPO clipped objective where ratio =
+    π_θ/π_rollout already handles IS
+  - `"reinforce"`: REINFORCE with explicit IS weights as π_θ/π_rollout
+
+- Both loss types benefit from rejection sampling (RS) which masks
+  out-of-distribution samples.
+- All estimators (Token-TIS, Seq-TIS, Seq-MIS, Geo-RS, ...) are compatible
+  with Decoupled and Bypass modes.
+
+*algo-rollout_corr-other-supported-combinations-manual-configuration-required*
+Other Supported Combinations (Manual Configuration Required)
+
+Other supported combinations without preset methods:
+
+- Token IS + Token RS: Token-level IS weights + Token-level RS mask
+- Pure token RS: Token-level RS only, no IS weights
+- Pure sequence RS: Sequence-level RS only, no IS weights
+
+See
+|algo-rollout_corr-additional-useful-configurations-not-exposed-as-presets|
+for manual configurations.
+
+Key properties:
+
+- Any aggregation level (token/sequence) works in either decoupled or bypass
+  mode
+- All combinations are fully supported by the implementation
+- Rejection sampling is independent of IS weighting
+- Pure RS (`bypass_pg_rs`) uses bypass + geometric RS with
+  `loss_type="reinforce"` (no IS weights)
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+*algo-rollout_corr-decoupled-mode-with-token-level-importance-sampling-decoupled-token-is*
+1. Decoupled Mode with Token-level Importance Sampling
+(`decoupled_token_is`)
+
+Configuration:
+
+>python
+    config = RolloutCorrectionConfig.decoupled_token_is(threshold=2.0)
+<
+Components:
+
+- Operating Mode: Decoupled (3 policies)
+- Loss: PPO with clipping (only for the second drift correction)
+- IS Aggregation: Token-level
+- RS: None (can be added separately)
+
+Equivalent YAML:
+
+>yaml
+    algorithm:
+      rollout_correction:
+        rollout_is: token
+        rollout_is_threshold: 2.0
+        rollout_rs: null
+        bypass_mode: false # Decoupled mode
+<
+Properties:
+
+- Independent truncation per token
+- Lower variance than sequence-level (product of ratios bounded
+  individually)
+- Typical threshold: 1.5 - 5.0
+
+Theory: See rollout_corr_math.md §3.3.1
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#331-token-level-aggregation
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+*algo-rollout_corr-decoupled-mode-with-sequence-level-importance-sampling-decoupled-seq-is*
+2. Decoupled Mode with Sequence-level Importance Sampling
+(`decoupled_seq_is`)
+
+Also known as: Seq-TIS (Sequence-Level Truncated IS)
+
+Configuration:
+
+>python
+    config = RolloutCorrectionConfig.decoupled_seq_is(threshold=2.0)
+<
+Components:
+
+- Operating Mode: Decoupled (3 policies)
+- Loss: PPO with clipping (only for the second drift correction)
+- IS Aggregation: Sequence-level (Seq-TIS)
+- RS: None (can be added separately)
+
+Equivalent YAML:
+
+>yaml
+    algorithm:
+      rollout_correction:
+        rollout_is: sequence
+        rollout_is_threshold: 2.0
+        rollout_rs: null
+        bypass_mode: false # Decoupled mode
+<
+Properties:
+
+- Multiplicative aggregation across sequence
+- More sensitive to outliers than token-level
+- Typical threshold: 2.0 - 10.0 (higher than token-level)
+
+Theory: See rollout_corr_math.md §3.3.2
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#332-sequence-level-aggregation
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+*algo-rollout_corr-decoupled-mode-with-sequence-level-is-rejection-sampling-decoupled-seq-is-rs*
+3. Decoupled Mode with Sequence-level IS + Rejection Sampling
+(`decoupled_seq_is_rs`)
+
+Also known as: Seq-MIS (Sequence-Level Masked IS)
+
+Configuration:
+
+>python
+    config = RolloutCorrectionConfig.decoupled_seq_is_rs(is_threshold=2.0, rs_threshold="0.5_2.0")
+<
+Components:
+
+- Operating Mode: Decoupled (3 policies)
+- Loss: PPO with clipping (only for the second drift correction)
+- IS Aggregation: Sequence-level (Seq-TIS)
+- RS: Sequence-level rejection (Seq-MIS)
+
+Equivalent YAML:
+
+>yaml
+    algorithm:
+      rollout_correction:
+        rollout_is: sequence
+        rollout_is_threshold: 2.0
+        rollout_rs: seq_sum_k1
+        rollout_rs_threshold: 0.5_2.0
+        bypass_mode: false # Decoupled mode
+<
+Properties:
+
+- Double mechanism: IS reweighting (Seq-TIS) + rejection filtering (Seq-MIS)
+- Lower effective sample size (rejects outliers)
+- For severe off-policy gaps or when the distribution tail is “toxic”
+  (garbage/adversarial samples)
+
+When to use Seq-MIS over Seq-TIS:
+
+- Seq-TIS (clipping only): Maximizes information efficiency; extracts signal
+  from all samples. Use when data is clean and mismatch is moderate.
+- Seq-MIS (rejection): Maximizes safety; acts as a hard trust region filter.
+  Use when mismatch is severe or when high-weight samples are likely garbage
+  rather than signal.
+
+Theory: See rollout_corr_math.md §3.5
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#35-rejection-sampling-rs
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+                 *algo-rollout_corr-bypass-mode-with-ppo-clip-bypass-ppo-clip*
+6. Bypass Mode with PPO-clip (`bypass_ppo_clip`)
+
+Configuration:
+
+>python
+    config = RolloutCorrectionConfig.bypass_ppo_clip()
+<
+Components:
+
+- Operating Mode: Bypass (2 policies: π_rollout = π_old, π_θ)
+- Loss: PPO-clip (IS handled by ratio, no explicit IS weights)
+- IS Aggregation: None (PPO ratio handles it)
+- RS: None
+
+Equivalent YAML:
+
+>yaml
+    rollout_correction:
+      rollout_is: null
+      rollout_rs: null
+      bypass_mode: true
+      loss_type: ppo_clip
+<
+Properties:
+
+- PPO clipped objective in bypass mode
+- The PPO ratio = π_θ/π_rollout already handles IS (no explicit IS weights
+  needed)
+- Skips `actor.compute_log_prob()` forward pass (2 policies instead of 3)
+- No rejection sampling - use `bypass_ppo_clip_geo_rs()` for RS
+
+Configuration requirement:
+
+- Set `actor_rollout_ref.rollout.calculate_log_probs: true`
+
+Additional requirements for bypass mode:
+
+- Set `actor_rollout_ref.actor.use_rollout_log_probs: true`
+- Set `actor_rollout_ref.actor.policy_loss.loss_mode: bypass_mode`
+- Set rollout correction config via
+  `actor_rollout_ref.actor.policy_loss.rollout_correction`
+
+Theory: See rollout_corr_math.md §3.1.2
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#312-bypass-mode-two-policies
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+                            *algo-rollout_corr-reinforce-with-is-bypass-pg-is*
+7. REINFORCE with IS (`bypass_pg_is`)
+
+Configuration:
+
+>python
+    config = RolloutCorrectionConfig.bypass_pg_is(threshold=2.0)
+<
+Components:
+
+- Operating Mode: Bypass (2 policies: π_rollout, π_θ)
+- Loss: REINFORCE (policy gradient with explicit IS weights, no PPO
+  clipping)
+- IS Aggregation: Sequence-level
+- RS: None
+
+Equivalent YAML:
+
+>yaml
+    rollout_correction:
+      rollout_is: sequence
+      rollout_is_threshold: 2.0
+      rollout_rs: null
+      bypass_mode: true
+      loss_type: reinforce # REINFORCE with explicit IS weights
+<
+Properties:
+
+- REINFORCE loss with explicit IS weights (no PPO clipping)
+- Single forward pass (skips old_log_prob computation)
+- IS weights computed on-the-fly in loss function
+
+Theory: See rollout_corr_math.md §3.2.2
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#322-policy-gradient-loss-with-isrs-correction
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+*algo-rollout_corr-score-centering-bypass-pg-sc-bypass-pg-token-tis-sc-bypass-pg-token-icepop-sc*
+8. Score centering (`bypass_pg_sc`, `bypass_pg_token_tis_sc`,
+`bypass_pg_token_icepop_sc`)
+
+Configuration:
+
+>python
+    config = RolloutCorrectionConfig.bypass_pg_sc()                 # REINFORCE + score centering
+    config = RolloutCorrectionConfig.bypass_pg_token_tis_sc(threshold=2.0)                          # + token-TIS
+    config = RolloutCorrectionConfig.bypass_pg_token_icepop_sc(threshold=5.0, threshold_lower=0.5)  # + token-IcePop
+<
+Components:
+
+- Operating Mode: Bypass (2 policies: π_rollout, π_θ)
+- Loss: REINFORCE (policy gradient with explicit IS weights, no PPO
+  clipping)
+- IS Aggregation: None, or token-level (TIS / IcePop)
+- RS: None
+- Score centering: subtracts the sampler's expected per-token score from the
+  score used by the loss
+
+Equivalent YAML:
+
+>yaml
+    algorithm:
+      rollout_correction:
+        bypass_mode: true
+        loss_type: reinforce
+        rollout_is: token        # or null for plain score centering
+        rollout_is_threshold: 2.0
+        score_centering: true
+<
+Properties:
+
+- Centers the policy-gradient score to address the drift term
+  `E_q[R] * E_q[∇log p]` introduced by training-inference mismatch.
+  Evaluation is exact for a verified complete support and uses the preset
+  trainer-tail approximation otherwise
+- A no-op when the sampler and trainer distributions represented by the
+  estimator agree
+- Composes with token-level TIS / IcePop by centering the already-weighted
+  score
+- Reported by the paper to be stable under sampler quantization
+- The sampler records a top-`k` head per token. Score centering attempts to
+  align with its actual support and otherwise uses the head plus a modeled
+  trainer tail. Trainer head log-probs still require vocabulary
+  normalization; a small recorded head does not imply computation
+  proportional only to `k`
+- Alignment requires a provider receipt proving complete actual support
+  coverage. The vLLM global top-k provider can prove this when its head
+  contains zero-probability entries or covers the vocabulary. A saturated
+  finite head without such proof uses the approximation, even if its
+  probability mass is close to one; older records without receipts do
+  likewise
+- When combining top-k and top-p, vLLM applies top-k first, then top-p
+  within the remaining normalized distribution. Cutoff ties can enlarge
+  actual support beyond configured top-k
+
+Theory: See Marek & Ryabinin, 2026 https://arxiv.org/abs/2609.20807.
+
+Additional requirements:
+
+- Set `actor_rollout_ref.rollout.calculate_log_probs: true` and
+  `actor_rollout_ref.rollout.topk_log_probs: 128` (vLLM rollout only;
+  `k=128` matches the paper, `k=32` also matches)
+- Set `actor_rollout_ref.rollout.temperature` > 0 and choose sampling
+  parameters independently of the recording budget. Validation and greedy
+  reward-baseline requests do not record heads
+- Set `actor_rollout_ref.actor.policy_loss.loss_mode: bypass_mode` and
+  mirror `bypass_mode`, `loss_type`, `rollout_is`, `rollout_is_threshold`,
+  `score_centering` from `algorithm.rollout_correction` into
+  `actor_rollout_ref.actor.policy_loss.rollout_correction`:
+
+  >yaml
+      actor_rollout_ref:
+        actor:
+          policy_loss:
+            loss_mode: bypass_mode
+            rollout_correction:
+              bypass_mode: true
+              loss_type: reinforce
+              rollout_is: token
+              rollout_is_threshold: 2.0
+              score_centering: true
+<
+
+- Fused kernels are optional. Megatron score centering supports
+  `actor_rollout_ref.model.use_fused_kernels: true` with
+  `actor_rollout_ref.model.fused_kernel_options.impl_backend: tilelang`; use
+  `false` for fused backends that cannot return log-probs for the recorded
+  top-k labels
+- Megatron static `pad_to_length` is supported; the sampler heads and
+  router-replay tensors use the same bucket padding as the student rows.
+  Dynamic context parallelism remains unsupported
+- FSDP or Megatron actor; single-turn agent loop only. Under Megatron tensor
+  parallelism the head log-probs are normalized over the vocab-parallel
+  shards
+- Head payload: `8k` bytes per padded prompt+response position on the driver
+  (`k=128`: 1 KB per position), plus one boolean completeness receipt per
+  position
+- The trainer evaluates the head log-probs in chunks of 4096 positions, with
+  an fp32 workspace of roughly `4096 × vocab × 4` bytes
+- Metrics: `actor/sc_correction`, `actor/sc_sampler_head_mass`,
+  `actor/sc_train_head_mass`, `actor/sc_support_aligned`,
+  `actor/sc_sampler_tail_mass`, `actor/sc_support_unknown`.
+  `sc_support_aligned` reports the fraction of response tokens with verified
+  support alignment; `sc_sampler_tail_mass` measures probability outside the
+  recorded head. `sc_support_unknown` reports approximate rows with
+  near-unit head mass but no coverage proof. Trainer head mass is the
+  full-vocabulary mass of the actual support for aligned rows and the
+  recorded head for approximate rows. Head mass close to one alone is not a
+  completeness test
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+   *algo-rollout_corr-additional-useful-configurations-not-exposed-as-presets*
+ADDITIONAL USEFUL CONFIGURATIONS (NOT EXPOSED AS PRESETS)
+
+These configurations are fully supported but don't have convenience preset
+methods yet.
+
+                             *algo-rollout_corr-token-is-token-rs-token-is-rs*
+1. Token IS + Token RS (`token_is_rs`)
+
+Token-level IS weights with token-level RS mask.
+
+Python:
+
+>python
+    config = RolloutCorrectionConfig(
+        rollout_is="token",
+        rollout_is_threshold=2.0,
+        rollout_rs="token_k1",
+        rollout_rs_threshold=2.0,
+    )
+<
+Properties: Per-token IS weights + per-token RS mask.
+
+2. Pure Token RS (`token_rs`)       *algo-rollout_corr-pure-token-rs-token-rs*
+
+Token-level RS only, no IS weights.
+
+Python:
+
+>python
+    config = RolloutCorrectionConfig(
+        rollout_is=None,
+        rollout_rs="token_k1",
+        rollout_rs_threshold=2.0,
+    )
+<
+Properties: Token-level RS mask, no IS reweighting.
+
+3. Pure Sequence RS (`seq_rs`)     *algo-rollout_corr-pure-sequence-rs-seq-rs*
+
+Sequence-level RS only, no IS weights.
+
+Python:
+
+>python
+    config = RolloutCorrectionConfig(
+        rollout_is=None,
+        rollout_rs="seq_sum_k1",
+        rollout_rs_threshold="0.5_2.0",
+    )
+<
+Properties: Sequence-level RS mask, no IS reweighting.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+                      *algo-rollout_corr-summary-how-is-weights-are-processed*
+Summary: How IS Weights are Processed
+
+IS weights (`rollout_is_weights`) go through a fixed processing pipeline:
+
+Stage 1: Safety Bound (Prevent Overflow)
+
+- Token level: `exp(clamp(log_ratio, -20, 20))` per token → bounds each
+  token to [2e-9, 5e8]
+- Sequence level: `exp(clamp(sum(log_ratio), -20, 20))` → bounds product to
+  [2e-9, 5e8], broadcast to all tokens
+
+Stage 2: Truncation (Reduce Variance)
+
+- `.clamp(max=rollout_is_threshold)` → caps weights at upper threshold (TIS:
+  Truncated Importance Sampling)
+- No lower truncation (preserves unbiasedness for small weights)
+
+Stage 3: Padding Zeroing (Correct Aggregation)
+
+- `weights * response_mask` → zeros out padding positions
+
+Stage 4: Optional Batch Normalization
+
+- If `rollout_is_batch_normalize=True`: Normalize weights to mean=1.0 within
+  batch
+- Applied after truncation to preserve truncation semantics
+
+Rejection Sampling (Separate Mechanism)
+
+Rejection sampling modifies `response_mask` (NOT weights) through
+`compute_rollout_rejection_mask()`:
+
+- Computes safety-bounded ratios independently
+- Creates binary mask: tokens/sequences outside [lower_threshold,
+  upper_threshold] → 0 (rejected)
+- Modified mask used for loss aggregation
+
+OPERATION MODES                            *algo-rollout_corr-operation-modes*
+
+The framework provides two operating modes for computing π_old, which can be
+combined with different loss functions.
+
+                         *algo-rollout_corr-operating-modes-and-configuration*
+Operating Modes and Configuration
+
+Configuration  bypass_mode  loss_type    Operating  Loss       Description
+                                         Mode       Function
+-------------  -----------  -----------  ---------  ---------  ------------------------
+Decoupled      false        N/A          Decoupled  PPO        Computes old_log_prob
+                                                               separately via
+                                                               actor.compute_log_prob()
+Bypass +       true         "ppo_clip"   Bypass     PPO-clip   PPO clipped objective
+PPO-clip                    (default)                          (IS handled by ratio)
+Bypass +       true         "reinforce"  Bypass     REINFORCE  Policy gradient with
+REINFORCE                                                      explicit IS weights (no
+                                                               PPO clipping)
+
+Operating Mode Details              *algo-rollout_corr-operating-mode-details*
+
+                             *algo-rollout_corr-decoupled-mode-three-policies*
+Decoupled Mode (Three Policies)
+
+Policy setup:
+
+- π_rollout: Behavior policy (data collection)
+- π_old: Proximal policy (computed via `actor.compute_log_prob()` at start
+  of training epoch)
+- π_θ: Current policy (being updated)
+
+Configuration: `bypass_mode = false`
+
+Properties:
+
+- ✅ Achieves batch size invariance
+- ✅ Separately corrects Drift 1 (rollout→old) and Drift 2 (old→current)
+- ✅ Efficient stale data utilization
+- ❌ Extra forward pass needed (`actor.compute_log_prob()`)
+
+Theory: See rollout_corr_math.md §3.1.1
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#311-decoupled-mode-three-policies
+
+Bypass Mode (Two Policies)        *algo-rollout_corr-bypass-mode-two-policies*
+
+Policy setup:
+
+- π_rollout: Behavior policy (data collection)
+- π_old = π_rollout: Proximal policy equals behavior policy
+- π_θ: Current policy (being updated)
+
+Configuration: `bypass_mode = true`
+
+Properties:
+
+- ✅ Skips `actor.compute_log_prob()` call (faster)
+- ✅ Handles off-policy correction via IS/RS (when using policy gradient
+  with IS/RS)
+- ✅ Uses two policies instead of three (π_rollout = π_old)
+- ⚠️ Does not separate proximal policy from behavior policy (unlike
+  decoupled mode)
+
+Theory: See rollout_corr_math.md §3.1.2
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#312-bypass-mode-two-policies
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+     *algo-rollout_corr-is-rs-aggregation-levels-orthogonal-to-operating-mode*
+IS/RS Aggregation Levels (Orthogonal to Operating Mode)
+
+The aggregation level can be chosen independently of the operating mode. Any
+aggregation level works in either decoupled or bypass mode.
+
+rollout_is             rollout_rs                  Behavior
+---------------------  --------------------------  ---------------------------
+null                   null                        Disabled: No computation,
+                                                   no metrics, no rejection
+null                   "token_k1", "seq_sum_k1",   Rejection only: Compute
+                       "seq_mean_k1",              metrics, NO weight
+                       "seq_max_k2", etc           correction, YES rejection
+                                                   sampling
+"token" or "sequence"  null                        IS weights only: Weight
+                                                   correction enabled, NO
+                                                   rejection sampling
+"token" or "sequence"  "token_k1", "seq_sum_k1",   Full correction: Both
+                       "seq_mean_k1",              weight correction and
+                       "seq_max_k2", etc           rejection sampling enabled
+
+Key Insights                                  *algo-rollout_corr-key-insights*
+
+- ✅ Any IS/RS aggregation level (token/sequence/geometric) can be used in
+  either decoupled or bypass mode
+- ✅ You can use rejection sampling alone without IS weight correction
+  (`rollout_is=null, rollout_rs="token_k1"`)
+- ✅ You can use IS weights alone without outlier rejection
+  (`rollout_is="token", rollout_rs=null`)
+- ✅ You can use both together (`rollout_is="token", rollout_rs="token_k1"`)
+- ✅ You can monitor metrics only without any correction by setting both to
+  `null` but still providing rollout_log_probs
+
+Theory: See rollout_corr_math.md §3.3
+https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html#33-isrs-aggregation-levels
+for details on aggregation levels.
+
+Example Workflow                          *algo-rollout_corr-example-workflow*
+
+Recommended: Bypass Mode
+
+This workflow uses bypass mode for efficiency.
+
+1. Start with metrics only to understand the off-policy gap:
+
+   >yaml
+        rollout_correction:
+          rollout_is: null
+          rollout_rs: null
+          bypass_mode: true # Bypass mode (recommended)
+          loss_type: ppo_clip # Default: PPO clipped objective
+<
+   Monitor `rollout_corr/kl`, `rollout_corr/log_ppl_abs_diff`,
+   `rollout_corr/chi2_token` to assess off-policy gap.
+
+2. Enable rejection sampling if you see high outlier fractions:
+
+   >yaml
+        rollout_correction:
+          rollout_is: null
+          rollout_rs: sequence # or "geometric" for higher sensitivity
+          rollout_rs_threshold: 2.0
+          bypass_mode: true # Bypass mode
+          loss_type: ppo_clip # or "reinforce" for explicit IS weights
+<
+   This excludes outliers from training without modifying gradients.
+
+3. Enable full IS correction (with REINFORCE loss) once comfortable with
+   metrics:
+
+   >yaml
+        rollout_correction:
+          rollout_is: sequence # Recommended: unbiased, suitable for most cases
+          rollout_is_threshold: 2.0
+          rollout_rs: sequence # or "geometric" for more aggressive filtering
+          rollout_rs_threshold: 2.0
+          bypass_mode: true # Bypass mode
+          loss_type: reinforce # REINFORCE with explicit IS weights
+<
+
+Benefits of bypass mode:
+
+- ✅ Skips expensive `actor.compute_log_prob()` forward pass (faster)
+- ✅ `loss_type` controls the loss function: “ppo_clip” (default) or
+  “reinforce”
+- ✅ PPO-clip: IS handled by ratio (no explicit weights), RS mask applied
+- ✅ REINFORCE: Explicit IS weights computed on-the-fly (π_θ / π_rollout)
+- ✅ Both loss types work with all IS/RS combinations
+
+USAGE                                                *algo-rollout_corr-usage*
+
+Basic Setup                                    *algo-rollout_corr-basic-setup*
+
+>yaml
+    algorithm:
+      rollout_correction:
+        rollout_is: token # Enable IS weights at token level
+        rollout_is_threshold: 2.0 # Threshold for IS weights
+        rollout_rs: null # No rejection sampling
+
+    actor_rollout_ref:
+      rollout:
+        calculate_log_probs: true # Required!
+<
+
+                 *algo-rollout_corr-additional-configurations-for-bypass-mode*
+Additional Configurations for Bypass Mode
+
+- Set `actor_rollout_ref.actor.use_rollout_log_probs: true`
+- Set `actor_rollout_ref.actor.policy_loss.loss_mode: bypass_mode`
+- Set rollout correction config via
+  `actor_rollout_ref.actor.policy_loss.rollout_correction`
+
+Metrics                                            *algo-rollout_corr-metrics*
+
+All metrics are prefixed with `rollout_corr/` in logs. For example,
+`rollout_is_mean` appears as `rollout_corr/rollout_is_mean`.
+
+These metrics cover both:
+
+- Diagnostic metrics: KL divergence, perplexity differences (measuring
+  off-policy gap)
+- Correction statistics: IS weights, rejection rates (measuring correction
+  applied)
+
+Statistics taken across sequences (means, standard deviations, extrema and
+fractions of per-sequence values) only count sequences with at least one
+valid token in `response_mask`, the same rule the rejection sampling metrics
+use. Rows without valid tokens, such as padding rows that keep micro-batch
+shapes fixed, do not change them.
+
+Core IS Weight Metrics              *algo-rollout_corr-core-is-weight-metrics*
+
+- `rollout_is_mean`: Mean importance sampling weight across all valid tokens
+
+  - Value close to 1.0 indicates minimal off-policy gap
+
+- `rollout_is_std`: Standard deviation of IS weights
+
+  - Higher values indicate greater variance in IS weights
+
+- `rollout_is_min`: Minimum IS weight observed
+
+  - Shows the most underweighted token/sequence
+  - For sequence/geometric: computed from unclamped log-space ratios (true
+    minimum)
+  - For token: computed from safety-bounded weights
+
+- `rollout_is_max`: Maximum IS weight observed
+
+  - Shows the most overweighted token/sequence
+  - For sequence/geometric: computed from unclamped log-space ratios (true
+    maximum before safety bound)
+  - For token: computed from safety-bounded weights (before threshold
+    clamping)
+  - Compare with `rollout_is_threshold` to see truncation impact
+
+Effective Sample Size                *algo-rollout_corr-effective-sample-size*
+
+- `rollout_is_eff_sample_size`: Effective sample size after IS weighting
+
+  - Formula: `1 / mean(weights²)` where weights are normalized
+  - Range: 0.0 to 1.0 (as fraction of original batch)
+  - Lower values indicate weight concentration on fewer samples
+
+Threshold Exceedance Metrics  *algo-rollout_corr-threshold-exceedance-metrics*
+
+- `rollout_is_ratio_fraction_high`: Fraction of weights exceeding upper
+  threshold
+
+  - Shows how often truncation/masking occurs on high end
+  - For sequence/geometric: computed from unclamped log-space ratios (true
+    exceedance)
+  - For token: computed from safety-bounded weights (before threshold
+    clamping)
+
+- `rollout_is_ratio_fraction_low`: Fraction of weights below lower threshold
+  (1/upper_threshold)
+
+  - Diagnostic metric showing how many weights are below the reciprocal
+    threshold
+  - For sequence/geometric: computed from unclamped log-space ratios (true
+    exceedance)
+  - For token: computed from safety-bounded weights (before truncation)
+
+           *algo-rollout_corr-sequence-level-metrics-for-sequence-aggregation*
+Sequence-Level Metrics (for sequence aggregation)
+
+- `rollout_is_seq_mean`: Mean IS weight at sequence level
+
+  - Should match `rollout_is_mean` for sequence-level aggregation
+
+- `rollout_is_seq_std`: Standard deviation of sequence-level IS weights
+- `rollout_is_seq_min`: Minimum sequence-level IS weight
+- `rollout_is_seq_max`: Maximum sequence-level IS weight
+- `rollout_is_seq_max_deviation`: Maximum absolute deviation from 1.0 at
+  sequence level
+
+  - Shows worst-case sequence off-policy gap
+
+- `rollout_is_seq_fraction_high`: Fraction of sequences exceeding upper
+  threshold
+- `rollout_is_seq_fraction_low`: Fraction of sequences below lower threshold
+
+     *algo-rollout_corr-rejection-sampling-metrics-when-rollout-rs-is-enabled*
+Rejection Sampling Metrics (when `rollout_rs` is enabled)
+
+- `rollout_rs_masked_fraction`: Fraction of tokens rejected via rejection
+  sampling
+
+  - Important: Rejection sampling modifies `response_mask` (sets rejected
+    tokens to 0)
+  - Separate from IS weights: IS weights are still truncated; rejection is
+    an independent filtering step
+  - Only present when `rollout_rs` is enabled (token/sequence/geometric)
+
+- `rollout_rs_seq_masked_fraction`: Fraction of sequences with at least one
+  rejected token
+
+  - Shows sequence-level impact of rejection sampling
+  - Token-level RS: sequence rejected if ANY token is outside [lower, upper]
+  - Sequence-level RS: entire sequence rejected or accepted based on
+    sequence-level ratio
+  - Geometric RS: entire sequence rejected or accepted based on geometric
+    mean
+
+  *algo-rollout_corr-off-policy-diagnostic-metrics-training-vs-rollout-policy*
+Off-Policy Diagnostic Metrics (Training vs Rollout Policy)
+
+Note on terminology: These metrics use “training” to refer to the training
+reference policy and “rollout” to refer to π_rollout (the behavior policy
+used for data collection).
+
+- Decoupled mode: “training” = π_old (computed at start of training epoch)
+- Bypass/Pure IS mode: “training” = π_θ (current policy being trained)
+
+In bypass/pure IS mode, metrics measure the drift between π_θ and π_rollout
+directly.
+
+- `training_ppl`: Perplexity of training reference policy (π_old in
+  decoupled mode, π_θ in bypass/pure IS mode)
+
+  - Formula: `exp(-mean(log_probs))`
+  - Lower values indicate higher model confidence
+
+- `rollout_ppl`: Perplexity of rollout policy π_rollout (e.g., vLLM BF16)
+- `ppl_ratio`: Ratio of training PPL to rollout PPL
+
+  - Formula: `exp(mean(log(training_ppl / rollout_ppl)))`
+  - Meaning: > 1.0 means training is less confident than rollout
+
+- `training_log_ppl`: Log perplexity of training policy
+
+  - Useful for identifying trends (linear scale)
+
+- `rollout_log_ppl`: Log perplexity of rollout policy
+- `log_ppl_diff`: Mean difference in log perplexities
+
+  - Formula: `mean(log_ppl_rollout - log_ppl_training)`
+  - Sign indicates which policy is more confident
+
+- `log_ppl_abs_diff`: Mean absolute log perplexity difference
+
+  - Magnitude of off-policy gap regardless of direction
+
+- `log_ppl_diff_max`: Maximum log perplexity difference across sequences
+
+  - Identifies worst-case sequence
+
+- `log_ppl_diff_min`: Minimum log perplexity difference across sequences
+- `kl`: KL divergence KL(π_rollout || π_training)
+
+  - Formula: `mean(log_prob_rollout - log_prob_training)`
+  - Note: Can be negative (rollout is less confident)
+
+- `k3_kl`: K3 divergence (equals KL(π_rollout || π_training) in expectation)
+
+  - Formula: `mean(exp(log_ratio) - log_ratio - 1)`
+  - More stable than direct KL (non-negative per token)
+  - Always >= 0
+
+- `chi2_token`: Chi-squared divergence at token level
+
+  - Formula: `mean(ratio²) - 1` where ratio = π_training/π_rollout
+  - Measures second moment of IS weight distribution
+  - Always non-negative
+
+- `chi2_seq`: Chi-squared divergence at sequence level
+
+  - Formula: `mean((∏_t ratio_t)²) - 1`
+  - Sequence-level second moment of IS weights
+  - More sensitive than token-level chi-squared
+
+                         *algo-rollout_corr-example-accessing-metrics-in-code*
+Example: Accessing Metrics in Code
+
+>python
+    # Metrics are returned from compute_rollout_correction_and_rejection_mask
+    from verl.trainer.ppo.rollout_corr_helper import compute_rollout_correction_and_rejection_mask
+
+    # Returns 3 values (weights, modified_response_mask, metrics)
+    weights_proto, modified_response_mask, metrics = compute_rollout_correction_and_rejection_mask(
+        old_log_prob=training_log_probs,      # from training policy
+        rollout_log_prob=rollout_log_probs,   # from rollout policy
+        response_mask=response_mask,
+        rollout_is="token",  # Enable IS weights at token level
+        rollout_is_threshold=2.0,
+        rollout_rs="token_k1",
+        rollout_rs_threshold="0.5_2.0",
+    )
+
+    # Extract IS weights (processed, zeroed at padding)
+    is_weights = weights_proto.batch["rollout_is_weights"]
+
+    # IS weights processing (with IS enabled at token level):
+    # 1. Safety-bounded: exp(clamp(log_ratio, -20, 20)) per token
+    # 2. Truncated: .clamp(max=2.0) to cap extreme weights
+    # 3. Zeroed at padding positions
+    # Note: Truncation is ALWAYS applied to IS weights (TIS: Truncated Importance Sampling)
+
+    # modified_response_mask has rejection applied (since rollout_rs="token_k1"):
+    # 1. RS rejection: tokens outside [0.5, 2.0] masked to 0 via response_mask
+    # Note: RS and IS are separate mechanisms - both can be enabled independently
+
+    # All metrics have 'rollout_corr/' prefix
+    print(f"Mean IS weight: {metrics['rollout_corr/rollout_is_mean']:.3f}")
+    print(f"Effective sample size: {metrics['rollout_corr/rollout_is_eff_sample_size']:.3f}")
+    print(f"RS masked fraction: {metrics['rollout_corr/rollout_rs_masked_fraction']:.3f}")
+    print(f"KL divergence: {metrics['rollout_corr/kl']:.3f}")
+
+    # Check IS weights for valid tokens (non-padding)
+    valid_weights = is_weights[response_mask.bool()]
+    print(f"\n✓ IS weights min (valid tokens): {valid_weights.min():.4f}")
+    print(f"✓ IS weights max (valid tokens): {valid_weights.max():.4f}")
+    print(f"✓ All valid IS weights > 0: {(valid_weights > 0).all()}")
+    print(f"✓ IS weights are capped at threshold: {(valid_weights <= 2.0).all()}")
+
+    # Check rejection via response_mask
+    rejected_tokens = (response_mask == 1) & (modified_response_mask == 0)
+    print(f"\n✓ Rejected {rejected_tokens.sum()} tokens via response_mask")
+    print(f"✓ Rejection sampling modifies response_mask (separate from IS weight truncation)")
+    print(f"✓ IS weights are always truncated to [0, threshold] after safety bounding")
+
+    # Check for warning conditions
+    if metrics['rollout_corr/rollout_is_mean'] < 0.5 or metrics['rollout_corr/rollout_is_mean'] > 2.0:
+        print("⚠️  Warning: Mean IS weight far from 1.0, significant off-policy gap detected")
+
+    if metrics['rollout_corr/rollout_is_eff_sample_size'] < 0.3:
+        print("⚠️  Warning: Low effective sample size, high weight concentration")
+<
+
+                *algo-rollout_corr-example-monitoring-metrics-during-training*
+Example: Monitoring Metrics During Training
+
+>python
+    # In your training loop
+    for epoch in range(num_epochs):
+        for batch_idx, batch in enumerate(dataloader):
+            # ... rollout phase ...
+
+            # Compute IS weights and get metrics
+            rollout_corr_config = config.algorithm.get("rollout_correction", None)
+            if rollout_corr_config is not None:
+                weights_proto, modified_response_mask, metrics = compute_rollout_correction_and_rejection_mask(
+                    old_log_prob=batch.old_log_prob,
+                    rollout_log_prob=batch.rollout_log_prob,
+                    response_mask=batch.response_mask,
+                    rollout_is=rollout_corr_config.get("rollout_is", None),
+                    rollout_is_threshold=rollout_corr_config.get("rollout_is_threshold", 2.0),
+                    rollout_rs=rollout_corr_config.get("rollout_rs", None),
+                    rollout_rs_threshold=rollout_corr_config.get("rollout_rs_threshold", None),
+                )
+
+            # Log to tensorboard/wandb
+            for metric_name, metric_value in metrics.items():
+                logger.log_scalar(metric_name, metric_value, step=global_step)
+
+            # IMPORTANT: Update batch response_mask with rejection applied
+            batch.response_mask = modified_response_mask
+
+            # Use IS weights in training (always safety-bounded, zeroed at padding)
+            is_weights = weights_proto.batch["rollout_is_weights"]
+            # ... apply weights to policy gradient ...
+<
+
+             *algo-rollout_corr-example-conditional-alerting-based-on-metrics*
+Example: Conditional Alerting Based on Metrics
+
+>python
+    def check_rollout_correction_health(metrics, config):
+        """Check if Rollout Correction metrics indicate healthy training."""
+        warnings = []
+
+        # Check mean IS weight
+        mean_weight = metrics['rollout_corr/rollout_is_mean']
+        if mean_weight < 0.5 or mean_weight > 2.0:
+            warnings.append(f"Mean IS weight {mean_weight:.3f} is far from 1.0")
+
+        # Check effective sample size
+        ess = metrics['rollout_corr/rollout_is_eff_sample_size']
+        if ess < 0.3:
+            warnings.append(f"Effective sample size {ess:.3f} is too low")
+
+        # Check standard deviation
+        std = metrics['rollout_corr/rollout_is_std']
+        if std > 1.0:
+            warnings.append(f"IS weight std {std:.3f} is too high")
+
+        # Check KL divergence
+        kl = metrics['rollout_corr/kl']
+        if abs(kl) > 0.1:
+            warnings.append(f"KL divergence {kl:.3f} indicates significant off-policy gap")
+
+        # Check chi-squared divergence
+        if 'rollout_corr/chi2_token' in metrics:
+            chi2_token = metrics['rollout_corr/chi2_token']
+            if chi2_token > 1.0:
+                warnings.append(f"Chi-squared divergence (token) {chi2_token:.3f} indicates severe distribution shift")
+
+        if warnings:
+            print("⚠️  Rollout Correction Health Warnings:")
+            for warning in warnings:
+                print(f"  - {warning}")
+            return False
+        else:
+            print("✅ Rollout Correction metrics look healthy")
+            return True
+
+    # Use in training
+    _, _, metrics = compute_rollout_correction_and_rejection_mask(...)
+    is_healthy = check_rollout_correction_health(metrics, config)
+
+    if not is_healthy:
+        # Consider adjusting config or investigating issues
+        print("Consider:")
+        print("  - Tightening rollout_is_threshold")
+        print("  - Switching to geometric aggregation level")
+        print("  - Checking if rollout and training policies are too different")
+<
+
+Running Examples                          *algo-rollout_corr-running-examples*
+
+Start with the basic token-level truncate configuration:
+
+>bash
+    bash examples/rollout_correction/run_qwen2_5_7b_fsdp.sh
+<
+Monitor metrics for 1-2 epochs before adjusting parameters.
+
+CONFIGURATION EXAMPLES              *algo-rollout_corr-configuration-examples*
+
+                     *algo-rollout_corr-example-1-is-weights-only-token-level*
+Example 1: IS Weights Only (Token Level)
+
+>yaml
+    algorithm:
+      rollout_correction:
+        rollout_is: token
+        rollout_is_threshold: 2.0
+        rollout_rs: null # No rejection sampling
+<
+
+           *algo-rollout_corr-example-2-rejection-sampling-only-no-is-weights*
+Example 2: Rejection Sampling Only (No IS Weights)
+
+>yaml
+    algorithm:
+      rollout_correction:
+        rollout_is: null # No IS weights
+        rollout_rs: token_k1
+        rollout_rs_threshold: "0.5_2.0"
+<
+
+                         *algo-rollout_corr-example-3-both-is-and-rs-token-rs*
+Example 3: Both IS and RS (Token RS)
+
+>yaml
+    algorithm:
+      rollout_correction:
+        rollout_is: token
+        rollout_is_threshold: 2.0
+        rollout_rs: token_k1
+        rollout_rs_threshold: "0.5_2.0"
+<
+
+               *algo-rollout_corr-example-5-bypass-mode-with-ppo-clip-default*
+Example 5: Bypass Mode with PPO-clip (Default)
+
+>yaml
+    algorithm:
+      rollout_correction:
+        rollout_is: token
+        rollout_is_threshold: 2.0
+        rollout_rs: token_k1
+        rollout_rs_threshold: "0.5_2.0"
+        bypass_mode: true # Skip old_log_prob computation
+        loss_type: ppo_clip # PPO clipped objective (default)
+<
+Skips expensive `actor.compute_log_prob()` forward pass. PPO ratio =
+π_θ/π_rollout handles IS.
+
+                      *algo-rollout_corr-example-6-bypass-mode-with-reinforce*
+Example 6: Bypass Mode with REINFORCE
+
+>yaml
+    rollout_correction:
+      rollout_is: sequence # Explicit IS correction in loss
+      rollout_is_threshold: 2.0
+      rollout_rs: null # Optional: can add rejection sampling
+      bypass_mode: true
+      loss_type: reinforce # REINFORCE with explicit IS weights
+<
+No PPO clipping, pure policy gradient with IS correction
+
+    *algo-rollout_corr-example-7-bypass-mode-with-ppo-clip-rejection-sampling*
+Example 7: Bypass Mode with PPO-clip + Rejection Sampling
+
+>yaml
+    rollout_correction:
+      rollout_is: sequence # Computed for metrics
+      rollout_is_threshold: 2.0
+      rollout_rs: seq_max_k2 # Sequence max χ²/2 guard
+      rollout_rs_threshold: 2.5
+      bypass_mode: true
+      loss_type: ppo_clip # PPO clipped objective (IS handled by ratio)
+<
+PPO clipping with rejection sampling. IS handled by PPO ratio (no explicit
+IS weights).
+
+TROUBLESHOOTING                            *algo-rollout_corr-troubleshooting*
+
+                           *algo-rollout_corr-issue-high-spread-in-is-weights*
+Issue: High spread in IS weights
+
+Symptoms: `rollout_is_std` > 1.0, `rollout_is_eff_sample_size` < 0.3
+
+Solutions:
+
+1. Switch from `sequence` to `geometric` level
+2. Tighten thresholds
+3. Verify rollout and training aren't too different
+
+                         *algo-rollout_corr-issue-mean-is-weight-far-from-1-0*
+Issue: Mean IS weight far from 1.0
+
+Symptoms: `rollout_is_mean` < 0.5 or > 2.0
+
+Solutions:
+
+1. Verify `calculate_log_probs=True` is set
+2. Check rollout_log_probs are correctly passed
+3. Check for systematic distribution shift
+
+                             *algo-rollout_corr-debugging-visualizing-metrics*
+Debugging: Visualizing Metrics
+
+Example: Plot IS weight distribution
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    def plot_is_metrics(metrics_history):
+        """Plot rollout IS metrics over training steps."""
+        fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+
+        # Plot 1: Mean IS weight over time
+        axes[0, 0].plot(metrics_history['rollout_corr/rollout_is_mean'])
+        axes[0, 0].axhline(y=1.0, color='r', linestyle='--', label='Ideal')
+        axes[0, 0].set_title('Mean IS Weight')
+        axes[0, 0].set_xlabel('Step')
+        axes[0, 0].legend()
+
+        # Plot 2: Effective sample size
+        axes[0, 1].plot(metrics_history['rollout_corr/rollout_is_eff_sample_size'])
+        axes[0, 1].axhline(y=0.5, color='g', linestyle='--', label='Good')
+        axes[0, 1].axhline(y=0.3, color='r', linestyle='--', label='Warning')
+        axes[0, 1].set_title('Effective Sample Size')
+        axes[0, 1].set_xlabel('Step')
+        axes[0, 1].legend()
+
+        # Plot 3: KL divergence over time
+        axes[1, 0].plot(metrics_history['rollout_corr/kl'], label='KL')
+        axes[1, 0].plot(metrics_history['rollout_corr/k3_kl'], label='K3 KL')
+        axes[1, 0].axhline(y=0, color='g', linestyle='--', alpha=0.3)
+        axes[1, 0].set_title('KL Divergence')
+        axes[1, 0].set_xlabel('Step')
+        axes[1, 0].legend()
+
+        # Plot 4: PPL ratio over time
+        axes[1, 1].plot(metrics_history['rollout_corr/ppl_ratio'])
+        axes[1, 1].axhline(y=1.0, color='r', linestyle='--', label='Ideal')
+        axes[1, 1].set_title('PPL Ratio (Training/Rollout)')
+        axes[1, 1].set_xlabel('Step')
+        axes[1, 1].legend()
+
+        # Plot 5: Chi-squared divergence
+        if 'rollout_corr/chi2_token' in metrics_history:
+            axes[1, 2].plot(metrics_history['rollout_corr/chi2_token'], label='Token-level')
+            if 'rollout_corr/chi2_seq' in metrics_history:
+                axes[1, 2].plot(metrics_history['rollout_corr/chi2_seq'], label='Seq-level')
+            axes[1, 2].axhline(y=1.0, color='r', linestyle='--', label='Warning')
+            axes[1, 2].set_title('Chi-squared Divergence')
+            axes[1, 2].set_xlabel('Step')
+            axes[1, 2].legend()
+        else:
+            axes[1, 2].axis('off')
+
+        plt.tight_layout()
+        plt.savefig('rollout_is_metrics.png', dpi=150)
+        print("Saved plot to rollout_is_metrics.png")
+<
+Example: Metric collection during training
+
+>python
+    # Collect metrics over time
+    metrics_history = {
+        'rollout_corr/rollout_is_mean': [],
+        'rollout_corr/rollout_is_eff_sample_size': [],
+        'rollout_corr/kl': [],
+        'rollout_corr/k3_kl': [],
+        'rollout_corr/ppl_ratio': [],
+        'rollout_corr/chi2_token': [],
+        'rollout_corr/chi2_seq': [],
+    }
+
+    # In training loop
+    for step in range(num_steps):
+        # ... compute IS weights and rejection mask ...
+        _, _, metrics = compute_rollout_correction_and_rejection_mask(...)
+
+        # Store metrics
+        for key in metrics_history.keys():
+            if key in metrics:
+                metrics_history[key].append(metrics[key])
+
+        # Plot every 100 steps
+        if step % 100 == 0:
+            plot_is_metrics(metrics_history)
+<
+
+PERFORMANCE IMPACT                      *algo-rollout_corr-performance-impact*
+
+- Memory overhead: ~1% of model memory
+- Computational overhead: 1-3% depending on level
+- Training stability: Significantly improved when off-policy gap exists
+
+TESTING                                            *algo-rollout_corr-testing*
+
+Run the test suite to verify everything works:
+
+>bash
+    # Basic unit tests
+    python tests/trainer/ppo/test_rollout_corr.py
+
+    # Integration tests (if pytest is available)
+    pytest tests/trainer/ppo/test_rollout_corr_integration.py -v
+<
+Expected output: All tests pass ✓
+
+ADDITIONAL RESOURCES                  *algo-rollout_corr-additional-resources*
+
+- Implementation: `verl/trainer/ppo/rollout_corr_helper.py`
+- Examples: `examples/rollout_correction/`
+- DAPO Example: `recipe/dapo/run_dapo_qwen2.5_32b_rollout_corr.sh`
+
+SUMMARY                                            *algo-rollout_corr-summary*
+
+Rollout Correction provides a unified framework for handling general
+off-policy problems in RL:
+
+- ✅ Corrects ANY distribution shift between data collection and training
+- ✅ Supports diverse scenarios: policy mismatch, staleness, replay buffers,
+  off-policy algorithms
+- ✅ Numerical stability with safety bounds and rejection mechanisms
+- ✅ Comprehensive diagnostics: KL, perplexity, χ² divergence
+- ✅ Flexible methods from token-level to sequence-level aggregation
+- ✅ Memory-efficient implementation
+
+REFERENCES                                      *algo-rollout_corr-references*
+
+- Mathematical Formulations
+  https://verl.readthedocs.io/en/latest/algo/rollout_corr_math.html -
+  Detailed mathematical theory and derivations for all rollout correction
+  methods
+- Your Efficient RL Framework Secretly Brings You Off-Policy RL Training
+  https://fengyao.notion.site/off-policy-rl
+
+----------------------------------------------------------------------------
+Recipe: Self-Play Fine-Tuning (SPIN)                          *verl-algo-spin*
+
+Last updated: 05/31/2025.
+
+`verl` provides a recipe inspired by the paper “Self-Play Fine-Tuning
+Converts Weak Language Models to Strong Language Models” (SPIN). SPIN is a
+language model finetuning algorithm that enables iterative self-improvement
+through a self-play mechanism inspired by game theory.
+
+Core Idea: Models learn by playing against themselves, reducing reliance on
+external preference datasets or stronger teacher models:
+
+1. Synthetic Data Generation: The current model generates responses,
+   creating its own training data from previous iterations.
+2. Two-Player Game Setup: A game involving two players acted by a single
+   LLM.
+3. Iterative Training: The model progressively improves by refining its
+   policy, with each iteration's model becoming the opponent for the next
+   iteration.
+
+Paper Authors: Zixiang Chen https://github.com/uclaml/SPIN*, Yihe Deng
+https://github.com/uclaml/SPIN*, Huizhuo Yuan
+https://scholar.google.com/citations?user=8foZzX4AAAAJ*, Kaixuan Ji
+https://scholar.google.com/citations?user=FOoKDukAAAAJ, Quanquan Gu
+https://web.cs.ucla.edu/~qgu/
+
+[Webpage https://uclaml.github.io/SPIN/] [Huggingface
+https://huggingface.co/papers/2401.01335] [Paper
+https://arxiv.org/abs/2401.01335] [Original Implementation
+https://github.com/uclaml/SPIN]
+
+verl Implementation Authors: Chendong Wang https://cdwang96.github.io/,
+Chenyang Zhao https://github.com/zhaochenyang20
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+            *algo-spin-key-function-compute-online-dpo-loss-and-related-works*
+KEY FUNCTION (COMPUTE_ONLINE_DPO_LOSS) AND RELATED WORKS
+
+SPIN (Chen et al., 2024) proposes an iterative self-play mechanism to
+fine-tune language models. In each iteration, SPIN's training objective,
+when using a logistic loss function, is equivalent to Direct Preference
+Optimization (DPO) loss (Rafailov et al., 2023).
+
+This `verl` recipe realizes SPIN's core concept by using DPO loss
+iteratively (Xu et al., 2023; Xiong et al., 2023; Snorkel AI, 2024). This
+means that in each iteration, we fine-tune the LLM using DPO loss for
+preference optimization. Notably, Xu et al. (2023) explored iterative
+preference optimization with pairwise cringe loss, while Xiong et al. (2023)
+discussed how to bridge theory and practice for RLHF under KL constraints
+using iterative training. The concept of iterative preference learning was
+also explored in online DPO (Guo et al., 2024), which focuses on direct
+alignment from online AI feedback. In online DPO, preference data is
+dynamically updated during training, allowing the model to learn from its
+own generated data.
+
+Specifically, we developed the `compute_online_dpo_loss` function and built
+this SPIN recipe on top of it. By incorporating online preference
+generation, this approach enables continuously refining language models
+without relying on fixed external preference datasets.
+
+Reference Papers:
+
+- Self-Play Fine-Tuning Converts Weak Language Models to Strong Language Models
+  https://arxiv.org/abs/2401.01335 (Chen et al., 2024)
+- Direct Preference Optimization: Your Language Model is Secretly a Reward Model
+  https://arxiv.org/abs/2305.18290 (Rafailov et al., 2023)
+- Somethings are more cringe than others: Preference optimization with the pairwise cringe loss
+  https://arxiv.org/abs/2312.16682 (Xu et al., 2023)
+- Iterative preference learning from human feedback: Bridging theory and practice for rlhf under kl-constraint
+  https://arxiv.org/abs/2312.11456 (Xiong et al., 2023)
+- Snorkel-Mistral-PairRM-DPO
+  https://huggingface.co/snorkelai/Snorkel-Mistral-PairRM-DPO (Snorkel AI,
+  2024)
+- Direct language model alignment from online ai feedback
+  https://arxiv.org/abs/2402.04792 (Guo et al., 2024)
+
+OUR ONLINE DPO IMPLEMENTATION        *algo-spin-our-online-dpo-implementation*
+
+Our `compute_online_dpo_loss` function adapts `verl`'s existing PPO
+infrastructure (based on `verl` v0.3.0.post1) for this iterative online DPO.
+Key aspects of our implementation include:
+
+- No Critic: Unlike PPO, we omit the value function critic.
+- Dynamic Reference Model: An explicit reference policy (`ref_policy_wg`) is
+  used for DPO loss. This reference model's weights can be periodically
+  updated from the actor (`ref_update_freq`), providing a dynamic baseline.
+- Online Preference Generation: The `compute_onlineDPO_pref` function (in
+  `core_algos.py`) dynamically creates chosen/rejected pairs based on a
+  reward source (e.g., rule-based ranking for math problems).
+- DPO Loss Integration: We replace PPO's policy loss with our
+  `compute_online_dpo_loss` (in `core_algos.py`) within the actor update
+  (`dp_actor.py`), directly optimizing the policy using the generated
+  preferences.
+- Iterative Training Orchestration: The `SpinTrainer` (in `spin_trainer.py`)
+  manages the entire self-play loop: generation, preference labeling,
+  optional reference model updates, and policy updates, enabling continuous
+  self-improvement aligned with SPIN's principles.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ALGORITHM                                                *algo-spin-algorithm*
+
+This recipe implements an Online algorithm adapted to the `verl`
+Reinforcement Learning framework, which provides an alternative to PPO for
+fine-tuning language models.
+
+Online Loop: Instead of maximizing a scalar reward signal in PPO, this
+approach directly optimizes the policy model to align with preference data
+generated online during training:
+
+1. Generation: The current model generates multiple responses for each
+   prompt in a batch.
+2. Preference Labeling: A function evaluates these generated responses to
+   determine which one is preferred (chosen) and which is dispreferred
+   (rejected). This can be done using a reward function or implicit ranking
+   based on specific rules. (In this recipe, we use rule-based ranking on
+   the math problem).
+3. Update: This preference tuple (`prompt`, `chosen_response`,
+   `rejected_response`) is used to update the actor model using
+   `compute_online_dpo_loss`, comparing against a reference model.
+
+Connection with SPIN: Instead of only using a fixed target data
+distribution, the online generation loop in step 2 will dynamically change
+the target data distribution by using a certain Preference Labeling method
+(rule-based ranking on the math problem by selecting the better one in this
+recipe). This explores the direction mentioned in SPIN's paper Section 7
+about “dynamically changing target data distribution” to potentially elevate
+LLM performance beyond the fixed human-annotated data ceiling.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+                            *algo-spin-reproduce-the-experiment-example-setup*
+REPRODUCE THE EXPERIMENT (EXAMPLE SETUP)
+
+The following steps outline how to set up the environment and run the SPIN
+recipe, based on the provided test log using GSM8K and Qwen2.5-3B-Instruct.
+
+1. Setup Environment (Example using Docker):
+
+   >bash
+       # Start a container with GPU access and shared memory
+       docker run -it --name spin_test --gpus all \
+           --shm-size=32g \
+           --ipc=host \
+           -v /path/to/host/.cache:/root/.cache \
+           -e HF_TOKEN=<YOUR_HUGGINGFACE_TOKEN> \
+           lmsysorg/sglang:latest \
+           /bin/bash
+
+       # Inside the container or on your host machine:
+       # Ensure /tmp is writable
+       mkdir -p /tmp
+       chmod 1777 /tmp
+
+       # Install Python 3.10 (if not present) and venv
+       sudo apt update
+       sudo apt install -y python3.10 python3.10-venv tmux
+       python3 -m ensurepip --upgrade
+
+       # Create and activate a virtual environment
+       python3 -m venv ~/.python/spin_env
+       source ~/.python/spin_env/bin/activate
+
+       # Install uv (fast package installer)
+       python3 -m pip install uv
+<
+
+2. Install verl and Dependencies:
+
+   >bash
+       # Clone the verl repository and checkout the spin branch
+       cd ~
+       git clone git@github.com:verl-project/verl.git && cd verl
+
+       # Install flash-attn (handle potential build issues)
+       python3 -m uv pip install wheel packaging
+       python3 -m uv pip install flash-attn --no-build-isolation --no-deps
+
+       # Install verl with sglang extras
+       python3 -m uv pip install -e ".[sglang]"
+<
+   Note: If `flash-attn` installation fails, try the manual steps again or
+   consult its documentation.
+
+3. Login & Download Data/Model:
+
+   >bash
+       # Login to Weights & Biases (optional, for logging)
+       export WANDB_API_KEY=<YOUR_WANDB_API_KEY>
+       # wandb login
+
+       # Download the GSM8K dataset
+       python3 examples/data_preprocess/gsm8k.py --local_save_dir ~/data/gsm8k # Adjusted path
+
+       # Download the base model (Example: Qwen2.5-3B-Instruct)
+       hf download Qwen/Qwen2.5-3B-Instruct --local-dir $HOME/models/Qwen2.5-3B-Instruct
+<
+
+4. Configure:
+
+   - Modify the configuration file (e.g., `config/spin_trainer.yaml` or the
+     one specified in the run script) with correct paths to your downloaded
+     model, data, desired hyperparameters (`dpo_beta`, learning rate, etc.),
+     and distributed training settings (nodes, GPUs per node).
+   - Pay attention to `actor_rollout_ref.model`, `data` paths,
+     `reward_model` config (if using one), and `trainer.ref_update_freq`.
+
+5. Run Training:
+
+   >bash
+       # Set CUDA visible devices (adjust based on your hardware and config)
+       export CUDA_VISIBLE_DEVICES=0,1,2,3
+
+       # Launch the training script (e.g., test.sh or a custom script)
+       # Ensure test.sh points to the correct config and main script
+       bash recipe/spin/run_spin.sh
+<
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+CONFIGURATION                                        *algo-spin-configuration*
+
+- The primary configuration is typically managed through a YAML file
+  specified in the launch script (e.g., `config/spin_trainer.yaml`).
+- Key configuration sections:
+
+  - `data`: Paths to training/validation prompt files, batch sizes, sequence
+    lengths.
+  - `actor_rollout_ref`: Paths to the base model (used for actor and initial
+    reference), FSDP settings, optimization parameters (learning rate,
+    scheduler).
+  - `reward_model`: Configuration for the reward model used for online
+    preference labeling (path, batch size, etc.). Can be omitted if using a
+    simpler reward function.
+  - `algorithm`: DPO-specific hyperparameters like `dpo_beta`,
+    `dpo_loss_type`.
+  - `trainer`: Distributed training settings (nodes, GPUs per node), logging
+    (WandB), checkpointing frequency, and `ref_update_freq` (set > 0 to
+    enable periodic reference model updates from the actor).
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+KEY FILES                                                *algo-spin-key-files*
+
+- `main_spin.py`: Main entry point using Hydra to load the config and launch
+  the `SpinTrainer`.
+- `spin_trainer.py`: Defines the `SpinTrainer` class, orchestrating the
+  Online DPO training loop.
+- `fsdp_workers.py`: Implements Ray workers (Actor, Reference) potentially
+  using FSDP.
+- `dp_actor.py`: Contains the actor class, including the DPO policy update
+  logic.
+- `core_algos.py`: Includes helper functions for `compute_online_dpo_loss`
+  and `compute_onlineDPO_pref`.
+- `config/spin_trainer.yaml` (or similar): Main Hydra configuration file for
+  the recipe.
+- `run_spin.sh` (or similar): Example bash script for launching a training
+  run.
+- `README.md`: This file.
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ACKNOWLEDGEMENT                                    *algo-spin-acknowledgement*
+
+We sincerely thank the contribution and guidance from the `verl` community
+and advisors, including (adapted from SPPO):
+
+- Zixiang Chen https://sites.google.com/view/zxchen
+- Yuhao Yang https://github.com/yhyang201
+- Yifan Zhang https://github.com/yifanzhang-pro
+- Yongan Xiang https://github.com/BearBiscuit05
+- Junrong Lin https://github.com/ocss884
+- Yuxuan Tong https://github.com/tongyx361
+- Guangming Shen https://github.com/PeterSH6
+- Biao He https://www.linkedin.com/in/biao-he/
+- Qingquan Song https://qingquansong.github.io/
+- Chenyang Zhao https://zhaochenyang20.github.io/Chayenne/
+- Quanquan Gu https://web.cs.ucla.edu/~qgu/
+
+----------------------------------------------------------------------------
+Recipe: Self-Play Preference Optimization (SPPO)              *verl-algo-sppo*
+
+Last updated: 05/28/2025.
+
+verl provides a community recipe implementation for the paper
+Self-Play Preference Optimization for Language Model Alignment
+https://arxiv.org/abs/2405.00675. SPPO can significantly enhance the
+performance of an LLM without strong external signals such as responses or
+preferences from GPT-4. It can outperform the model trained with iterative
+direct preference optimization (DPO), among other methods. SPPO is
+theoretically grounded, ensuring that the LLM can converge to the von
+Neumann winner (i.e., Nash equilibrium) under general, potentially
+intransitive preference, and empirically validated through extensive
+evaluations on multiple datasets.
+
+Paper Authors: Yue Wu https://yuewu.us/*, Zhiqing Sun
+https://www.cs.cmu.edu/~zhiqings/*, Huizhuo Yuan
+https://scholar.google.com/citations?user=8foZzX4AAAAJ*, Kaixuan Ji
+https://scholar.google.com/citations?user=FOoKDukAAAAJ, Yiming Yang
+https://www.cs.cmu.edu/~yiming/, Quanquan Gu https://web.cs.ucla.edu/~qgu/
+
+verl Implementation Authors: Yuhao Yang https://github.com/yhyang201,
+Chenyang Zhao https://github.com/zhaochenyang20
+
+[Webpage https://uclaml.github.io/SPPO/] [Huggingface
+https://huggingface.co/papers/2405.00675] [Paper
+https://arxiv.org/abs/2405.00675][Original Implementation
+https://github.com/uclaml/SPPO]
+
+REPRODUCE THE EXPERIMENT                  *algo-sppo-reproduce-the-experiment*
+
+We evaluate the performance of SPPO on the MATH dataset. Starting from an
+initial score of 46.6 with Qwen2.5-7B-Instruct, we achieve a score of 65.6
+after 20 epochs of training, placing our model approximately in the top 20
+on the MATH leaderboard
+https://paperswithcode.com/sota/math-word-problem-solving-on-math. It's
+important to note that verl's internal evaluation metrics may not perfectly
+align with the official evaluation methodology for Qwen2.5-7B-Instruct.
+Therefore, for consistency and fair comparison, we report only the results
+based on verl's evaluation framework.
+
+>bash
+    git clone git@github.com:verl-project/verl.git
+    cd verl
+    python3 -m uv pip install -e ".[sglang]"
+
+    export WANDB_API_KEY=<YOUR_WANDB_API_KEY>
+
+    python3 examples/data_preprocess/math_dataset.py --local_dir ~/data/math
+    hf download Qwen/Qwen2.5-7B-Instruct --local-dir $HOME/models/Qwen2.5-7B-Instruct
+
+    export CUDA_VISIBLE_DEVICES=0,1,2,3
+    bash recipe/sppo/run_qwen2.5-7b_rm.sh
+<
+Note that the installation would occasionally fail to install flash-attn. If
+this happens, you can install it manually by running:
+
+>bash
+    python3 -m uv pip install wheel
+    python3 -m uv pip install packaging
+    python3 -m uv pip install flash-attn --no-build-isolation --no-deps
+<
+
+ACKNOWLEDGEMENT                                    *algo-sppo-acknowledgement*
+
+We sincerely thank the contribution and guidance from:
+
+- Yue Wu https://yuewu.us/
+- Chendong Wang https://cdwang96.github.io/
+- Yifan Zhang https://github.com/yifanzhang-pro
+- Yongan Xiang https://github.com/BearBiscuit05
+- Junrong Lin https://github.com/ocss884
+- Yuxuan Tong https://github.com/tongyx361
+- Guangming Shen https://github.com/PeterSH6
+- Biao He https://www.linkedin.com/in/biao-he/
+- Qingquan Song https://qingquansong.github.io/
+- Quanquan Gu https://web.cs.ucla.edu/~qgu/
+
+ vim:tw=78:ts=8:ft=help:norl:

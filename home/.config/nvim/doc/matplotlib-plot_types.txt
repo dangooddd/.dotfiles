@@ -1,0 +1,1510 @@
+*matplotlib-plot_types.txt*	Matplotlib documentation: plot_types
+Version 3.11 — https://matplotlib.org/stable/
+
+==============================================================================
+PLOT_TYPES                                     *matplotlib-section-plot_types*
+
+
+----------------------------------------------------------------------------
+bar3d(x, y, z, dx, dy, dz)  *matplotlib-plot_types-3D-bar3d_simple*
+
+*plot_types-3D-bar3d_simple-sphx-glr-plot-types-3d-bar3d-simple-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.bar3d-mpl_toolkits.mplot3d.axes3d.Axes3D.bar3d|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # Make data
+    x = [1, 1, 2, 2]
+    y = [1, 2, 1, 2]
+    z = [0, 0, 0, 0]
+    dx = np.ones_like(x)*0.5
+    dy = np.ones_like(x)*0.5
+    dz = [2, 3, 1, 4]
+
+    # Plot
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    ax.bar3d(x, y, z, dx, dy, dz)
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+fill_between(x1, y1, z1, x2, y2, z2)  *matplotlib-plot_types-3D-fill_between3d_simple*
+
+*plot_types-3D-fill_between3d_simple-sphx-glr-plot-types-3d-fill-between3d-simple-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.fill_between-mpl_toolkits.mplot3d.axes3d.Axes3D.fill_between|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # Make data for a double helix
+    n = 50
+    theta = np.linspace(0, 2*np.pi, n)
+    x1 = np.cos(theta)
+    y1 = np.sin(theta)
+    z1 = np.linspace(0, 1, n)
+    x2 = np.cos(theta + np.pi)
+    y2 = np.sin(theta + np.pi)
+    z2 = z1
+
+    # Plot
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    ax.fill_between(x1, y1, z1, x2, y2, z2, alpha=0.5)
+    ax.plot(x1, y1, z1, linewidth=2, color='C0')
+    ax.plot(x2, y2, z2, linewidth=2, color='C0')
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+3D and volumetric data                        *matplotlib-plot_types-3D-index*
+
+*plot_types-3D-index-sphx-glr-plot-types-3d*
+
+*plot_types-3D-index-d-plots*
+
+Plots of three-dimensional `\((x,y,z)\)`, surface `\(f(x,y)=z\)`, and
+volumetric `\(V_{x, y, z}\)` data using the
+|api-toolkits-mplot3d-module-mpl_toolkits.mplot3d| library.
+
+|matplotlib-plot_types-3D-bar3d_simple|
+
+bar3d(x, y, z, dx, dy, dz)
+    |matplotlib-plot_types-3D-fill_between3d_simple|
+
+fill_between(x1, y1, z1, x2, y2, z2)
+    |matplotlib-plot_types-3D-plot3d_simple|
+
+plot(xs, ys, zs)
+    |matplotlib-plot_types-3D-quiver3d_simple|
+
+quiver(X, Y, Z, U, V, W)
+    |matplotlib-plot_types-3D-scatter3d_simple|
+
+scatter(xs, ys, zs)
+    |matplotlib-plot_types-3D-stem3d|
+
+stem(x, y, z)
+    |matplotlib-plot_types-3D-surface3d_simple|
+
+plot_surface(X, Y, Z)
+    |matplotlib-plot_types-3D-trisurf3d_simple|
+
+plot_trisurf(x, y, z)
+    |matplotlib-plot_types-3D-voxels_simple|
+
+voxels([x, y, z], filled)
+    |matplotlib-plot_types-3D-wire3d_simple|
+
+plot_wireframe(X, Y, Z)
+
+----------------------------------------------------------------------------
+plot(xs, ys, zs)  *matplotlib-plot_types-3D-plot3d_simple*
+
+*plot_types-3D-plot3d_simple-sphx-glr-plot-types-3d-plot3d-simple-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.plot-mpl_toolkits.mplot3d.axes3d.Axes3D.plot|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # Make data
+    n = 100
+    xs = np.linspace(0, 1, n)
+    ys = np.sin(xs * 6 * np.pi)
+    zs = np.cos(xs * 6 * np.pi)
+
+    # Plot
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    ax.plot(xs, ys, zs)
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+quiver(X, Y, Z, U, V, W)  *matplotlib-plot_types-3D-quiver3d_simple*
+
+*plot_types-3D-quiver3d_simple-sphx-glr-plot-types-3d-quiver3d-simple-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.quiver-mpl_toolkits.mplot3d.axes3d.Axes3D.quiver|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # Make data
+    n = 4
+    x = np.linspace(-1, 1, n)
+    y = np.linspace(-1, 1, n)
+    z = np.linspace(-1, 1, n)
+    X, Y, Z = np.meshgrid(x, y, z)
+    U = (X + Y)/5
+    V = (Y - X)/5
+    W = Z*0
+
+
+    # Plot
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    ax.quiver(X, Y, Z, U, V, W)
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+scatter(xs, ys, zs)  *matplotlib-plot_types-3D-scatter3d_simple*
+
+*plot_types-3D-scatter3d_simple-sphx-glr-plot-types-3d-scatter3d-simple-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.scatter-mpl_toolkits.mplot3d.axes3d.Axes3D.scatter|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # Make data
+    np.random.seed(19680801)
+    n = 100
+    rng = np.random.default_rng()
+    xs = rng.uniform(23, 32, n)
+    ys = rng.uniform(0, 100, n)
+    zs = rng.uniform(-50, -25, n)
+
+    # Plot
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    ax.scatter(xs, ys, zs)
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+stem(x, y, z)  *matplotlib-plot_types-3D-stem3d*
+
+*plot_types-3D-stem3d-sphx-glr-plot-types-3d-stem3d-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.stem-mpl_toolkits.mplot3d.axes3d.Axes3D.stem|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # Make data
+    n = 20
+    x = np.sin(np.linspace(0, 2*np.pi, n))
+    y = np.cos(np.linspace(0, 2*np.pi, n))
+    z = np.linspace(0, 1, n)
+
+    # Plot
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    ax.stem(x, y, z)
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+plot_surface(X, Y, Z)  *matplotlib-plot_types-3D-surface3d_simple*
+
+*plot_types-3D-surface3d_simple-sphx-glr-plot-types-3d-surface3d-simple-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.plot_surface-mpl_toolkits.mplot3d.axes3d.Axes3D.plot_surface|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # Make data
+    X = np.arange(-5, 5, 0.25)
+    Y = np.arange(-5, 5, 0.25)
+    X, Y = np.meshgrid(X, Y)
+    R = np.sqrt(X**2 + Y**2)
+    Z = np.sin(R)
+
+    # Plot the surface
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    ax.plot_surface(X, Y, Z, vmin=Z.min() * 2, cmap="Blues")
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+plot_trisurf(x, y, z)  *matplotlib-plot_types-3D-trisurf3d_simple*
+
+*plot_types-3D-trisurf3d_simple-sphx-glr-plot-types-3d-trisurf3d-simple-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.plot_trisurf-mpl_toolkits.mplot3d.axes3d.Axes3D.plot_trisurf|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    n_radii = 8
+    n_angles = 36
+
+    # Make radii and angles spaces
+    radii = np.linspace(0.125, 1.0, n_radii)
+    angles = np.linspace(0, 2*np.pi, n_angles, endpoint=False)[..., np.newaxis]
+
+    # Convert polar (radii, angles) coords to cartesian (x, y) coords.
+    x = np.append(0, (radii*np.cos(angles)).flatten())
+    y = np.append(0, (radii*np.sin(angles)).flatten())
+    z = np.sin(-x*y)
+
+    # Plot
+    fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
+    ax.plot_trisurf(x, y, z, vmin=z.min() * 2, cmap="Blues")
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+voxels([x, y, z], filled)  *matplotlib-plot_types-3D-voxels_simple*
+
+*plot_types-3D-voxels_simple-sphx-glr-plot-types-3d-voxels-simple-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.voxels-mpl_toolkits.mplot3d.axes3d.Axes3D.voxels|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # Prepare some coordinates
+    x, y, z = np.indices((8, 8, 8))
+
+    # Draw cuboids in the top left and bottom right corners
+    cube1 = (x < 3) & (y < 3) & (z < 3)
+    cube2 = (x >= 5) & (y >= 5) & (z >= 5)
+
+    # Combine the objects into a single boolean array
+    voxelarray = cube1 | cube2
+
+    # Plot
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    ax.voxels(voxelarray, edgecolor='k')
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+plot_wireframe(X, Y, Z)  *matplotlib-plot_types-3D-wire3d_simple*
+
+*plot_types-3D-wire3d_simple-sphx-glr-plot-types-3d-wire3d-simple-py*
+
+See
+|api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.plot_wireframe-mpl_toolkits.mplot3d.axes3d.Axes3D.plot_wireframe|.
+
+>python
+    import matplotlib.pyplot as plt
+
+    from mpl_toolkits.mplot3d import axes3d
+
+    plt.style.use('_mpl-gallery')
+
+    # Make data
+    X, Y, Z = axes3d.get_test_data(0.05)
+
+    # Plot
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
+
+    ax.set(xticklabels=[],
+           yticklabels=[],
+           zticklabels=[])
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+barbs(X, Y, U, V)  *matplotlib-plot_types-arrays-barbs*
+
+*plot_types-arrays-barbs-sphx-glr-plot-types-arrays-barbs-py*
+
+Plot a 2D field of wind barbs.
+
+See |matplotlib.axes.Axes.barbs|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data:
+    X, Y = np.meshgrid([1, 2, 3, 4], [1, 2, 3, 4])
+    angle = np.pi / 180 * np.array([[15., 30, 35, 45],
+                                    [25., 40, 55, 60],
+                                    [35., 50, 65, 75],
+                                    [45., 60, 75, 90]])
+    amplitude = np.array([[5, 10, 25, 50],
+                          [10, 15, 30, 60],
+                          [15, 26, 50, 70],
+                          [20, 45, 80, 100]])
+    U = amplitude * np.sin(angle)
+    V = amplitude * np.cos(angle)
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.barbs(X, Y, U, V, barbcolor='C0', flagcolor='C0', length=7, linewidth=1.5)
+
+    ax.set(xlim=(0, 4.5), ylim=(0, 4.5))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+contour(X, Y, Z)  *matplotlib-plot_types-arrays-contour*
+
+*plot_types-arrays-contour-sphx-glr-plot-types-arrays-contour-py*
+
+Plot contour lines.
+
+See |matplotlib.axes.Axes.contour|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data
+    X, Y = np.meshgrid(np.linspace(-3, 3, 256), np.linspace(-3, 3, 256))
+    Z = (1 - X/2 + X**5 + Y**3) * np.exp(-X**2 - Y**2)
+    levels = np.linspace(np.min(Z), np.max(Z), 7)
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.contour(X, Y, Z, levels=levels)
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+contourf(X, Y, Z)  *matplotlib-plot_types-arrays-contourf*
+
+*plot_types-arrays-contourf-sphx-glr-plot-types-arrays-contourf-py*
+
+Plot filled contours.
+
+See |matplotlib.axes.Axes.contourf|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data
+    X, Y = np.meshgrid(np.linspace(-3, 3, 256), np.linspace(-3, 3, 256))
+    Z = (1 - X/2 + X**5 + Y**3) * np.exp(-X**2 - Y**2)
+    levels = np.linspace(Z.min(), Z.max(), 7)
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.contourf(X, Y, Z, levels=levels)
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+imshow(Z)  *matplotlib-plot_types-arrays-imshow*
+
+*plot_types-arrays-imshow-sphx-glr-plot-types-arrays-imshow-py*
+
+Display data as an image, i.e., on a 2D regular raster.
+
+See |matplotlib.axes.Axes.imshow|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data
+    X, Y = np.meshgrid(np.linspace(-3, 3, 16), np.linspace(-3, 3, 16))
+    Z = (1 - X/2 + X**5 + Y**3) * np.exp(-X**2 - Y**2)
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.imshow(Z, origin='lower')
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+Gridded data                              *matplotlib-plot_types-arrays-index*
+
+*plot_types-arrays-index-sphx-glr-plot-types-arrays*
+
+*plot_types-arrays-index-array-plots*
+
+Plots of arrays and images `\(Z_{i, j}\)` and fields
+`\(U_{i, j}, V_{i, j}\)` on regular grids
+https://en.wikipedia.org/wiki/Regular_grid and corresponding coordinate
+grids `\(X_{i,j}, Y_{i,j}\)`.
+
+|matplotlib-plot_types-arrays-imshow|
+
+imshow(Z)
+    |matplotlib-plot_types-arrays-pcolormesh|
+
+pcolormesh(X, Y, Z)
+    |matplotlib-plot_types-arrays-contour|
+
+contour(X, Y, Z)
+    |matplotlib-plot_types-arrays-contourf|
+
+contourf(X, Y, Z)
+    |matplotlib-plot_types-arrays-barbs|
+
+barbs(X, Y, U, V)
+    |matplotlib-plot_types-arrays-quiver|
+
+quiver(X, Y, U, V)
+    |matplotlib-plot_types-arrays-streamplot|
+
+streamplot(X, Y, U, V)
+
+----------------------------------------------------------------------------
+pcolormesh(X, Y, Z)  *matplotlib-plot_types-arrays-pcolormesh*
+
+*plot_types-arrays-pcolormesh-sphx-glr-plot-types-arrays-pcolormesh-py*
+
+Create a pseudocolor plot with a non-regular rectangular grid.
+
+|matplotlib.axes.Axes.pcolormesh| is more flexible than
+|matplotlib.axes.Axes.imshow| in that the x and y vectors need not be
+equally spaced (indeed they can be skewed).
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data with uneven sampling in x
+    x = [-3, -2, -1.6, -1.2, -.8, -.5, -.2, .1, .3, .5, .8, 1.1, 1.5, 1.9, 2.3, 3]
+    X, Y = np.meshgrid(x, np.linspace(-3, 3, 128))
+    Z = (1 - X/2 + X**5 + Y**3) * np.exp(-X**2 - Y**2)
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.pcolormesh(X, Y, Z, vmin=-0.5, vmax=1.0)
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+quiver(X, Y, U, V)  *matplotlib-plot_types-arrays-quiver*
+
+*plot_types-arrays-quiver-sphx-glr-plot-types-arrays-quiver-py*
+
+Plot a 2D field of arrows.
+
+See |matplotlib.axes.Axes.quiver|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data
+    x = np.linspace(-4, 4, 6)
+    y = np.linspace(-4, 4, 6)
+    X, Y = np.meshgrid(x, y)
+    U = X + Y
+    V = Y - X
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.quiver(X, Y, U, V, color="C0", angles='xy',
+              scale_units='xy', scale=5, width=.015)
+
+    ax.set(xlim=(-5, 5), ylim=(-5, 5))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+streamplot(X, Y, U, V)  *matplotlib-plot_types-arrays-streamplot*
+
+*plot_types-arrays-streamplot-sphx-glr-plot-types-arrays-streamplot-py*
+
+Draw streamlines of a vector flow.
+
+See |matplotlib.axes.Axes.streamplot|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make a stream function:
+    X, Y = np.meshgrid(np.linspace(-3, 3, 256), np.linspace(-3, 3, 256))
+    Z = (1 - X/2 + X**5 + Y**3) * np.exp(-X**2 - Y**2)
+    # make U and V out of the streamfunction:
+    V = np.diff(Z[1:, :], axis=1)
+    U = -np.diff(Z[:, 1:], axis=0)
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.streamplot(X[1:, 1:], Y[1:, 1:], U, V)
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+bar(x, height)  *matplotlib-plot_types-basic-bar*
+
+*plot_types-basic-bar-sphx-glr-plot-types-basic-bar-py*
+
+See |matplotlib.axes.Axes.bar|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data:
+    x = 0.5 + np.arange(8)
+    y = [4.8, 5.5, 3.5, 4.6, 6.5, 6.6, 2.6, 3.0]
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.bar(x, y, width=1, edgecolor="white", linewidth=0.7)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+fill_between(x, y1, y2)  *matplotlib-plot_types-basic-fill_between*
+
+*plot_types-basic-fill_between-sphx-glr-plot-types-basic-fill-between-py*
+
+Fill the area between two horizontal curves.
+
+See |matplotlib.axes.Axes.fill_between|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data
+    np.random.seed(1)
+    x = np.linspace(0, 8, 16)
+    y1 = 3 + 4*x/8 + np.random.uniform(0.0, 0.5, len(x))
+    y2 = 1 + 2*x/8 + np.random.uniform(0.0, 0.5, len(x))
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.fill_between(x, y1, y2, alpha=.5, linewidth=0)
+    ax.plot(x, (y1 + y2)/2, linewidth=2)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+Pairwise data                              *matplotlib-plot_types-basic-index*
+
+*plot_types-basic-index-sphx-glr-plot-types-basic*
+
+*plot_types-basic-index-basic-plots*
+
+Plots of pairwise `\((x, y)\)`, tabular `\((var\_0, \cdots, var\_n)\)`, and
+functional `\(f(x)=y\)` data.
+
+|matplotlib-plot_types-basic-plot|
+
+plot(x, y)
+    |matplotlib-plot_types-basic-scatter_plot|
+
+scatter(x, y)
+    |matplotlib-plot_types-basic-bar|
+
+bar(x, height)
+    |matplotlib-plot_types-basic-stem|
+
+stem(x, y)
+    |matplotlib-plot_types-basic-fill_between|
+
+fill_between(x, y1, y2)
+    |matplotlib-plot_types-basic-stackplot|
+
+stackplot(x, y)
+    |matplotlib-plot_types-basic-stairs|
+
+stairs(values)
+
+----------------------------------------------------------------------------
+plot(x, y)  *matplotlib-plot_types-basic-plot*
+
+*plot_types-basic-plot-sphx-glr-plot-types-basic-plot-py*
+
+Plot y versus x as lines and/or markers.
+
+See |matplotlib.axes.Axes.plot|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data
+    x = np.linspace(0, 10, 100)
+    y = 4 + 1 * np.sin(2 * x)
+    x2 = np.linspace(0, 10, 25)
+    y2 = 4 + 1 * np.sin(2 * x2)
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.plot(x2, y2 + 2.5, 'x', markeredgewidth=2)
+    ax.plot(x, y, linewidth=2.0)
+    ax.plot(x2, y2 - 2.5, 'o-', linewidth=2)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+scatter(x, y)  *matplotlib-plot_types-basic-scatter_plot*
+
+*plot_types-basic-scatter_plot-sphx-glr-plot-types-basic-scatter-plot-py*
+
+A scatter plot of y versus x with varying marker size and/or color.
+
+See |matplotlib.axes.Axes.scatter|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make the data
+    np.random.seed(3)
+    x = 4 + np.random.normal(0, 2, 24)
+    y = 4 + np.random.normal(0, 2, len(x))
+    # size and color:
+    sizes = np.random.uniform(15, 80, len(x))
+    colors = np.random.uniform(15, 80, len(x))
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.scatter(x, y, s=sizes, c=colors, vmin=0, vmax=100)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+stackplot(x, y)  *matplotlib-plot_types-basic-stackplot*
+
+*plot_types-basic-stackplot-sphx-glr-plot-types-basic-stackplot-py*
+
+Draw a stacked area plot or a streamgraph.
+
+See |matplotlib.axes.Axes.stackplot|
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data
+    x = np.arange(0, 10, 2)
+    ay = [1, 1.25, 2, 2.75, 3]
+    by = [1, 1, 1, 1, 1]
+    cy = [2, 1, 2, 1, 2]
+    y = np.vstack([ay, by, cy])
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.stackplot(x, y)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+stairs(values)  *matplotlib-plot_types-basic-stairs*
+
+*plot_types-basic-stairs-sphx-glr-plot-types-basic-stairs-py*
+
+Draw a stepwise constant function as a line or a filled plot.
+
+See |matplotlib.axes.Axes.stairs| when plotting `\(y\)` between
+`\((x_i, x_{i+1})\)`. For plotting `\(y\)` at `\(x\)`, see
+|matplotlib.axes.Axes.step|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data
+    y = [4.8, 5.5, 3.5, 4.6, 6.5, 6.6, 2.6, 3.0]
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.stairs(y, linewidth=2.5)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+stem(x, y)  *matplotlib-plot_types-basic-stem*
+
+*plot_types-basic-stem-sphx-glr-plot-types-basic-stem-py*
+
+Create a stem plot.
+
+See |matplotlib.axes.Axes.stem|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data
+    x = 0.5 + np.arange(8)
+    y = [4.8, 5.5, 3.5, 4.6, 6.5, 6.6, 2.6, 3.0]
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.stem(x, y)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+Plot types                                       *matplotlib-plot_types-index*
+
+*plot_types-index-id1*
+
+Overview of many common plotting commands provided by Matplotlib.
+
+See the gallery https://matplotlib.org/stable/gallery/index.html for more
+examples and the |matplotlib-tutorials-index| for longer examples.
+
+PAIRWISE DATA                                 *plot_types-index-pairwise-data*
+
+Plots of pairwise `\((x, y)\)`, tabular `\((var\_0, \cdots, var\_n)\)`, and
+functional `\(f(x)=y\)` data.
+
+|matplotlib-plot_types-basic-plot|
+
+plot(x, y)
+    |matplotlib-plot_types-basic-scatter_plot|
+
+scatter(x, y)
+    |matplotlib-plot_types-basic-bar|
+
+bar(x, height)
+    |matplotlib-plot_types-basic-stem|
+
+stem(x, y)
+    |matplotlib-plot_types-basic-fill_between|
+
+fill_between(x, y1, y2)
+    |matplotlib-plot_types-basic-stackplot|
+
+stackplot(x, y)
+    |matplotlib-plot_types-basic-stairs|
+
+stairs(values)
+
+STATISTICAL DISTRIBUTIONS         *plot_types-index-statistical-distributions*
+
+Plots of the distribution of at least one variable in a dataset. Some of
+these methods also compute the distributions.
+
+|matplotlib-plot_types-stats-hist_plot|
+
+hist(x)
+    |matplotlib-plot_types-stats-boxplot_plot|
+
+boxplot(X)
+    |matplotlib-plot_types-stats-errorbar_plot|
+
+errorbar(x, y, yerr, xerr)
+    |matplotlib-plot_types-stats-violin|
+
+violinplot(D)
+    |matplotlib-plot_types-stats-eventplot|
+
+eventplot(D)
+    |matplotlib-plot_types-stats-hist2d|
+
+hist2d(x, y)
+    |matplotlib-plot_types-stats-hexbin|
+
+hexbin(x, y, C)
+    |matplotlib-plot_types-stats-pie|
+
+pie(x)
+    |matplotlib-plot_types-stats-ecdf|
+
+ecdf(x)
+
+GRIDDED DATA                                   *plot_types-index-gridded-data*
+
+Plots of arrays and images `\(Z_{i, j}\)` and fields
+`\(U_{i, j}, V_{i, j}\)` on regular grids
+https://en.wikipedia.org/wiki/Regular_grid and corresponding coordinate
+grids `\(X_{i,j}, Y_{i,j}\)`.
+
+|matplotlib-plot_types-arrays-imshow|
+
+imshow(Z)
+    |matplotlib-plot_types-arrays-pcolormesh|
+
+pcolormesh(X, Y, Z)
+    |matplotlib-plot_types-arrays-contour|
+
+contour(X, Y, Z)
+    |matplotlib-plot_types-arrays-contourf|
+
+contourf(X, Y, Z)
+    |matplotlib-plot_types-arrays-barbs|
+
+barbs(X, Y, U, V)
+    |matplotlib-plot_types-arrays-quiver|
+
+quiver(X, Y, U, V)
+    |matplotlib-plot_types-arrays-streamplot|
+
+streamplot(X, Y, U, V)
+
+IRREGULARLY GRIDDED DATA           *plot_types-index-irregularly-gridded-data*
+
+Plots of data `\(Z_{x, y}\)` on unstructured grids
+https://en.wikipedia.org/wiki/Unstructured_grid , unstructured coordinate
+grids `\((x, y)\)`, and 2D functions `\(f(x, y) = z\)`.
+
+|matplotlib-plot_types-unstructured-tricontour|
+
+tricontour(x, y, z)
+    |matplotlib-plot_types-unstructured-tricontourf|
+
+tricontourf(x, y, z)
+    |matplotlib-plot_types-unstructured-tripcolor|
+
+tripcolor(x, y, z)
+    |matplotlib-plot_types-unstructured-triplot|
+
+triplot(x, y)
+
+3D AND VOLUMETRIC DATA                *plot_types-index-d-and-volumetric-data*
+
+Plots of three-dimensional `\((x,y,z)\)`, surface `\(f(x,y)=z\)`, and
+volumetric `\(V_{x, y, z}\)` data using the
+|api-toolkits-mplot3d-module-mpl_toolkits.mplot3d| library.
+
+|matplotlib-plot_types-3D-bar3d_simple|
+
+bar3d(x, y, z, dx, dy, dz)
+    |matplotlib-plot_types-3D-fill_between3d_simple|
+
+fill_between(x1, y1, z1, x2, y2, z2)
+    |matplotlib-plot_types-3D-plot3d_simple|
+
+plot(xs, ys, zs)
+    |matplotlib-plot_types-3D-quiver3d_simple|
+
+quiver(X, Y, Z, U, V, W)
+    |matplotlib-plot_types-3D-scatter3d_simple|
+
+scatter(xs, ys, zs)
+    |matplotlib-plot_types-3D-stem3d|
+
+stem(x, y, z)
+    |matplotlib-plot_types-3D-surface3d_simple|
+
+plot_surface(X, Y, Z)
+    |matplotlib-plot_types-3D-trisurf3d_simple|
+
+plot_trisurf(x, y, z)
+    |matplotlib-plot_types-3D-voxels_simple|
+
+voxels([x, y, z], filled)
+    |matplotlib-plot_types-3D-wire3d_simple|
+
+plot_wireframe(X, Y, Z)
+
+----------------------------------------------------------------------------
+boxplot(X)  *matplotlib-plot_types-stats-boxplot_plot*
+
+*plot_types-stats-boxplot_plot-sphx-glr-plot-types-stats-boxplot-plot-py*
+
+Draw a box and whisker plot.
+
+See |matplotlib.axes.Axes.boxplot|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data:
+    np.random.seed(10)
+    D = np.random.normal((3, 5, 4), (1.25, 1.00, 1.25), (100, 3))
+
+    # plot
+    fig, ax = plt.subplots()
+    VP = ax.boxplot(D, positions=[2, 4, 6], widths=1.5, patch_artist=True,
+                    showmeans=False, showfliers=False,
+                    medianprops={"color": "white", "linewidth": 0.5},
+                    boxprops={"facecolor": "C0", "edgecolor": "white",
+                              "linewidth": 0.5},
+                    whiskerprops={"color": "C0", "linewidth": 1.5},
+                    capprops={"color": "C0", "linewidth": 1.5})
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+ecdf(x)  *matplotlib-plot_types-stats-ecdf*
+
+*plot_types-stats-ecdf-sphx-glr-plot-types-stats-ecdf-py*
+
+Compute and plot the empirical cumulative distribution function of x.
+
+See |matplotlib.axes.Axes.ecdf|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data
+    np.random.seed(1)
+    x = 4 + np.random.normal(0, 1.5, 200)
+
+    # plot:
+    fig, ax = plt.subplots()
+    ax.ecdf(x)
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+errorbar(x, y, yerr, xerr)  *matplotlib-plot_types-stats-errorbar_plot*
+
+*plot_types-stats-errorbar_plot-sphx-glr-plot-types-stats-errorbar-plot-py*
+
+Plot y versus x as lines and/or markers with attached errorbars.
+
+See |matplotlib.axes.Axes.errorbar|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data:
+    np.random.seed(1)
+    x = [2, 4, 6]
+    y = [3.6, 5, 4.2]
+    yerr = [0.9, 1.2, 0.5]
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.errorbar(x, y, yerr, fmt='o', linewidth=2, capsize=6)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+eventplot(D)  *matplotlib-plot_types-stats-eventplot*
+
+*plot_types-stats-eventplot-sphx-glr-plot-types-stats-eventplot-py*
+
+Plot identical parallel lines at the given positions.
+
+See |matplotlib.axes.Axes.eventplot|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data:
+    np.random.seed(1)
+    x = [2, 4, 6]
+    D = np.random.gamma(4, size=(3, 50))
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.eventplot(D, orientation="vertical", lineoffsets=x, linewidth=0.75)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+hexbin(x, y, C)  *matplotlib-plot_types-stats-hexbin*
+
+*plot_types-stats-hexbin-sphx-glr-plot-types-stats-hexbin-py*
+
+Make a 2D hexagonal binning plot of points x, y.
+
+See |matplotlib.axes.Axes.hexbin|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data: correlated + noise
+    np.random.seed(1)
+    x = np.random.randn(5000)
+    y = 1.2 * x + np.random.randn(5000) / 3
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.hexbin(x, y, gridsize=20)
+
+    ax.set(xlim=(-2, 2), ylim=(-3, 3))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+hist2d(x, y)  *matplotlib-plot_types-stats-hist2d*
+
+*plot_types-stats-hist2d-sphx-glr-plot-types-stats-hist2d-py*
+
+Make a 2D histogram plot.
+
+See |matplotlib.axes.Axes.hist2d|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data: correlated + noise
+    np.random.seed(1)
+    x = np.random.randn(5000)
+    y = 1.2 * x + np.random.randn(5000) / 3
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.hist2d(x, y, bins=(np.arange(-3, 3, 0.1), np.arange(-3, 3, 0.1)))
+
+    ax.set(xlim=(-2, 2), ylim=(-3, 3))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+hist(x)  *matplotlib-plot_types-stats-hist_plot*
+
+*plot_types-stats-hist_plot-sphx-glr-plot-types-stats-hist-plot-py*
+
+Compute and plot a histogram.
+
+See |matplotlib.axes.Axes.hist|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data
+    np.random.seed(1)
+    x = 4 + np.random.normal(0, 1.5, 200)
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.hist(x, bins=8, linewidth=0.5, edgecolor="white")
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 56), yticks=np.linspace(0, 56, 9))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+Statistical distributions                  *matplotlib-plot_types-stats-index*
+
+*plot_types-stats-index-sphx-glr-plot-types-stats*
+
+*plot_types-stats-index-stats-plots*
+
+Plots of the distribution of at least one variable in a dataset. Some of
+these methods also compute the distributions.
+
+|matplotlib-plot_types-stats-hist_plot|
+
+hist(x)
+    |matplotlib-plot_types-stats-boxplot_plot|
+
+boxplot(X)
+    |matplotlib-plot_types-stats-errorbar_plot|
+
+errorbar(x, y, yerr, xerr)
+    |matplotlib-plot_types-stats-violin|
+
+violinplot(D)
+    |matplotlib-plot_types-stats-eventplot|
+
+eventplot(D)
+    |matplotlib-plot_types-stats-hist2d|
+
+hist2d(x, y)
+    |matplotlib-plot_types-stats-hexbin|
+
+hexbin(x, y, C)
+    |matplotlib-plot_types-stats-pie|
+
+pie(x)
+    |matplotlib-plot_types-stats-ecdf|
+
+ecdf(x)
+
+----------------------------------------------------------------------------
+pie(x)  *matplotlib-plot_types-stats-pie*
+
+*plot_types-stats-pie-sphx-glr-plot-types-stats-pie-py*
+
+Plot a pie chart.
+
+See |matplotlib.axes.Axes.pie|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+
+    # make data
+    x = [1, 2, 3, 4]
+    colors = plt.get_cmap('Blues')(np.linspace(0.2, 0.7, len(x)))
+
+    # plot
+    fig, ax = plt.subplots()
+    ax.pie(x, colors=colors, radius=3, center=(4, 4),
+           wedgeprops={"linewidth": 1, "edgecolor": "white"}, frame=True)
+
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+violinplot(D)  *matplotlib-plot_types-stats-violin*
+
+*plot_types-stats-violin-sphx-glr-plot-types-stats-violin-py*
+
+Make a violin plot.
+
+See |matplotlib.axes.Axes.violinplot|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery')
+
+    # make data:
+    np.random.seed(10)
+    D = np.random.normal((3, 5, 4), (0.75, 1.00, 0.75), (200, 3))
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    vp = ax.violinplot(D, [2, 4, 6], widths=2,
+                       showmeans=False, showmedians=False, showextrema=False)
+    # styling:
+    for body in vp['bodies']:
+        body.set_alpha(0.9)
+    ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+           ylim=(0, 8), yticks=np.arange(1, 8))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+Irregularly gridded data            *matplotlib-plot_types-unstructured-index*
+
+*plot_types-unstructured-index-sphx-glr-plot-types-unstructured*
+
+*plot_types-unstructured-index-unstructured-plots*
+
+Plots of data `\(Z_{x, y}\)` on unstructured grids
+https://en.wikipedia.org/wiki/Unstructured_grid , unstructured coordinate
+grids `\((x, y)\)`, and 2D functions `\(f(x, y) = z\)`.
+
+|matplotlib-plot_types-unstructured-tricontour|
+
+tricontour(x, y, z)
+    |matplotlib-plot_types-unstructured-tricontourf|
+
+tricontourf(x, y, z)
+    |matplotlib-plot_types-unstructured-tripcolor|
+
+tripcolor(x, y, z)
+    |matplotlib-plot_types-unstructured-triplot|
+
+triplot(x, y)
+
+----------------------------------------------------------------------------
+tricontour(x, y, z)  *matplotlib-plot_types-unstructured-tricontour*
+
+*plot_types-unstructured-tricontour-sphx-glr-plot-types-unstructured-tricontour-py*
+
+Draw contour lines on an unstructured triangular grid.
+
+See |matplotlib.axes.Axes.tricontour|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data:
+    np.random.seed(1)
+    x = np.random.uniform(-3, 3, 256)
+    y = np.random.uniform(-3, 3, 256)
+    z = (1 - x/2 + x**5 + y**3) * np.exp(-x**2 - y**2)
+    levels = np.linspace(z.min(), z.max(), 7)
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.plot(x, y, 'o', markersize=2, color='lightgrey')
+    ax.tricontour(x, y, z, levels=levels)
+
+    ax.set(xlim=(-3, 3), ylim=(-3, 3))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+tricontourf(x, y, z)  *matplotlib-plot_types-unstructured-tricontourf*
+
+*plot_types-unstructured-tricontourf-sphx-glr-plot-types-unstructured-tricontourf-py*
+
+Draw contour regions on an unstructured triangular grid.
+
+See |matplotlib.axes.Axes.tricontourf|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data:
+    np.random.seed(1)
+    x = np.random.uniform(-3, 3, 256)
+    y = np.random.uniform(-3, 3, 256)
+    z = (1 - x/2 + x**5 + y**3) * np.exp(-x**2 - y**2)
+    levels = np.linspace(z.min(), z.max(), 7)
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.plot(x, y, 'o', markersize=2, color='grey')
+    ax.tricontourf(x, y, z, levels=levels)
+
+    ax.set(xlim=(-3, 3), ylim=(-3, 3))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+tripcolor(x, y, z)  *matplotlib-plot_types-unstructured-tripcolor*
+
+*plot_types-unstructured-tripcolor-sphx-glr-plot-types-unstructured-tripcolor-py*
+
+Create a pseudocolor plot of an unstructured triangular grid.
+
+See |matplotlib.axes.Axes.tripcolor|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data:
+    np.random.seed(1)
+    x = np.random.uniform(-3, 3, 256)
+    y = np.random.uniform(-3, 3, 256)
+    z = (1 - x/2 + x**5 + y**3) * np.exp(-x**2 - y**2)
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.plot(x, y, 'o', markersize=2, color='grey')
+    ax.tripcolor(x, y, z)
+
+    ax.set(xlim=(-3, 3), ylim=(-3, 3))
+
+    plt.show()
+<
+
+----------------------------------------------------------------------------
+triplot(x, y)  *matplotlib-plot_types-unstructured-triplot*
+
+*plot_types-unstructured-triplot-sphx-glr-plot-types-unstructured-triplot-py*
+
+Draw an unstructured triangular grid as lines and/or markers.
+
+See |matplotlib.axes.Axes.triplot|.
+
+>python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    plt.style.use('_mpl-gallery-nogrid')
+
+    # make data:
+    np.random.seed(1)
+    x = np.random.uniform(-3, 3, 256)
+    y = np.random.uniform(-3, 3, 256)
+    z = (1 - x/2 + x**5 + y**3) * np.exp(-x**2 - y**2)
+
+    # plot:
+    fig, ax = plt.subplots()
+
+    ax.triplot(x, y)
+
+    ax.set(xlim=(-3, 3), ylim=(-3, 3))
+
+    plt.show()
+<
+
+ vim:tw=78:ts=8:ft=help:norl:

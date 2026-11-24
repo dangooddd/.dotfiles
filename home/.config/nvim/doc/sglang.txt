@@ -1,0 +1,292 @@
+*sglang.txt* *sglang*	SGLang documentation
+Version latest — https://docs.sglang.io/
+License: Apache-2.0
+
+TABLE OF CONTENTS	*sglang-toc*
+
+cookbook ......................................... |sglang-section-cookbook|
+cookbook (part 2) ......................... |sglang-section-cookbook-part-2|
+developer_guide ........................... |sglang-section-developer_guide|
+docs ................................................. |sglang-section-docs|
+docs (part 2) ................................. |sglang-section-docs-part-2|
+docs (part 3) ................................. |sglang-section-docs-part-3|
+
+==============================================================================
+COOKBOOK
+
+DeepSeek-Math-V2 ......... |sglang-autoregressive-DeepSeek-DeepSeek-Math-V2|
+DeepSeek-OCR-2 ............. |sglang-autoregressive-DeepSeek-DeepSeek-OCR-2|
+DeepSeek-OCR ................. |sglang-autoregressive-DeepSeek-DeepSeek-OCR|
+DeepSeek-R1 ................... |sglang-autoregressive-DeepSeek-DeepSeek-R1|
+DeepSeek-V3 ................... |sglang-autoregressive-DeepSeek-DeepSeek-V3|
+DeepSeek-V3.1 ............... |sglang-autoregressive-DeepSeek-DeepSeek-V3_1|
+DeepSeek-V3.2 ............... |sglang-autoregressive-DeepSeek-DeepSeek-V3_2|
+DeepSeek-V4 ................... |sglang-autoregressive-DeepSeek-DeepSeek-V4|
+DeepSeek-V4.1 ............... |sglang-autoregressive-DeepSeek-DeepSeek-V4_1|
+GLM-4.5 ................................ |sglang-autoregressive-GLM-GLM-4.5|
+GLM-4.5V .............................. |sglang-autoregressive-GLM-GLM-4.5V|
+GLM-4.6 ................................ |sglang-autoregressive-GLM-GLM-4.6|
+GLM-4.6V .............................. |sglang-autoregressive-GLM-GLM-4.6V|
+GLM-4.7 ................................ |sglang-autoregressive-GLM-GLM-4.7|
+GLM-4.7-Flash .................... |sglang-autoregressive-GLM-GLM-4.7-Flash|
+GLM-5.1 ................................ |sglang-autoregressive-GLM-GLM-5.1|
+GLM-5.2 ................................ |sglang-autoregressive-GLM-GLM-5.2|
+GLM-5.3 ................................ |sglang-autoregressive-GLM-GLM-5.3|
+GLM-5.3-Flash .................... |sglang-autoregressive-GLM-GLM-5.3-Flash|
+GLM-5 .................................... |sglang-autoregressive-GLM-GLM-5|
+GLM Glyph ............................ |sglang-autoregressive-GLM-GLM-Glyph|
+GLM-OCR ................................ |sglang-autoregressive-GLM-GLM-OCR|
+Llama-3.1 ............................ |sglang-autoregressive-Meta-Llama3.1|
+Llama-3.3-70B .................... |sglang-autoregressive-Meta-Llama3.3-70B|
+Llama 4 ................................ |sglang-autoregressive-Meta-Llama4|
+Muse Glimmer ...................... |sglang-autoregressive-Meta-MuseGlimmer|
+Muse Spark Open ................. |sglang-autoregressive-Meta-MuseSparkOpen|
+MiniMax-M2.5 .................. |sglang-autoregressive-MiniMax-MiniMax-M2.5|
+MiniMax-M2.7 .................. |sglang-autoregressive-MiniMax-MiniMax-M2.7|
+MiniMax-M2 ...................... |sglang-autoregressive-MiniMax-MiniMax-M2|
+MiniMax-M3.1 .................. |sglang-autoregressive-MiniMax-MiniMax-M3.1|
+MiniMax-M3 ...................... |sglang-autoregressive-MiniMax-MiniMax-M3|
+Devstral 2 (Mistral) ............ |sglang-autoregressive-Mistral-Devstral-2|
+Ministral-3 .................... |sglang-autoregressive-Mistral-Ministral-3|
+Mistral Large 4 ............ |sglang-autoregressive-Mistral-Mistral-Large-4|
+Mistral Medium 3.5 ...... |sglang-autoregressive-Mistral-Mistral-Medium-3.5|
+Mistral Small 4 ............ |sglang-autoregressive-Mistral-Mistral-Small-4|
+Kimi-K2.5 ..................... |sglang-autoregressive-Moonshotai-Kimi-K2.5|
+Kimi-K2.6 ..................... |sglang-autoregressive-Moonshotai-Kimi-K2.6|
+Kimi-K2.7-Code ........... |sglang-autoregressive-Moonshotai-Kimi-K2.7-Code|
+Kimi-K2 ......................... |sglang-autoregressive-Moonshotai-Kimi-K2|
+Kimi-K3.1-Pro ............. |sglang-autoregressive-Moonshotai-Kimi-K3.1-Pro|
+Kimi-K3 ......................... |sglang-autoregressive-Moonshotai-Kimi-K3|
+Kimi-Linear ................. |sglang-autoregressive-Moonshotai-Kimi-Linear|
+GPT-OSS ............................. |sglang-autoregressive-OpenAI-GPT-OSS|
+Qwen2.5-VL ......................... |sglang-autoregressive-Qwen-Qwen2.5-VL|
+Qwen3-Coder-Next ............. |sglang-autoregressive-Qwen-Qwen3-Coder-Next|
+Qwen3-Coder ....................... |sglang-autoregressive-Qwen-Qwen3-Coder|
+Qwen3-Next ......................... |sglang-autoregressive-Qwen-Qwen3-Next|
+Qwen3-VL ............................. |sglang-autoregressive-Qwen-Qwen3-VL|
+Qwen3.5 ............................... |sglang-autoregressive-Qwen-Qwen3.5|
+Qwen3.6 ............................... |sglang-autoregressive-Qwen-Qwen3.6|
+Qwen3.8 ............................... |sglang-autoregressive-Qwen-Qwen3.8|
+Qwen3.8-27B ....................... |sglang-autoregressive-Qwen-Qwen3.8-27B|
+Qwen3.8-Flash-Next ......... |sglang-autoregressive-Qwen-Qwen3.8-Flash-Next|
+Qwen3 ................................... |sglang-autoregressive-Qwen-Qwen3|
+Overview ............................ |sglang-cookbook-autoregressive-intro|
+Server Arguments .................. |sglang-base-reference-server_arguments|
+Anima ................................. |sglang-diffusion-CircleStone-Anima|
+Cosmos3 .................................. |sglang-diffusion-Cosmos-Cosmos3|
+ERNIE-Image ..................... |sglang-diffusion-Ernie-Image-Ernie-Image|
+FLUX.3 ...................................... |sglang-diffusion-FLUX-FLUX.3|
+FLUX .......................................... |sglang-diffusion-FLUX-FLUX|
+HY-Nomas .............................. |sglang-diffusion-HY-Nomas-HY-Nomas|
+HiDream-O1-Image ............... |sglang-diffusion-HiDream-HiDream-O1-Image|
+Ideogram 4 ........................... |sglang-diffusion-Ideogram-Ideogram4|
+JoyAI-Echo .............................. |sglang-diffusion-JoyEcho-JoyEcho|
+Kandinsky6 SR ................... |sglang-diffusion-Kandinsky-Kandinsky6-SR|
+Kandinsky6 ......................... |sglang-diffusion-Kandinsky-Kandinsky6|
+Krea-2 ...................................... |sglang-diffusion-Krea-Krea-2|
+LTX2.5 ....................................... |sglang-diffusion-LTX-LTX2.5|
+LingBot Video MoE ....... |sglang-diffusion-LingBot-Video-LingBot-Video-MoE|
+LingBot World 2.0 ....... |sglang-diffusion-LingBot-World-LingBot-World-2.0|
+LingBot World ............... |sglang-diffusion-LingBot-World-LingBot-World|
+LongCat-Image ..................... |sglang-diffusion-LongCat-LongCat-Image|
+LongLive 2.0 ...................... |sglang-diffusion-LongLive-LongLive-2.0|
+MOVA .......................................... |sglang-diffusion-MOVA-MOVA|
+MiniMax-H3-Image ............... |sglang-diffusion-MiniMax-MiniMax-H3-Image|
+MiniMax-H3 ........................... |sglang-diffusion-MiniMax-MiniMax-H3|
+MOSS-Image .......................... |sglang-diffusion-OpenMOSS-MOSS-Image|
+Qwen-Image 2.1 and Turbo ...... |sglang-diffusion-Qwen-Image-Qwen-Image-2.1|
+Qwen-Image-Edit-2511 ......... |sglang-diffusion-Qwen-Image-Qwen-Image-Edit|
+Qwen-Image ........................ |sglang-diffusion-Qwen-Image-Qwen-Image|
+SANA-Video ........................ |sglang-diffusion-SANA-Video-SANA-Video|
+SANA-WM ................................. |sglang-diffusion-SANA-WM-SANA-WM|
+SenseNova-U1.5-8B-MoT ... |sglang-diffusion-SenseNova-SenseNova-U1.5-8B-MoT|
+HunyuanImage-3.0-Instruct ......... |sglang-diffusion-Tencent-HunyuanImage3|
+Wan-Animate-2 ......................... |sglang-diffusion-Wan-Wan-Animate-2|
+Wan2.1 ....................................... |sglang-diffusion-Wan-Wan2.1|
+Wan2.2 ....................................... |sglang-diffusion-Wan-Wan2.2|
+Z-Image-Turbo ..................... |sglang-diffusion-Z-Image-Z-Image-Turbo|
+Ming-Image ....................... |sglang-diffusion-inclusionAI-Ming-Image|
+Overview ................................. |sglang-cookbook-diffusion-intro|
+SGLang Cookbook .................................... |sglang-cookbook-intro|
+SpecBundle Usage ............. |sglang-cookbook-specbundle-specbundle_usage|
+Supported Models ............. |sglang-cookbook-specbundle-supported_models|
+
+==============================================================================
+DEVELOPER_GUIDE
+
+Benchmark and Profiling ... |sglang-developer_guide-benchmark_and_profiling|
+
+==============================================================================
+DOCS
+
+Adaptive Speculative Decoding ... |sglang-docs-advanced_features-adaptive_speculative_decoding|
+Attention Backend ........ |sglang-docs-advanced_features-attention_backend|
+Breakable CUDA Graph ... |sglang-docs-advanced_features-breakable_cuda_graph|
+Checkpoint Engine Integration ... |sglang-docs-advanced_features-checkpoint_engine|
+Cuda Graph for Multi-Modal Encoder in SGLang ... |sglang-docs-advanced_features-cuda_graph_for_multi_modal_encoder|
+CUDA Graph Persistence ... |sglang-docs-advanced_features-cuda_graph_persistence|
+Decode Context Parallelism ............. |sglang-docs-advanced_features-dcp|
+Deterministic Inference ... |sglang-docs-advanced_features-deterministic_inference|
+DP, DPA and sgl-router ... |sglang-docs-advanced_features-dp_dpa_router_guide|
+DP for Multi-Modal Encoder in SGLang ... |sglang-docs-advanced_features-dp_for_multi_modal_encoder|
+Engram Tables ....................... |sglang-docs-advanced_features-engram|
+EPD Disaggregation ...... |sglang-docs-advanced_features-epd_disaggregation|
+Expert Parallelism ...... |sglang-docs-advanced_features-expert_parallelism|
+Hierarchical KV Caching (HiCache) ... |sglang-docs-advanced_features-hicache|
+SGLang HiCache Best Practices ... |sglang-docs-advanced_features-hicache_best_practices|
+Runtime Attach/Detach HiCache Storage Backend (No Restart) ... |sglang-docs-advanced_features-hicache_storage_runtime_attach_detach|
+HiSparse: Hierarchical Sparse Attention ... |sglang-docs-advanced_features-hisparse_guide|
+Hybrid Model Prefix-Cache Checkpoints ... |sglang-docs-advanced_features-hybrid_cache_checkpoints|
+Hybrid Model Memory Pools ... |sglang-docs-advanced_features-hybrid_model_memory|
+Hyperparameter Tuning ... |sglang-docs-advanced_features-hyperparameter_tuning|
+KV Cache Sharing .......... |sglang-docs-advanced_features-kv_cache_sharing|
+llm-d ................................ |sglang-docs-advanced_features-llm-d|
+LoRA Serving .......................... |sglang-docs-advanced_features-lora|
+Model Loading ................ |sglang-docs-advanced_features-model_loading|
+Loading Models from Object Storage ... |sglang-docs-advanced_features-object_storage|
+Observability ................ |sglang-docs-advanced_features-observability|
+Advanced Features ................. |sglang-docs-advanced_features-overview|
+Paged Experts ................ |sglang-docs-advanced_features-paged_experts|
+PD Disaggregation ........ |sglang-docs-advanced_features-pd_disaggregation|
+Pipeline Parallelism for Long Context ... |sglang-docs-advanced_features-pipeline_parallelism|
+Prefill Context Parallelism ..... |sglang-docs-advanced_features-prefill_cp|
+Quantization .................. |sglang-docs-advanced_features-quantization|
+Quantized KV Cache ...... |sglang-docs-advanced_features-quantized_kv_cache|
+Radix Cache Eviction Policies ... |sglang-docs-advanced_features-radix_eviction_policy|
+Reasoning-Aware Compression ... |sglang-docs-advanced_features-reasoning_aware_compression|
+Reasoning Parser ........ |sglang-docs-advanced_features-separate_reasoning|
+Server Arguments .......... |sglang-docs-advanced_features-server_arguments|
+Session-Aware Radix Cache ... |sglang-docs-advanced_features-session_radix_cache|
+SGLang for RL Systems ........ |sglang-docs-advanced_features-sglang_for_rl|
+Speculative Decoding ... |sglang-docs-advanced_features-speculative_decoding|
+Structured Outputs ...... |sglang-docs-advanced_features-structured_outputs|
+Structured Outputs For Reasoning Models ... |sglang-docs-advanced_features-structured_outputs_for_reasoning_models|
+SynthID Text Watermarking ... |sglang-docs-advanced_features-synthid_text_watermarking|
+Text Watermarking ........ |sglang-docs-advanced_features-text_watermarking|
+Thinking Budget ............ |sglang-docs-advanced_features-thinking_budget|
+Tool Parser .................... |sglang-docs-advanced_features-tool_parser|
+Unified Memory for Hybrid Models ... |sglang-docs-advanced_features-unified_memory|
+Query VLM with Offline Engine .... |sglang-docs-advanced_features-vlm_query|
+Anthropic-Compatible API ........... |sglang-docs-basic_usage-anthropic_api|
+SGLang Native APIs .................... |sglang-docs-basic_usage-native_api|
+Offline Engine API ............ |sglang-docs-basic_usage-offline_engine_api|
+Ollama-Compatible API ................. |sglang-docs-basic_usage-ollama_api|
+OpenAI-Compatible APIs ................ |sglang-docs-basic_usage-openai_api|
+OpenAI APIs - Completions ... |sglang-docs-basic_usage-openai_api_completions|
+OpenAI APIs - Embedding .... |sglang-docs-basic_usage-openai_api_embeddings|
+OpenAI APIs - Vision ........... |sglang-docs-basic_usage-openai_api_vision|
+Basic Usage ............................. |sglang-docs-basic_usage-overview|
+Sampling Parameters .............. |sglang-docs-basic_usage-sampling_params|
+Tutorial: Sending a request ......... |sglang-docs-basic_usage-send_request|
+Examples ................................ |sglang-docs-get-started-examples|
+Installation ............................. |sglang-docs-get-started-install|
+Quickstart ............................ |sglang-docs-get-started-quickstart|
+AMD GPUs .......................... |sglang-docs-hardware-platforms-amd_gpu|
+Accuracy Evaluation .... |sglang-ascend-npus-evaluation-accuracy_evaluation|
+Performance Testing .... |sglang-ascend-npus-evaluation-performance_testing|
+Troubleshooting and FAQ ........ |sglang-hardware-platforms-ascend-npus-faq|
+Installation ............. |sglang-ascend-npus-getting-started-installation|
+Quickstart ................ |sglang-ascend-npus-getting-started-quick_start|
+Mindspore backend ... |sglang-hardware-platforms-ascend-npus-mindspore_backend|
+DeepSeek-R1 ........... |sglang-model-deployment-best-practices-deepseek_r1|
+DeepSeek-V3.2 ....... |sglang-model-deployment-best-practices-deepseek_v3_2|
+DeepSeek-V4-Flash ... |sglang-model-deployment-best-practices-deepseek_v4_flash|
+GLM-5.1 ................... |sglang-model-deployment-best-practices-glm_5_1|
+GLM-5.2 ................... |sglang-model-deployment-best-practices-glm_5_2|
+Kimi-K2.6 ............... |sglang-model-deployment-best-practices-kimi_k2_6|
+MiMo-V2.5-Pro ....... |sglang-model-deployment-best-practices-mimo_v2_5_pro|
+MiMo-V2-Flash ....... |sglang-model-deployment-best-practices-mimo_v2_flash|
+MiniMax-M2.5 ......... |sglang-model-deployment-best-practices-minimax_m2_5|
+Qwen3-235B-A22B ... |sglang-model-deployment-best-practices-qwen3_235b_a22b|
+Qwen3-30B-A3B ....... |sglang-model-deployment-best-practices-qwen3_30b_a3b|
+Qwen3-32B ............... |sglang-model-deployment-best-practices-qwen3_32b|
+Qwen3.5-397B-A17B .... |sglang-model-deployment-best-practices-qwen3_5_397b|
+Qwen3.6-27B ........... |sglang-model-deployment-best-practices-qwen3_6_27b|
+Qwen3.6-35B-A3B ... |sglang-model-deployment-best-practices-qwen3_6_35b_a3b|
+Qwen3-8B ................. |sglang-model-deployment-best-practices-qwen3_8b|
+Qwen3-Next-80B-A3B-Instruct ... |sglang-model-deployment-best-practices-qwen3_next_80b_a3b_instruct|
+DeepSeek-R1 ................ |sglang-model-deployment-tutorials-deepseek_r1|
+DeepSeek-V3.2 ............ |sglang-model-deployment-tutorials-deepseek_v3_2|
+DeepSeek-V4-Flash .... |sglang-model-deployment-tutorials-deepseek_v4_flash|
+GLM-5.1 ........................ |sglang-model-deployment-tutorials-glm_5_1|
+GLM-5.2 ........................ |sglang-model-deployment-tutorials-glm_5_2|
+GLM-5.3 ........................ |sglang-model-deployment-tutorials-glm_5_3|
+GLM-5.3-Flash ............ |sglang-model-deployment-tutorials-glm_5_3_flash|
+Hy3 ................................ |sglang-model-deployment-tutorials-hy3|
+Kimi-K2.6 .................... |sglang-model-deployment-tutorials-kimi_k2_6|
+MiMo-V2-Flash ............ |sglang-model-deployment-tutorials-mimo_v2_flash|
+MiniMax-M2.5 .............. |sglang-model-deployment-tutorials-minimax_m2_5|
+Qwen3-235B-A22B ........ |sglang-model-deployment-tutorials-qwen3_235b_a22b|
+Qwen3-30B-A3B ............ |sglang-model-deployment-tutorials-qwen3_30b_a3b|
+Qwen3-32B .................... |sglang-model-deployment-tutorials-qwen3_32b|
+Qwen3.5-397B-A17B ......... |sglang-model-deployment-tutorials-qwen3_5_397b|
+Qwen3.6-27B ................ |sglang-model-deployment-tutorials-qwen3_6_27b|
+Qwen3.6-35B-A3B ........ |sglang-model-deployment-tutorials-qwen3_6_35b_a3b|
+Qwen3.8-Max ................ |sglang-model-deployment-tutorials-qwen3_8_max|
+Qwen3-8B ...................... |sglang-model-deployment-tutorials-qwen3_8b|
+Qwen3-Next-80B-A3B-Instruct ... |sglang-model-deployment-tutorials-qwen3_next_80b_a3b_instruct|
+Parameter Tuning ........ |sglang-ascend-npus-optimization-parameter_tuning|
+Performance Profiling .......... |sglang-ascend-npus-optimization-profiling|
+Quantization on Ascend ...... |sglang-ascend-npus-optimization-quantization|
+Ring-SP Performance (Wan2.1-T2V-1.3B) ... |sglang-ascend-npus-optimization-ring_sp_performance|
+Environment Variables ... |sglang-ascend-npus-reference-environment_variables|
+Glossary ........................... |sglang-ascend-npus-reference-glossary|
+Supported Features ......... |sglang-ascend-npus-reference-support_features|
+Supported Models ............. |sglang-ascend-npus-reference-support_models|
+CPU Servers .................... |sglang-docs-hardware-platforms-cpu_server|
+NVIDIA GPUs ................... |sglang-docs-hardware-platforms-nvidia-gpus|
+Hardware Platforms ............... |sglang-docs-hardware-platforms-overview|
+SGLang Plugin System ............... |sglang-docs-hardware-platforms-plugin|
+Custom Chat Template ......... |sglang-docs-references-custom_chat_template|
+Environment Variables ....... |sglang-docs-references-environment_variables|
+Troubleshooting and Frequently Asked Questions ... |sglang-docs-references-faq|
+Deploy On Kubernetes ... |sglang-references-multi_node_deployment-deploy_on_k8s|
+Multi-Node Deployment ... |sglang-references-multi_node_deployment-multi_node|
+Multi-Node Deployment ... |sglang-references-multi_node_deployment-multi_node_index|
+References ............................... |sglang-docs-references-overview|
+Post-Training Integration ... |sglang-docs-references-post_training_integration|
+Production Metrics ............. |sglang-docs-references-production_metrics|
+Production Request Tracing ... |sglang-docs-references-production_request_trace|
+Enabling cache for torch.compile ... |sglang-docs-references-torch_compile_cache|
+SGLang Diffusion ............................ |sglang-docs-sglang-diffusion|
+CLI reference ............................ |sglang-sglang-diffusion-api-cli|
+OpenAI API ........................ |sglang-sglang-diffusion-api-openai_api|
+Post-Processing .............. |sglang-sglang-diffusion-api-post_processing|
+Attention Backends ....... |sglang-docs-sglang-diffusion-attention_backends|
+Cache-DiT Acceleration ............ |sglang-docs-sglang-diffusion-cache_dit|
+Caching Acceleration ... |sglang-docs-sglang-diffusion-caching-acceleration|
+ComfyUI plugin ...................... |sglang-docs-sglang-diffusion-comfyui|
+Supported Models ....... |sglang-docs-sglang-diffusion-compatibility_matrix|
+Deployment and Performance Modes ... |sglang-docs-sglang-diffusion-deployment_cookbook|
+Disaggregated Diffusion Pipeline ... |sglang-docs-sglang-diffusion-disaggregation|
+Inference Batching ......... |sglang-docs-sglang-diffusion-dynamic_batching|
+Encoder Parallelism ........ |sglang-docs-sglang-diffusion-encoder_parallel|
+Environment Variables ... |sglang-docs-sglang-diffusion-environment_variables|
+Fused Kernels ................. |sglang-docs-sglang-diffusion-fused_kernels|
+Install SGLang Diffusion ....... |sglang-docs-sglang-diffusion-installation|
+Diffusion models with autoregressive stages ... |sglang-docs-sglang-diffusion-models_with_ar|
+Prompt enhancement ........... |sglang-docs-sglang-diffusion-models_with_pe|
+Parallelism Overview ............ |sglang-docs-sglang-diffusion-parallelism|
+Performance Optimization ... |sglang-docs-sglang-diffusion-performance-optimization|
+Production Metrics ....... |sglang-docs-sglang-diffusion-production_metrics|
+Profiling ......................... |sglang-docs-sglang-diffusion-profiling|
+Progressive Resolution Generation ... |sglang-docs-sglang-diffusion-progressive_resolution|
+Quantization ................... |sglang-docs-sglang-diffusion-quantization|
+Realtime and Causal Video Models ... |sglang-docs-sglang-diffusion-realtime_models|
+Sequence Parallelism .... |sglang-docs-sglang-diffusion-ring_sp_performance|
+Spectrum Acceleration .............. |sglang-docs-sglang-diffusion-spectrum|
+TeaCache Acceleration .............. |sglang-docs-sglang-diffusion-teacache|
+Supported models ............................ |sglang-docs-supported-models|
+Classification Models ....... |sglang-docs-supported-models-classify_models|
+Decision models ............. |sglang-docs-supported-models-decision_models|
+Diffusion language models ... |sglang-docs-supported-models-diffusion_language_models|
+Embedding models ........... |sglang-docs-supported-models-embedding_models|
+Large Language Models ..... |sglang-docs-supported-models-generative_models|
+MindSpore Models ........... |sglang-docs-supported-models-mindspore_models|
+Use Models From ModelScope ....... |sglang-docs-supported-models-modelscope|
+Multimodal Language Models ... |sglang-docs-supported-models-multimodal_language_models|
+Rerank models ................. |sglang-docs-supported-models-rerank_models|
+Reward models ................. |sglang-docs-supported-models-reward_models|
+Transformers Fallback in SGLang ... |sglang-docs-supported-models-transformers_fallback|
+
+ vim:tw=78:ts=8:ft=help:norl:

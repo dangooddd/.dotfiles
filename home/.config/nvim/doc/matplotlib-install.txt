@@ -1,0 +1,515 @@
+*matplotlib-install.txt*	Matplotlib documentation: install
+Version 3.11 — https://matplotlib.org/stable/
+
+==============================================================================
+INSTALL                                           *matplotlib-section-install*
+
+
+----------------------------------------------------------------------------
+Environment variables           *matplotlib-install-environment_variables_faq*
+
+*install-environment_variables_faq-id1*
+
+HOME *install-environment_variables_faq-envvar-HOME*
+    The user's home directory. On Linux,
+    |install-environment_variables_faq-envvar-HOME| is shorthand for
+    |install-environment_variables_faq-envvar-HOME|.
+
+MPLBACKEND *install-environment_variables_faq-envvar-MPLBACKEND*
+    This optional variable can be set to choose the Matplotlib backend. See
+    |explain-figure-backends-what-is-a-backend|.
+
+MPLCONFIGDIR *install-environment_variables_faq-envvar-MPLCONFIGDIR*
+    This is the directory used to store user customizations to Matplotlib,
+    as well as some caches to improve performance. If
+    |install-environment_variables_faq-envvar-MPLCONFIGDIR| is not defined,
+    `HOME/.config/matplotlib` and `HOME/.cache/matplotlib` are used on
+    Linux, and `HOME/.matplotlib` on other platforms, if they are writable.
+    Otherwise, the Python standard library's `tempfile.gettempdir`
+    https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir is
+    used to find a base directory in which the `matplotlib` subdirectory is
+    created.
+
+MPL_IGNORE_SYSTEM_FONTS
+*install-environment_variables_faq-envvar-MPL_IGNORE_SYSTEM_FONTS*
+    When this variable is set, Matplotlib will update its font cache only
+    with its own directories. This can be used to limit subprocess usage for
+    querying system fonts.
+
+PATH *install-environment_variables_faq-envvar-PATH*
+    The list of directories searched to find executable programs.
+
+PYTHONPATH *install-environment_variables_faq-envvar-PYTHONPATH*
+    The list of directories that are added to Python's standard search list
+    when importing packages and modules.
+
+QT_API *install-environment_variables_faq-envvar-QT_API*
+    The Python Qt wrapper to prefer when using Qt-based backends. See
+    the entry in the usage guide
+    https://matplotlib.org/stable/api/backend_qt_api.html#qt-bindings for
+    more information.
+
+*install-environment_variables_faq-setting-environment-variables-in-linux-and-macos*
+SETTING ENVIRONMENT VARIABLES IN LINUX AND MACOS
+
+*install-environment_variables_faq-setting-linux-macos-environment-variables*
+
+*install-environment_variables_faq-index-2*
+
+*install-environment_variables_faq-index-1*
+
+*install-environment_variables_faq-index-0*
+
+To list the current value of
+|install-environment_variables_faq-envvar-PYTHONPATH|, which may be empty,
+try:
+
+>bash
+    echo $PYTHONPATH
+<
+The procedure for setting environment variables in depends on what your
+default shell is. Common shells include bash and csh. You should be able to
+determine which by running at the command prompt:
+
+>bash
+    echo $SHELL
+<
+To create a new environment variable:
+
+>bash
+    export PYTHONPATH=~/Python  # bash/ksh
+    setenv PYTHONPATH ~/Python  # csh/tcsh
+<
+To prepend to an existing environment variable:
+
+>bash
+    export PATH=~/bin:${PATH}  # bash/ksh
+    setenv PATH ~/bin:${PATH}  # csh/tcsh
+<
+The search order may be important to you, do you want `~/bin` to be searched
+first or last? To append to an existing environment variable:
+
+>bash
+    export PATH=${PATH}:~/bin  # bash/ksh
+    setenv PATH ${PATH}:~/bin  # csh/tcsh
+<
+To make your changes available in the future, add the commands to your
+`~/.bashrc` or `~/.cshrc` file.
+
+  *install-environment_variables_faq-setting-environment-variables-in-windows*
+SETTING ENVIRONMENT VARIABLES IN WINDOWS
+
+*install-environment_variables_faq-setting-windows-environment-variables*
+
+*install-environment_variables_faq-index-3*
+
+Open the Control Panel (Start ‣ Control Panel), start the System program.
+Click the Advanced tab and select the Environment Variables button. You can
+edit or add to the User Variables.
+
+----------------------------------------------------------------------------
+Installation                                        *matplotlib-install-index*
+
+pip: ~
+
+>bash
+    pip install matplotlib
+<
+conda: ~
+
+>bash
+    conda install -c conda-forge matplotlib
+<
+pixi: ~
+
+>bash
+    pixi add matplotlib
+<
+uv: ~
+
+>bash
+    uv add matplotlib
+<
+  Warning: ~
+
+  uv usually installs its own versions of Python from the
+  python-build-standalone project, and only recent versions of those Python
+  builds (August 2025) work properly with the `tkagg` backend for displaying
+  plots in a window. Please make sure you are using uv 0.8.7 or newer
+  (update with e.g. `uv self update`) and that your bundled Python installs
+  are up to date (with `uv python upgrade --reinstall`). Alternatively, you
+  can use one of the other supported GUI frameworks
+  https://matplotlib.org/stable/install/dependencies.html#optional-dependencies,
+  e.g.
+
+  >bash
+      uv add matplotlib pyside6
+<
+
+other: ~
+
+|install-index-install-official|
+
+|install-index-install-third-party|
+
+|install-index-install-nightly-build|
+
+|install-index-install-source|
+
+INSTALL AN OFFICIAL RELEASE        *install-index-install-an-official-release*
+
+*install-index-install-official*
+
+Matplotlib releases are available as wheel packages for macOS, Windows and
+Linux on PyPI https://pypi.org/project/matplotlib/. Install it using `pip`:
+
+>sh
+    python -m pip install -U pip
+    python -m pip install -U matplotlib
+<
+If this command results in Matplotlib being compiled from source and there's
+trouble with the compilation, you can add `--prefer-binary` to select the
+newest version of Matplotlib for which there is a precompiled wheel for your
+OS and Python.
+
+  Note: ~
+
+  The following non-interactive backends work out of the box: Agg, ps, pdf,
+  svg
+
+  The TkAgg interactive backend also typically works out of the box. It
+  requires Tk bindings, which are usually provided via the Python standard
+  library's `tkinter` module. On some OSes, you may need to install a
+  separate package like `python3-tk` to add this component of the standard
+  library.
+
+  Some tools like `uv` make use of Python builds from the
+  python-build-standalone project, which only gained usable Tk bindings
+  recently (August 2025). If you are having trouble with the TkAgg backend,
+  ensure you have an up-to-date build, e.g.
+  `uv self update && uv python upgrade --reinstall`.
+
+  For support of other GUI frameworks, LaTeX rendering, saving animations
+  and a larger selection of file formats, you can install
+  optional dependencies
+  https://matplotlib.org/stable/install/dependencies.html#optional-dependencies.
+
+THIRD-PARTY DISTRIBUTIONS            *install-index-third-party-distributions*
+
+*install-index-install-third-party*
+
+Various third-parties provide Matplotlib for their environments.
+
+Conda packages                                  *install-index-conda-packages*
+
+Matplotlib is available both via the anaconda main channel
+
+>sh
+    conda install matplotlib
+<
+as well as via the conda-forge community channel
+
+>sh
+    conda install -c conda-forge matplotlib
+<
+
+Python distributions                      *install-index-python-distributions*
+
+Matplotlib is part of major Python distributions:
+
+- Anaconda https://www.anaconda.com/
+- ActiveState ActivePython
+  https://www.activestate.com/products/python/downloads/
+- WinPython https://winpython.github.io/
+
+Linux package manager                    *install-index-linux-package-manager*
+
+If you are using the Python version that comes with your Linux distribution,
+you can install Matplotlib via your package manager, e.g.:
+
+- Debian / Ubuntu: `sudo apt-get install python3-matplotlib`
+- Fedora: `sudo dnf install python3-matplotlib`
+- Red Hat: `sudo yum install python3-matplotlib`
+- Arch: `sudo pacman -S python-matplotlib`
+
+INSTALL A NIGHTLY BUILD                *install-index-install-a-nightly-build*
+
+*install-index-install-nightly-build*
+
+Matplotlib makes nightly development build wheels available on the
+scientific-python-nightly-wheels Anaconda Cloud organization
+https://anaconda.org/scientific-python-nightly-wheels. These wheels can be
+installed with `pip` by specifying scientific-python-nightly-wheels as the
+package index to query:
+
+>sh
+    python -m pip install --upgrade --pre --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple matplotlib
+<
+
+INSTALL FROM SOURCE                        *install-index-install-from-source*
+
+*install-index-install-source*
+
+  Installing for Development: ~
+
+  If you would like to contribute to Matplotlib or otherwise need to install
+  the latest development code, please follow the instructions in
+  Development setup
+  https://matplotlib.org/stable/devel/development_setup.html#installing-for-devs.
+
+The following instructions are for installing from source for production
+use. This is generally not recommended; please use prebuilt packages when
+possible. Proceed with caution because these instructions may result in your
+build producing unexpected behavior and/or causing local testing to fail.
+
+Before trying to install Matplotlib, please install the Dependencies
+https://matplotlib.org/stable/install/dependencies.html#dependencies.
+
+To build from a tarball, download the latest tar.gz release file from
+the PyPI files page https://pypi.org/project/matplotlib/.
+
+If you are building your own Matplotlib wheels (or sdists) on Windows, note
+that any DLLs that you copy into the source tree will be packaged too.
+
+                         *install-index-configure-build-and-behavior-defaults*
+CONFIGURE BUILD AND BEHAVIOR DEFAULTS
+
+We provide a meson.options
+https://github.com/matplotlib/matplotlib/blob/main/meson.options file
+containing options with which you can use to customize the build process.
+For example, which default backend to use, whether some of the optional
+libraries that Matplotlib ships with are installed, and so on. These options
+will be particularly useful to those packaging Matplotlib.
+
+Aspects of some behavioral defaults of the library can be configured via:
+
+- |matplotlib-install-environment_variables_faq|
+  - |install-environment_variables_faq-setting-environment-variables-in-linux-and-macos|
+  - |install-environment_variables_faq-setting-environment-variables-in-windows|
+
+Default plotting appearance and behavior can be configured via the
+|users-explain-customizing-customizing-with-matplotlibrc-files|.
+
+DEPENDENCIES                                      *install-index-dependencies*
+
+Mandatory dependencies should be installed automatically if you install
+Matplotlib using a package manager such as `pip` or `conda`; therefore this
+list is primarily for reference and troubleshooting.
+
+- Dependencies https://matplotlib.org/stable/install/dependencies.html
+  - Runtime dependencies
+    https://matplotlib.org/stable/install/dependencies.html#runtime-dependencies
+  - Build dependencies
+    https://matplotlib.org/stable/install/dependencies.html#build-dependencies
+  - Test dependencies
+    https://matplotlib.org/stable/install/dependencies.html#test-dependencies
+  - Documentation dependencies
+    https://matplotlib.org/stable/install/dependencies.html#documentation-dependencies
+
+FREQUENTLY ASKED QUESTIONS          *install-index-frequently-asked-questions*
+
+*install-index-installing-faq*
+
+Report a compilation problem      *install-index-report-a-compilation-problem*
+
+See |users-faq-reporting-problems|.
+
+   *install-index-matplotlib-compiled-fine-but-nothing-shows-up-when-i-use-it*
+Matplotlib compiled fine, but nothing shows up when I use it
+
+The first thing to try is a |install-index-clean-install| and see if that
+helps. If not, the best way to test your install is by running a script,
+rather than working interactively from a python shell or an integrated
+development environment such as IDLE which add additional complexities. Open
+up a UNIX shell or a DOS command prompt and run, for example:
+
+>sh
+    python -c "from pylab import *; set_loglevel('DEBUG'); plot(); show()"
+<
+This will give you additional information about which backends Matplotlib is
+loading, version information, and more. At this point you might want to make
+sure you understand Matplotlib's |users-explain-customizing-customizing|
+process, governed by the `matplotlibrc` configuration file which contains
+instructions within and the concept of the Matplotlib backend.
+
+If you are still having trouble, see |users-faq-reporting-problems|.
+
+                           *install-index-how-to-completely-remove-matplotlib*
+How to completely remove Matplotlib
+
+*install-index-clean-install*
+
+Occasionally, problems with Matplotlib can be solved with a clean
+installation of the package. In order to fully remove an installed
+Matplotlib:
+
+1. Delete the caches from your
+   |install-index-locating-matplotlib-config-dir|.
+2. Delete any Matplotlib directories or eggs from your
+   |install-index-locating-matplotlib-install|.
+
+macOS Notes                                        *install-index-macos-notes*
+
+Which python for macOS?                 *install-index-which-python-for-macos*
+
+*install-index-id1*
+
+Apple ships macOS with its own Python, in `/usr/bin/python`, and its own
+copy of Matplotlib. Unfortunately, the way Apple currently installs its own
+copies of NumPy, Scipy and Matplotlib means that these packages are
+difficult to upgrade (see system python packages
+https://github.com/MacPython/wiki/wiki/Which-Python#system-python-and-extra-python-packages).
+For that reason we strongly suggest that you install a fresh version of
+Python and use that as the basis for installing libraries such as NumPy and
+Matplotlib. One convenient way to install Matplotlib with other useful
+Python software is to use the Anaconda https://www.anaconda.com/ Python
+scientific software collection, which includes Python itself and a wide
+range of libraries; if you need a library that is not available from the
+collection, you can install it yourself using standard methods such as pip.
+See the Anaconda web page for installation support.
+
+Other options for a fresh Python install are the standard installer from
+python.org https://www.python.org/downloads/macos/, or installing Python
+using a general macOS package management system such as homebrew
+https://brew.sh/ or macports https://www.macports.org. Power users on macOS
+will likely want one of homebrew or macports on their system to install open
+source software packages, but it is perfectly possible to use these systems
+with another source for your Python binary, such as Anaconda or Python.org
+Python.
+
+Installing macOS binary wheels  *install-index-installing-macos-binary-wheels*
+
+*install-index-install-macos-binaries*
+
+If you are using Python from https://www.python.org, Homebrew, or Macports,
+then you can use the standard pip installer to install Matplotlib binaries
+in the form of wheels.
+
+pip is installed by default with python.org and Homebrew Python, but needs
+to be manually installed on Macports with
+
+>sh
+    sudo port install py38-pip
+<
+Once pip is installed, you can install Matplotlib and all its dependencies
+with from the Terminal.app command line:
+
+>sh
+    python3 -m pip install matplotlib
+<
+You might also want to install IPython or the Jupyter notebook
+(`python3 -m pip install ipython notebook`).
+
+Checking your installation          *install-index-checking-your-installation*
+
+The new version of Matplotlib should now be on your Python "path". Check
+this at the Terminal.app command line:
+
+>sh
+    python3 -c 'import matplotlib; print(matplotlib.__version__, matplotlib.__file__)'
+<
+You should see something like
+
+>text
+    3.10.0 /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/matplotlib/__init__.py
+<
+where `3.10.0` is the Matplotlib version you just installed, and the path
+following depends on whether you are using Python.org Python, Homebrew or
+Macports. If you see another version, or you get an error like
+
+>text
+    Traceback (most recent call last):
+      File "<string>", line 1, in <module>
+    ImportError: No module named matplotlib
+<
+then check that the Python binary is the one you expected by running
+
+>sh
+    which python3
+<
+If you get a result like `/usr/bin/python...`, then you are getting the
+Python installed with macOS, which is probably not what you want. Try
+closing and restarting Terminal.app before running the check again. If that
+doesn't fix the problem, depending on which Python you wanted to use,
+consider reinstalling Python.org Python, or check your homebrew or macports
+setup. Remember that the disk image installer only works for Python.org
+Python, and will not get picked up by other Pythons. If all these fail,
+please |users-faq-reporting-problems|.
+
+TROUBLESHOOTING                                *install-index-troubleshooting*
+
+*install-index-troubleshooting-install*
+
+Obtaining Matplotlib version      *install-index-obtaining-matplotlib-version*
+
+*install-index-matplotlib-version*
+
+To find out your Matplotlib version number, import it and print the
+`__version__` attribute:
+
+>python
+    >>> import matplotlib
+    >>> matplotlib.__version__
+    '0.98.0'
+<
+
+`matplotlib` install location      *install-index-matplotlib-install-location*
+
+*install-index-locating-matplotlib-install*
+
+You can find what directory Matplotlib is installed in by importing it and
+printing the `__file__` attribute:
+
+>python
+    >>> import matplotlib
+    >>> matplotlib.__file__
+    '/home/jdhunter/dev/lib64/python2.5/site-packages/matplotlib/__init__.pyc'
+<
+
+        *install-index-matplotlib-configuration-and-cache-directory-locations*
+`matplotlib` configuration and cache directory locations
+
+*install-index-locating-matplotlib-config-dir*
+
+Each user has a Matplotlib configuration directory which may contain a
+|users-explain-customizing-customizing-with-matplotlibrc-files| file. To
+locate your `matplotlib/` configuration directory, use
+|matplotlib.get_configdir|:
+
+>python
+    >>> import matplotlib as mpl
+    >>> mpl.get_configdir()
+    '/home/darren/.config/matplotlib'
+<
+On Unix-like systems, this directory is generally located in your
+|install-environment_variables_faq-envvar-HOME| directory under the
+`.config/` directory.
+
+In addition, users have a cache directory. On Unix-like systems, this is
+separate from the configuration directory by default. To locate your
+`.cache/` directory, use |matplotlib.get_cachedir|:
+
+>python
+    >>> import matplotlib as mpl
+    >>> mpl.get_cachedir()
+    '/home/darren/.cache/matplotlib'
+<
+On Windows, both the config directory and the cache directory are the same
+and are in your `Documents and Settings` or `Users` directory by default:
+
+>python
+    >>> import matplotlib as mpl
+    >>> mpl.get_configdir()
+    'C:\\Documents and Settings\\jdhunter\\.matplotlib'
+    >>> mpl.get_cachedir()
+    'C:\\Documents and Settings\\jdhunter\\.matplotlib'
+<
+If you would like to use a different configuration directory, you can do so
+by specifying the location in your
+|install-environment_variables_faq-envvar-MPLCONFIGDIR| environment variable
+-- see
+|install-environment_variables_faq-setting-linux-macos-environment-variables|.
+Note that |install-environment_variables_faq-envvar-MPLCONFIGDIR| sets the
+location of both the configuration directory and the cache directory.
+
+ vim:tw=78:ts=8:ft=help:norl:

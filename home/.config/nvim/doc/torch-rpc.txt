@@ -1,0 +1,645 @@
+*torch-rpc.txt*	PyTorch documentation: rpc
+Version 2.15 — https://docs.pytorch.org/docs/2.15/
+
+==============================================================================
+RPC                                                        *torch-section-rpc*
+
+
+----------------------------------------------------------------------------
+Distributed Autograd Design                   *torch-rpc-distributed_autograd*
+
+*rpc-distributed_autograd-id1*
+
+This note will present the detailed design for distributed autograd and walk
+through the internals of the same. Make sure you're familiar with
+|notes-autograd-autograd-mechanics| and the |rpc-distributed-rpc-framework|
+before proceeding.
+
+BACKGROUND                               *rpc-distributed_autograd-background*
+
+Let's say you have two nodes and a very simple model partitioned across two
+nodes. This can be implemented using |rpc-module-torch.distributed.rpc| as
+follows:
+
+>python
+    import torch
+    import torch.distributed.rpc as rpc
+
+    def my_add(t1, t2):
+      return torch.add(t1, t2)
+
+    # On worker 0:
+    t1 = torch.rand((3, 3), requires_grad=True)
+    t2 = torch.rand((3, 3), requires_grad=True)
+
+    # Perform some computation remotely.
+    t3 = rpc.rpc_sync("worker1", my_add, args=(t1, t2))
+
+    # Perform some computation locally based on remote result.
+    t4 = torch.rand((3, 3), requires_grad=True)
+    t5 = torch.mul(t3, t4)
+
+    # Compute some loss.
+    loss = t5.sum()
+<
+The main motivation behind distributed autograd is to enable running a
+backward pass on such distributed models with the `loss` that we've computed
+and record appropriate gradients for all tensors that require gradients.
+
+         *rpc-distributed_autograd-autograd-recording-during-the-forward-pass*
+AUTOGRAD RECORDING DURING THE FORWARD PASS
+
+*rpc-distributed_autograd-attaching-send-recv-functions*
+
+PyTorch builds the autograd graph during the forward pass and this graph is
+used to execute the backward pass. For more details see
+|notes-autograd-how-autograd-encodes-history|.
+
+For distributed autograd, we need to keep track of all RPCs during the
+forward pass to ensure the backward pass is executed appropriately. For this
+purpose, we attach `send` and `recv` functions to the autograd graph when we
+perform an RPC.
+
+- The `send` function is attached to the source of the RPC and its output
+  edges point to the autograd function for the input tensors of the RPC. The
+  input for this function during the backward pass is received from the
+  destination as the output of the appropriate `recv` function.
+- The `recv` function is attached to the destination of the RPC and its
+  inputs are retrieved from operators executed on the destination using the
+  input tensors. The output gradients of this function are sent to the
+  source node to the appropriate `send` function during the backward pass.
+- Each `send-recv` pair is assigned a globally unique `autograd_message_id`
+  to uniquely identify the pair. This is useful to look up the corresponding
+  function on a remote node during the backward pass.
+- For |rpc-rref|, whenever we call `torch.distributed.rpc.RRef.to_here()` we
+  attach an appropriate `send-recv` pair for the tensors involved.
+
+As an example, this is what the autograd graph for our example above would
+look like (t5.sum() excluded for simplicity):
+
+                       *rpc-distributed_autograd-distributed-autograd-context*
+DISTRIBUTED AUTOGRAD CONTEXT
+
+*rpc-distributed_autograd-autograd-context*
+
+Each forward and backward pass that uses distributed autograd is assigned a
+unique |torch.distributed.autograd.context| and this context has a globally
+unique `autograd_context_id`. This context is created on each node as
+needed.
+
+This context serves the following purpose:
+
+1. Multiple nodes running distributed backward passes might accumulate
+   gradients on the same tensor and as a result the `.grad` field of the
+   tensor would have gradients from a variety of distributed backward passes
+   before we have the opportunity to run the optimizer. This is similar to
+   calling |torch.autograd.backward| multiple times locally. In order to
+   provide a way of separating out the gradients for each backward pass, the
+   gradients are accumulated in the |torch.distributed.autograd.context| for
+   each backward pass.
+2. During the forward pass we store the `send` and `recv` functions for each
+   autograd pass in this context. This ensures we hold references to the
+   appropriate nodes in the autograd graph to keep it alive. In addition to
+   this, it is easy to look up the appropriate `send` and `recv` functions
+   during the backward pass.
+3. In general we also use this context to store some metadata for each
+   distributed autograd pass.
+
+From the user's perspective the autograd context is setup as follows:
+
+>python
+    import torch.distributed.autograd as dist_autograd
+    with dist_autograd.context() as context_id:
+      loss = model.forward()
+      dist_autograd.backward(context_id, loss)
+<
+It is important to note that your model's forward pass must be invoked
+within the distributed autograd context manager, as a valid context is
+needed in order to ensure that all `send` and `recv` functions are stored
+properly to run the backward pass across all participating nodes.
+
+DISTRIBUTED BACKWARD PASS *rpc-distributed_autograd-distributed-backward-pass*
+
+In this section we outline the challenge of computing dependencies
+accurately during a distributed backward pass and describe a couple of
+algorithms (with tradeoffs) on how we can execute a distributed backward
+pass.
+
+Computing dependencies       *rpc-distributed_autograd-computing-dependencies*
+
+Consider the following piece of code being run on a single machine
+
+>python
+    import torch
+    a = torch.rand((3, 3), requires_grad=True)
+    b = torch.rand((3, 3), requires_grad=True)
+    c = torch.rand((3, 3), requires_grad=True)
+    d = a + b
+    e = b * c
+    d.sum().backward()
+<
+This is what the autograd graph for the code above would look like:
+
+The first step the autograd engine performs as part of the backward pass is
+computing the number of dependencies for each node in the autograd graph.
+This helps the autograd engine know when a node in the graph is ready for
+execution. The numbers in brackets for `add(1)` and `mul(0)` denote the
+number of dependencies. As you can see, this means during the backward pass
+the `add` node needs 1 input and the `mul` node doesn't need any inputs (in
+other words doesn't need to be executed). The local autograd engine computes
+these dependencies by traversing the graph from the root nodes (`d` in this
+case).
+
+The fact that certain nodes in the autograd graph might not be executed in
+the backward pass poses a challenge for distributed autograd. Consider this
+piece of code which uses RPC.
+
+>python
+    import torch
+    import torch.distributed.rpc as rpc
+
+    a = torch.rand((3, 3), requires_grad=True)
+    b = torch.rand((3, 3), requires_grad=True)
+    c = torch.rand((3, 3), requires_grad=True)
+
+    d = rpc.rpc_sync("worker1", torch.add, args=(a, b))
+    e = rpc.rpc_sync("worker1", torch.mul, args=(b, c))
+    loss = d.sum()
+<
+The associated autograd graph for the code above would be:
+
+Computing dependencies of this distributed autograd graph is much more
+challenging and requires some overhead (either in terms of computation or
+network communication).
+
+For performance sensitive applications we can avoid a lot of overhead by
+assuming every `send` and `recv` function are valid as part of the backward
+pass (most applications don't perform RPCs that aren't used). This
+simplifies the distributed autograd algorithm and is much more efficient,
+but at the cost that the application needs to be aware of the limitations.
+This algorithm is called the |rpc-distributed_autograd-fast-mode-algorithm|
+and is described in detail below.
+
+In the general case it might not be necessary that every `send` and `recv`
+function is valid as part of the backward pass. To address this, we have
+proposed a |rpc-distributed_autograd-smart-mode-algorithm| which is
+described in a later section. Please note that currently, only the `FAST`
+mode algorithm is implemented.
+
+FAST mode algorithm             *rpc-distributed_autograd-fast-mode-algorithm*
+
+*rpc-distributed_autograd-id2*
+
+The key assumption of this algorithm is that each `send` function has a
+dependency of 1 when we run a backward pass. In other words, we assume we'll
+receive a gradient over RPC from another node.
+
+The algorithm is as follows:
+
+1. We start from the worker which has the roots for the backward pass (all
+   roots must be local).
+2. Lookup all the `send` functions for the current
+   |rpc-distributed_autograd-autograd-context|.
+3. Compute dependencies locally starting from the provided roots and all the
+   `send` functions we retrieved.
+4. After computing dependencies, kick off the local autograd engine with the
+   provided roots.
+5. When the autograd engine executes the `recv` function, the `recv`
+   function sends the input gradients via RPC to the appropriate worker.
+   Each `recv` function knows the destination worker id since it is recorded
+   as part of the forward pass. The `recv` function also sends over the
+   `autograd_context_id` and `autograd_message_id` to the remote host.
+6. When this request is received on the remote host, we use the
+   `autograd_context_id` and `autograd_message_id` to look up the
+   appropriate `send` function.
+7. If this is the first time a worker has received a request for the given
+   `autograd_context_id`, it will compute dependencies locally as described
+   in points 1-3 above.
+8. The `send` function retrieved in 6. is then enqueued for execution on the
+   local autograd engine for that worker.
+9. Finally, instead of accumulating the gradients on the `.grad` field of
+   the Tensor, we accumulate the gradients separately per
+   |rpc-distributed_autograd-autograd-context|. The gradients are stored in
+   a `Dict[Tensor, Tensor]`, which is basically a map from Tensor to its
+   associated gradient and this map can be retrieved using the
+   |torch.distributed.autograd.get_gradients| API.
+
+As an example the complete code with distributed autograd would be as
+follows:
+
+>python
+    import torch
+    import torch.distributed.autograd as dist_autograd
+    import torch.distributed.rpc as rpc
+
+    def my_add(t1, t2):
+      return torch.add(t1, t2)
+
+    # On worker 0:
+
+    # Setup the autograd context. Computations that take
+    # part in the distributed backward pass must be within
+    # the distributed autograd context manager.
+    with dist_autograd.context() as context_id:
+      t1 = torch.rand((3, 3), requires_grad=True)
+      t2 = torch.rand((3, 3), requires_grad=True)
+
+      # Perform some computation remotely.
+      t3 = rpc.rpc_sync("worker1", my_add, args=(t1, t2))
+
+      # Perform some computation locally based on remote result.
+      t4 = torch.rand((3, 3), requires_grad=True)
+      t5 = torch.mul(t3, t4)
+
+      # Compute some loss.
+      loss = t5.sum()
+
+      # Run the backward pass.
+      dist_autograd.backward(context_id, [loss])
+
+      # Retrieve the gradients from the context.
+      dist_autograd.get_gradients(context_id)
+<
+The distributed autograd graph with dependencies would be as follows
+(t5.sum() excluded for simplicity):
+
+The |rpc-distributed_autograd-fast-mode-algorithm| applied to the above
+example would be as follows:
+
+1. On `Worker 0` we start from the roots `loss` and `send1` to compute
+   dependencies. As a result `send1` is marked with a dependency of 1 and
+   `mul` on `Worker 0` is marked with a dependency of 1.
+2. Now, we kickoff the local autograd engine on `Worker 0`. We first execute
+   the `mul` function, accumulate its output in the autograd context as the
+   gradient for `t4`. Then, we execute `recv2` which sends the gradients to
+   `Worker 1`.
+3. Since this is the first time `Worker 1` has heard about this backward
+   pass, it starts dependency computation and marks the dependencies for
+   `send2`, `add` and `recv1` appropriately.
+4. Next, we enqueue `send2` on the local autograd engine of `Worker 1`,
+   which in turn executes `add` and `recv1`.
+5. When `recv1` is executed it sends the gradients over to `Worker 0`.
+6. Since `Worker 0` has already computed dependencies for this backward
+   pass, it just enqueues and executes `send1` locally.
+7. Finally, gradients for `t1`, `t2` and `t4` are accumulated in the
+   |rpc-distributed_autograd-autograd-context|.
+
+SMART mode algorithm           *rpc-distributed_autograd-smart-mode-algorithm*
+
+*rpc-distributed_autograd-id3*
+
+Full details of this algorithm are still in the works, but for the general
+idea you can refer to Distributed Autograd Algorithm Smart mode section in
+the RFC https://github.com/pytorch/pytorch/issues/23110.
+
+DISTRIBUTED OPTIMIZER         *rpc-distributed_autograd-distributed-optimizer*
+
+The |torch.distributed.optim.DistributedOptimizer| operates as follows:
+
+1. Takes a list of remote parameters (`RRef`) to optimize. These could also
+   be local parameters wrapped within a local `RRef`.
+2. Takes a |torch.optim.Optimizer| class as the local optimizer to run on
+   all distinct `RRef` owners.
+3. The distributed optimizer creates an instance of the local `Optimizer` on
+   each of the worker nodes and holds an `RRef` to them.
+4. When |torch.distributed.optim.DistributedOptimizer.step| is invoked, the
+   distributed optimizer uses RPC to remotely execute all the local
+   optimizers on the appropriate remote workers. A distributed autograd
+   `context_id` must be provided as input to
+   |torch.distributed.optim.DistributedOptimizer.step|. This is used by
+   local optimizers to apply gradients stored in the corresponding context.
+5. If multiple concurrent distributed optimizers are updating the same
+   parameters on a worker, these updates are serialized via a lock.
+
+SIMPLE END TO END EXAMPLE *rpc-distributed_autograd-simple-end-to-end-example*
+
+Putting it all together, the following is a simple end to end example using
+distributed autograd and the distributed optimizer. If the code is placed
+into a file called `dist_autograd_simple.py`, it can be run with the command
+`MASTER_ADDR="localhost" MASTER_PORT=29500 python dist_autograd_simple.py`:
+
+>python
+    import torch
+    import torch.multiprocessing as mp
+    import torch.distributed.autograd as dist_autograd
+    from torch.distributed import rpc
+    from torch import optim
+    from torch.distributed.optim import DistributedOptimizer
+
+    def random_tensor():
+        return torch.rand((3, 3), requires_grad=True)
+
+    def _run_process(rank, dst_rank, world_size):
+        name = "worker{}".format(rank)
+        dst_name = "worker{}".format(dst_rank)
+
+        # Initialize RPC.
+        rpc.init_rpc(
+            name=name,
+            rank=rank,
+            world_size=world_size
+        )
+
+        # Use a distributed autograd context.
+        with dist_autograd.context() as context_id:
+            # Forward pass (create references on remote nodes).
+            rref1 = rpc.remote(dst_name, random_tensor)
+            rref2 = rpc.remote(dst_name, random_tensor)
+            loss = rref1.to_here() + rref2.to_here()
+
+            # Backward pass (run distributed autograd).
+            dist_autograd.backward(context_id, [loss.sum()])
+
+            # Build DistributedOptimizer.
+            dist_optim = DistributedOptimizer(
+            optim.SGD,
+            [rref1, rref2],
+            lr=0.05,
+            )
+
+            # Run the distributed optimizer step.
+            dist_optim.step(context_id)
+
+    def run_process(rank, world_size):
+        dst_rank = (rank + 1) % world_size
+        _run_process(rank, dst_rank, world_size)
+        rpc.shutdown()
+
+    if __name__ == '__main__':
+      # Run world_size workers
+      world_size = 2
+      mp.spawn(run_process, args=(world_size,), nprocs=world_size)
+<
+
+----------------------------------------------------------------------------
+Remote Reference Protocol                                     *torch-rpc-rref*
+
+*rpc-rref-id1*
+
+This note describes the design details of Remote Reference protocol and
+walks through message flows in different scenarios. Make sure you're
+familiar with the |rpc-distributed-rpc-framework| before proceeding.
+
+BACKGROUND                                               *rpc-rref-background*
+
+RRef stands for Remote REFerence. It is a reference of an object which is
+located on the local or remote worker, and transparently handles reference
+counting under the hood. Conceptually, it can be considered as a distributed
+shared pointer. Applications can create an RRef by calling
+|torch.distributed.rpc.remote|. Each RRef is owned by the callee worker of
+the |torch.distributed.rpc.remote| call (i.e., owner) and can be used by
+multiple users. The owner stores the real data and keeps track of the global
+reference count. Every RRef can be uniquely identified by a global `RRefId`,
+which is assigned at the time of creation on the caller of the
+|torch.distributed.rpc.remote| call.
+
+On the owner worker, there is only one `OwnerRRef` instance, which contains
+the real data, while on user workers, there can be as many `UserRRefs` as
+necessary, and `UserRRef` does not hold the data. All usage on the owner
+will retrieve the unique `OwnerRRef` instance using the globally unique
+`RRefId`. A `UserRRef` will be created when it is used as an argument or
+return value in |torch.distributed.rpc.rpc_sync|,
+|torch.distributed.rpc.rpc_async| or |torch.distributed.rpc.remote|
+invocation, and the owner will be notified according to update the reference
+count. An `OwnerRRef` and its data will be deleted when there is no
+`UserRRef` instances globally and there are no reference to the `OwnerRRef`
+on the owner as well.
+
+ASSUMPTIONS                                             *rpc-rref-assumptions*
+
+RRef protocol is designed with the following assumptions.
+
+- Transient Network Failures: The RRef design handles transient network
+  failures by retrying messages. It cannot handle node crashes or permanent
+  network partitions. When those incidents occur, the application should
+  take down all workers, revert to the previous checkpoint, and resume
+  training.
+- Non-idempotent UDFs: We assume the user functions (UDF) provided to
+  |torch.distributed.rpc.rpc_sync|, |torch.distributed.rpc.rpc_async| or
+  |torch.distributed.rpc.remote| are not idempotent and therefore cannot be
+  retried. However, internal RRef control messages are idempotent and
+  retried upon message failure.
+- Out of Order Message Delivery: We do not assume message delivery order
+  between any pair of nodes, because both sender and receiver are using
+  multiple threads. There is no guarantee on which message will be processed
+  first.
+
+RREF LIFETIME                                         *rpc-rref-rref-lifetime*
+
+The goal of the protocol is to delete an `OwnerRRef` at an appropriate time.
+The right time to delete an `OwnerRRef` is when there are no living
+`UserRRef` instances and user code is not holding references to the
+`OwnerRRef` either. The tricky part is to determine if there are any living
+`UserRRef` instances.
+
+Design Reasoning                                   *rpc-rref-design-reasoning*
+
+A user can get a `UserRRef` in three situations:
+
+1. Receiving a `UserRRef` from the owner.
+2. Receiving a `UserRRef` from another user.
+3. Creating a new `UserRRef` owned by another worker.
+
+Case 1 is the simplest where the owner passes its RRef to a user, where the
+owner calls |torch.distributed.rpc.rpc_sync|,
+|torch.distributed.rpc.rpc_async|, or |torch.distributed.rpc.remote| and
+uses its RRef as an argument. In this case a new `UserRRef` will be created
+on the user. As the owner is the caller, it can easily update its local
+reference count on the `OwnerRRef`.
+
+The only requirement is that any `UserRRef` must notify the owner upon
+destruction. Hence, we need the first guarantee:
+
+G1. The owner will be notified when any UserRRef is deleted.
+
+As messages might come delayed or out-of-order, we need one more guarantee
+to make sure the delete message is not processed too soon. If A sends a
+message to B that involves an RRef, we call the RRef on A (the parent RRef)
+and the RRef on B (the child RRef).
+
+G2. Parent RRef will NOT be deleted until the child RRef is confirmed by the
+owner.
+
+In cases 2 and 3, it is possible that the owner has only partial or no
+knowledge at all about the RRef fork graph. For example, an RRef could be
+constructed on a user, and before the owner receives any RPC call, the
+creator user might have already shared the RRef with other users, and those
+users could further share the RRef. One invariant is that the fork graph of
+any RRef is always a tree, because forking an RRef always creates a new
+`UserRRef` instance on the callee (except if the callee is the owner), and
+hence every RRef has a single parent.
+
+The owner's view on any `UserRRef` in the tree has three stages:
+
+>text
+    1) unknown -> 2) known -> 3) deleted.
+<
+The owner's view of the entire tree keeps changing. The owner deletes its
+`OwnerRRef` instance when it thinks there are no living `UserRRef`
+instances, i.e., when `OwnerRRef` is deleted, all `UserRRef` instances could
+be either indeed deleted or unknown. The dangerous case is when some forks
+are unknown and others are deleted.
+
+G2 trivially guarantees that no parent `UserRRef` can be deleted before the
+owner knows all of its children `UserRRef` instances. However, it is
+possible that the child `UserRRef` may be deleted before the owner knows its
+parent `UserRRef`.
+
+Consider the following example, where the `OwnerRRef` forks to A, then A
+forks to Y, and Y forks to Z:
+
+>text
+    OwnerRRef -> A -> Y -> Z
+<
+If all of Z's messages, including the delete message, are processed by the
+owner before Y's messages. the owner will learn of Z's deletion before
+knowing Y exists. Nevertheless, this does not cause any problem. Because, at
+least one of Y's ancestors will be alive (A) and it will prevent the owner
+from deleting the `OwnerRRef`. More specifically, if the owner does not know
+Y, A cannot be deleted due to G2, and the owner knows A since it is A's
+parent.
+
+Things get a little trickier if the RRef is created on a user:
+
+>text
+    OwnerRRef
+        ^
+        |
+        A -> Y -> Z
+<
+If Z calls `to_here()` on the `UserRRef`, the owner at least knows A when Z
+is deleted, because otherwise, `to_here()` wouldn't finish. If Z does not
+call `to_here()`, it is possible that the owner receives all messages from Z
+before any message from A and Y. In this case, as the real data of the
+`OwnerRRef` has not been created yet, there is nothing to be deleted either.
+It is the same as Z does not exist at all. Hence, it's still OK.
+
+Implementation                                       *rpc-rref-implementation*
+
+G1 is implemented by sending out a delete message in `UserRRef` destructor.
+To provide G2, the parent `UserRRef` is put into a context whenever it is
+forked, indexed by the new `ForkId`. The parent `UserRRef` is only removed
+from the context when it receives an acknowledgement message (ACK) from the
+child, and the child will only send out the ACK when it is confirmed by the
+owner.
+
+PROTOCOL SCENARIOS                               *rpc-rref-protocol-scenarios*
+
+Let's now discuss how the above designs translate to the protocol in four
+scenarios.
+
+                         *rpc-rref-user-share-rref-with-owner-as-return-value*
+User Share RRef with Owner as Return Value
+
+>python
+    import torch
+    import torch.distributed.rpc as rpc
+
+    # on worker A
+    rref = rpc.remote('B', torch.add, args=(torch.ones(2), 1))
+    # say the rref has RRefId 100 and ForkId 1
+    rref.to_here()
+<
+In this case, the `UserRRef` is created on the user worker A, then it is
+passed to the owner worker B together with the remote message, and then B
+creates the `OwnerRRef`. The method |torch.distributed.rpc.remote| returns
+immediately, meaning that the `UserRRef` can be forked/used before the owner
+knows about it.
+
+On the owner, when receiving the |torch.distributed.rpc.remote| call, it
+will create the `OwnerRRef`, and returns an ACK to acknowledge `{100, 1}`
+(`RRefId`, `ForkId`). Only after receiving this ACK, can A delete its
+`UserRRef`. This involves both G1 and G2. G1 is obvious. For G2, the
+`OwnerRRef` is a child of the `UserRRef`, and the `UserRRef` is not deleted
+until it receives the ACK from the owner.
+
+The diagram above shows the message flow, where solid arrow contains user
+function and dashed arrow are builtin messages. Note that the first two
+messages from A to B (|torch.distributed.rpc.remote| and `to_here()`) may
+arrive at B in any order, but the final delete message will only be sent out
+when:
+
+- B acknowledges `UserRRef {100, 1}` (G2), and
+- Python GC agrees to delete the local `UserRRef` instance. This occurs when
+  the RRef is no longer in scope and is eligible for garbage collection.
+
+                             *rpc-rref-user-share-rref-with-owner-as-argument*
+User Share RRef with Owner as Argument
+
+>python
+    import torch
+    import torch.distributed.rpc as rpc
+
+    # on worker A and worker B
+    def func(rref):
+      pass
+
+    # on worker A
+    rref = rpc.remote('B', torch.add, args=(torch.ones(2), 1))
+    # say the rref has RRefId 100 and ForkId 1
+    rpc.rpc_async('B', func, args=(rref, ))
+<
+In this case, after creating the `UserRRef` on A, A uses it as an argument
+in a followup RPC call to B. A will keep `UserRRef {100, 1}` alive until it
+receives the acknowledge from B (G2, not the return value of the RPC call).
+This is necessary because A should not send out the delete message until all
+previous messages are received, otherwise, the `OwnerRRef` could be deleted
+before usage as we do not guarantee message delivery order. This is done by
+creating a child `ForkId` of RRef, holding them in a map until receives the
+owner confirms the child `ForkId`. The figure below shows the message flow.
+
+Note that the `UserRRef` could be deleted on B before func finishes or even
+starts. However this is OK, as at the time B sends out ACK for the child
+`ForkId`, it already acquired the `OwnerRRef` instance, which would prevent
+it being deleted too soon.
+
+Owner Share RRef with User               *rpc-rref-owner-share-rref-with-user*
+
+Owner to user is the simplest case, where the owner can update reference
+counting locally, and does not need any additional control message to notify
+others. Regarding G2, it is same as the parent receives the ACK from the
+owner immediately, as the parent is the owner.
+
+>python
+    import torch
+    import torch.distributed.rpc as RRef, rpc
+
+    # on worker B and worker C
+    def func(rref):
+      pass
+
+    # on worker B, creating a local RRef
+    rref = RRef("data")
+    # say the rref has RRefId 100
+    dist.rpc_async('C', func, args=(rref, ))
+<
+The figure above shows the message flow. Note that when the `OwnerRRef`
+exits scope after the rpc_async call, it will not be deleted, because
+internally there is a map to hold it alive if there is any known forks, in
+which case is `UserRRef {100, 1}`. (G2)
+
+User Share RRef with User                 *rpc-rref-user-share-rref-with-user*
+
+This is the most complicated case where caller user (parent `UserRRef`),
+callee user (child `UserRRef`), and the owner all need to get involved.
+
+>python
+    import torch
+    import torch.distributed.rpc as rpc
+
+    # on worker A and worker C
+    def func(rref):
+      pass
+
+    # on worker A
+    rref = rpc.remote('B', torch.add, args=(torch.ones(2), 1))
+    # say the rref has RRefId 100 and ForkId 1
+    rpc.rpc_async('C', func, args=(rref, ))
+<
+When C receives the child `UserRRef` from A, it sends out a fork request to
+the owner B. Later, when the B confirms the `UserRRef` on C, C will perform
+two actions in parallel: 1) send out the child ACK to A ,and 2) run the user
+provided function. During this time, the parent (A) will hold its
+`UserRRef {100, 1}` alive to achieve G2.
+
+ vim:tw=78:ts=8:ft=help:norl:

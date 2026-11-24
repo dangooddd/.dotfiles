@@ -1,0 +1,491 @@
+*megatron.txt* *megatron*	Megatron Core documentation
+Version latest — https://docs.nvidia.com/megatron-core/developer-guide/latest/
+License: NVIDIA
+
+TABLE OF CONTENTS	*megatron-toc*
+
+api guide ..................................... |megatron-section-api-guide|
+apidocs ......................................... |megatron-section-apidocs|
+apidocs (part 2) ......................... |megatron-section-apidocs-part-2|
+apidocs (part 3) ......................... |megatron-section-apidocs-part-3|
+get started ................................. |megatron-section-get-started|
+main ............................................... |megatron-section-main|
+models ........................................... |megatron-section-models|
+user guide ................................... |megatron-section-user-guide|
+
+==============================================================================
+API GUIDE
+
+datasets package ..................... |module-core-api-guide-core-datasets|
+dist_checkpointing package ... |module-core-api-guide-core-dist_checkpointing|
+dist_checkpointing.strategies package ... |module-core-api-guide-core-dist_checkpointing.strategies|
+distributed package ............... |module-core-api-guide-core-distributed|
+fusions package ....................... |module-core-api-guide-core-fusions|
+Generalized Tensor Parallelism (GTP) ... |module-core-api-guide-core-generalized_tensor_parallel|
+Core APIs ............................... |module-core-api-guide-core-index|
+pipeline_parallel package ... |module-core-api-guide-core-pipeline_parallel|
+tensor_parallel package ....... |module-core-api-guide-core-tensor_parallel|
+transformer package ............... |module-core-api-guide-core-transformer|
+API Guide .................................... |module-core-api-guide-index|
+Internal Utilities .................. |module-core-api-guide-internal-index|
+Microbatches Calculator ... |module-core-api-guide-internal-num_microbatches_calculator|
+Optimizer Parameters Scheduler ... |module-core-api-guide-internal-optimizer_param_scheduler|
+Model APIs ............................ |module-core-api-guide-models-index|
+models.bert package ............. |module-core-api-guide-models-models.bert|
+models.gpt package ............... |module-core-api-guide-models-models.gpt|
+models package ....................... |module-core-api-guide-models-models|
+models.t5 package ................. |module-core-api-guide-models-models.t5|
+Design Document: MoE Router Replay Feature ... |module-core-api-guide-router_replay|
+
+==============================================================================
+APIDOCS
+
+core._rank_utils ................................. |module-core._rank_utils|
+core._slurm_utils ............................... |module-core._slurm_utils|
+core.activations ................................. |module-core.activations|
+core.allocator ..................................... |module-core.allocator|
+core.allocator.vmm_symm_allocator ... |module-core.allocator.vmm_symm_allocator|
+core.config ........................................... |module-core.config|
+core.config_logger ............................. |module-core.config_logger|
+core.context_parallel ....................... |module-core.context_parallel|
+core.context_parallel.layout ......... |module-core.context_parallel.layout|
+core.context_parallel.sequence_roll ... |module-core.context_parallel.sequence_roll|
+core.context_parallel.utils ........... |module-core.context_parallel.utils|
+core.datasets.bert_dataset ............. |module-core.datasets.bert_dataset|
+core.datasets.blended_dataset ....... |module-core.datasets.blended_dataset|
+core.datasets.blended_megatron_dataset_builder ... |module-core.datasets.blended_megatron_dataset_builder|
+core.datasets.blended_megatron_dataset_config ... |module-core.datasets.blended_megatron_dataset_config|
+core.datasets.data_schedule ........... |module-core.datasets.data_schedule|
+core.datasets.data_schedule_utils ... |module-core.datasets.data_schedule_utils|
+core.datasets.gpt_dataset ............... |module-core.datasets.gpt_dataset|
+core.datasets.helpers ....................... |module-core.datasets.helpers|
+core.datasets ....................................... |module-core.datasets|
+core.datasets.indexed_dataset ....... |module-core.datasets.indexed_dataset|
+core.datasets.masked_dataset ......... |module-core.datasets.masked_dataset|
+core.datasets.megatron_dataset ..... |module-core.datasets.megatron_dataset|
+core.datasets.multimodal_dataset ... |module-core.datasets.multimodal_dataset|
+core.datasets.object_storage_utils ... |module-core.datasets.object_storage_utils|
+core.datasets.t5_dataset ................. |module-core.datasets.t5_dataset|
+core.datasets.utils ........................... |module-core.datasets.utils|
+core.datasets.utils_s3 ..................... |module-core.datasets.utils_s3|
+core.dist_checkpointing.core ......... |module-core.dist_checkpointing.core|
+core.dist_checkpointing.dict_utils ... |module-core.dist_checkpointing.dict_utils|
+core.dist_checkpointing.exchange_utils ... |module-core.dist_checkpointing.exchange_utils|
+core.dist_checkpointing.gpt_checkpoint_interop ... |module-core.dist_checkpointing.gpt_checkpoint_interop|
+core.dist_checkpointing ................... |module-core.dist_checkpointing|
+core.dist_checkpointing.mapping ... |module-core.dist_checkpointing.mapping|
+core.dist_checkpointing.optimizer ... |module-core.dist_checkpointing.optimizer|
+core.dist_checkpointing.serialization ... |module-core.dist_checkpointing.serialization|
+core.dist_checkpointing.state_dict_utils ... |module-core.dist_checkpointing.state_dict_utils|
+core.dist_checkpointing.strategies.checkpointable ... |module-core.dist_checkpointing.strategies.checkpointable|
+core.dist_checkpointing.strategies.common ... |module-core.dist_checkpointing.strategies.common|
+core.dist_checkpointing.strategies.fully_parallel ... |module-core.dist_checkpointing.strategies.fully_parallel|
+core.dist_checkpointing.strategies ... |module-core.dist_checkpointing.strategies|
+core.dist_checkpointing.strategies.nvrx ... |module-core.dist_checkpointing.strategies.nvrx|
+core.dist_checkpointing.strategies.torch ... |module-core.dist_checkpointing.strategies.torch|
+core.dist_checkpointing.tensor_aware_state_dict ... |module-core.dist_checkpointing.tensor_aware_state_dict|
+core.dist_checkpointing.utils ....... |module-core.dist_checkpointing.utils|
+core.dist_checkpointing.validation ... |module-core.dist_checkpointing.validation|
+core.distributed.data_parallel_base ... |module-core.distributed.data_parallel_base|
+core.distributed.distributed_data_parallel ... |module-core.distributed.distributed_data_parallel|
+core.distributed.distributed_data_parallel_config ... |module-core.distributed.distributed_data_parallel_config|
+core.distributed.finalize_model_grads ... |module-core.distributed.finalize_model_grads|
+core.distributed.fsdp ....................... |module-core.distributed.fsdp|
+core.distributed.fsdp.mcore_fsdp_adapter ... |module-core.distributed.fsdp.mcore_fsdp_adapter|
+core.distributed ................................. |module-core.distributed|
+core.distributed.param_and_grad_buffer ... |module-core.distributed.param_and_grad_buffer|
+core.distributed.reduce_scatter_with_fp32_accumulation ... |module-core.distributed.reduce_scatter_with_fp32_accumulation|
+core.distributed.torch_fully_sharded_data_parallel ... |module-core.distributed.torch_fully_sharded_data_parallel|
+core.distributed.torch_fully_sharded_data_parallel_config ... |module-core.distributed.torch_fully_sharded_data_parallel_config|
+core.energy_monitor ........................... |module-core.energy_monitor|
+core.enums ............................................. |module-core.enums|
+core.export.data_type ....................... |module-core.export.data_type|
+core.export.export_config ............... |module-core.export.export_config|
+core.export ........................................... |module-core.export|
+core.export.model_type ..................... |module-core.export.model_type|
+core.export.trtllm.engine_builder ... |module-core.export.trtllm.engine_builder|
+core.export.trtllm.engine_builder.trtllm_engine_builder ... |module-core.export.trtllm.engine_builder.trtllm_engine_builder|
+core.export.trtllm ............................. |module-core.export.trtllm|
+core.export.trtllm.model_to_trllm_mapping.default_conversion_dict ... |module-core.export.trtllm.model_to_trllm_mapping.default_conversion_dict|
+core.export.trtllm.model_to_trllm_mapping ... |module-core.export.trtllm.model_to_trllm_mapping|
+core.export.trtllm.trt_model_config ... |module-core.export.trtllm.trt_model_config|
+core.export.trtllm.trt_model_type ... |module-core.export.trtllm.trt_model_type|
+core.export.trtllm.trtllm_helper ... |module-core.export.trtllm.trtllm_helper|
+core.export.trtllm.trtllm_layers ... |module-core.export.trtllm.trtllm_layers|
+core.export.trtllm.trtllm_weights_converter.distributed_trtllm_model_weights_converter ... |module-core.export.trtllm.trtllm_weights_converter.distributed_trtllm_model_weights_converter|
+core.export.trtllm.trtllm_weights_converter ... |module-core.export.trtllm.trtllm_weights_converter|
+core.export.trtllm.trtllm_weights_converter.single_device_trtllm_model_weights_converter ... |module-core.export.trtllm.trtllm_weights_converter.single_device_trtllm_model_weights_converter|
+core.export.trtllm.trtllm_weights_converter.utils ... |module-core.export.trtllm.trtllm_weights_converter.utils|
+core.extensions ................................... |module-core.extensions|
+core.extensions.kitchen ................... |module-core.extensions.kitchen|
+core.extensions.transformer_engine ... |module-core.extensions.transformer_engine|
+core.extensions.transformer_engine_spec_provider ... |module-core.extensions.transformer_engine_spec_provider|
+core.fault_injector ........................... |module-core.fault_injector|
+core.fp4_utils ..................................... |module-core.fp4_utils|
+core.fp8_utils ..................................... |module-core.fp8_utils|
+core.full_cuda_graph ......................... |module-core.full_cuda_graph|
+core.fusions.fused_bias_dropout ... |module-core.fusions.fused_bias_dropout|
+core.fusions.fused_bias_geglu ....... |module-core.fusions.fused_bias_geglu|
+core.fusions.fused_bias_gelu ......... |module-core.fusions.fused_bias_gelu|
+core.fusions.fused_bias_swiglu ..... |module-core.fusions.fused_bias_swiglu|
+core.fusions.fused_cross_entropy ... |module-core.fusions.fused_cross_entropy|
+core.fusions.fused_embedding_wgrad ... |module-core.fusions.fused_embedding_wgrad|
+core.fusions.fused_gated_norm ....... |module-core.fusions.fused_gated_norm|
+core.fusions.fused_indices_converter ... |module-core.fusions.fused_indices_converter|
+core.fusions.fused_layer_norm ....... |module-core.fusions.fused_layer_norm|
+core.fusions.fused_mhc_kernels ..... |module-core.fusions.fused_mhc_kernels|
+core.fusions.fused_mla_yarn_rope_apply ... |module-core.fusions.fused_mla_yarn_rope_apply|
+core.fusions.fused_moe_residual_add ... |module-core.fusions.fused_moe_residual_add|
+core.fusions.fused_pad_routing_map ... |module-core.fusions.fused_pad_routing_map|
+core.fusions.fused_pre_gated_delta_rule ... |module-core.fusions.fused_pre_gated_delta_rule|
+core.fusions.fused_row_copy ........... |module-core.fusions.fused_row_copy|
+core.fusions.fused_softmax ............. |module-core.fusions.fused_softmax|
+core.fusions.fused_weighted_squared_relu ... |module-core.fusions.fused_weighted_squared_relu|
+core.fusions ......................................... |module-core.fusions|
+core ....................................... |module-core-apidocs-core-core|
+core.hyper_comm_grid ......................... |module-core.hyper_comm_grid|
+core.inference.apis._llm_base ....... |module-core.inference.apis._llm_base|
+core.inference.apis.async_llm ....... |module-core.inference.apis.async_llm|
+core.inference.apis ........................... |module-core.inference.apis|
+core.inference.apis.llm ................... |module-core.inference.apis.llm|
+core.inference.apis.serve_config ... |module-core.inference.apis.serve_config|
+core.inference.common_inference_params ... |module-core.inference.common_inference_params|
+core.inference.config ....................... |module-core.inference.config|
+core.inference ..................................... |module-core.inference|
+core.inference.inference_client ... |module-core.inference.inference_client|
+core.inference.inference_request ... |module-core.inference.inference_request|
+core.inference.sampling_params ..... |module-core.inference.sampling_params|
+core.inference_params ....................... |module-core.inference_params|
+core.jit ................................................. |module-core.jit|
+core.model_parallel_config ............. |module-core.model_parallel_config|
+core.models.T5 ..................................... |module-core.models.T5|
+core.models.T5.t5_model ................... |module-core.models.T5.t5_model|
+core.models.T5.t5_spec ..................... |module-core.models.T5.t5_spec|
+core.models.audio.audio_feature_config ... |module-core.models.audio.audio_feature_config|
+core.models.audio.audio_processor ... |module-core.models.audio.audio_processor|
+core.models.audio.audio_projector ... |module-core.models.audio.audio_projector|
+core.models.audio ............................... |module-core.models.audio|
+core.models.audio.nemo_audio_checkpoint ... |module-core.models.audio.nemo_audio_checkpoint|
+core.models.audio.nemo_audio_preprocessing ... |module-core.models.audio.nemo_audio_preprocessing|
+core.models.audio.nemo_rope_transformer_encoder ... |module-core.models.audio.nemo_rope_transformer_encoder|
+core.models.audio.nemo_transformer_audio_model ... |module-core.models.audio.nemo_transformer_audio_model|
+core.models.audio.nemo_transformer_encoder ... |module-core.models.audio.nemo_transformer_encoder|
+core.models.audio.packed_audio ..... |module-core.models.audio.packed_audio|
+core.models.backends ......................... |module-core.models.backends|
+core.models.bert.bert_layer_specs ... |module-core.models.bert.bert_layer_specs|
+core.models.bert.bert_lm_head ....... |module-core.models.bert.bert_lm_head|
+core.models.bert.bert_model ........... |module-core.models.bert.bert_model|
+core.models.bert ................................. |module-core.models.bert|
+core.models.bert.pooler ................... |module-core.models.bert.pooler|
+core.models.common.combined_1f1b_mfsdp_scheduler ... |module-core.models.common.combined_1f1b_mfsdp_scheduler|
+core.models.common.embeddings ....... |module-core.models.common.embeddings|
+core.models.common.embeddings.language_model_embedding ... |module-core.models.common.embeddings.language_model_embedding|
+core.models.common.embeddings.relative_pos_embedding ... |module-core.models.common.embeddings.relative_pos_embedding|
+core.models.common.embeddings.rope_utils ... |module-core.models.common.embeddings.rope_utils|
+core.models.common.embeddings.rotary_pos_embedding ... |module-core.models.common.embeddings.rotary_pos_embedding|
+core.models.common.embeddings.yarn_rotary_pos_embedding ... |module-core.models.common.embeddings.yarn_rotary_pos_embedding|
+core.models.common.fine_grained_callables ... |module-core.models.common.fine_grained_callables|
+core.models.common ............................. |module-core.models.common|
+core.models.common.language_module ... |module-core.models.common.language_module|
+core.models.common.language_module.language_module ... |module-core.models.common.language_module.language_module|
+core.models.common.model_chunk_schedule_plan ... |module-core.models.common.model_chunk_schedule_plan|
+core.models.common.utils ................. |module-core.models.common.utils|
+core.models.common.vision_module ... |module-core.models.common.vision_module|
+core.models.common.vision_module.vision_module ... |module-core.models.common.vision_module.vision_module|
+core.models.gpt.experimental_attention_variant_module_specs ... |module-core.models.gpt.experimental_attention_variant_module_specs|
+core.models.gpt.fine_grained_callables ... |module-core.models.gpt.fine_grained_callables|
+core.models.gpt.gpt_layer_specs ... |module-core.models.gpt.gpt_layer_specs|
+core.models.gpt.gpt_model ............... |module-core.models.gpt.gpt_model|
+core.models.gpt ................................... |module-core.models.gpt|
+core.models.gpt.moe_module_specs ... |module-core.models.gpt.moe_module_specs|
+core.models ........................................... |module-core.models|
+core.models.huggingface.clip_model ... |module-core.models.huggingface.clip_model|
+core.models.huggingface.fastconformer_model ... |module-core.models.huggingface.fastconformer_model|
+core.models.huggingface ................... |module-core.models.huggingface|
+core.models.huggingface.module ..... |module-core.models.huggingface.module|
+core.models.huggingface.qwen_model ... |module-core.models.huggingface.qwen_model|
+core.models.hybrid ............................. |module-core.models.hybrid|
+core.models.hybrid.hybrid_block ... |module-core.models.hybrid.hybrid_block|
+core.models.hybrid.hybrid_layer_allocation ... |module-core.models.hybrid.hybrid_layer_allocation|
+core.models.hybrid.hybrid_layer_specs ... |module-core.models.hybrid.hybrid_layer_specs|
+core.models.hybrid.hybrid_model ... |module-core.models.hybrid.hybrid_model|
+core.models.hybrid.layers ............... |module-core.models.hybrid.layers|
+core.models.hybrid.layers.hybrid_hyper_connection ... |module-core.models.hybrid.layers.hybrid_hyper_connection|
+core.models.hybrid.layers.utils ... |module-core.models.hybrid.layers.utils|
+core.models.hybrid.shortcut_block ... |module-core.models.hybrid.shortcut_block|
+core.models.mamba ............................... |module-core.models.mamba|
+core.models.mamba.mamba_layer_specs ... |module-core.models.mamba.mamba_layer_specs|
+core.models.mamba.mamba_model ....... |module-core.models.mamba.mamba_model|
+core.models.mimo.comm.colocated_communicator ... |module-core.models.mimo.comm.colocated_communicator|
+core.models.mimo.comm ....................... |module-core.models.mimo.comm|
+core.models.mimo.config.base_configs ... |module-core.models.mimo.config.base_configs|
+core.models.mimo.config ................... |module-core.models.mimo.config|
+core.models.mimo.config.role ......... |module-core.models.mimo.config.role|
+core.models.mimo ................................. |module-core.models.mimo|
+core.models.mimo.model.base ........... |module-core.models.mimo.model.base|
+core.models.mimo.model ..................... |module-core.models.mimo.model|
+core.models.mimo.optimizer ............. |module-core.models.mimo.optimizer|
+core.models.multimodal.context_parallel ... |module-core.models.multimodal.context_parallel|
+core.models.multimodal ..................... |module-core.models.multimodal|
+core.models.multimodal.llava_model ... |module-core.models.multimodal.llava_model|
+core.models.multimodal.llava_spec ... |module-core.models.multimodal.llava_spec|
+core.models.multimodal.utils ......... |module-core.models.multimodal.utils|
+core.models.vision.clip_vit_model ... |module-core.models.vision.clip_vit_model|
+core.models.vision.encoder_registry ... |module-core.models.vision.encoder_registry|
+core.models.vision ............................. |module-core.models.vision|
+core.models.vision.multimodal_projector ... |module-core.models.vision.multimodal_projector|
+core.models.vision.radio ................. |module-core.models.vision.radio|
+core.models.vision.vit_layer_specs ... |module-core.models.vision.vit_layer_specs|
+core.models.vision.vit_model ......... |module-core.models.vision.vit_model|
+core.msc_utils ..................................... |module-core.msc_utils|
+core.nccl_allocator ........................... |module-core.nccl_allocator|
+core.num_microbatches_calculator ... |module-core.num_microbatches_calculator|
+core.ops._backends ............................. |module-core.ops._backends|
+core.ops._compat ................................. |module-core.ops._compat|
+core.ops ................................................. |module-core.ops|
+core.optimizer.clip_grads ............... |module-core.optimizer.clip_grads|
+core.optimizer.cpu_offloading ....... |module-core.optimizer.cpu_offloading|
+core.optimizer.cpu_offloading.hybrid_optimizer ... |module-core.optimizer.cpu_offloading.hybrid_optimizer|
+core.optimizer.distrib_optimizer ... |module-core.optimizer.distrib_optimizer|
+core.optimizer.emerging_optimizers ... |module-core.optimizer.emerging_optimizers|
+core.optimizer.fully_sharded_optimizer ... |module-core.optimizer.fully_sharded_optimizer|
+core.optimizer.grad_scaler ............. |module-core.optimizer.grad_scaler|
+core.optimizer ..................................... |module-core.optimizer|
+core.optimizer.layer_sharded_a2a ... |module-core.optimizer.layer_sharded_a2a|
+core.optimizer.layer_sharded_muon ... |module-core.optimizer.layer_sharded_muon|
+core.optimizer.layer_wise_optimizer ... |module-core.optimizer.layer_wise_optimizer|
+core.optimizer.muon ........................... |module-core.optimizer.muon|
+core.optimizer.optimizer ................. |module-core.optimizer.optimizer|
+core.optimizer.optimizer_config ... |module-core.optimizer.optimizer_config|
+core.optimizer.optimizer_cuda_graph ... |module-core.optimizer.optimizer_cuda_graph|
+core.optimizer.param_layout ........... |module-core.optimizer.param_layout|
+core.optimizer.qk_clip ..................... |module-core.optimizer.qk_clip|
+core.optimizer_param_scheduler ..... |module-core.optimizer_param_scheduler|
+core.package_info ............................... |module-core.package_info|
+core.packed_seq_params ..................... |module-core.packed_seq_params|
+core.parallel_state ........................... |module-core.parallel_state|
+core.parameter_names ......................... |module-core.parameter_names|
+core.pipeline_parallel.bridge_communicator ... |module-core.pipeline_parallel.bridge_communicator|
+core.pipeline_parallel.combined_1f1b ... |module-core.pipeline_parallel.combined_1f1b|
+core.pipeline_parallel.fine_grained_activation_offload ... |module-core.pipeline_parallel.fine_grained_activation_offload|
+core.pipeline_parallel ..................... |module-core.pipeline_parallel|
+core.pipeline_parallel.hybrid_cp_schedule ... |module-core.pipeline_parallel.hybrid_cp_schedule|
+core.pipeline_parallel.multimodule_communicator ... |module-core.pipeline_parallel.multimodule_communicator|
+core.pipeline_parallel.p2p_communication ... |module-core.pipeline_parallel.p2p_communication|
+core.pipeline_parallel.schedules ... |module-core.pipeline_parallel.schedules|
+core.pipeline_parallel.utils ......... |module-core.pipeline_parallel.utils|
+core.post_training ............................. |module-core.post_training|
+core.post_training.modelopt.checkpointing ... |module-core.post_training.modelopt.checkpointing|
+core.post_training.modelopt.gpt ... |module-core.post_training.modelopt.gpt|
+core.post_training.modelopt.gpt.model_specs ... |module-core.post_training.modelopt.gpt.model_specs|
+core.post_training.modelopt.gpt.state_dict_hooks ... |module-core.post_training.modelopt.gpt.state_dict_hooks|
+core.post_training.modelopt ........... |module-core.post_training.modelopt|
+core.post_training.modelopt.hybrid ... |module-core.post_training.modelopt.hybrid|
+core.post_training.modelopt.hybrid.model_specs ... |module-core.post_training.modelopt.hybrid.model_specs|
+core.post_training.modelopt.layers ... |module-core.post_training.modelopt.layers|
+core.post_training.modelopt.mamba ... |module-core.post_training.modelopt.mamba|
+core.post_training.modelopt.mamba.model_specs ... |module-core.post_training.modelopt.mamba.model_specs|
+core.process_groups_config ............. |module-core.process_groups_config|
+core.quantization ............................... |module-core.quantization|
+core.quantization.quant_config ..... |module-core.quantization.quant_config|
+core.quantization.utils ................... |module-core.quantization.utils|
+core.recompute ..................................... |module-core.recompute|
+core.rerun_state_machine ................. |module-core.rerun_state_machine|
+core.resharding.copy_services.base ... |module-core.resharding.copy_services.base|
+core.resharding.copy_services.gloo_copy_service ... |module-core.resharding.copy_services.gloo_copy_service|
+core.resharding.copy_services ....... |module-core.resharding.copy_services|
+core.resharding.copy_services.nccl_copy_service ... |module-core.resharding.copy_services.nccl_copy_service|
+core.resharding.copy_services.nccl_m2n_copy_service ... |module-core.resharding.copy_services.nccl_m2n_copy_service|
+core.resharding.copy_services.nixl_copy_service ... |module-core.resharding.copy_services.nixl_copy_service|
+core.resharding.copy_services.nvshmem_copy_service ... |module-core.resharding.copy_services.nvshmem_copy_service|
+core.resharding.execution ............... |module-core.resharding.execution|
+core.resharding ................................... |module-core.resharding|
+core.resharding.planner ................... |module-core.resharding.planner|
+core.resharding.refit ....................... |module-core.resharding.refit|
+core.resharding.shard_planner ....... |module-core.resharding.shard_planner|
+core.resharding.transforms ............. |module-core.resharding.transforms|
+core.resharding.utils ....................... |module-core.resharding.utils|
+core.safe_globals ............................... |module-core.safe_globals|
+core.ssm.causal_conv1d ..................... |module-core.ssm.causal_conv1d|
+core.ssm.context_parallel.chunkwise ... |module-core.ssm.context_parallel.chunkwise|
+core.ssm.context_parallel.gdp ....... |module-core.ssm.context_parallel.gdp|
+core.ssm.context_parallel.gdp_common ... |module-core.ssm.context_parallel.gdp_common|
+core.ssm.context_parallel.gdp_cutedsl ... |module-core.ssm.context_parallel.gdp_cutedsl|
+core.ssm.context_parallel ............... |module-core.ssm.context_parallel|
+core.ssm.gated_delta_net.common ... |module-core.ssm.gated_delta_net.common|
+core.ssm.gated_delta_net.gdn ......... |module-core.ssm.gated_delta_net.gdn|
+core.ssm.gated_delta_net.gdn2 ....... |module-core.ssm.gated_delta_net.gdn2|
+core.ssm.gated_delta_net ................. |module-core.ssm.gated_delta_net|
+core.ssm.gated_delta_product ......... |module-core.ssm.gated_delta_product|
+core.ssm.gdn_layer_config ............... |module-core.ssm.gdn_layer_config|
+core.ssm.gdp_context_parallel ....... |module-core.ssm.gdp_context_parallel|
+core.ssm ................................................. |module-core.ssm|
+core.ssm.mamba_block ......................... |module-core.ssm.mamba_block|
+core.ssm.mamba_context_parallel ... |module-core.ssm.mamba_context_parallel|
+core.ssm.mamba_hybrid_layer_allocation ... |module-core.ssm.mamba_hybrid_layer_allocation|
+core.ssm.mamba_layer ......................... |module-core.ssm.mamba_layer|
+core.ssm.mamba_layer_config ........... |module-core.ssm.mamba_layer_config|
+core.ssm.mamba_mixer ......................... |module-core.ssm.mamba_mixer|
+core.ssm.mlp_layer ............................. |module-core.ssm.mlp_layer|
+core.ssm.mlp_layer_config ............... |module-core.ssm.mlp_layer_config|
+core.ssm.packed_seq_helpers ........... |module-core.ssm.packed_seq_helpers|
+core.ssm.ssm_inference ..................... |module-core.ssm.ssm_inference|
+core.ssm.triton_cache_manager ....... |module-core.ssm.triton_cache_manager|
+core.ssm.utils ..................................... |module-core.ssm.utils|
+core.ssm.wide_residual_mamba_layer ... |module-core.ssm.wide_residual_mamba_layer|
+core.telemetry.fallbacks ................. |module-core.telemetry.fallbacks|
+core.telemetry ..................................... |module-core.telemetry|
+core.telemetry.span_groups ............. |module-core.telemetry.span_groups|
+core.telemetry.training_metrics ... |module-core.telemetry.training_metrics|
+core.tensor_observation ................... |module-core.tensor_observation|
+core.tensor_parallel.cross_entropy ... |module-core.tensor_parallel.cross_entropy|
+core.tensor_parallel.data ............... |module-core.tensor_parallel.data|
+core.tensor_parallel.generalized_tensor_parallelism ... |module-core.tensor_parallel.generalized_tensor_parallelism|
+core.tensor_parallel.gtp_api ......... |module-core.tensor_parallel.gtp_api|
+core.tensor_parallel.gtp_cuda_graphs ... |module-core.tensor_parallel.gtp_cuda_graphs|
+core.tensor_parallel.gtp_parallel_layout ... |module-core.tensor_parallel.gtp_parallel_layout|
+core.tensor_parallel.gtp_symmetric_memory ... |module-core.tensor_parallel.gtp_symmetric_memory|
+core.tensor_parallel ......................... |module-core.tensor_parallel|
+core.tensor_parallel.inference_layers ... |module-core.tensor_parallel.inference_layers|
+core.tensor_parallel.layers ........... |module-core.tensor_parallel.layers|
+core.tensor_parallel.mappings ....... |module-core.tensor_parallel.mappings|
+core.tensor_parallel.random ........... |module-core.tensor_parallel.random|
+core.tensor_parallel.utils ............. |module-core.tensor_parallel.utils|
+core.timers ........................................... |module-core.timers|
+core.tokenizers.base_tokenizer ..... |module-core.tokenizers.base_tokenizer|
+core.tokenizers ................................... |module-core.tokenizers|
+core.tokenizers.megatron_tokenizer ... |module-core.tokenizers.megatron_tokenizer|
+core.tokenizers.text ......................... |module-core.tokenizers.text|
+core.tokenizers.text.libraries.abstract_tokenizer ... |module-core.tokenizers.text.libraries.abstract_tokenizer|
+core.tokenizers.text.libraries.bytelevel_tokenizer ... |module-core.tokenizers.text.libraries.bytelevel_tokenizer|
+core.tokenizers.text.libraries.chat_template ... |module-core.tokenizers.text.libraries.chat_template|
+core.tokenizers.text.libraries ..... |module-core.tokenizers.text.libraries|
+core.tokenizers.text.libraries.huggingface_tokenizer ... |module-core.tokenizers.text.libraries.huggingface_tokenizer|
+core.tokenizers.text.libraries.megatron_hf_tokenizer ... |module-core.tokenizers.text.libraries.megatron_hf_tokenizer|
+core.tokenizers.text.libraries.null_tokenizer ... |module-core.tokenizers.text.libraries.null_tokenizer|
+core.tokenizers.text.libraries.sentencepiece_tokenizer ... |module-core.tokenizers.text.libraries.sentencepiece_tokenizer|
+core.tokenizers.text.libraries.sft_tokenizer ... |module-core.tokenizers.text.libraries.sft_tokenizer|
+core.tokenizers.text.libraries.tiktoken_tokenizer ... |module-core.tokenizers.text.libraries.tiktoken_tokenizer|
+core.tokenizers.text.parsers.base_parser ... |module-core.tokenizers.text.parsers.base_parser|
+core.tokenizers.text.parsers.deepseek_r1_reasoning_parser ... |module-core.tokenizers.text.parsers.deepseek_r1_reasoning_parser|
+core.tokenizers.text.parsers ......... |module-core.tokenizers.text.parsers|
+core.tokenizers.text.parsers.nemotron_v3_reasoning_parser ... |module-core.tokenizers.text.parsers.nemotron_v3_reasoning_parser|
+core.tokenizers.text.parsers.qwen3_coder_tool_parser ... |module-core.tokenizers.text.parsers.qwen3_coder_tool_parser|
+core.tokenizers.text.text_tokenizer ... |module-core.tokenizers.text.text_tokenizer|
+core.tokenizers.utils.build_tokenizer ... |module-core.tokenizers.utils.build_tokenizer|
+core.tokenizers.utils ....................... |module-core.tokenizers.utils|
+core.tokenizers.utils.utils ........... |module-core.tokenizers.utils.utils|
+core.tokenizers.vision ..................... |module-core.tokenizers.vision|
+core.tokenizers.vision.libraries ... |module-core.tokenizers.vision.libraries|
+core.tokenizers.vision.libraries.multimodal_tokenizer ... |module-core.tokenizers.vision.libraries.multimodal_tokenizer|
+core.tokenizers.vision.libraries.null_multimodal_tokenizer ... |module-core.tokenizers.vision.libraries.null_multimodal_tokenizer|
+core.tokenizers.vision.vision_tokenizer ... |module-core.tokenizers.vision.vision_tokenizer|
+core.transformer.attention ............. |module-core.transformer.attention|
+core.transformer.attention_layer_config ... |module-core.transformer.attention_layer_config|
+core.transformer.cuda_graph_config ... |module-core.transformer.cuda_graph_config|
+core.transformer.cuda_graphs ......... |module-core.transformer.cuda_graphs|
+core.transformer.custom_layers ..... |module-core.transformer.custom_layers|
+core.transformer.dot_product_attention ... |module-core.transformer.dot_product_attention|
+core.transformer.enums ..................... |module-core.transformer.enums|
+core.transformer.fsdp_dtensor_checkpoint ... |module-core.transformer.fsdp_dtensor_checkpoint|
+core.transformer ................................. |module-core.transformer|
+core.transformer.hyper_connection ... |module-core.transformer.hyper_connection|
+core.transformer.identity_op ......... |module-core.transformer.identity_op|
+core.transformer.mla_layer_config ... |module-core.transformer.mla_layer_config|
+core.transformer.mla_qk_norm_config ... |module-core.transformer.mla_qk_norm_config|
+core.transformer.mlp ......................... |module-core.transformer.mlp|
+core.transformer.module ................... |module-core.transformer.module|
+core.transformer.moe.batch_invariant ... |module-core.transformer.moe.batch_invariant|
+core.transformer.moe.experts ......... |module-core.transformer.moe.experts|
+core.transformer.moe.fused_a2a ..... |module-core.transformer.moe.fused_a2a|
+core.transformer.moe ......................... |module-core.transformer.moe|
+core.transformer.moe.inference_routing_mask_kernel ... |module-core.transformer.moe.inference_routing_mask_kernel|
+core.transformer.moe.moe_layer ..... |module-core.transformer.moe.moe_layer|
+core.transformer.moe.moe_layer_config ... |module-core.transformer.moe.moe_layer_config|
+core.transformer.moe.moe_logging ... |module-core.transformer.moe.moe_logging|
+core.transformer.moe.moe_utils ..... |module-core.transformer.moe.moe_utils|
+core.transformer.moe.ops ................. |module-core.transformer.moe.ops|
+core.transformer.moe.ops.paged_stash ... |module-core.transformer.moe.ops.paged_stash|
+core.transformer.moe.paged_stash ... |module-core.transformer.moe.paged_stash|
+core.transformer.moe.router ........... |module-core.transformer.moe.router|
+core.transformer.moe.router_diagnostics ... |module-core.transformer.moe.router_diagnostics|
+core.transformer.moe.router_replay ... |module-core.transformer.moe.router_replay|
+core.transformer.moe.router_trace ... |module-core.transformer.moe.router_trace|
+core.transformer.moe.shared_experts ... |module-core.transformer.moe.shared_experts|
+core.transformer.moe.token_dispatcher ... |module-core.transformer.moe.token_dispatcher|
+core.transformer.moe.token_dispatcher_inference ... |module-core.transformer.moe.token_dispatcher_inference|
+core.transformer.moe.upcycling_utils ... |module-core.transformer.moe.upcycling_utils|
+core.transformer.multi_latent_attention ... |module-core.transformer.multi_latent_attention|
+core.transformer.multi_token_prediction ... |module-core.transformer.multi_token_prediction|
+core.transformer.pipeline_parallel_layer_layout ... |module-core.transformer.pipeline_parallel_layer_layout|
+core.transformer.residual_connection ... |module-core.transformer.residual_connection|
+core.transformer.residual_recompute ... |module-core.transformer.residual_recompute|
+core.transformer.spec_utils ........... |module-core.transformer.spec_utils|
+core.transformer.streamwise_residual_ops ... |module-core.transformer.streamwise_residual_ops|
+core.transformer.torch_layer_norm ... |module-core.transformer.torch_layer_norm|
+core.transformer.torch_norm ........... |module-core.transformer.torch_norm|
+core.transformer.transformer_block ... |module-core.transformer.transformer_block|
+core.transformer.transformer_config ... |module-core.transformer.transformer_config|
+core.transformer.transformer_layer ... |module-core.transformer.transformer_layer|
+core.transformer.utils ..................... |module-core.transformer.utils|
+core.transformer.wide_residual_config ... |module-core.transformer.wide_residual_config|
+core.transformer.wide_residual_layer ... |module-core.transformer.wide_residual_layer|
+core.typed_torch ................................. |module-core.typed_torch|
+core.utils ............................................. |module-core.utils|
+API Reference .................................. |module-core-apidocs-index|
+
+==============================================================================
+GET STARTED
+
+Installation ............................. |module-core-get-started-install|
+Overview ................................ |module-core-get-started-overview|
+Your First Training Run ............... |module-core-get-started-quickstart|
+
+==============================================================================
+MAIN
+
+Megatron Core User Guide ............................... |module-core-index|
+Llama, Mistral and other Llama-like model support in Megatron-LM ... |module-core-llama_mistral|
+Inference User Guide .............. |module-core-mcore-inference-user-guide|
+
+==============================================================================
+MODELS
+
+Supported Models ................................ |module-core-models-index|
+Language Models .................................. |module-core-models-llms|
+Multimodal Models .......................... |module-core-models-multimodal|
+
+==============================================================================
+USER GUIDE
+
+Data Loading at Scale ................ |module-core-user-guide-data-loading|
+Data Preparation ................. |module-core-user-guide-data-preparation|
+Deterministic Training ..... |module-core-user-guide-deterministic-training|
+Weighted Checkpoint Merge ... |module-core-user-guide-features-checkpoint-merge|
+Context Parallel Overview ... |module-core-user-guide-features-context_parallel|
+CUDA Graph .................... |module-core-user-guide-features-cuda_graph|
+Distributed Optimizer ..... |module-core-user-guide-features-dist_optimizer|
+Fine-Grained Activation Offloading ... |module-core-user-guide-features-fine_grained_activation_offloading|
+Advanced Features .................. |module-core-user-guide-features-index|
+Low-Precision Training Guide ... |module-core-user-guide-features-low_precision_training|
+Megatron Energon ........ |module-core-user-guide-features-megatron_energon|
+Megatron-FSDP .............. |module-core-user-guide-features-megatron_fsdp|
+Megatron RL .................. |module-core-user-guide-features-megatron_rl|
+Mixture of Experts ................... |module-core-user-guide-features-moe|
+Multi-Latent Attention ... |module-core-user-guide-features-multi_latent_attention|
+Multi-Token Prediction (MTP) ... |module-core-user-guide-features-multi_token_prediction|
+Optimizer CPU Offload ... |module-core-user-guide-features-optimizer_cpu_offload|
+MoE Paged Stash .............. |module-core-user-guide-features-paged_stash|
+Custom Pipeline Model Parallel Layout ... |module-core-user-guide-features-pipeline_parallel_layout|
+Tokenizers .................... |module-core-user-guide-features-tokenizers|
+Migrate from GPTModel to HybridModel ... |module-core-user-guide-hybrid-model-migration|
+Configuration ......... |module-core-user-guide-observability-configuration|
+Extending Instrumentation ... |module-core-user-guide-observability-extending|
+Observability Overview ........ |module-core-user-guide-observability-index|
+Metrics ..................... |module-core-user-guide-observability-metrics|
+Pipeline-Parallel Trace Correlation ... |module-core-user-guide-observability-pipeline-parallel|
+Span Groups ............. |module-core-user-guide-observability-span-groups|
+Parallelism Strategies Guide .... |module-core-user-guide-parallelism-guide|
+Training Examples ............... |module-core-user-guide-training-examples|
+
+ vim:tw=78:ts=8:ft=help:norl:

@@ -1,0 +1,182 @@
+*ignite.txt* *ignite*	PyTorch Ignite documentation
+Version v0.5.5 — https://pytorch.org/ignite/
+License: BSD-3-Clause
+
+TABLE OF CONTENTS	*ignite-toc*
+
+main ................................................. |ignite-section-main|
+reference ....................................... |ignite-section-reference|
+
+==============================================================================
+MAIN
+
+ignite.distributed ...... |ignite.distributed.utils.has_native_dist_support|
+ignite.engine .............................................. |ignite-engine|
+ignite.exceptions ................... |ignite.exceptions.NotComputableError|
+ignite.handlers .......................................... |ignite-handlers|
+Ignite Your Networks! ....................................... |ignite-index|
+ignite.metrics ......................... |ignite.metrics.metric.MetricUsage|
+ignite.utils ................................ |ignite.utils.apply_to_tensor|
+
+==============================================================================
+REFERENCE
+
+DistributedProxySampler ... |ignite.distributed.auto.DistributedProxySampler|
+auto_dataloader .................. |ignite.distributed.auto.auto_dataloader|
+auto_model ............................ |ignite.distributed.auto.auto_model|
+auto_optim ............................ |ignite.distributed.auto.auto_optim|
+Parallel ............................ |ignite.distributed.launcher.Parallel|
+create_supervised_evaluator .... |ignite.engine.create_supervised_evaluator|
+create_supervised_trainer ........ |ignite.engine.create_supervised_trainer|
+DeterministicEngine ...... |ignite.engine.deterministic.DeterministicEngine|
+ReproducibleBatchSampler ... |ignite.engine.deterministic.ReproducibleBatchSampler|
+keep_random_state .......... |ignite.engine.deterministic.keep_random_state|
+update_dataloader .......... |ignite.engine.deterministic.update_dataloader|
+Engine ....................................... |ignite.engine.engine.Engine|
+CallableEventWithFilter ..... |ignite.engine.events.CallableEventWithFilter|
+EventEnum ................................. |ignite.engine.events.EventEnum|
+Events ....................................... |ignite.engine.events.Events|
+EventsList ............................... |ignite.engine.events.EventsList|
+RemovableEventHandle ........... |ignite.engine.events.RemovableEventHandle|
+State ......................................... |ignite.engine.events.State|
+supervised_evaluation_step ...... |ignite.engine.supervised_evaluation_step|
+supervised_evaluation_step_amp ... |ignite.engine.supervised_evaluation_step_amp|
+supervised_training_step .......... |ignite.engine.supervised_training_step|
+supervised_training_step_amp ... |ignite.engine.supervised_training_step_amp|
+supervised_training_step_apex ... |ignite.engine.supervised_training_step_apex|
+supervised_training_step_tpu ... |ignite.engine.supervised_training_step_tpu|
+BasicTimeProfiler ...................... |ignite.handlers.BasicTimeProfiler|
+Checkpoint .................................... |ignite.handlers.Checkpoint|
+DiskSaver ...................................... |ignite.handlers.DiskSaver|
+EMAHandler .................................... |ignite.handlers.EMAHandler|
+EarlyStopping .............................. |ignite.handlers.EarlyStopping|
+EpochOutputStore ........................ |ignite.handlers.EpochOutputStore|
+FastaiLRFinder ............................ |ignite.handlers.FastaiLRFinder|
+HandlersTimeProfiler ................ |ignite.handlers.HandlersTimeProfiler|
+ModelCheckpoint .......................... |ignite.handlers.ModelCheckpoint|
+TerminateOnNan ............................ |ignite.handlers.TerminateOnNan|
+TimeLimit ...................................... |ignite.handlers.TimeLimit|
+Timer .............................................. |ignite.handlers.Timer|
+base_logger ...................... |ignite.handlers.base_logger.BaseHandler|
+BaseSaveHandler ............... |ignite.handlers.checkpoint.BaseSaveHandler|
+CheckpointEvents ............. |ignite.handlers.checkpoint.CheckpointEvents|
+clearml_logger .............. |ignite.handlers.clearml_logger.ClearMLLogger|
+fbresearch_logger ..... |ignite.handlers.fbresearch_logger.FBResearchLogger|
+global_step_from_engine .......... |ignite.handlers.global_step_from_engine|
+setup_clearml_logging ... |ignite.handlers.logger_utils.setup_clearml_logging|
+setup_mlflow_logging ... |ignite.handlers.logger_utils.setup_mlflow_logging|
+setup_neptune_logging ... |ignite.handlers.logger_utils.setup_neptune_logging|
+setup_plx_logging ......... |ignite.handlers.logger_utils.setup_plx_logging|
+setup_tb_logging ........... |ignite.handlers.logger_utils.setup_tb_logging|
+setup_trains_logging ... |ignite.handlers.logger_utils.setup_trains_logging|
+setup_visdom_logging ... |ignite.handlers.logger_utils.setup_visdom_logging|
+setup_wandb_logging ..... |ignite.handlers.logger_utils.setup_wandb_logging|
+mlflow_logger ................. |ignite.handlers.mlflow_logger.MLflowLogger|
+neptune_logger ......... |ignite.handlers.neptune_logger.GradsScalarHandler|
+BaseParamScheduler .... |ignite.handlers.param_scheduler.BaseParamScheduler|
+BatchSizeScheduler .... |ignite.handlers.param_scheduler.BatchSizeScheduler|
+ConcatScheduler .......... |ignite.handlers.param_scheduler.ConcatScheduler|
+CosineAnnealingScheduler ... |ignite.handlers.param_scheduler.CosineAnnealingScheduler|
+CyclicalScheduler ...... |ignite.handlers.param_scheduler.CyclicalScheduler|
+LRScheduler .................. |ignite.handlers.param_scheduler.LRScheduler|
+LinearCyclicalScheduler ... |ignite.handlers.param_scheduler.LinearCyclicalScheduler|
+ParamGroupScheduler ... |ignite.handlers.param_scheduler.ParamGroupScheduler|
+ParamScheduler ............ |ignite.handlers.param_scheduler.ParamScheduler|
+PiecewiseLinear .......... |ignite.handlers.param_scheduler.PiecewiseLinear|
+ReduceLROnPlateauScheduler ... |ignite.handlers.param_scheduler.ReduceLROnPlateauScheduler|
+create_lr_scheduler_with_warmup ... |ignite.handlers.param_scheduler.create_lr_scheduler_with_warmup|
+polyaxon_logger ... |ignite.handlers.polyaxon_logger.OptimizerParamsHandler|
+ExpStateScheduler ... |ignite.handlers.state_param_scheduler.ExpStateScheduler|
+LambdaStateScheduler ... |ignite.handlers.state_param_scheduler.LambdaStateScheduler|
+MultiStepStateScheduler ... |ignite.handlers.state_param_scheduler.MultiStepStateScheduler|
+PiecewiseLinearStateScheduler ... |ignite.handlers.state_param_scheduler.PiecewiseLinearStateScheduler|
+StateParamScheduler ... |ignite.handlers.state_param_scheduler.StateParamScheduler|
+StepStateScheduler ... |ignite.handlers.state_param_scheduler.StepStateScheduler|
+tensorboard_logger ... |ignite.handlers.tensorboard_logger.GradsHistHandler|
+tqdm_logger ...................... |ignite.handlers.tqdm_logger.ProgressBar|
+visdom_logger ........... |ignite.handlers.visdom_logger.GradsScalarHandler|
+wandb_logger ......... |ignite.handlers.wandb_logger.OptimizerParamsHandler|
+Accuracy ......................................... |ignite.metrics.Accuracy|
+Average ........................................... |ignite.metrics.Average|
+AveragePrecision ......................... |ignite.metrics.AveragePrecision|
+Bleu ................................................. |ignite.metrics.Bleu|
+CharacterErrorRate ..................... |ignite.metrics.CharacterErrorRate|
+ClassificationReport ................. |ignite.metrics.ClassificationReport|
+CohenKappa ..................................... |ignite.metrics.CohenKappa|
+CommonObjectDetectionMetrics ... |ignite.metrics.CommonObjectDetectionMetrics|
+ConfusionMatrix ........................... |ignite.metrics.ConfusionMatrix|
+CosineSimilarity ......................... |ignite.metrics.CosineSimilarity|
+DiceCoefficient ........................... |ignite.metrics.DiceCoefficient|
+Entropy ........................................... |ignite.metrics.Entropy|
+EpochMetric ................................... |ignite.metrics.EpochMetric|
+FID ................................................... |ignite.metrics.FID|
+Fbeta ............................................... |ignite.metrics.Fbeta|
+Frequency ....................................... |ignite.metrics.Frequency|
+GeometricAverage ......................... |ignite.metrics.GeometricAverage|
+GpuInfo ........................................... |ignite.metrics.GpuInfo|
+HSIC ................................................. |ignite.metrics.HSIC|
+InceptionScore ............................. |ignite.metrics.InceptionScore|
+IoU ................................................... |ignite.metrics.IoU|
+JSDivergence ................................. |ignite.metrics.JSDivergence|
+JaccardIndex ................................. |ignite.metrics.JaccardIndex|
+KLDivergence ................................. |ignite.metrics.KLDivergence|
+Loss ................................................. |ignite.metrics.Loss|
+MatthewsCorrCoef ......................... |ignite.metrics.MatthewsCorrCoef|
+MaximumMeanDiscrepancy ............. |ignite.metrics.MaximumMeanDiscrepancy|
+MeanAbsoluteError ....................... |ignite.metrics.MeanAbsoluteError|
+MeanAveragePrecision ................. |ignite.metrics.MeanAveragePrecision|
+MeanPairwiseDistance ................. |ignite.metrics.MeanPairwiseDistance|
+MeanSquaredError ......................... |ignite.metrics.MeanSquaredError|
+Metric ............................................. |ignite.metrics.Metric|
+MetricGroup ................................... |ignite.metrics.MetricGroup|
+MetricsLambda ............................... |ignite.metrics.MetricsLambda|
+MultiLabelConfusionMatrix ....... |ignite.metrics.MultiLabelConfusionMatrix|
+MutualInformation ....................... |ignite.metrics.MutualInformation|
+ObjectDetectionAvgPrecisionRecall ... |ignite.metrics.ObjectDetectionAvgPrecisionRecall|
+PSNR ................................................. |ignite.metrics.PSNR|
+Perplexity ..................................... |ignite.metrics.Perplexity|
+Precision ....................................... |ignite.metrics.Precision|
+PrecisionRecallCurve ................. |ignite.metrics.PrecisionRecallCurve|
+ROC_AUC ........................................... |ignite.metrics.ROC_AUC|
+Recall ............................................. |ignite.metrics.Recall|
+RocCurve ......................................... |ignite.metrics.RocCurve|
+RootMeanSquaredError ................. |ignite.metrics.RootMeanSquaredError|
+Rouge ............................................... |ignite.metrics.Rouge|
+RougeL ............................................. |ignite.metrics.RougeL|
+RougeN ............................................. |ignite.metrics.RougeN|
+RunningAverage ............................. |ignite.metrics.RunningAverage|
+SSIM ................................................. |ignite.metrics.SSIM|
+TopKCategoricalAccuracy ........... |ignite.metrics.TopKCategoricalAccuracy|
+VariableAccumulation ................. |ignite.metrics.VariableAccumulation|
+CalinskiHarabaszScore .... |ignite.metrics.clustering.CalinskiHarabaszScore|
+DaviesBouldinScore .......... |ignite.metrics.clustering.DaviesBouldinScore|
+SilhouetteScore ................ |ignite.metrics.clustering.SilhouetteScore|
+coco_tensor_list_to_dict_list ... |ignite.metrics.coco_tensor_list_to_dict_list|
+DemographicParityDifference ... |ignite.metrics.fairness.DemographicParityDifference|
+SelectionRate ...................... |ignite.metrics.fairness.SelectionRate|
+SubgroupAccuracyDifference ... |ignite.metrics.fairness.SubgroupAccuracyDifference|
+SubgroupDifference ............ |ignite.metrics.fairness.SubgroupDifference|
+SubgroupMetric .................... |ignite.metrics.fairness.SubgroupMetric|
+mIoU ................................................. |ignite.metrics.mIoU|
+HitRate ................................... |ignite.metrics.rec_sys.HitRate|
+NDCG ......................................... |ignite.metrics.rec_sys.NDCG|
+CanberraMetric .................. |ignite.metrics.regression.CanberraMetric|
+FractionalAbsoluteError ... |ignite.metrics.regression.FractionalAbsoluteError|
+FractionalBias .................. |ignite.metrics.regression.FractionalBias|
+GeometricMeanAbsoluteError ... |ignite.metrics.regression.GeometricMeanAbsoluteError|
+GeometricMeanRelativeAbsoluteError ... |ignite.metrics.regression.GeometricMeanRelativeAbsoluteError|
+KendallRankCorrelation ... |ignite.metrics.regression.KendallRankCorrelation|
+ManhattanDistance ............ |ignite.metrics.regression.ManhattanDistance|
+MaximumAbsoluteError ...... |ignite.metrics.regression.MaximumAbsoluteError|
+MeanAbsoluteRelativeError ... |ignite.metrics.regression.MeanAbsoluteRelativeError|
+MeanError ............................ |ignite.metrics.regression.MeanError|
+MeanNormalizedBias .......... |ignite.metrics.regression.MeanNormalizedBias|
+MedianAbsoluteError ........ |ignite.metrics.regression.MedianAbsoluteError|
+MedianAbsolutePercentageError ... |ignite.metrics.regression.MedianAbsolutePercentageError|
+MedianRelativeAbsoluteError ... |ignite.metrics.regression.MedianRelativeAbsoluteError|
+PearsonCorrelation .......... |ignite.metrics.regression.PearsonCorrelation|
+R2Score ................................ |ignite.metrics.regression.R2Score|
+SpearmanRankCorrelation ... |ignite.metrics.regression.SpearmanRankCorrelation|
+WaveHedgesDistance .......... |ignite.metrics.regression.WaveHedgesDistance|
+
+ vim:tw=78:ts=8:ft=help:norl:

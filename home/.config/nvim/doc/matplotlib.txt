@@ -1,0 +1,1089 @@
+*matplotlib.txt* *matplotlib*	Matplotlib documentation
+Version 3.11 — https://matplotlib.org/stable/
+License: PSF
+
+TABLE OF CONTENTS	*matplotlib-toc*
+
+api ............................................... |matplotlib-section-api|
+api (part 2) ............................... |matplotlib-section-api-part-2|
+api (part 3) ............................... |matplotlib-section-api-part-3|
+api (part 4) ............................... |matplotlib-section-api-part-4|
+install ....................................... |matplotlib-section-install|
+main ............................................. |matplotlib-section-main|
+plot_types ................................. |matplotlib-section-plot_types|
+tutorials ................................... |matplotlib-section-tutorials|
+users ........................................... |matplotlib-section-users|
+
+==============================================================================
+API
+
+matplotlib.animation.AbstractMovieWriter ... |matplotlib.animation.AbstractMovieWriter|
+matplotlib.animation.Animation ............ |matplotlib.animation.Animation|
+matplotlib.animation.ArtistAnimation ... |matplotlib.animation.ArtistAnimation|
+matplotlib.animation.FFMpegBase .......... |matplotlib.animation.FFMpegBase|
+matplotlib.animation.FFMpegFileWriter ... |matplotlib.animation.FFMpegFileWriter|
+matplotlib.animation.FFMpegWriter ...... |matplotlib.animation.FFMpegWriter|
+matplotlib.animation.FileMovieWriter ... |matplotlib.animation.FileMovieWriter|
+matplotlib.animation.FuncAnimation .... |matplotlib.animation.FuncAnimation|
+matplotlib.animation.HTMLWriter .......... |matplotlib.animation.HTMLWriter|
+matplotlib.animation.ImageMagickBase ... |matplotlib.animation.ImageMagickBase|
+matplotlib.animation.ImageMagickFileWriter ... |matplotlib.animation.ImageMagickFileWriter|
+matplotlib.animation.ImageMagickWriter ... |matplotlib.animation.ImageMagickWriter|
+matplotlib.animation.MovieWriter ........ |matplotlib.animation.MovieWriter|
+matplotlib.animation.MovieWriterRegistry ... |matplotlib.animation.MovieWriterRegistry|
+matplotlib.animation.PillowWriter ...... |matplotlib.animation.PillowWriter|
+matplotlib.animation.TimedAnimation ... |matplotlib.animation.TimedAnimation|
+matplotlib.artist.Artist.add_callback ... |matplotlib.artist.Artist.add_callback|
+matplotlib.artist.Artist.axes .............. |matplotlib.artist.Artist.axes|
+matplotlib.artist.Artist.contains ...... |matplotlib.artist.Artist.contains|
+matplotlib.artist.Artist.convert_xunits ... |matplotlib.artist.Artist.convert_xunits|
+matplotlib.artist.Artist.convert_yunits ... |matplotlib.artist.Artist.convert_yunits|
+matplotlib.artist.Artist.draw .............. |matplotlib.artist.Artist.draw|
+matplotlib.artist.Artist.figure .......... |matplotlib.artist.Artist.figure|
+matplotlib.artist.Artist.findobj ........ |matplotlib.artist.Artist.findobj|
+matplotlib.artist.Artist.format_cursor_data ... |matplotlib.artist.Artist.format_cursor_data|
+matplotlib.artist.Artist.get_agg_filter ... |matplotlib.artist.Artist.get_agg_filter|
+matplotlib.artist.Artist.get_alpha .... |matplotlib.artist.Artist.get_alpha|
+matplotlib.artist.Artist.get_animated ... |matplotlib.artist.Artist.get_animated|
+matplotlib.artist.Artist.get_children ... |matplotlib.artist.Artist.get_children|
+matplotlib.artist.Artist.get_clip_box ... |matplotlib.artist.Artist.get_clip_box|
+matplotlib.artist.Artist.get_clip_on ... |matplotlib.artist.Artist.get_clip_on|
+matplotlib.artist.Artist.get_clip_path ... |matplotlib.artist.Artist.get_clip_path|
+matplotlib.artist.Artist.get_cursor_data ... |matplotlib.artist.Artist.get_cursor_data|
+matplotlib.artist.Artist.get_figure ... |matplotlib.artist.Artist.get_figure|
+matplotlib.artist.Artist.get_gid ........ |matplotlib.artist.Artist.get_gid|
+matplotlib.artist.Artist.get_in_layout ... |matplotlib.artist.Artist.get_in_layout|
+matplotlib.artist.Artist.get_label .... |matplotlib.artist.Artist.get_label|
+matplotlib.artist.Artist.get_mouseover ... |matplotlib.artist.Artist.get_mouseover|
+matplotlib.artist.Artist.get_path_effects ... |matplotlib.artist.Artist.get_path_effects|
+matplotlib.artist.Artist.get_picker ... |matplotlib.artist.Artist.get_picker|
+matplotlib.artist.Artist.get_rasterized ... |matplotlib.artist.Artist.get_rasterized|
+matplotlib.artist.Artist.get_sketch_params ... |matplotlib.artist.Artist.get_sketch_params|
+matplotlib.artist.Artist.get_snap ...... |matplotlib.artist.Artist.get_snap|
+matplotlib.artist.Artist.get_tightbbox ... |matplotlib.artist.Artist.get_tightbbox|
+matplotlib.artist.Artist.get_transform ... |matplotlib.artist.Artist.get_transform|
+matplotlib.artist.Artist.get_transformed_clip_path_and_affine ... |matplotlib.artist.Artist.get_transformed_clip_path_and_affine|
+matplotlib.artist.Artist.get_url ........ |matplotlib.artist.Artist.get_url|
+matplotlib.artist.Artist.get_visible ... |matplotlib.artist.Artist.get_visible|
+matplotlib.artist.Artist.get_window_extent ... |matplotlib.artist.Artist.get_window_extent|
+matplotlib.artist.Artist.get_zorder ... |matplotlib.artist.Artist.get_zorder|
+matplotlib.artist.Artist.have_units ... |matplotlib.artist.Artist.have_units|
+matplotlib.artist.Artist.is_transform_set ... |matplotlib.artist.Artist.is_transform_set|
+matplotlib.artist.Artist.mouseover .... |matplotlib.artist.Artist.mouseover|
+matplotlib.artist.Artist.pchanged ...... |matplotlib.artist.Artist.pchanged|
+matplotlib.artist.Artist.pick .............. |matplotlib.artist.Artist.pick|
+matplotlib.artist.Artist.pickable ...... |matplotlib.artist.Artist.pickable|
+matplotlib.artist.Artist.properties ... |matplotlib.artist.Artist.properties|
+matplotlib.artist.Artist.remove .......... |matplotlib.artist.Artist.remove|
+matplotlib.artist.Artist.remove_callback ... |matplotlib.artist.Artist.remove_callback|
+matplotlib.artist.Artist.set ................ |matplotlib.artist.Artist.set|
+matplotlib.artist.Artist.set_agg_filter ... |matplotlib.artist.Artist.set_agg_filter|
+matplotlib.artist.Artist.set_alpha .... |matplotlib.artist.Artist.set_alpha|
+matplotlib.artist.Artist.set_animated ... |matplotlib.artist.Artist.set_animated|
+matplotlib.artist.Artist.set_clip_box ... |matplotlib.artist.Artist.set_clip_box|
+matplotlib.artist.Artist.set_clip_on ... |matplotlib.artist.Artist.set_clip_on|
+matplotlib.artist.Artist.set_clip_path ... |matplotlib.artist.Artist.set_clip_path|
+matplotlib.artist.Artist.set_figure ... |matplotlib.artist.Artist.set_figure|
+matplotlib.artist.Artist.set_gid ........ |matplotlib.artist.Artist.set_gid|
+matplotlib.artist.Artist.set_in_layout ... |matplotlib.artist.Artist.set_in_layout|
+matplotlib.artist.Artist.set_label .... |matplotlib.artist.Artist.set_label|
+matplotlib.artist.Artist.set_mouseover ... |matplotlib.artist.Artist.set_mouseover|
+matplotlib.artist.Artist.set_path_effects ... |matplotlib.artist.Artist.set_path_effects|
+matplotlib.artist.Artist.set_picker ... |matplotlib.artist.Artist.set_picker|
+matplotlib.artist.Artist.set_rasterized ... |matplotlib.artist.Artist.set_rasterized|
+matplotlib.artist.Artist.set_sketch_params ... |matplotlib.artist.Artist.set_sketch_params|
+matplotlib.artist.Artist.set_snap ...... |matplotlib.artist.Artist.set_snap|
+matplotlib.artist.Artist.set_transform ... |matplotlib.artist.Artist.set_transform|
+matplotlib.artist.Artist.set_url ........ |matplotlib.artist.Artist.set_url|
+matplotlib.artist.Artist.set_visible ... |matplotlib.artist.Artist.set_visible|
+matplotlib.artist.Artist.set_zorder ... |matplotlib.artist.Artist.set_zorder|
+matplotlib.artist.Artist.stale ............ |matplotlib.artist.Artist.stale|
+matplotlib.artist.Artist.sticky_edges ... |matplotlib.artist.Artist.sticky_edges|
+matplotlib.artist.Artist.update .......... |matplotlib.artist.Artist.update|
+matplotlib.artist.Artist.update_from ... |matplotlib.artist.Artist.update_from|
+matplotlib.artist.Artist.zorder .......... |matplotlib.artist.Artist.zorder|
+matplotlib.artist.ArtistInspector ...... |matplotlib.artist.ArtistInspector|
+matplotlib.artist.allow_rasterization ... |matplotlib.artist.allow_rasterization|
+matplotlib.artist.get .............................. |matplotlib.artist.get|
+matplotlib.artist.getp ............................ |matplotlib.artist.getp|
+matplotlib.artist.kwdoc .......................... |matplotlib.artist.kwdoc|
+matplotlib.artist.setp ............................ |matplotlib.artist.setp|
+matplotlib.axes.Axes.acorr .................... |matplotlib.axes.Axes.acorr|
+matplotlib.axes.Axes.add_artist .......... |matplotlib.axes.Axes.add_artist|
+matplotlib.axes.Axes.add_callback ...... |matplotlib.axes.Axes.add_callback|
+matplotlib.axes.Axes.add_child_axes ... |matplotlib.axes.Axes.add_child_axes|
+matplotlib.axes.Axes.add_collection ... |matplotlib.axes.Axes.add_collection|
+matplotlib.axes.Axes.add_container .... |matplotlib.axes.Axes.add_container|
+matplotlib.axes.Axes.add_image ............ |matplotlib.axes.Axes.add_image|
+matplotlib.axes.Axes.add_line .............. |matplotlib.axes.Axes.add_line|
+matplotlib.axes.Axes.add_patch ............ |matplotlib.axes.Axes.add_patch|
+matplotlib.axes.Axes.add_table ............ |matplotlib.axes.Axes.add_table|
+matplotlib.axes.Axes.angle_spectrum ... |matplotlib.axes.Axes.angle_spectrum|
+matplotlib.axes.Axes.annotate .............. |matplotlib.axes.Axes.annotate|
+matplotlib.axes.Axes.apply_aspect ...... |matplotlib.axes.Axes.apply_aspect|
+matplotlib.axes.Axes.arrow .................... |matplotlib.axes.Axes.arrow|
+matplotlib.axes.Axes.autoscale ............ |matplotlib.axes.Axes.autoscale|
+matplotlib.axes.Axes.autoscale_view ... |matplotlib.axes.Axes.autoscale_view|
+matplotlib.axes.Axes.axhline ................ |matplotlib.axes.Axes.axhline|
+matplotlib.axes.Axes.axhspan ................ |matplotlib.axes.Axes.axhspan|
+matplotlib.axes.Axes.axis ...................... |matplotlib.axes.Axes.axis|
+matplotlib.axes.Axes.axline .................. |matplotlib.axes.Axes.axline|
+matplotlib.axes.Axes.axvline ................ |matplotlib.axes.Axes.axvline|
+matplotlib.axes.Axes.axvspan ................ |matplotlib.axes.Axes.axvspan|
+matplotlib.axes.Axes.bar ........................ |matplotlib.axes.Axes.bar|
+matplotlib.axes.Axes.bar_label ............ |matplotlib.axes.Axes.bar_label|
+matplotlib.axes.Axes.barbs .................... |matplotlib.axes.Axes.barbs|
+matplotlib.axes.Axes.barh ...................... |matplotlib.axes.Axes.barh|
+matplotlib.axes.Axes.boxplot ................ |matplotlib.axes.Axes.boxplot|
+matplotlib.axes.Axes.broken_barh ........ |matplotlib.axes.Axes.broken_barh|
+matplotlib.axes.Axes.bxp ........................ |matplotlib.axes.Axes.bxp|
+matplotlib.axes.Axes.can_pan ................ |matplotlib.axes.Axes.can_pan|
+matplotlib.axes.Axes.can_zoom .............. |matplotlib.axes.Axes.can_zoom|
+matplotlib.axes.Axes.cla ........................ |matplotlib.axes.Axes.cla|
+matplotlib.axes.Axes.clabel .................. |matplotlib.axes.Axes.clabel|
+matplotlib.axes.Axes.clear .................... |matplotlib.axes.Axes.clear|
+matplotlib.axes.Axes.cohere .................. |matplotlib.axes.Axes.cohere|
+matplotlib.axes.Axes.contains .............. |matplotlib.axes.Axes.contains|
+matplotlib.axes.Axes.contains_point ... |matplotlib.axes.Axes.contains_point|
+matplotlib.axes.Axes.contour ................ |matplotlib.axes.Axes.contour|
+matplotlib.axes.Axes.contourf .............. |matplotlib.axes.Axes.contourf|
+matplotlib.axes.Axes.convert_xunits ... |matplotlib.axes.Axes.convert_xunits|
+matplotlib.axes.Axes.convert_yunits ... |matplotlib.axes.Axes.convert_yunits|
+matplotlib.axes.Axes.csd ........................ |matplotlib.axes.Axes.csd|
+matplotlib.axes.Axes.dataLim ................ |matplotlib.axes.Axes.dataLim|
+matplotlib.axes.Axes.drag_pan .............. |matplotlib.axes.Axes.drag_pan|
+matplotlib.axes.Axes.draw ...................... |matplotlib.axes.Axes.draw|
+matplotlib.axes.Axes.draw_artist ........ |matplotlib.axes.Axes.draw_artist|
+matplotlib.axes.Axes.ecdf ...................... |matplotlib.axes.Axes.ecdf|
+matplotlib.axes.Axes.end_pan ................ |matplotlib.axes.Axes.end_pan|
+matplotlib.axes.Axes.errorbar .............. |matplotlib.axes.Axes.errorbar|
+matplotlib.axes.Axes.eventplot ............ |matplotlib.axes.Axes.eventplot|
+matplotlib.axes.Axes.figure .................. |matplotlib.axes.Axes.figure|
+matplotlib.axes.Axes.fill ...................... |matplotlib.axes.Axes.fill|
+matplotlib.axes.Axes.fill_between ...... |matplotlib.axes.Axes.fill_between|
+matplotlib.axes.Axes.fill_betweenx .... |matplotlib.axes.Axes.fill_betweenx|
+matplotlib.axes.Axes.findobj ................ |matplotlib.axes.Axes.findobj|
+matplotlib.axes.Axes.format_coord ...... |matplotlib.axes.Axes.format_coord|
+matplotlib.axes.Axes.format_cursor_data ... |matplotlib.axes.Axes.format_cursor_data|
+matplotlib.axes.Axes.format_xdata ...... |matplotlib.axes.Axes.format_xdata|
+matplotlib.axes.Axes.format_ydata ...... |matplotlib.axes.Axes.format_ydata|
+matplotlib.axes.Axes.get_adjustable ... |matplotlib.axes.Axes.get_adjustable|
+matplotlib.axes.Axes.get_anchor .......... |matplotlib.axes.Axes.get_anchor|
+matplotlib.axes.Axes.get_aspect .......... |matplotlib.axes.Axes.get_aspect|
+matplotlib.axes.Axes.get_autoscale_on ... |matplotlib.axes.Axes.get_autoscale_on|
+matplotlib.axes.Axes.get_autoscalex_on ... |matplotlib.axes.Axes.get_autoscalex_on|
+matplotlib.axes.Axes.get_autoscaley_on ... |matplotlib.axes.Axes.get_autoscaley_on|
+matplotlib.axes.Axes.get_axes_locator ... |matplotlib.axes.Axes.get_axes_locator|
+matplotlib.axes.Axes.get_axisbelow .... |matplotlib.axes.Axes.get_axisbelow|
+matplotlib.axes.Axes.get_box_aspect ... |matplotlib.axes.Axes.get_box_aspect|
+matplotlib.axes.Axes.get_children ...... |matplotlib.axes.Axes.get_children|
+matplotlib.axes.Axes.get_cursor_data ... |matplotlib.axes.Axes.get_cursor_data|
+matplotlib.axes.Axes.get_data_ratio ... |matplotlib.axes.Axes.get_data_ratio|
+matplotlib.axes.Axes.get_default_bbox_extra_artists ... |matplotlib.axes.Axes.get_default_bbox_extra_artists|
+matplotlib.axes.Axes.get_facecolor .... |matplotlib.axes.Axes.get_facecolor|
+matplotlib.axes.Axes.get_figure .......... |matplotlib.axes.Axes.get_figure|
+matplotlib.axes.Axes.get_forward_navigation_events ... |matplotlib.axes.Axes.get_forward_navigation_events|
+matplotlib.axes.Axes.get_frame_on ...... |matplotlib.axes.Axes.get_frame_on|
+matplotlib.axes.Axes.get_images .......... |matplotlib.axes.Axes.get_images|
+matplotlib.axes.Axes.get_legend .......... |matplotlib.axes.Axes.get_legend|
+matplotlib.axes.Axes.get_legend_handles_labels ... |matplotlib.axes.Axes.get_legend_handles_labels|
+matplotlib.axes.Axes.get_lines ............ |matplotlib.axes.Axes.get_lines|
+matplotlib.axes.Axes.get_navigate ...... |matplotlib.axes.Axes.get_navigate|
+matplotlib.axes.Axes.get_navigate_mode ... |matplotlib.axes.Axes.get_navigate_mode|
+matplotlib.axes.Axes.get_position ...... |matplotlib.axes.Axes.get_position|
+matplotlib.axes.Axes.get_rasterization_zorder ... |matplotlib.axes.Axes.get_rasterization_zorder|
+matplotlib.axes.Axes.get_shared_x_axes ... |matplotlib.axes.Axes.get_shared_x_axes|
+matplotlib.axes.Axes.get_shared_y_axes ... |matplotlib.axes.Axes.get_shared_y_axes|
+matplotlib.axes.Axes.get_subplotspec ... |matplotlib.axes.Axes.get_subplotspec|
+matplotlib.axes.Axes.get_tightbbox .... |matplotlib.axes.Axes.get_tightbbox|
+matplotlib.axes.Axes.get_title ............ |matplotlib.axes.Axes.get_title|
+matplotlib.axes.Axes.get_transformed_clip_path_and_affine ... |matplotlib.axes.Axes.get_transformed_clip_path_and_affine|
+matplotlib.axes.Axes.get_window_extent ... |matplotlib.axes.Axes.get_window_extent|
+matplotlib.axes.Axes.get_xaxis ............ |matplotlib.axes.Axes.get_xaxis|
+matplotlib.axes.Axes.get_xaxis_text1_transform ... |matplotlib.axes.Axes.get_xaxis_text1_transform|
+matplotlib.axes.Axes.get_xaxis_text2_transform ... |matplotlib.axes.Axes.get_xaxis_text2_transform|
+matplotlib.axes.Axes.get_xaxis_transform ... |matplotlib.axes.Axes.get_xaxis_transform|
+matplotlib.axes.Axes.get_xbound .......... |matplotlib.axes.Axes.get_xbound|
+matplotlib.axes.Axes.get_xgridlines ... |matplotlib.axes.Axes.get_xgridlines|
+matplotlib.axes.Axes.get_xinverted .... |matplotlib.axes.Axes.get_xinverted|
+matplotlib.axes.Axes.get_xlabel .......... |matplotlib.axes.Axes.get_xlabel|
+matplotlib.axes.Axes.get_xlim .............. |matplotlib.axes.Axes.get_xlim|
+matplotlib.axes.Axes.get_xmajorticklabels ... |matplotlib.axes.Axes.get_xmajorticklabels|
+matplotlib.axes.Axes.get_xmargin ........ |matplotlib.axes.Axes.get_xmargin|
+matplotlib.axes.Axes.get_xminorticklabels ... |matplotlib.axes.Axes.get_xminorticklabels|
+matplotlib.axes.Axes.get_xscale .......... |matplotlib.axes.Axes.get_xscale|
+matplotlib.axes.Axes.get_xticklabels ... |matplotlib.axes.Axes.get_xticklabels|
+matplotlib.axes.Axes.get_xticklines ... |matplotlib.axes.Axes.get_xticklines|
+matplotlib.axes.Axes.get_xticks .......... |matplotlib.axes.Axes.get_xticks|
+matplotlib.axes.Axes.get_yaxis ............ |matplotlib.axes.Axes.get_yaxis|
+matplotlib.axes.Axes.get_yaxis_text1_transform ... |matplotlib.axes.Axes.get_yaxis_text1_transform|
+matplotlib.axes.Axes.get_yaxis_text2_transform ... |matplotlib.axes.Axes.get_yaxis_text2_transform|
+matplotlib.axes.Axes.get_yaxis_transform ... |matplotlib.axes.Axes.get_yaxis_transform|
+matplotlib.axes.Axes.get_ybound .......... |matplotlib.axes.Axes.get_ybound|
+matplotlib.axes.Axes.get_ygridlines ... |matplotlib.axes.Axes.get_ygridlines|
+matplotlib.axes.Axes.get_yinverted .... |matplotlib.axes.Axes.get_yinverted|
+matplotlib.axes.Axes.get_ylabel .......... |matplotlib.axes.Axes.get_ylabel|
+matplotlib.axes.Axes.get_ylim .............. |matplotlib.axes.Axes.get_ylim|
+matplotlib.axes.Axes.get_ymajorticklabels ... |matplotlib.axes.Axes.get_ymajorticklabels|
+matplotlib.axes.Axes.get_ymargin ........ |matplotlib.axes.Axes.get_ymargin|
+matplotlib.axes.Axes.get_yminorticklabels ... |matplotlib.axes.Axes.get_yminorticklabels|
+matplotlib.axes.Axes.get_yscale .......... |matplotlib.axes.Axes.get_yscale|
+matplotlib.axes.Axes.get_yticklabels ... |matplotlib.axes.Axes.get_yticklabels|
+matplotlib.axes.Axes.get_yticklines ... |matplotlib.axes.Axes.get_yticklines|
+matplotlib.axes.Axes.get_yticks .......... |matplotlib.axes.Axes.get_yticks|
+matplotlib.axes.Axes.grid ...................... |matplotlib.axes.Axes.grid|
+matplotlib.axes.Axes.grouped_bar ........ |matplotlib.axes.Axes.grouped_bar|
+matplotlib.axes.Axes.has_data .............. |matplotlib.axes.Axes.has_data|
+matplotlib.axes.Axes.have_units .......... |matplotlib.axes.Axes.have_units|
+matplotlib.axes.Axes.hexbin .................. |matplotlib.axes.Axes.hexbin|
+matplotlib.axes.Axes.hist ...................... |matplotlib.axes.Axes.hist|
+matplotlib.axes.Axes.hist2d .................. |matplotlib.axes.Axes.hist2d|
+matplotlib.axes.Axes.hlines .................. |matplotlib.axes.Axes.hlines|
+matplotlib.axes.Axes ................................ |matplotlib.axes.Axes|
+matplotlib.axes.Axes.imshow .................. |matplotlib.axes.Axes.imshow|
+matplotlib.axes.Axes.in_axes ................ |matplotlib.axes.Axes.in_axes|
+matplotlib.axes.Axes.indicate_inset ... |matplotlib.axes.Axes.indicate_inset|
+matplotlib.axes.Axes.indicate_inset_zoom ... |matplotlib.axes.Axes.indicate_inset_zoom|
+matplotlib.axes.Axes.inset_axes .......... |matplotlib.axes.Axes.inset_axes|
+matplotlib.axes.Axes.invert_xaxis ...... |matplotlib.axes.Axes.invert_xaxis|
+matplotlib.axes.Axes.invert_yaxis ...... |matplotlib.axes.Axes.invert_yaxis|
+matplotlib.axes.Axes.label_outer ........ |matplotlib.axes.Axes.label_outer|
+matplotlib.axes.Axes.legend .................. |matplotlib.axes.Axes.legend|
+matplotlib.axes.Axes.locator_params ... |matplotlib.axes.Axes.locator_params|
+matplotlib.axes.Axes.loglog .................. |matplotlib.axes.Axes.loglog|
+matplotlib.axes.Axes.magnitude_spectrum ... |matplotlib.axes.Axes.magnitude_spectrum|
+matplotlib.axes.Axes.margins ................ |matplotlib.axes.Axes.margins|
+matplotlib.axes.Axes.matshow ................ |matplotlib.axes.Axes.matshow|
+matplotlib.axes.Axes.minorticks_off ... |matplotlib.axes.Axes.minorticks_off|
+matplotlib.axes.Axes.minorticks_on .... |matplotlib.axes.Axes.minorticks_on|
+matplotlib.axes.Axes.mouseover ............ |matplotlib.axes.Axes.mouseover|
+matplotlib.axes.Axes.name ...................... |matplotlib.axes.Axes.name|
+matplotlib.axes.Axes.pchanged .............. |matplotlib.axes.Axes.pchanged|
+matplotlib.axes.Axes.pcolor .................. |matplotlib.axes.Axes.pcolor|
+matplotlib.axes.Axes.pcolorfast .......... |matplotlib.axes.Axes.pcolorfast|
+matplotlib.axes.Axes.pcolormesh .......... |matplotlib.axes.Axes.pcolormesh|
+matplotlib.axes.Axes.phase_spectrum ... |matplotlib.axes.Axes.phase_spectrum|
+matplotlib.axes.Axes.pie ........................ |matplotlib.axes.Axes.pie|
+matplotlib.axes.Axes.pie_label ............ |matplotlib.axes.Axes.pie_label|
+matplotlib.axes.Axes.plot ...................... |matplotlib.axes.Axes.plot|
+matplotlib.axes.Axes.psd ........................ |matplotlib.axes.Axes.psd|
+matplotlib.axes.Axes.quiver .................. |matplotlib.axes.Axes.quiver|
+matplotlib.axes.Axes.quiverkey ............ |matplotlib.axes.Axes.quiverkey|
+matplotlib.axes.Axes.redraw_in_frame ... |matplotlib.axes.Axes.redraw_in_frame|
+matplotlib.axes.Axes.relim .................... |matplotlib.axes.Axes.relim|
+matplotlib.axes.Axes.remove .................. |matplotlib.axes.Axes.remove|
+matplotlib.axes.Axes.remove_callback ... |matplotlib.axes.Axes.remove_callback|
+matplotlib.axes.Axes.reset_position ... |matplotlib.axes.Axes.reset_position|
+matplotlib.axes.Axes.scatter ................ |matplotlib.axes.Axes.scatter|
+matplotlib.axes.Axes.secondary_xaxis ... |matplotlib.axes.Axes.secondary_xaxis|
+matplotlib.axes.Axes.secondary_yaxis ... |matplotlib.axes.Axes.secondary_yaxis|
+matplotlib.axes.Axes.semilogx .............. |matplotlib.axes.Axes.semilogx|
+matplotlib.axes.Axes.semilogy .............. |matplotlib.axes.Axes.semilogy|
+matplotlib.axes.Axes.set ........................ |matplotlib.axes.Axes.set|
+matplotlib.axes.Axes.set_adjustable ... |matplotlib.axes.Axes.set_adjustable|
+matplotlib.axes.Axes.set_anchor .......... |matplotlib.axes.Axes.set_anchor|
+matplotlib.axes.Axes.set_aspect .......... |matplotlib.axes.Axes.set_aspect|
+matplotlib.axes.Axes.set_autoscale_on ... |matplotlib.axes.Axes.set_autoscale_on|
+matplotlib.axes.Axes.set_autoscalex_on ... |matplotlib.axes.Axes.set_autoscalex_on|
+matplotlib.axes.Axes.set_autoscaley_on ... |matplotlib.axes.Axes.set_autoscaley_on|
+matplotlib.axes.Axes.set_axes_locator ... |matplotlib.axes.Axes.set_axes_locator|
+matplotlib.axes.Axes.set_axis_off ...... |matplotlib.axes.Axes.set_axis_off|
+matplotlib.axes.Axes.set_axis_on ........ |matplotlib.axes.Axes.set_axis_on|
+matplotlib.axes.Axes.set_axisbelow .... |matplotlib.axes.Axes.set_axisbelow|
+matplotlib.axes.Axes.set_box_aspect ... |matplotlib.axes.Axes.set_box_aspect|
+matplotlib.axes.Axes.set_facecolor .... |matplotlib.axes.Axes.set_facecolor|
+matplotlib.axes.Axes.set_forward_navigation_events ... |matplotlib.axes.Axes.set_forward_navigation_events|
+matplotlib.axes.Axes.set_frame_on ...... |matplotlib.axes.Axes.set_frame_on|
+matplotlib.axes.Axes.set_navigate ...... |matplotlib.axes.Axes.set_navigate|
+matplotlib.axes.Axes.set_navigate_mode ... |matplotlib.axes.Axes.set_navigate_mode|
+matplotlib.axes.Axes.set_position ...... |matplotlib.axes.Axes.set_position|
+matplotlib.axes.Axes.set_prop_cycle ... |matplotlib.axes.Axes.set_prop_cycle|
+matplotlib.axes.Axes.set_rasterization_zorder ... |matplotlib.axes.Axes.set_rasterization_zorder|
+matplotlib.axes.Axes.set_subplotspec ... |matplotlib.axes.Axes.set_subplotspec|
+matplotlib.axes.Axes.set_title ............ |matplotlib.axes.Axes.set_title|
+matplotlib.axes.Axes.set_xbound .......... |matplotlib.axes.Axes.set_xbound|
+matplotlib.axes.Axes.set_xinverted .... |matplotlib.axes.Axes.set_xinverted|
+matplotlib.axes.Axes.set_xlabel .......... |matplotlib.axes.Axes.set_xlabel|
+matplotlib.axes.Axes.set_xlim .............. |matplotlib.axes.Axes.set_xlim|
+matplotlib.axes.Axes.set_xmargin ........ |matplotlib.axes.Axes.set_xmargin|
+matplotlib.axes.Axes.set_xscale .......... |matplotlib.axes.Axes.set_xscale|
+matplotlib.axes.Axes.set_xticklabels ... |matplotlib.axes.Axes.set_xticklabels|
+matplotlib.axes.Axes.set_xticks .......... |matplotlib.axes.Axes.set_xticks|
+matplotlib.axes.Axes.set_ybound .......... |matplotlib.axes.Axes.set_ybound|
+matplotlib.axes.Axes.set_yinverted .... |matplotlib.axes.Axes.set_yinverted|
+matplotlib.axes.Axes.set_ylabel .......... |matplotlib.axes.Axes.set_ylabel|
+matplotlib.axes.Axes.set_ylim .............. |matplotlib.axes.Axes.set_ylim|
+matplotlib.axes.Axes.set_ymargin ........ |matplotlib.axes.Axes.set_ymargin|
+matplotlib.axes.Axes.set_yscale .......... |matplotlib.axes.Axes.set_yscale|
+matplotlib.axes.Axes.set_yticklabels ... |matplotlib.axes.Axes.set_yticklabels|
+matplotlib.axes.Axes.set_yticks .......... |matplotlib.axes.Axes.set_yticks|
+matplotlib.axes.Axes.sharex .................. |matplotlib.axes.Axes.sharex|
+matplotlib.axes.Axes.sharey .................. |matplotlib.axes.Axes.sharey|
+matplotlib.axes.Axes.specgram .............. |matplotlib.axes.Axes.specgram|
+matplotlib.axes.Axes.spines .................. |matplotlib.axes.Axes.spines|
+matplotlib.axes.Axes.spy ........................ |matplotlib.axes.Axes.spy|
+matplotlib.axes.Axes.stackplot ............ |matplotlib.axes.Axes.stackplot|
+matplotlib.axes.Axes.stairs .................. |matplotlib.axes.Axes.stairs|
+matplotlib.axes.Axes.stale .................... |matplotlib.axes.Axes.stale|
+matplotlib.axes.Axes.start_pan ............ |matplotlib.axes.Axes.start_pan|
+matplotlib.axes.Axes.stem ...................... |matplotlib.axes.Axes.stem|
+matplotlib.axes.Axes.step ...................... |matplotlib.axes.Axes.step|
+matplotlib.axes.Axes.streamplot .......... |matplotlib.axes.Axes.streamplot|
+matplotlib.axes.Axes.table .................... |matplotlib.axes.Axes.table|
+matplotlib.axes.Axes.text ...................... |matplotlib.axes.Axes.text|
+matplotlib.axes.Axes.tick_params ........ |matplotlib.axes.Axes.tick_params|
+matplotlib.axes.Axes.ticklabel_format ... |matplotlib.axes.Axes.ticklabel_format|
+matplotlib.axes.Axes.transAxes ............ |matplotlib.axes.Axes.transAxes|
+matplotlib.axes.Axes.transData ............ |matplotlib.axes.Axes.transData|
+matplotlib.axes.Axes.tricontour .......... |matplotlib.axes.Axes.tricontour|
+matplotlib.axes.Axes.tricontourf ........ |matplotlib.axes.Axes.tricontourf|
+matplotlib.axes.Axes.tripcolor ............ |matplotlib.axes.Axes.tripcolor|
+matplotlib.axes.Axes.triplot ................ |matplotlib.axes.Axes.triplot|
+matplotlib.axes.Axes.twinx .................... |matplotlib.axes.Axes.twinx|
+matplotlib.axes.Axes.twiny .................... |matplotlib.axes.Axes.twiny|
+matplotlib.axes.Axes.update_datalim ... |matplotlib.axes.Axes.update_datalim|
+matplotlib.axes.Axes.use_sticky_edges ... |matplotlib.axes.Axes.use_sticky_edges|
+matplotlib.axes.Axes.viewLim ................ |matplotlib.axes.Axes.viewLim|
+matplotlib.axes.Axes.violin .................. |matplotlib.axes.Axes.violin|
+matplotlib.axes.Axes.violinplot .......... |matplotlib.axes.Axes.violinplot|
+matplotlib.axes.Axes.vlines .................. |matplotlib.axes.Axes.vlines|
+matplotlib.axes.Axes.xaxis .................... |matplotlib.axes.Axes.xaxis|
+matplotlib.axes.Axes.xaxis_date .......... |matplotlib.axes.Axes.xaxis_date|
+matplotlib.axes.Axes.xaxis_inverted ... |matplotlib.axes.Axes.xaxis_inverted|
+matplotlib.axes.Axes.xcorr .................... |matplotlib.axes.Axes.xcorr|
+matplotlib.axes.Axes.yaxis .................... |matplotlib.axes.Axes.yaxis|
+matplotlib.axes.Axes.yaxis_date .......... |matplotlib.axes.Axes.yaxis_date|
+matplotlib.axes.Axes.yaxis_inverted ... |matplotlib.axes.Axes.yaxis_inverted|
+matplotlib.axes.Axes.zorder .................. |matplotlib.axes.Axes.zorder|
+matplotlib.axis.Axis.OFFSETTEXTPAD .... |matplotlib.axis.Axis.OFFSETTEXTPAD|
+matplotlib.axis.Axis.axes ...................... |matplotlib.axis.Axis.axes|
+matplotlib.axis.Axis.axis_date ............ |matplotlib.axis.Axis.axis_date|
+matplotlib.axis.Axis.clear .................... |matplotlib.axis.Axis.clear|
+matplotlib.axis.Axis.contains .............. |matplotlib.axis.Axis.contains|
+matplotlib.axis.Axis.convert_units .... |matplotlib.axis.Axis.convert_units|
+matplotlib.axis.Axis.get_converter .... |matplotlib.axis.Axis.get_converter|
+matplotlib.axis.Axis.get_data_interval ... |matplotlib.axis.Axis.get_data_interval|
+matplotlib.axis.Axis.get_gridlines .... |matplotlib.axis.Axis.get_gridlines|
+matplotlib.axis.Axis.get_inverted ...... |matplotlib.axis.Axis.get_inverted|
+matplotlib.axis.Axis.get_label ............ |matplotlib.axis.Axis.get_label|
+matplotlib.axis.Axis.get_label_position ... |matplotlib.axis.Axis.get_label_position|
+matplotlib.axis.Axis.get_label_text ... |matplotlib.axis.Axis.get_label_text|
+matplotlib.axis.Axis.get_major_formatter ... |matplotlib.axis.Axis.get_major_formatter|
+matplotlib.axis.Axis.get_major_locator ... |matplotlib.axis.Axis.get_major_locator|
+matplotlib.axis.Axis.get_major_ticks ... |matplotlib.axis.Axis.get_major_ticks|
+matplotlib.axis.Axis.get_majorticklabels ... |matplotlib.axis.Axis.get_majorticklabels|
+matplotlib.axis.Axis.get_majorticklines ... |matplotlib.axis.Axis.get_majorticklines|
+matplotlib.axis.Axis.get_majorticklocs ... |matplotlib.axis.Axis.get_majorticklocs|
+matplotlib.axis.Axis.get_minor_formatter ... |matplotlib.axis.Axis.get_minor_formatter|
+matplotlib.axis.Axis.get_minor_locator ... |matplotlib.axis.Axis.get_minor_locator|
+matplotlib.axis.Axis.get_minor_ticks ... |matplotlib.axis.Axis.get_minor_ticks|
+matplotlib.axis.Axis.get_minorticklabels ... |matplotlib.axis.Axis.get_minorticklabels|
+matplotlib.axis.Axis.get_minorticklines ... |matplotlib.axis.Axis.get_minorticklines|
+matplotlib.axis.Axis.get_minorticklocs ... |matplotlib.axis.Axis.get_minorticklocs|
+matplotlib.axis.Axis.get_minpos .......... |matplotlib.axis.Axis.get_minpos|
+matplotlib.axis.Axis.get_offset_text ... |matplotlib.axis.Axis.get_offset_text|
+matplotlib.axis.Axis.get_pickradius ... |matplotlib.axis.Axis.get_pickradius|
+matplotlib.axis.Axis.get_remove_overlapping_locs ... |matplotlib.axis.Axis.get_remove_overlapping_locs|
+matplotlib.axis.Axis.get_scale ............ |matplotlib.axis.Axis.get_scale|
+matplotlib.axis.Axis.get_tick_padding ... |matplotlib.axis.Axis.get_tick_padding|
+matplotlib.axis.Axis.get_tick_params ... |matplotlib.axis.Axis.get_tick_params|
+matplotlib.axis.Axis.get_tick_space ... |matplotlib.axis.Axis.get_tick_space|
+matplotlib.axis.Axis.get_ticklabels ... |matplotlib.axis.Axis.get_ticklabels|
+matplotlib.axis.Axis.get_ticklines .... |matplotlib.axis.Axis.get_ticklines|
+matplotlib.axis.Axis.get_ticklocs ...... |matplotlib.axis.Axis.get_ticklocs|
+matplotlib.axis.Axis.get_tightbbox .... |matplotlib.axis.Axis.get_tightbbox|
+matplotlib.axis.Axis.get_units ............ |matplotlib.axis.Axis.get_units|
+matplotlib.axis.Axis.get_view_interval ... |matplotlib.axis.Axis.get_view_interval|
+matplotlib.axis.Axis.grid ...................... |matplotlib.axis.Axis.grid|
+matplotlib.axis.Axis.label .................... |matplotlib.axis.Axis.label|
+matplotlib.axis.Axis.limit_range_for_scale ... |matplotlib.axis.Axis.limit_range_for_scale|
+matplotlib.axis.Axis.minorticks_off ... |matplotlib.axis.Axis.minorticks_off|
+matplotlib.axis.Axis.minorticks_on .... |matplotlib.axis.Axis.minorticks_on|
+matplotlib.axis.Axis.pickradius .......... |matplotlib.axis.Axis.pickradius|
+matplotlib.axis.Axis.remove_overlapping_locs ... |matplotlib.axis.Axis.remove_overlapping_locs|
+matplotlib.axis.Axis.reset_ticks ........ |matplotlib.axis.Axis.reset_ticks|
+matplotlib.axis.Axis.set_clip_path .... |matplotlib.axis.Axis.set_clip_path|
+matplotlib.axis.Axis.set_converter .... |matplotlib.axis.Axis.set_converter|
+matplotlib.axis.Axis.set_data_interval ... |matplotlib.axis.Axis.set_data_interval|
+matplotlib.axis.Axis.set_default_intervals ... |matplotlib.axis.Axis.set_default_intervals|
+matplotlib.axis.Axis.set_inverted ...... |matplotlib.axis.Axis.set_inverted|
+matplotlib.axis.Axis.set_label ............ |matplotlib.axis.Axis.set_label|
+matplotlib.axis.Axis.set_label_coords ... |matplotlib.axis.Axis.set_label_coords|
+matplotlib.axis.Axis.set_label_position ... |matplotlib.axis.Axis.set_label_position|
+matplotlib.axis.Axis.set_label_text ... |matplotlib.axis.Axis.set_label_text|
+matplotlib.axis.Axis.set_major_formatter ... |matplotlib.axis.Axis.set_major_formatter|
+matplotlib.axis.Axis.set_major_locator ... |matplotlib.axis.Axis.set_major_locator|
+matplotlib.axis.Axis.set_minor_formatter ... |matplotlib.axis.Axis.set_minor_formatter|
+matplotlib.axis.Axis.set_minor_locator ... |matplotlib.axis.Axis.set_minor_locator|
+matplotlib.axis.Axis.set_pickradius ... |matplotlib.axis.Axis.set_pickradius|
+matplotlib.axis.Axis.set_remove_overlapping_locs ... |matplotlib.axis.Axis.set_remove_overlapping_locs|
+matplotlib.axis.Axis.set_tick_params ... |matplotlib.axis.Axis.set_tick_params|
+matplotlib.axis.Axis.set_ticklabels ... |matplotlib.axis.Axis.set_ticklabels|
+matplotlib.axis.Axis.set_ticks ............ |matplotlib.axis.Axis.set_ticks|
+matplotlib.axis.Axis.set_units ............ |matplotlib.axis.Axis.set_units|
+matplotlib.axis.Axis.set_view_interval ... |matplotlib.axis.Axis.set_view_interval|
+matplotlib.axis.Axis.update_units ...... |matplotlib.axis.Axis.update_units|
+matplotlib.axis.Tick.get_loc ................ |matplotlib.axis.Tick.get_loc|
+matplotlib.axis.Tick.get_pad ................ |matplotlib.axis.Tick.get_pad|
+matplotlib.axis.Tick.get_tick_padding ... |matplotlib.axis.Tick.get_tick_padding|
+matplotlib.axis.Tick.get_tickdir ........ |matplotlib.axis.Tick.get_tickdir|
+matplotlib.axis.Tick.get_view_interval ... |matplotlib.axis.Tick.get_view_interval|
+matplotlib.axis.Tick.set_clip_path .... |matplotlib.axis.Tick.set_clip_path|
+matplotlib.axis.Tick.set_pad ................ |matplotlib.axis.Tick.set_pad|
+matplotlib.axis.Tick.set_url ................ |matplotlib.axis.Tick.set_url|
+matplotlib.axis.Tick.update_position ... |matplotlib.axis.Tick.update_position|
+matplotlib.axis.XAxis.axis_name .......... |matplotlib.axis.XAxis.axis_name|
+matplotlib.axis.XAxis.get_ticks_position ... |matplotlib.axis.XAxis.get_ticks_position|
+matplotlib.axis.XAxis.set_label_position ... |matplotlib.axis.XAxis.set_label_position|
+matplotlib.axis.XAxis.set_ticks_position ... |matplotlib.axis.XAxis.set_ticks_position|
+matplotlib.axis.XAxis.tick_bottom ...... |matplotlib.axis.XAxis.tick_bottom|
+matplotlib.axis.XAxis.tick_top ............ |matplotlib.axis.XAxis.tick_top|
+matplotlib.axis.YAxis.axis_name .......... |matplotlib.axis.YAxis.axis_name|
+matplotlib.axis.YAxis.get_ticks_position ... |matplotlib.axis.YAxis.get_ticks_position|
+matplotlib.axis.YAxis.set_label_position ... |matplotlib.axis.YAxis.set_label_position|
+matplotlib.axis.YAxis.set_offset_position ... |matplotlib.axis.YAxis.set_offset_position|
+matplotlib.axis.YAxis.set_ticks_position ... |matplotlib.axis.YAxis.set_ticks_position|
+matplotlib.axis.YAxis.tick_left .......... |matplotlib.axis.YAxis.tick_left|
+matplotlib.axis.YAxis.tick_right ........ |matplotlib.axis.YAxis.tick_right|
+matplotlib.colors.AsinhNorm .................. |matplotlib.colors.AsinhNorm|
+matplotlib.colors.BivarColormap .......... |matplotlib.colors.BivarColormap|
+matplotlib.colors.BivarColormapFromImage ... |matplotlib.colors.BivarColormapFromImage|
+matplotlib.colors.BoundaryNorm ............ |matplotlib.colors.BoundaryNorm|
+matplotlib.colors.CenteredNorm ............ |matplotlib.colors.CenteredNorm|
+matplotlib.colors.ColorSequenceRegistry ... |matplotlib.colors.ColorSequenceRegistry|
+matplotlib.colors.Colormap .................... |matplotlib.colors.Colormap|
+matplotlib.colors.FuncNorm .................... |matplotlib.colors.FuncNorm|
+matplotlib.colors.LightSource .............. |matplotlib.colors.LightSource|
+matplotlib.colors.LinearSegmentedColormap ... |matplotlib.colors.LinearSegmentedColormap|
+matplotlib.colors.ListedColormap ........ |matplotlib.colors.ListedColormap|
+matplotlib.colors.LogNorm ...................... |matplotlib.colors.LogNorm|
+matplotlib.colors.MultiNorm .................. |matplotlib.colors.MultiNorm|
+matplotlib.colors.NoNorm ........................ |matplotlib.colors.NoNorm|
+matplotlib.colors.Norm ............................ |matplotlib.colors.Norm|
+matplotlib.colors.Normalize .................. |matplotlib.colors.Normalize|
+matplotlib.colors.PowerNorm .................. |matplotlib.colors.PowerNorm|
+matplotlib.colors.SegmentedBivarColormap ... |matplotlib.colors.SegmentedBivarColormap|
+matplotlib.colors.SymLogNorm ................ |matplotlib.colors.SymLogNorm|
+matplotlib.colors.TwoSlopeNorm ............ |matplotlib.colors.TwoSlopeNorm|
+matplotlib.colors.from_levels_and_colors ... |matplotlib.colors.from_levels_and_colors|
+matplotlib.colors.get_named_colors_mapping ... |matplotlib.colors.get_named_colors_mapping|
+matplotlib.colors.hsv_to_rgb ................ |matplotlib.colors.hsv_to_rgb|
+matplotlib.colors.is_color_like .......... |matplotlib.colors.is_color_like|
+matplotlib.colors.make_norm_from_scale ... |matplotlib.colors.make_norm_from_scale|
+matplotlib.colors.rgb_to_hsv ................ |matplotlib.colors.rgb_to_hsv|
+matplotlib.colors.same_color ................ |matplotlib.colors.same_color|
+matplotlib.colors.to_hex ........................ |matplotlib.colors.to_hex|
+matplotlib.colors.to_rgb ........................ |matplotlib.colors.to_rgb|
+matplotlib.colors.to_rgba ...................... |matplotlib.colors.to_rgba|
+matplotlib.colors.to_rgba_array .......... |matplotlib.colors.to_rgba_array|
+matplotlib.figure.Figure.add_artist ... |matplotlib.figure.Figure.add_artist|
+matplotlib.figure.Figure.add_axes ...... |matplotlib.figure.Figure.add_axes|
+matplotlib.figure.Figure.add_axobserver ... |matplotlib.figure.Figure.add_axobserver|
+matplotlib.figure.Figure.add_gridspec ... |matplotlib.figure.Figure.add_gridspec|
+matplotlib.figure.Figure.add_subfigure ... |matplotlib.figure.Figure.add_subfigure|
+matplotlib.figure.Figure.add_subplot ... |matplotlib.figure.Figure.add_subplot|
+matplotlib.figure.Figure.align_labels ... |matplotlib.figure.Figure.align_labels|
+matplotlib.figure.Figure.align_titles ... |matplotlib.figure.Figure.align_titles|
+matplotlib.figure.Figure.align_xlabels ... |matplotlib.figure.Figure.align_xlabels|
+matplotlib.figure.Figure.align_ylabels ... |matplotlib.figure.Figure.align_ylabels|
+matplotlib.figure.Figure.autofmt_xdate ... |matplotlib.figure.Figure.autofmt_xdate|
+matplotlib.figure.Figure.axes .............. |matplotlib.figure.Figure.axes|
+matplotlib.figure.Figure.clear ............ |matplotlib.figure.Figure.clear|
+matplotlib.figure.Figure.colorbar ...... |matplotlib.figure.Figure.colorbar|
+matplotlib.figure.Figure.delaxes ........ |matplotlib.figure.Figure.delaxes|
+matplotlib.figure.Figure.dpi ................ |matplotlib.figure.Figure.dpi|
+matplotlib.figure.Figure.draw .............. |matplotlib.figure.Figure.draw|
+matplotlib.figure.Figure.draw_artist ... |matplotlib.figure.Figure.draw_artist|
+matplotlib.figure.Figure.draw_without_rendering ... |matplotlib.figure.Figure.draw_without_rendering|
+matplotlib.figure.Figure.figimage ...... |matplotlib.figure.Figure.figimage|
+matplotlib.figure.Figure.gca ................ |matplotlib.figure.Figure.gca|
+matplotlib.figure.Figure.get_axes ...... |matplotlib.figure.Figure.get_axes|
+matplotlib.figure.Figure.get_children ... |matplotlib.figure.Figure.get_children|
+matplotlib.figure.Figure.get_constrained_layout ... |matplotlib.figure.Figure.get_constrained_layout|
+matplotlib.figure.Figure.get_constrained_layout_pads ... |matplotlib.figure.Figure.get_constrained_layout_pads|
+matplotlib.figure.Figure.get_dpi ........ |matplotlib.figure.Figure.get_dpi|
+matplotlib.figure.Figure.get_edgecolor ... |matplotlib.figure.Figure.get_edgecolor|
+matplotlib.figure.Figure.get_facecolor ... |matplotlib.figure.Figure.get_facecolor|
+matplotlib.figure.Figure.get_figheight ... |matplotlib.figure.Figure.get_figheight|
+matplotlib.figure.Figure.get_figwidth ... |matplotlib.figure.Figure.get_figwidth|
+matplotlib.figure.Figure.get_frameon ... |matplotlib.figure.Figure.get_frameon|
+matplotlib.figure.Figure.get_layout_engine ... |matplotlib.figure.Figure.get_layout_engine|
+matplotlib.figure.Figure.get_linewidth ... |matplotlib.figure.Figure.get_linewidth|
+matplotlib.figure.Figure.get_size_inches ... |matplotlib.figure.Figure.get_size_inches|
+matplotlib.figure.Figure.get_suptitle ... |matplotlib.figure.Figure.get_suptitle|
+matplotlib.figure.Figure.get_supxlabel ... |matplotlib.figure.Figure.get_supxlabel|
+matplotlib.figure.Figure.get_supylabel ... |matplotlib.figure.Figure.get_supylabel|
+matplotlib.figure.Figure.get_tight_layout ... |matplotlib.figure.Figure.get_tight_layout|
+matplotlib.figure.Figure.get_tightbbox ... |matplotlib.figure.Figure.get_tightbbox|
+matplotlib.figure.Figure.get_window_extent ... |matplotlib.figure.Figure.get_window_extent|
+matplotlib.figure.Figure.ginput .......... |matplotlib.figure.Figure.ginput|
+matplotlib.figure.Figure ........................ |matplotlib.figure.Figure|
+matplotlib.figure.Figure.legend .......... |matplotlib.figure.Figure.legend|
+matplotlib.figure.Figure.pick .............. |matplotlib.figure.Figure.pick|
+matplotlib.figure.Figure.savefig ........ |matplotlib.figure.Figure.savefig|
+matplotlib.figure.Figure.sca ................ |matplotlib.figure.Figure.sca|
+matplotlib.figure.Figure.set_canvas ... |matplotlib.figure.Figure.set_canvas|
+matplotlib.figure.Figure.set_constrained_layout ... |matplotlib.figure.Figure.set_constrained_layout|
+matplotlib.figure.Figure.set_constrained_layout_pads ... |matplotlib.figure.Figure.set_constrained_layout_pads|
+matplotlib.figure.Figure.set_dpi ........ |matplotlib.figure.Figure.set_dpi|
+matplotlib.figure.Figure.set_edgecolor ... |matplotlib.figure.Figure.set_edgecolor|
+matplotlib.figure.Figure.set_facecolor ... |matplotlib.figure.Figure.set_facecolor|
+matplotlib.figure.Figure.set_figheight ... |matplotlib.figure.Figure.set_figheight|
+matplotlib.figure.Figure.set_figwidth ... |matplotlib.figure.Figure.set_figwidth|
+matplotlib.figure.Figure.set_frameon ... |matplotlib.figure.Figure.set_frameon|
+matplotlib.figure.Figure.set_layout_engine ... |matplotlib.figure.Figure.set_layout_engine|
+matplotlib.figure.Figure.set_linewidth ... |matplotlib.figure.Figure.set_linewidth|
+matplotlib.figure.Figure.set_size_inches ... |matplotlib.figure.Figure.set_size_inches|
+matplotlib.figure.Figure.set_tight_layout ... |matplotlib.figure.Figure.set_tight_layout|
+matplotlib.figure.Figure.show .............. |matplotlib.figure.Figure.show|
+matplotlib.figure.Figure.subfigures ... |matplotlib.figure.Figure.subfigures|
+matplotlib.figure.Figure.subplot_mosaic ... |matplotlib.figure.Figure.subplot_mosaic|
+matplotlib.figure.Figure.subplots ...... |matplotlib.figure.Figure.subplots|
+matplotlib.figure.Figure.subplots_adjust ... |matplotlib.figure.Figure.subplots_adjust|
+matplotlib.figure.Figure.suptitle ...... |matplotlib.figure.Figure.suptitle|
+matplotlib.figure.Figure.supxlabel .... |matplotlib.figure.Figure.supxlabel|
+matplotlib.figure.Figure.supylabel .... |matplotlib.figure.Figure.supylabel|
+matplotlib.figure.Figure.text .............. |matplotlib.figure.Figure.text|
+matplotlib.figure.Figure.tight_layout ... |matplotlib.figure.Figure.tight_layout|
+matplotlib.figure.Figure.waitforbuttonpress ... |matplotlib.figure.Figure.waitforbuttonpress|
+matplotlib.figure.SubFigure.add_artist ... |matplotlib.figure.SubFigure.add_artist|
+matplotlib.figure.SubFigure.add_axes ... |matplotlib.figure.SubFigure.add_axes|
+matplotlib.figure.SubFigure.add_gridspec ... |matplotlib.figure.SubFigure.add_gridspec|
+matplotlib.figure.SubFigure.add_subfigure ... |matplotlib.figure.SubFigure.add_subfigure|
+matplotlib.figure.SubFigure.add_subplot ... |matplotlib.figure.SubFigure.add_subplot|
+matplotlib.figure.SubFigure.align_labels ... |matplotlib.figure.SubFigure.align_labels|
+matplotlib.figure.SubFigure.align_titles ... |matplotlib.figure.SubFigure.align_titles|
+matplotlib.figure.SubFigure.align_xlabels ... |matplotlib.figure.SubFigure.align_xlabels|
+matplotlib.figure.SubFigure.align_ylabels ... |matplotlib.figure.SubFigure.align_ylabels|
+matplotlib.figure.SubFigure.colorbar ... |matplotlib.figure.SubFigure.colorbar|
+matplotlib.figure.SubFigure.delaxes ... |matplotlib.figure.SubFigure.delaxes|
+matplotlib.figure.SubFigure.get_children ... |matplotlib.figure.SubFigure.get_children|
+matplotlib.figure.SubFigure.get_dpi ... |matplotlib.figure.SubFigure.get_dpi|
+matplotlib.figure.SubFigure.get_edgecolor ... |matplotlib.figure.SubFigure.get_edgecolor|
+matplotlib.figure.SubFigure.get_facecolor ... |matplotlib.figure.SubFigure.get_facecolor|
+matplotlib.figure.SubFigure.get_frameon ... |matplotlib.figure.SubFigure.get_frameon|
+matplotlib.figure.SubFigure.get_linewidth ... |matplotlib.figure.SubFigure.get_linewidth|
+matplotlib.figure.SubFigure.get_suptitle ... |matplotlib.figure.SubFigure.get_suptitle|
+matplotlib.figure.SubFigure.get_supxlabel ... |matplotlib.figure.SubFigure.get_supxlabel|
+matplotlib.figure.SubFigure.get_supylabel ... |matplotlib.figure.SubFigure.get_supylabel|
+matplotlib.figure.SubFigure .................. |matplotlib.figure.SubFigure|
+matplotlib.figure.SubFigure.legend .... |matplotlib.figure.SubFigure.legend|
+matplotlib.figure.SubFigure.set_dpi ... |matplotlib.figure.SubFigure.set_dpi|
+matplotlib.figure.SubFigure.set_edgecolor ... |matplotlib.figure.SubFigure.set_edgecolor|
+matplotlib.figure.SubFigure.set_facecolor ... |matplotlib.figure.SubFigure.set_facecolor|
+matplotlib.figure.SubFigure.set_frameon ... |matplotlib.figure.SubFigure.set_frameon|
+matplotlib.figure.SubFigure.set_linewidth ... |matplotlib.figure.SubFigure.set_linewidth|
+matplotlib.figure.SubFigure.subfigures ... |matplotlib.figure.SubFigure.subfigures|
+matplotlib.figure.SubFigure.subplot_mosaic ... |matplotlib.figure.SubFigure.subplot_mosaic|
+matplotlib.figure.SubFigure.subplots ... |matplotlib.figure.SubFigure.subplots|
+matplotlib.figure.SubFigure.suptitle ... |matplotlib.figure.SubFigure.suptitle|
+matplotlib.figure.SubFigure.supxlabel ... |matplotlib.figure.SubFigure.supxlabel|
+matplotlib.figure.SubFigure.supylabel ... |matplotlib.figure.SubFigure.supylabel|
+matplotlib.figure.SubFigure.text ........ |matplotlib.figure.SubFigure.text|
+matplotlib.gridspec.GridSpec ................ |matplotlib.gridspec.GridSpec|
+matplotlib.gridspec.GridSpecBase ........ |matplotlib.gridspec.GridSpecBase|
+matplotlib.gridspec.GridSpecFromSubplotSpec ... |matplotlib.gridspec.GridSpecFromSubplotSpec|
+matplotlib.gridspec.SubplotParams ...... |matplotlib.gridspec.SubplotParams|
+matplotlib.gridspec.SubplotSpec .......... |matplotlib.gridspec.SubplotSpec|
+matplotlib.lines.AxLine .......................... |matplotlib.lines.AxLine|
+matplotlib.lines.Line2D .......................... |matplotlib.lines.Line2D|
+matplotlib.lines.VertexSelector .......... |matplotlib.lines.VertexSelector|
+matplotlib.lines.segment_hits .............. |matplotlib.lines.segment_hits|
+matplotlib.markers.MarkerStyle ............ |matplotlib.markers.MarkerStyle|
+matplotlib.patches.Annulus .................... |matplotlib.patches.Annulus|
+matplotlib.patches.Arc ............................ |matplotlib.patches.Arc|
+matplotlib.patches.Arrow ........................ |matplotlib.patches.Arrow|
+matplotlib.patches.ArrowStyle .............. |matplotlib.patches.ArrowStyle|
+matplotlib.patches.BoxStyle .................. |matplotlib.patches.BoxStyle|
+matplotlib.patches.Circle ...................... |matplotlib.patches.Circle|
+matplotlib.patches.CirclePolygon ........ |matplotlib.patches.CirclePolygon|
+matplotlib.patches.ConnectionPatch .... |matplotlib.patches.ConnectionPatch|
+matplotlib.patches.ConnectionStyle .... |matplotlib.patches.ConnectionStyle|
+matplotlib.patches.Ellipse .................... |matplotlib.patches.Ellipse|
+matplotlib.patches.FancyArrow .............. |matplotlib.patches.FancyArrow|
+matplotlib.patches.FancyArrowPatch .... |matplotlib.patches.FancyArrowPatch|
+matplotlib.patches.FancyBboxPatch ...... |matplotlib.patches.FancyBboxPatch|
+matplotlib.patches.Patch ........................ |matplotlib.patches.Patch|
+matplotlib.patches.PathPatch ................ |matplotlib.patches.PathPatch|
+matplotlib.patches.Polygon .................... |matplotlib.patches.Polygon|
+matplotlib.patches.Rectangle ................ |matplotlib.patches.Rectangle|
+matplotlib.patches.RegularPolygon ...... |matplotlib.patches.RegularPolygon|
+matplotlib.patches.Shadow ...................... |matplotlib.patches.Shadow|
+matplotlib.patches.StepPatch ................ |matplotlib.patches.StepPatch|
+matplotlib.patches.Wedge ........................ |matplotlib.patches.Wedge|
+matplotlib.patches.bbox_artist ............ |matplotlib.patches.bbox_artist|
+matplotlib.patches.draw_bbox ................ |matplotlib.patches.draw_bbox|
+matplotlib.pyplot.acorr .......................... |matplotlib.pyplot.acorr|
+matplotlib.pyplot.angle_spectrum ........ |matplotlib.pyplot.angle_spectrum|
+matplotlib.pyplot.annotate .................... |matplotlib.pyplot.annotate|
+matplotlib.pyplot.arrow .......................... |matplotlib.pyplot.arrow|
+matplotlib.pyplot.autoscale .................. |matplotlib.pyplot.autoscale|
+matplotlib.pyplot.axes ............................ |matplotlib.pyplot.axes|
+matplotlib.pyplot.axhline ...................... |matplotlib.pyplot.axhline|
+matplotlib.pyplot.axhspan ...................... |matplotlib.pyplot.axhspan|
+matplotlib.pyplot.axis ............................ |matplotlib.pyplot.axis|
+matplotlib.pyplot.axline ........................ |matplotlib.pyplot.axline|
+matplotlib.pyplot.axvline ...................... |matplotlib.pyplot.axvline|
+matplotlib.pyplot.axvspan ...................... |matplotlib.pyplot.axvspan|
+matplotlib.pyplot.bar .............................. |matplotlib.pyplot.bar|
+matplotlib.pyplot.bar_label .................. |matplotlib.pyplot.bar_label|
+matplotlib.pyplot.barbs .......................... |matplotlib.pyplot.barbs|
+matplotlib.pyplot.barh ............................ |matplotlib.pyplot.barh|
+matplotlib.pyplot.box .............................. |matplotlib.pyplot.box|
+matplotlib.pyplot.boxplot ...................... |matplotlib.pyplot.boxplot|
+matplotlib.pyplot.broken_barh .............. |matplotlib.pyplot.broken_barh|
+matplotlib.pyplot.cla .............................. |matplotlib.pyplot.cla|
+matplotlib.pyplot.clabel ........................ |matplotlib.pyplot.clabel|
+matplotlib.pyplot.clf .............................. |matplotlib.pyplot.clf|
+matplotlib.pyplot.clim ............................ |matplotlib.pyplot.clim|
+matplotlib.pyplot.close .......................... |matplotlib.pyplot.close|
+matplotlib.pyplot.cohere ........................ |matplotlib.pyplot.cohere|
+matplotlib.pyplot.colorbar .................... |matplotlib.pyplot.colorbar|
+matplotlib.pyplot.connect ...................... |matplotlib.pyplot.connect|
+matplotlib.pyplot.contour ...................... |matplotlib.pyplot.contour|
+matplotlib.pyplot.contourf .................... |matplotlib.pyplot.contourf|
+matplotlib.pyplot.csd .............................. |matplotlib.pyplot.csd|
+matplotlib.pyplot.delaxes ...................... |matplotlib.pyplot.delaxes|
+matplotlib.pyplot.disconnect ................ |matplotlib.pyplot.disconnect|
+matplotlib.pyplot.draw ............................ |matplotlib.pyplot.draw|
+matplotlib.pyplot.draw_if_interactive ... |matplotlib.pyplot.draw_if_interactive|
+matplotlib.pyplot.ecdf ............................ |matplotlib.pyplot.ecdf|
+matplotlib.pyplot.errorbar .................... |matplotlib.pyplot.errorbar|
+matplotlib.pyplot.eventplot .................. |matplotlib.pyplot.eventplot|
+matplotlib.pyplot.figimage .................... |matplotlib.pyplot.figimage|
+matplotlib.pyplot.figlegend .................. |matplotlib.pyplot.figlegend|
+matplotlib.pyplot.fignum_exists .......... |matplotlib.pyplot.fignum_exists|
+matplotlib.pyplot.figtext ...................... |matplotlib.pyplot.figtext|
+matplotlib.pyplot.figure ........................ |matplotlib.pyplot.figure|
+matplotlib.pyplot.fill ............................ |matplotlib.pyplot.fill|
+matplotlib.pyplot.fill_between ............ |matplotlib.pyplot.fill_between|
+matplotlib.pyplot.fill_betweenx .......... |matplotlib.pyplot.fill_betweenx|
+matplotlib.pyplot.findobj ...................... |matplotlib.pyplot.findobj|
+matplotlib.pyplot.gca .............................. |matplotlib.pyplot.gca|
+matplotlib.pyplot.gcf .............................. |matplotlib.pyplot.gcf|
+matplotlib.pyplot.gci .............................. |matplotlib.pyplot.gci|
+matplotlib.pyplot.get .............................. |matplotlib.pyplot.get|
+matplotlib.pyplot.get_cmap .................... |matplotlib.pyplot.get_cmap|
+matplotlib.pyplot.get_current_fig_manager ... |matplotlib.pyplot.get_current_fig_manager|
+matplotlib.pyplot.get_figlabels .......... |matplotlib.pyplot.get_figlabels|
+matplotlib.pyplot.get_fignums .............. |matplotlib.pyplot.get_fignums|
+matplotlib.pyplot.getp ............................ |matplotlib.pyplot.getp|
+matplotlib.pyplot.ginput ........................ |matplotlib.pyplot.ginput|
+matplotlib.pyplot.grid ............................ |matplotlib.pyplot.grid|
+matplotlib.pyplot.grouped_bar .............. |matplotlib.pyplot.grouped_bar|
+matplotlib.pyplot.hexbin ........................ |matplotlib.pyplot.hexbin|
+matplotlib.pyplot.hist ............................ |matplotlib.pyplot.hist|
+matplotlib.pyplot.hist2d ........................ |matplotlib.pyplot.hist2d|
+matplotlib.pyplot.hlines ........................ |matplotlib.pyplot.hlines|
+matplotlib.pyplot.imread ........................ |matplotlib.pyplot.imread|
+matplotlib.pyplot.imsave ........................ |matplotlib.pyplot.imsave|
+matplotlib.pyplot.imshow ........................ |matplotlib.pyplot.imshow|
+matplotlib.pyplot.install_repl_displayhook ... |matplotlib.pyplot.install_repl_displayhook|
+matplotlib.pyplot.ioff ............................ |matplotlib.pyplot.ioff|
+matplotlib.pyplot.ion .............................. |matplotlib.pyplot.ion|
+matplotlib.pyplot.isinteractive .......... |matplotlib.pyplot.isinteractive|
+matplotlib.pyplot.legend ........................ |matplotlib.pyplot.legend|
+matplotlib.pyplot.locator_params ........ |matplotlib.pyplot.locator_params|
+matplotlib.pyplot.loglog ........................ |matplotlib.pyplot.loglog|
+matplotlib.pyplot.magnitude_spectrum ... |matplotlib.pyplot.magnitude_spectrum|
+matplotlib.pyplot.margins ...................... |matplotlib.pyplot.margins|
+matplotlib.pyplot.matshow ...................... |matplotlib.pyplot.matshow|
+matplotlib.pyplot.minorticks_off ........ |matplotlib.pyplot.minorticks_off|
+matplotlib.pyplot.minorticks_on .......... |matplotlib.pyplot.minorticks_on|
+matplotlib.pyplot.new_figure_manager ... |matplotlib.pyplot.new_figure_manager|
+matplotlib.pyplot.pause .......................... |matplotlib.pyplot.pause|
+matplotlib.pyplot.pcolor ........................ |matplotlib.pyplot.pcolor|
+matplotlib.pyplot.pcolormesh ................ |matplotlib.pyplot.pcolormesh|
+matplotlib.pyplot.phase_spectrum ........ |matplotlib.pyplot.phase_spectrum|
+matplotlib.pyplot.pie .............................. |matplotlib.pyplot.pie|
+matplotlib.pyplot.pie_label .................. |matplotlib.pyplot.pie_label|
+matplotlib.pyplot.plot ............................ |matplotlib.pyplot.plot|
+matplotlib.pyplot.polar .......................... |matplotlib.pyplot.polar|
+matplotlib.pyplot.psd .............................. |matplotlib.pyplot.psd|
+matplotlib.pyplot.quiver ........................ |matplotlib.pyplot.quiver|
+matplotlib.pyplot.quiverkey .................. |matplotlib.pyplot.quiverkey|
+matplotlib.pyplot.rc ................................ |matplotlib.pyplot.rc|
+matplotlib.pyplot.rc_context ................ |matplotlib.pyplot.rc_context|
+matplotlib.pyplot.rcdefaults ................ |matplotlib.pyplot.rcdefaults|
+matplotlib.pyplot.rgrids ........................ |matplotlib.pyplot.rgrids|
+matplotlib.pyplot.savefig ...................... |matplotlib.pyplot.savefig|
+matplotlib.pyplot.sca .............................. |matplotlib.pyplot.sca|
+matplotlib.pyplot.scatter ...................... |matplotlib.pyplot.scatter|
+matplotlib.pyplot.sci .............................. |matplotlib.pyplot.sci|
+matplotlib.pyplot.semilogx .................... |matplotlib.pyplot.semilogx|
+matplotlib.pyplot.semilogy .................... |matplotlib.pyplot.semilogy|
+matplotlib.pyplot.set_cmap .................... |matplotlib.pyplot.set_cmap|
+matplotlib.pyplot.set_loglevel ............ |matplotlib.pyplot.set_loglevel|
+matplotlib.pyplot.setp ............................ |matplotlib.pyplot.setp|
+matplotlib.pyplot.show ............................ |matplotlib.pyplot.show|
+matplotlib.pyplot.specgram .................... |matplotlib.pyplot.specgram|
+matplotlib.pyplot.spy .............................. |matplotlib.pyplot.spy|
+matplotlib.pyplot.stackplot .................. |matplotlib.pyplot.stackplot|
+matplotlib.pyplot.stairs ........................ |matplotlib.pyplot.stairs|
+matplotlib.pyplot.stem ............................ |matplotlib.pyplot.stem|
+matplotlib.pyplot.step ............................ |matplotlib.pyplot.step|
+matplotlib.pyplot.streamplot ................ |matplotlib.pyplot.streamplot|
+matplotlib.pyplot.subplot ...................... |matplotlib.pyplot.subplot|
+matplotlib.pyplot.subplot2grid ............ |matplotlib.pyplot.subplot2grid|
+matplotlib.pyplot.subplot_mosaic ........ |matplotlib.pyplot.subplot_mosaic|
+matplotlib.pyplot.subplot_tool ............ |matplotlib.pyplot.subplot_tool|
+matplotlib.pyplot.subplots .................... |matplotlib.pyplot.subplots|
+matplotlib.pyplot.subplots_adjust ...... |matplotlib.pyplot.subplots_adjust|
+matplotlib.pyplot.suptitle .................... |matplotlib.pyplot.suptitle|
+matplotlib.pyplot.switch_backend ........ |matplotlib.pyplot.switch_backend|
+matplotlib.pyplot.table .......................... |matplotlib.pyplot.table|
+matplotlib.pyplot.text ............................ |matplotlib.pyplot.text|
+matplotlib.pyplot.thetagrids ................ |matplotlib.pyplot.thetagrids|
+matplotlib.pyplot.tick_params .............. |matplotlib.pyplot.tick_params|
+matplotlib.pyplot.ticklabel_format .... |matplotlib.pyplot.ticklabel_format|
+matplotlib.pyplot.tight_layout ............ |matplotlib.pyplot.tight_layout|
+matplotlib.pyplot.title .......................... |matplotlib.pyplot.title|
+matplotlib.pyplot.tricontour ................ |matplotlib.pyplot.tricontour|
+matplotlib.pyplot.tricontourf .............. |matplotlib.pyplot.tricontourf|
+matplotlib.pyplot.tripcolor .................. |matplotlib.pyplot.tripcolor|
+matplotlib.pyplot.triplot ...................... |matplotlib.pyplot.triplot|
+matplotlib.pyplot.twinx .......................... |matplotlib.pyplot.twinx|
+matplotlib.pyplot.twiny .......................... |matplotlib.pyplot.twiny|
+matplotlib.pyplot.uninstall_repl_displayhook ... |matplotlib.pyplot.uninstall_repl_displayhook|
+matplotlib.pyplot.violinplot ................ |matplotlib.pyplot.violinplot|
+matplotlib.pyplot.vlines ........................ |matplotlib.pyplot.vlines|
+matplotlib.pyplot.waitforbuttonpress ... |matplotlib.pyplot.waitforbuttonpress|
+matplotlib.pyplot.xcorr .......................... |matplotlib.pyplot.xcorr|
+matplotlib.pyplot.xkcd ............................ |matplotlib.pyplot.xkcd|
+matplotlib.pyplot.xlabel ........................ |matplotlib.pyplot.xlabel|
+matplotlib.pyplot.xlim ............................ |matplotlib.pyplot.xlim|
+matplotlib.pyplot.xscale ........................ |matplotlib.pyplot.xscale|
+matplotlib.pyplot.xticks ........................ |matplotlib.pyplot.xticks|
+matplotlib.pyplot.ylabel ........................ |matplotlib.pyplot.ylabel|
+matplotlib.pyplot.ylim ............................ |matplotlib.pyplot.ylim|
+matplotlib.pyplot.yscale ........................ |matplotlib.pyplot.yscale|
+matplotlib.pyplot.yticks ........................ |matplotlib.pyplot.yticks|
+matplotlib.quiver.Barbs .......................... |matplotlib.quiver.Barbs|
+matplotlib.quiver.Quiver ........................ |matplotlib.quiver.Quiver|
+matplotlib.quiver.QuiverKey .................. |matplotlib.quiver.QuiverKey|
+matplotlib.widgets.AxesWidget .............. |matplotlib.widgets.AxesWidget|
+matplotlib.widgets.Button ...................... |matplotlib.widgets.Button|
+matplotlib.widgets.CheckButtons .......... |matplotlib.widgets.CheckButtons|
+matplotlib.widgets.Cursor ...................... |matplotlib.widgets.Cursor|
+matplotlib.widgets.EllipseSelector .... |matplotlib.widgets.EllipseSelector|
+matplotlib.widgets.Lasso ........................ |matplotlib.widgets.Lasso|
+matplotlib.widgets.LassoSelector ........ |matplotlib.widgets.LassoSelector|
+matplotlib.widgets.LockDraw .................. |matplotlib.widgets.LockDraw|
+matplotlib.widgets.MultiCursor ............ |matplotlib.widgets.MultiCursor|
+matplotlib.widgets.PolygonSelector .... |matplotlib.widgets.PolygonSelector|
+matplotlib.widgets.RadioButtons .......... |matplotlib.widgets.RadioButtons|
+matplotlib.widgets.RangeSlider ............ |matplotlib.widgets.RangeSlider|
+matplotlib.widgets.RectangleSelector ... |matplotlib.widgets.RectangleSelector|
+matplotlib.widgets.Slider ...................... |matplotlib.widgets.Slider|
+matplotlib.widgets.SliderBase .............. |matplotlib.widgets.SliderBase|
+matplotlib.widgets.SpanSelector .......... |matplotlib.widgets.SpanSelector|
+matplotlib.widgets.SubplotTool ............ |matplotlib.widgets.SubplotTool|
+matplotlib.widgets.TextBox .................... |matplotlib.widgets.TextBox|
+matplotlib.widgets.ToolHandles ............ |matplotlib.widgets.ToolHandles|
+matplotlib.widgets.ToolLineHandles .... |matplotlib.widgets.ToolLineHandles|
+matplotlib.widgets.Widget ...................... |matplotlib.widgets.Widget|
+matplotlib.widgets._Buttons .................. |matplotlib.widgets._Buttons|
+matplotlib.widgets._SelectorWidget .... |matplotlib.widgets._SelectorWidget|
+mpl_toolkits.mplot3d.art3d.Line3D ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.Line3D|
+mpl_toolkits.mplot3d.art3d.Line3DCollection ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.Line3DCollection|
+mpl_toolkits.mplot3d.art3d.Patch3D ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.Patch3D|
+mpl_toolkits.mplot3d.art3d.Patch3DCollection ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.Patch3DCollection|
+mpl_toolkits.mplot3d.art3d.Path3DCollection ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.Path3DCollection|
+mpl_toolkits.mplot3d.art3d.PathPatch3D ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.PathPatch3D|
+mpl_toolkits.mplot3d.art3d.Poly3DCollection ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.Poly3DCollection|
+mpl_toolkits.mplot3d.art3d.Text3D ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.Text3D|
+mpl_toolkits.mplot3d.art3d.get_dir_vector ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.get_dir_vector|
+mpl_toolkits.mplot3d.art3d.juggle_axes ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.juggle_axes|
+mpl_toolkits.mplot3d.art3d.line_2d_to_3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.line_2d_to_3d|
+mpl_toolkits.mplot3d.art3d.line_collection_2d_to_3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.line_collection_2d_to_3d|
+mpl_toolkits.mplot3d.art3d.patch_2d_to_3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.patch_2d_to_3d|
+mpl_toolkits.mplot3d.art3d.patch_collection_2d_to_3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.patch_collection_2d_to_3d|
+mpl_toolkits.mplot3d.art3d.pathpatch_2d_to_3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.pathpatch_2d_to_3d|
+mpl_toolkits.mplot3d.art3d.poly_collection_2d_to_3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.poly_collection_2d_to_3d|
+mpl_toolkits.mplot3d.art3d.rotate_axes ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.rotate_axes|
+mpl_toolkits.mplot3d.art3d.text_2d_to_3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.art3d.text_2d_to_3d|
+mpl_toolkits.mplot3d.axes3d.Axes3D.add_collection3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.add_collection3d|
+mpl_toolkits.mplot3d.axes3d.Axes3D.add_contour_set ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.add_contour_set|
+mpl_toolkits.mplot3d.axes3d.Axes3D.add_contourf_set ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.add_contourf_set|
+mpl_toolkits.mplot3d.axes3d.Axes3D.apply_aspect ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.apply_aspect|
+mpl_toolkits.mplot3d.axes3d.Axes3D.auto_scale_xyz ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.auto_scale_xyz|
+mpl_toolkits.mplot3d.axes3d.Axes3D.autoscale ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.autoscale|
+mpl_toolkits.mplot3d.axes3d.Axes3D.autoscale_view ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.autoscale_view|
+mpl_toolkits.mplot3d.axes3d.Axes3D.bar ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.bar|
+mpl_toolkits.mplot3d.axes3d.Axes3D.bar3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.bar3d|
+mpl_toolkits.mplot3d.axes3d.Axes3D.can_pan ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.can_pan|
+mpl_toolkits.mplot3d.axes3d.Axes3D.can_zoom ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.can_zoom|
+mpl_toolkits.mplot3d.axes3d.Axes3D.clabel ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.clabel|
+mpl_toolkits.mplot3d.axes3d.Axes3D.clear ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.clear|
+mpl_toolkits.mplot3d.axes3d.Axes3D.contour ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.contour|
+mpl_toolkits.mplot3d.axes3d.Axes3D.contourf ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.contourf|
+mpl_toolkits.mplot3d.axes3d.Axes3D.convert_zunits ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.convert_zunits|
+mpl_toolkits.mplot3d.axes3d.Axes3D.disable_mouse_rotation ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.disable_mouse_rotation|
+mpl_toolkits.mplot3d.axes3d.Axes3D.drag_pan ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.drag_pan|
+mpl_toolkits.mplot3d.axes3d.Axes3D.draw ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.draw|
+mpl_toolkits.mplot3d.axes3d.Axes3D.errorbar ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.errorbar|
+mpl_toolkits.mplot3d.axes3d.Axes3D.fill_between ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.fill_between|
+mpl_toolkits.mplot3d.axes3d.Axes3D.format_coord ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.format_coord|
+mpl_toolkits.mplot3d.axes3d.Axes3D.format_zdata ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.format_zdata|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_autoscalez_on ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_autoscalez_on|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_axis_position ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_axis_position|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_proj ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_proj|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_tightbbox ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_tightbbox|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_w_lims ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_w_lims|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_xbound ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_xbound|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_xinverted ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_xinverted|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_xlim ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_xlim|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_ybound ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_ybound|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_yinverted ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_yinverted|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_ylim ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_ylim|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zaxis ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zaxis|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zbound ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zbound|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zgridlines ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zgridlines|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zinverted ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zinverted|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zlabel ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zlabel|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zlim ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zlim|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zmajorticklabels ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zmajorticklabels|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zmargin ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zmargin|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zminorticklabels ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zminorticklabels|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zscale ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zscale|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zticklines ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zticklines|
+mpl_toolkits.mplot3d.axes3d.Axes3D.get_zticks ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.get_zticks|
+mpl_toolkits.mplot3d.axes3d.Axes3D.grid ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.grid|
+mpl_toolkits.mplot3d.axes3d.Axes3D.invert_xaxis ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.invert_xaxis|
+mpl_toolkits.mplot3d.axes3d.Axes3D.invert_yaxis ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.invert_yaxis|
+mpl_toolkits.mplot3d.axes3d.Axes3D.invert_zaxis ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.invert_zaxis|
+mpl_toolkits.mplot3d.axes3d.Axes3D.margins ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.margins|
+mpl_toolkits.mplot3d.axes3d.Axes3D.mouse_init ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.mouse_init|
+mpl_toolkits.mplot3d.axes3d.Axes3D.plot ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.plot|
+mpl_toolkits.mplot3d.axes3d.Axes3D.plot_surface ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.plot_surface|
+mpl_toolkits.mplot3d.axes3d.Axes3D.plot_trisurf ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.plot_trisurf|
+mpl_toolkits.mplot3d.axes3d.Axes3D.plot_wireframe ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.plot_wireframe|
+mpl_toolkits.mplot3d.axes3d.Axes3D.quiver ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.quiver|
+mpl_toolkits.mplot3d.axes3d.Axes3D.scatter ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.scatter|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_aspect ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_aspect|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_autoscalez_on ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_autoscalez_on|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_axis_off ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_axis_off|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_axis_on ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_axis_on|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_box_aspect ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_box_aspect|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_proj_type ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_proj_type|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_title ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_title|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_top_view ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_top_view|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_xbound ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_xbound|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_xinverted ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_xinverted|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_xlim ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_xlim|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_xscale ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_xscale|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_ybound ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_ybound|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_yinverted ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_yinverted|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_ylim ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_ylim|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_yscale ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_yscale|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_zbound ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_zbound|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_zinverted ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_zinverted|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_zlabel ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_zlabel|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_zlim ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_zlim|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_zlim3d ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_zlim3d|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_zmargin ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_zmargin|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_zscale ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_zscale|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_zticklabels ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_zticklabels|
+mpl_toolkits.mplot3d.axes3d.Axes3D.set_zticks ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.set_zticks|
+mpl_toolkits.mplot3d.axes3d.Axes3D.shareview ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.shareview|
+mpl_toolkits.mplot3d.axes3d.Axes3D.sharez ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.sharez|
+mpl_toolkits.mplot3d.axes3d.Axes3D.stem ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.stem|
+mpl_toolkits.mplot3d.axes3d.Axes3D.stem3D ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.stem3D|
+mpl_toolkits.mplot3d.axes3d.Axes3D.text ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.text|
+mpl_toolkits.mplot3d.axes3d.Axes3D.text2D ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.text2D|
+mpl_toolkits.mplot3d.axes3d.Axes3D.text3D ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.text3D|
+mpl_toolkits.mplot3d.axes3d.Axes3D.tick_params ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.tick_params|
+mpl_toolkits.mplot3d.axes3d.Axes3D.tricontour ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.tricontour|
+mpl_toolkits.mplot3d.axes3d.Axes3D.tricontourf ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.tricontourf|
+mpl_toolkits.mplot3d.axes3d.Axes3D.update_datalim ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.update_datalim|
+mpl_toolkits.mplot3d.axes3d.Axes3D.view_init ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.view_init|
+mpl_toolkits.mplot3d.axes3d.Axes3D.voxels ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.voxels|
+mpl_toolkits.mplot3d.axes3d.Axes3D.xaxis_inverted ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.xaxis_inverted|
+mpl_toolkits.mplot3d.axes3d.Axes3D.yaxis_inverted ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.yaxis_inverted|
+mpl_toolkits.mplot3d.axes3d.Axes3D.zaxis_date ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.zaxis_date|
+mpl_toolkits.mplot3d.axes3d.Axes3D.zaxis_inverted ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.Axes3D.zaxis_inverted|
+mpl_toolkits.mplot3d.axes3d.get_test_data ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axes3d.get_test_data|
+mpl_toolkits.mplot3d.axis3d.Axis ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.axis3d.Axis|
+mpl_toolkits.mplot3d.proj3d.inv_transform ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.proj3d.inv_transform|
+mpl_toolkits.mplot3d.proj3d.proj_transform ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.proj3d.proj_transform|
+mpl_toolkits.mplot3d.proj3d.proj_transform_clip ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.proj3d.proj_transform_clip|
+mpl_toolkits.mplot3d.proj3d.world_transformation ... |matplotlib-api-_as_gen-mpl_toolkits.mplot3d.proj3d.world_transformation|
+matplotlib.animation ........................ |matplotlib-api-animation_api|
+matplotlib.artist ............................... |matplotlib.artist.Artist|
+matplotlib.axes .......................... |matplotlib.axes.Axes.ArtistList|
+matplotlib.axis ..................................... |matplotlib.axis.Axis|
+matplotlib.backends.backend_agg ... |matplotlib.backends.backend_agg.FigureCanvas|
+matplotlib.backend_bases ............. |matplotlib.backend_bases.CloseEvent|
+matplotlib.backends.backend_pdf ... |matplotlib.backends.backend_pdf.FigureCanvas|
+matplotlib.backends.registry ... |matplotlib.backends.registry.BackendFilter|
+matplotlib.cm ............................. |matplotlib.cm.ColormapRegistry|
+matplotlib.collections ... |matplotlib.collections.AsteriskPolygonCollection|
+matplotlib.colorbar ......................... |matplotlib.colorbar.Colorbar|
+matplotlib.colorizer ...................... |matplotlib.colorizer.Colorizer|
+matplotlib.colors .......................... |matplotlib.colors.BASE_COLORS|
+matplotlib.container ................... |matplotlib.container.BarContainer|
+matplotlib.contour ..................... |matplotlib.contour.ContourLabeler|
+matplotlib.dates ...................... |matplotlib.dates.AutoDateFormatter|
+matplotlib.figure ........................... |matplotlib.figure.FigureBase|
+matplotlib.font_manager .............. |matplotlib.font_manager.FontManager|
+matplotlib.gridspec .......................... |matplotlib-api-gridspec_api|
+matplotlib.image .............................. |matplotlib.image.AxesImage|
+API Reference ....................................... |matplotlib-api-index|
+matplotlib.inset ......................... |matplotlib.inset.InsetIndicator|
+matplotlib.legend ...................... |matplotlib.legend.DraggableLegend|
+matplotlib.legend_handler .......... |matplotlib.legend_handler.HandlerBase|
+matplotlib.lines ................................ |matplotlib-api-lines_api|
+matplotlib.markers ............................ |matplotlib-api-markers_api|
+matplotlib ................................................ |matplotlib.use|
+matplotlib.offsetbox .............. |matplotlib.offsetbox.AnchoredOffsetbox|
+matplotlib.patches ............................ |matplotlib-api-patches_api|
+matplotlib.path ..................................... |matplotlib.path.Path|
+matplotlib.patheffects ......... |matplotlib.patheffects.AbstractPathEffect|
+matplotlib.projections.polar ... |matplotlib.projections.polar.InvertedPolarTransform|
+matplotlib.projections ......... |matplotlib.projections.ProjectionRegistry|
+matplotlib.pyplot ............................ |matplotlib.pyplot.colormaps|
+matplotlib.quiver .............................. |matplotlib-api-quiver_api|
+matplotlib.scale .............................. |matplotlib.scale.ScaleBase|
+matplotlib.spines ................................ |matplotlib.spines.Spine|
+matplotlib.style ................................ |matplotlib.style.context|
+matplotlib.table ................................... |matplotlib.table.Cell|
+matplotlib.text ..................................... |matplotlib.text.Text|
+matplotlib.ticker ......................... |matplotlib.ticker.AsinhLocator|
+mpl_toolkits.axes_grid1 ............... |matplotlib-api-toolkits-axes_grid1|
+mpl_toolkits.axisartist ............... |matplotlib-api-toolkits-axisartist|
+mpl_toolkits.mplot3d ..................... |matplotlib-api-toolkits-mplot3d|
+mpl_toolkits.mplot3d.axes3d.Axes3D .... |matplotlib-toolkits-mplot3d-axes3d|
+mplot3d FAQ .............................. |matplotlib-toolkits-mplot3d-faq|
+mplot3d View Angles .............. |matplotlib-toolkits-mplot3d-view_angles|
+matplotlib.transforms ..................... |matplotlib.transforms.Affine2D|
+matplotlib.tri .............................. |matplotlib.tri.Triangulation|
+matplotlib.widgets ............................ |matplotlib-api-widgets_api|
+
+==============================================================================
+INSTALL
+
+Environment variables ....... |matplotlib-install-environment_variables_faq|
+Installation .................................... |matplotlib-install-index|
+
+==============================================================================
+MAIN
+
+Matplotlib 3.11.2 documentation ......................... |matplotlib-index|
+
+==============================================================================
+PLOT_TYPES
+
+bar3d(x, y, z, dx, dy, dz) ......... |matplotlib-plot_types-3D-bar3d_simple|
+fill_between(x1, y1, z1, x2, y2, z2) ... |matplotlib-plot_types-3D-fill_between3d_simple|
+3D and volumetric data .................... |matplotlib-plot_types-3D-index|
+plot(xs, ys, zs) .................. |matplotlib-plot_types-3D-plot3d_simple|
+quiver(X, Y, Z, U, V, W) ........ |matplotlib-plot_types-3D-quiver3d_simple|
+scatter(xs, ys, zs) ............ |matplotlib-plot_types-3D-scatter3d_simple|
+stem(x, y, z) ............................ |matplotlib-plot_types-3D-stem3d|
+plot_surface(X, Y, Z) .......... |matplotlib-plot_types-3D-surface3d_simple|
+plot_trisurf(x, y, z) .......... |matplotlib-plot_types-3D-trisurf3d_simple|
+voxels([x, y, z], filled) ......... |matplotlib-plot_types-3D-voxels_simple|
+plot_wireframe(X, Y, Z) ........... |matplotlib-plot_types-3D-wire3d_simple|
+barbs(X, Y, U, V) ..................... |matplotlib-plot_types-arrays-barbs|
+contour(X, Y, Z) .................... |matplotlib-plot_types-arrays-contour|
+contourf(X, Y, Z) .................. |matplotlib-plot_types-arrays-contourf|
+imshow(Z) ............................ |matplotlib-plot_types-arrays-imshow|
+Gridded data .......................... |matplotlib-plot_types-arrays-index|
+pcolormesh(X, Y, Z) .............. |matplotlib-plot_types-arrays-pcolormesh|
+quiver(X, Y, U, V) ................... |matplotlib-plot_types-arrays-quiver|
+streamplot(X, Y, U, V) ........... |matplotlib-plot_types-arrays-streamplot|
+bar(x, height) ........................... |matplotlib-plot_types-basic-bar|
+fill_between(x, y1, y2) ......... |matplotlib-plot_types-basic-fill_between|
+Pairwise data .......................... |matplotlib-plot_types-basic-index|
+plot(x, y) .............................. |matplotlib-plot_types-basic-plot|
+scatter(x, y) ................... |matplotlib-plot_types-basic-scatter_plot|
+stackplot(x, y) .................... |matplotlib-plot_types-basic-stackplot|
+stairs(values) ........................ |matplotlib-plot_types-basic-stairs|
+stem(x, y) .............................. |matplotlib-plot_types-basic-stem|
+Plot types ................................... |matplotlib-plot_types-index|
+boxplot(X) ...................... |matplotlib-plot_types-stats-boxplot_plot|
+ecdf(x) ................................. |matplotlib-plot_types-stats-ecdf|
+errorbar(x, y, yerr, xerr) ..... |matplotlib-plot_types-stats-errorbar_plot|
+eventplot(D) ....................... |matplotlib-plot_types-stats-eventplot|
+hexbin(x, y, C) ....................... |matplotlib-plot_types-stats-hexbin|
+hist2d(x, y) .......................... |matplotlib-plot_types-stats-hist2d|
+hist(x) ............................ |matplotlib-plot_types-stats-hist_plot|
+Statistical distributions .............. |matplotlib-plot_types-stats-index|
+pie(x) ................................... |matplotlib-plot_types-stats-pie|
+violinplot(D) ......................... |matplotlib-plot_types-stats-violin|
+Irregularly gridded data ........ |matplotlib-plot_types-unstructured-index|
+tricontour(x, y, z) ........ |matplotlib-plot_types-unstructured-tricontour|
+tricontourf(x, y, z) ...... |matplotlib-plot_types-unstructured-tricontourf|
+tripcolor(x, y, z) .......... |matplotlib-plot_types-unstructured-tripcolor|
+triplot(x, y) ................. |matplotlib-plot_types-unstructured-triplot|
+
+==============================================================================
+TUTORIALS
+
+Artist tutorial ............................. |matplotlib-tutorials-artists|
+Coding shortcuts ................... |matplotlib-tutorials-coding_shortcuts|
+Image tutorial ............................... |matplotlib-tutorials-images|
+Tutorials ..................................... |matplotlib-tutorials-index|
+The Lifecycle of a Plot ................... |matplotlib-tutorials-lifecycle|
+Pyplot tutorial .............................. |matplotlib-tutorials-pyplot|
+
+==============================================================================
+USERS
+
+Animations using Matplotlib ..... |matplotlib-explain-animations-animations|
+Faster rendering by using blitting ... |matplotlib-explain-animations-blitting|
+Animations using Matplotlib .......... |matplotlib-explain-animations-index|
+Introduction to Artists .......... |matplotlib-explain-artists-artist_intro|
+Styling with cycler ............... |matplotlib-explain-artists-color_cycle|
+Positioning and orientation of imshow images ... |matplotlib-explain-artists-imshow_extent|
+Artists ................................. |matplotlib-explain-artists-index|
+Path effects guide .......... |matplotlib-explain-artists-patheffects_guide|
+Path Tutorial ........................... |matplotlib-explain-artists-paths|
+Performance ....................... |matplotlib-explain-artists-performance|
+Transformations Tutorial ... |matplotlib-explain-artists-transforms_tutorial|
+Arranging multiple Axes in a Figure ... |matplotlib-explain-axes-arranging_axes|
+Axis autoscaling ....................... |matplotlib-explain-axes-autoscale|
+Introduction to Axes (or Subplots) .... |matplotlib-explain-axes-axes_intro|
+Axis scales .......................... |matplotlib-explain-axes-axes_scales|
+Axis ticks ............................ |matplotlib-explain-axes-axes_ticks|
+Plotting dates and strings ............ |matplotlib-explain-axes-axes_units|
+Placing colorbars ............. |matplotlib-explain-axes-colorbar_placement|
+Constrained layout guide ... |matplotlib-explain-axes-constrainedlayout_guide|
+Axes and subplots .......................... |matplotlib-explain-axes-index|
+Legend guide ........................ |matplotlib-explain-axes-legend_guide|
+Complex and semantic figure composition (subplot_mosaic) ... |matplotlib-explain-axes-mosaic|
+Tight layout guide ............ |matplotlib-explain-axes-tight_layout_guide|
+Customized Colorbars Tutorial .... |matplotlib-explain-colors-colorbar_only|
+Creating Colormaps in Matplotlib ... |matplotlib-explain-colors-colormap-manipulation|
+Colormap normalization ........... |matplotlib-explain-colors-colormapnorms|
+Choosing Colormaps in Matplotlib ..... |matplotlib-explain-colors-colormaps|
+Specifying colors ....................... |matplotlib-explain-colors-colors|
+Colors ................................... |matplotlib-explain-colors-index|
+Matplotlib configuration - rcParams ... |matplotlib-users-explain-configuration|
+Customizing Matplotlib with style sheets and rcParams ... |matplotlib-users-explain-customizing|
+Matplotlib Application Interfaces (APIs) ... |matplotlib-explain-figure-api_interfaces|
+Backends .............................. |matplotlib-explain-figure-backends|
+Event handling and picking ...... |matplotlib-explain-figure-event_handling|
+Introduction to Figures ........... |matplotlib-explain-figure-figure_intro|
+Figures and backends ..................... |matplotlib-explain-figure-index|
+Interactive figures ................ |matplotlib-explain-figure-interactive|
+Interactive figures and asynchronous programming ... |matplotlib-explain-figure-interactive_guide|
+Quick start guide ................... |matplotlib-users-explain-quick_start|
+Annotations .......................... |matplotlib-explain-text-annotations|
+Fonts in Matplotlib ........................ |matplotlib-explain-text-fonts|
+Text ....................................... |matplotlib-explain-text-index|
+Writing mathematical expressions ........ |matplotlib-explain-text-mathtext|
+Text rendering with XeLaTeX/LuaLaTeX via the pgf backend ... |matplotlib-explain-text-pgf|
+Text in Matplotlib .................... |matplotlib-explain-text-text_intro|
+Text properties and layout ............ |matplotlib-explain-text-text_props|
+Text rendering with LaTeX ................. |matplotlib-explain-text-usetex|
+The axes_grid1 toolkit ............. |matplotlib-explain-toolkits-axes_grid|
+The axisartist toolkit ............ |matplotlib-explain-toolkits-axisartist|
+User Toolkits .......................... |matplotlib-explain-toolkits-index|
+The mplot3d toolkit .................. |matplotlib-explain-toolkits-mplot3d|
+Frequently Asked Questions .......................... |matplotlib-users-faq|
+Getting started ................... |matplotlib-users-getting_started-index|
+Glossary ....................................... |matplotlib-users-glossary|
+Using Matplotlib .................................. |matplotlib-users-index|
+
+ vim:tw=78:ts=8:ft=help:norl:
