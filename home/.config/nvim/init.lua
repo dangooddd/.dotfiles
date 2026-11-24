@@ -39,6 +39,7 @@ vim.o.langmap = [[йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ъ],]]
     .. [[ФA,ЫS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\:,Э",]]
     .. [[ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б<,Ю>]]
 
+vim.g.clipboard = "osc52"
 vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -319,10 +320,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
     end,
 })
-
-if require("utils").detect_container() then
-    vim.g.clipboard = "osc52"
-end
 
 --------------------------------------------------------------------------------
 -- LSP
