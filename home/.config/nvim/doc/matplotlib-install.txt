@@ -163,7 +163,7 @@ INSTALL AN OFFICIAL RELEASE        *install-index-install-an-official-release*
 Matplotlib releases are available as wheel packages for macOS, Windows and
 Linux on PyPI https://pypi.org/project/matplotlib/. Install it using `pip`:
 
->sh
+>bash
     python -m pip install -U pip
     python -m pip install -U matplotlib
 <
@@ -204,12 +204,12 @@ Conda packages                                  *install-index-conda-packages*
 
 Matplotlib is available both via the anaconda main channel
 
->sh
+>bash
     conda install matplotlib
 <
 as well as via the conda-forge community channel
 
->sh
+>bash
     conda install -c conda-forge matplotlib
 <
 
@@ -242,7 +242,7 @@ https://anaconda.org/scientific-python-nightly-wheels. These wheels can be
 installed with `pip` by specifying scientific-python-nightly-wheels as the
 package index to query:
 
->sh
+>bash
     python -m pip install --upgrade --pre --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple matplotlib
 <
 
@@ -323,7 +323,7 @@ rather than working interactively from a python shell or an integrated
 development environment such as IDLE which add additional complexities. Open
 up a UNIX shell or a DOS command prompt and run, for example:
 
->sh
+>bash
     python -c "from pylab import *; set_loglevel('DEBUG'); plot(); show()"
 <
 This will give you additional information about which backends Matplotlib is
@@ -388,13 +388,13 @@ in the form of wheels.
 pip is installed by default with python.org and Homebrew Python, but needs
 to be manually installed on Macports with
 
->sh
+>bash
     sudo port install py38-pip
 <
 Once pip is installed, you can install Matplotlib and all its dependencies
 with from the Terminal.app command line:
 
->sh
+>bash
     python3 -m pip install matplotlib
 <
 You might also want to install IPython or the Jupyter notebook
@@ -405,7 +405,7 @@ Checking your installation          *install-index-checking-your-installation*
 The new version of Matplotlib should now be on your Python "path". Check
 this at the Terminal.app command line:
 
->sh
+>bash
     python3 -c 'import matplotlib; print(matplotlib.__version__, matplotlib.__file__)'
 <
 You should see something like
@@ -424,7 +424,7 @@ Macports. If you see another version, or you get an error like
 <
 then check that the Python binary is the one you expected by running
 
->sh
+>bash
     which python3
 <
 If you get a result like `/usr/bin/python...`, then you are getting the

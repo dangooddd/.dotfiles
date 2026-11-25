@@ -154,8 +154,9 @@ ignite.distributed.utils.has_xla_support
 *ignite.distributed.utils.has_xla_support*
     True if torch_xla package is found
 
+                                         *ignite.distributed.utils.all_gather*
+
 ignite.distributed.utils.all_gather(tensor, group=None)
-    *ignite.distributed.utils.all_gather*
     Helper method to perform all gather operation.
 
     Parameters: ~
@@ -224,8 +225,9 @@ ignite.distributed.utils.all_gather_tensors_with_shapes(tensor, shapes,
         list[torch.Tensor
         https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor]
 
+                                         *ignite.distributed.utils.all_reduce*
+
 ignite.distributed.utils.all_reduce(tensor, op='SUM', group=None)
-    *ignite.distributed.utils.all_reduce*
     Helper method to perform all reduce operation.
 
     Parameters: ~
@@ -253,14 +255,17 @@ ignite.distributed.utils.all_reduce(tensor, op='SUM', group=None)
 
       `group`
 
+                                 *ignite.distributed.utils.available_backends*
+
 ignite.distributed.utils.available_backends()
-    *ignite.distributed.utils.available_backends*
     Returns available backends.
 
     Return type: ~
         tuple[str, ...]
 
-ignite.distributed.utils.backend()  *ignite.distributed.utils.backend*
+                                            *ignite.distributed.utils.backend*
+
+ignite.distributed.utils.backend()
     Returns computation model's backend.
 
     - None for no distributed configuration
@@ -276,14 +281,17 @@ ignite.distributed.utils.backend()  *ignite.distributed.utils.backend*
 
       Changed in version 0.4.2: ~
 
-ignite.distributed.utils.barrier()  *ignite.distributed.utils.barrier*
+                                            *ignite.distributed.utils.barrier*
+
+ignite.distributed.utils.barrier()
     Helper method to synchronize all processes.
 
     Return type: ~
         None
 
+                                          *ignite.distributed.utils.broadcast*
+
 ignite.distributed.utils.broadcast(tensor, src=0, safe_mode=False)
-    *ignite.distributed.utils.broadcast*
     Helper method to perform broadcast operation.
 
     Parameters: ~
@@ -350,7 +358,9 @@ ignite.distributed.utils.broadcast(tensor, src=0, safe_mode=False)
 
       `safe_mode`
 
-ignite.distributed.utils.device()  *ignite.distributed.utils.device*
+                                             *ignite.distributed.utils.device*
+
+ignite.distributed.utils.device()
     Returns current device according to current distributed configuration.
 
     - torch.device(“cpu”) if no distributed configuration or torch native
@@ -368,7 +378,9 @@ ignite.distributed.utils.device()  *ignite.distributed.utils.device*
 
       Changed in version 0.4.2: ~
 
-ignite.distributed.utils.finalize()  *ignite.distributed.utils.finalize*
+                                           *ignite.distributed.utils.finalize*
+
+ignite.distributed.utils.finalize()
     Finalizes distributed configuration. For example, in case of native
     pytorch distributed configuration, it calls
     `dist.destroy_process_group()`.
@@ -376,61 +388,72 @@ ignite.distributed.utils.finalize()  *ignite.distributed.utils.finalize*
     Return type: ~
         None
 
+                                     *ignite.distributed.utils.get_local_rank*
+
 ignite.distributed.utils.get_local_rank()
-    *ignite.distributed.utils.get_local_rank*
     Returns local process rank within current distributed configuration.
     Returns 0 if no distributed configuration.
 
     Return type: ~
         int
 
-ignite.distributed.utils.get_nnodes()  *ignite.distributed.utils.get_nnodes*
+                                         *ignite.distributed.utils.get_nnodes*
+
+ignite.distributed.utils.get_nnodes()
     Returns number of nodes within current distributed configuration.
     Returns 1 if no distributed configuration.
 
     Return type: ~
         int
 
+                                      *ignite.distributed.utils.get_node_rank*
+
 ignite.distributed.utils.get_node_rank()
-    *ignite.distributed.utils.get_node_rank*
     Returns node rank within current distributed configuration. Returns 0 if
     no distributed configuration.
 
     Return type: ~
         int
 
+                                 *ignite.distributed.utils.get_nproc_per_node*
+
 ignite.distributed.utils.get_nproc_per_node()
-    *ignite.distributed.utils.get_nproc_per_node*
     Returns number of processes (or tasks) per node within current
     distributed configuration. Returns 1 if no distributed configuration.
 
     Return type: ~
         int
 
-ignite.distributed.utils.get_rank()  *ignite.distributed.utils.get_rank*
+                                           *ignite.distributed.utils.get_rank*
+
+ignite.distributed.utils.get_rank()
     Returns process rank within current distributed configuration. Returns 0
     if no distributed configuration.
 
     Return type: ~
         int
 
+                                     *ignite.distributed.utils.get_world_size*
+
 ignite.distributed.utils.get_world_size()
-    *ignite.distributed.utils.get_world_size*
     Returns world size of current distributed configuration. Returns 1 if no
     distributed configuration.
 
     Return type: ~
         int
 
-ignite.distributed.utils.hostname()  *ignite.distributed.utils.hostname*
+                                           *ignite.distributed.utils.hostname*
+
+ignite.distributed.utils.hostname()
     Returns host name for current process within current distributed
     configuration.
 
     Return type: ~
         str
 
+                                         *ignite.distributed.utils.initialize*
+
 ignite.distributed.utils.initialize(backend, **kwargs)
-    *ignite.distributed.utils.initialize*
     Initializes distributed configuration according to provided `backend`
 
     Parameters: ~
@@ -487,7 +510,9 @@ ignite.distributed.utils.initialize(backend, **kwargs)
       `kwargs` now accepts `init_method`, `rank`, `world_size` for PyTorch
       native distributed backend.
 
-ignite.distributed.utils.model_name()  *ignite.distributed.utils.model_name*
+                                         *ignite.distributed.utils.model_name*
+
+ignite.distributed.utils.model_name()
     Returns distributed configuration name (given by ignite)
 
     - serial for no distributed configuration
@@ -502,8 +527,9 @@ ignite.distributed.utils.model_name()  *ignite.distributed.utils.model_name*
     Return type: ~
         str
 
+                                          *ignite.distributed.utils.new_group*
+
 ignite.distributed.utils.new_group(ranks, **kwargs)
-    *ignite.distributed.utils.new_group*
     Helper method to make group for each backend from ranks.
 
     Parameters: ~
@@ -529,8 +555,9 @@ ignite.distributed.utils.new_group(ranks, **kwargs)
 <
       New in version 0.4.11.: ~
 
+                                     *ignite.distributed.utils.one_rank_first*
+
 ignite.distributed.utils.one_rank_first(rank=0, local=False)
-    *ignite.distributed.utils.one_rank_first*
     Context manager that ensures a specific rank runs first before others in
     a distributed environment.
 
@@ -557,8 +584,9 @@ ignite.distributed.utils.one_rank_first(rank=0, local=False)
 <
       New in version 0.4.13.: ~
 
+                                      *ignite.distributed.utils.one_rank_only*
+
 ignite.distributed.utils.one_rank_only(rank=0, with_barrier=False)
-    *ignite.distributed.utils.one_rank_only*
     Decorator to filter handlers wrt a rank number
 
     Parameters: ~
@@ -585,8 +613,9 @@ ignite.distributed.utils.one_rank_only(rank=0, with_barrier=False)
             ...
 <
 
+                                     *ignite.distributed.utils.set_local_rank*
+
 ignite.distributed.utils.set_local_rank(index)
-    *ignite.distributed.utils.set_local_rank*
     Method to hint the local rank in case if torch native distributed
     context is created by user without using
     |ignite.distributed.utils.initialize| or
@@ -613,8 +642,9 @@ ignite.distributed.utils.set_local_rank(index)
             # ...
 <
 
+                                        *ignite.distributed.utils.show_config*
+
 ignite.distributed.utils.show_config()
-    *ignite.distributed.utils.show_config*
     Helper method to display distributed configuration via `logging`.
 
     Return type: ~
@@ -746,8 +776,9 @@ ignite.distributed.utils.spawn(backend, fn, args, kwargs_dict=None,
 
       `backend` now accepts horovod distributed framework.
 
+                                               *ignite.distributed.utils.sync*
+
 ignite.distributed.utils.sync(temporary=False)
-    *ignite.distributed.utils.sync*
     Helper method to force this module to synchronize with current
     distributed context. This method should be used when distributed context
     is manually created or destroyed.
@@ -1093,12 +1124,12 @@ EpochOutputStore             EpochOutputStore handler to save output
                              prediction and target history after every epoch,
                              could be useful for e.g., visualization purposes.
 
-checkpoint.BaseSaveHandler            Base class for save handlers
-param_scheduler.ParamScheduler        An abstract class for updating an
-                                      optimizer's parameter value during
-                                      training.
-state_param_scheduler.StateParamScheduler  An abstract class for updating an engine
-                                      state parameter values during training.
+checkpoint.BaseSaveHandler          Base class for save handlers
+param_scheduler.ParamScheduler      An abstract class for updating an
+                                    optimizer's parameter value during
+                                    training.
+state_param_scheduler.              An abstract class for updating an engine
+StateParamScheduler                 state parameter values during training.
 
 INTERFACES                                               *handlers-interfaces*
 
@@ -1868,175 +1899,167 @@ used to compute the final metric value.
 
 COMPLETE LIST OF METRICS                    *metrics-complete-list-of-metrics*
 
-Average                               Helper class to compute arithmetic
-                                      average of a single variable.
-GeometricAverage                      Helper class to compute geometric
-                                      average of a single variable.
-VariableAccumulation                  Single variable accumulator helper to
-                                      compute (arithmetic, geometric,
-                                      harmonic) average of a single variable.
-Accuracy                              Calculates the accuracy for binary,
-                                      multiclass and multilabel data.
-ConfusionMatrix                       Calculates confusion matrix for
-                                      multi-class data.
-ClassificationReport                  Build a text report showing the main
-                                      classification metrics.
-DiceCoefficient                       Calculates Dice Coefficient for a given
-                                      ConfusionMatrix metric.
-JaccardIndex                          Calculates the Jaccard Index using
-                                      ConfusionMatrix metric.
-IoU                                   Calculates Intersection over Union using
-                                      ConfusionMatrix metric.
-mIoU                                  Calculates mean Intersection over Union
-                                      using ConfusionMatrix metric.
-EpochMetric                           Class for metrics that should be
-                                      computed on the entire output history of
-                                      a model.
-Fbeta                                 Calculates F-beta score.
-Frequency                             Provides metrics for the number of
-                                      examples processed per second.
-Loss                                  Calculates the average loss according to
-                                      the passed loss_fn.
-MeanAbsoluteError                     Calculates the mean absolute error.
-MeanAveragePrecision                  Calculate the mean average precision
-                                      metric i.e. mean of the
-                                      averaged-over-recall precision for
-                                      classification task:.
-MeanPairwiseDistance                  Calculates the mean PairwiseDistance.
-MeanSquaredError                      Calculates the mean squared error.
-Metric                                Base class for all Metrics.
-MetricGroup                           A class for grouping metrics so that
-                                      user could manage them easier.
-MetricsLambda                         Apply a function to other metrics to
-                                      obtain a new metric.
-MultiLabelConfusionMatrix             Calculates a confusion matrix for
-                                      multi-labelled, multi-class data.
-MutualInformation                     Calculates the mutual information
-                                      between input X and prediction Y.
-ObjectDetectionAvgPrecisionRecall     Calculate mean average precision &
-                                      recall for evaluating an object detector
-                                      in the COCO way.
-CommonObjectDetectionMetrics          Common Object Detection metrics.
-coco_tensor_list_to_dict_list         Convert either of output's y_pred or y
-                                      from list of (N, 6) tensors to list of
-                                      str-to-tensor dictionaries, or keep them
-                                      unchanged if they're already in the
-                                      deisred format.
-Precision                             Calculates precision for binary,
-                                      multiclass and multilabel data.
-PSNR                                  Computes average Peak signal-to-noise
-                                      ratio (PSNR).
-Recall                                Calculates recall for binary, multiclass
-                                      and multilabel data.
-RootMeanSquaredError                  Calculates the root mean squared error.
-RunningAverage                        Compute running average of a metric or
-                                      the output of process function.
-SSIM                                  Computes Structural Similarity Index
-                                      Measure
-TopKCategoricalAccuracy               Calculates the top-k categorical
-                                      accuracy.
-Bleu                                  Calculates the BLEU score.
-Perplexity                            Calculates the Perplexity of a language
-                                      model.
-Rouge                                 Calculates the Rouge score for multiples
-                                      Rouge-N and Rouge-L metrics.
-RougeL                                Calculates the Rouge-L score.
-RougeN                                Calculates the Rouge-N score.
-CharacterErrorRate                    Calculates the Character Error Rate
-                                      (CER).
-InceptionScore                        Calculates Inception Score.
-FID                                   Calculates Frechet Inception Distance.
-CosineSimilarity                      Calculates the mean of the cosine
-                                      similarity.
-Entropy                               Calculates the mean of entropy.
-KLDivergence                          Calculates the mean of Kullback-Leibler
-                                      (KL) divergence.
-JSDivergence                          Calculates the mean of Jensen-Shannon
-                                      (JS) divergence.
-MatthewsCorrCoef                      Compute the Matthews correlation
-                                      coefficient (MCC).
-MaximumMeanDiscrepancy                Calculates the mean of maximum mean
-                                      discrepancy (MMD).
-HSIC                                  Calculates the Hilbert-Schmidt
-                                      Independence Criterion (HSIC).
-AveragePrecision                      Computes Average Precision accumulating
-                                      predictions and the ground-truth during
-                                      an epoch and applying
-                                      sklearn.metrics.average_precision_score
-                                      .
-CohenKappa                            Compute different types of Cohen's
-                                      Kappa: Non-Weighted, Linear, Quadratic.
-GpuInfo                               Provides GPU information: a) used memory
-                                      percentage, b) gpu utilization
-                                      percentage values as Metric on each
-                                      iterations.
-PrecisionRecallCurve                  Compute precision-recall pairs for
-                                      different probability thresholds for
-                                      binary classification task by
-                                      accumulating predictions and the
-                                      ground-truth during an epoch and
-                                      applying
-                                      sklearn.metrics.precision_recall_curve .
-RocCurve                              Compute Receiver operating
-                                      characteristic (ROC) for binary
-                                      classification task by accumulating
-                                      predictions and the ground-truth during
-                                      an epoch and applying
-                                      sklearn.metrics.roc_curve .
-ROC_AUC                               Computes Area Under the Receiver
-                                      Operating Characteristic Curve (ROC AUC)
-                                      accumulating predictions and the
-                                      ground-truth during an epoch and
-                                      applying sklearn.metrics.roc_auc_score .
-regression.CanberraMetric             Calculates the Canberra Metric.
-regression.FractionalAbsoluteError    Calculates the Fractional Absolute
-                                      Error.
-regression.FractionalBias             Calculates the Fractional Bias.
-regression.GeometricMeanAbsoluteError  Calculates the Geometric Mean Absolute
-                                      Error.
-regression.GeometricMeanRelativeAbsoluteError  Calculates the Geometric Mean Relative
-                                      Absolute Error.
-regression.ManhattanDistance          Calculates the Manhattan Distance.
-regression.MaximumAbsoluteError       Calculates the Maximum Absolute Error.
-regression.MeanAbsoluteRelativeError  Calculate Mean Absolute Relative Error
-                                      (MARE), also known as Mean Absolute
-                                      Percentage Error (MAPE).
-regression.MeanError                  Calculates the Mean Error.
-regression.MeanNormalizedBias         Calculates the Mean Normalized Bias.
-regression.MedianAbsoluteError        Calculates the Median Absolute Error.
-regression.MedianAbsolutePercentageError  Calculates the Median Absolute
-                                      Percentage Error.
-regression.MedianRelativeAbsoluteError  Calculates the Median Relative Absolute
-                                      Error.
-regression.PearsonCorrelation         Calculates the Pearson correlation
-                                      coefficient.
-regression.SpearmanRankCorrelation    Calculates the Spearman's rank
-                                      correlation coefficient.
-regression.KendallRankCorrelation     Calculates the Kendall rank correlation
-                                      coefficient.
-regression.R2Score                    Calculates the R-Squared, the
-                                      coefficient of determination.
-regression.WaveHedgesDistance         Calculates the Wave Hedges Distance.
-clustering.SilhouetteScore            Calculates the silhouette score.
-clustering.DaviesBouldinScore         Calculates the Davies-Bouldin score.
-clustering.CalinskiHarabaszScore      Calculates the Calinski-Harabasz score.
-fairness.SubgroupAccuracyDifference   Calculates the Subgroup Accuracy
-                                      Difference.
-fairness.DemographicParityDifference  Calculates the Demographic Parity
-                                      Difference.
-fairness.SelectionRate                Calculates the selection rate (rate of
-                                      positive predictions).
-fairness.SubgroupDifference           A wrapper metric that computes the
-                                      maximum difference between any two
-                                      subgroups' metric values.
-fairness.SubgroupMetric               A wrapper metric that computes a base
-                                      metric for each unique subgroup in the
-                                      dataset.
-rec_sys.HitRate                       Calculates the Hit Rate at k for
-                                      Recommendation Systems.
-rec_sys.NDCG                          Calculates the Normalized Discounted
-                                      Cumulative Gain (NDCG) at k for
-                                      Recommendation Systems.
+Average                             Helper class to compute arithmetic average
+                                    of a single variable.
+GeometricAverage                    Helper class to compute geometric average
+                                    of a single variable.
+VariableAccumulation                Single variable accumulator helper to
+                                    compute (arithmetic, geometric, harmonic)
+                                    average of a single variable.
+Accuracy                            Calculates the accuracy for binary,
+                                    multiclass and multilabel data.
+ConfusionMatrix                     Calculates confusion matrix for
+                                    multi-class data.
+ClassificationReport                Build a text report showing the main
+                                    classification metrics.
+DiceCoefficient                     Calculates Dice Coefficient for a given
+                                    ConfusionMatrix metric.
+JaccardIndex                        Calculates the Jaccard Index using
+                                    ConfusionMatrix metric.
+IoU                                 Calculates Intersection over Union using
+                                    ConfusionMatrix metric.
+mIoU                                Calculates mean Intersection over Union
+                                    using ConfusionMatrix metric.
+EpochMetric                         Class for metrics that should be computed
+                                    on the entire output history of a model.
+Fbeta                               Calculates F-beta score.
+Frequency                           Provides metrics for the number of
+                                    examples processed per second.
+Loss                                Calculates the average loss according to
+                                    the passed loss_fn.
+MeanAbsoluteError                   Calculates the mean absolute error.
+MeanAveragePrecision                Calculate the mean average precision
+                                    metric i.e. mean of the
+                                    averaged-over-recall precision for
+                                    classification task:.
+MeanPairwiseDistance                Calculates the mean PairwiseDistance.
+MeanSquaredError                    Calculates the mean squared error.
+Metric                              Base class for all Metrics.
+MetricGroup                         A class for grouping metrics so that user
+                                    could manage them easier.
+MetricsLambda                       Apply a function to other metrics to
+                                    obtain a new metric.
+MultiLabelConfusionMatrix           Calculates a confusion matrix for
+                                    multi-labelled, multi-class data.
+MutualInformation                   Calculates the mutual information between
+                                    input X and prediction Y.
+ObjectDetectionAvgPrecisionRecall   Calculate mean average precision & recall
+                                    for evaluating an object detector in the
+                                    COCO way.
+CommonObjectDetectionMetrics        Common Object Detection metrics.
+coco_tensor_list_to_dict_list       Convert either of output's y_pred or y
+                                    from list of (N, 6) tensors to list of
+                                    str-to-tensor dictionaries, or keep them
+                                    unchanged if they're already in the
+                                    deisred format.
+Precision                           Calculates precision for binary,
+                                    multiclass and multilabel data.
+PSNR                                Computes average Peak signal-to-noise
+                                    ratio (PSNR).
+Recall                              Calculates recall for binary, multiclass
+                                    and multilabel data.
+RootMeanSquaredError                Calculates the root mean squared error.
+RunningAverage                      Compute running average of a metric or the
+                                    output of process function.
+SSIM                                Computes Structural Similarity Index
+                                    Measure
+TopKCategoricalAccuracy             Calculates the top-k categorical accuracy.
+Bleu                                Calculates the BLEU score.
+Perplexity                          Calculates the Perplexity of a language
+                                    model.
+Rouge                               Calculates the Rouge score for multiples
+                                    Rouge-N and Rouge-L metrics.
+RougeL                              Calculates the Rouge-L score.
+RougeN                              Calculates the Rouge-N score.
+CharacterErrorRate                  Calculates the Character Error Rate (CER).
+InceptionScore                      Calculates Inception Score.
+FID                                 Calculates Frechet Inception Distance.
+CosineSimilarity                    Calculates the mean of the cosine
+                                    similarity.
+Entropy                             Calculates the mean of entropy.
+KLDivergence                        Calculates the mean of Kullback-Leibler
+                                    (KL) divergence.
+JSDivergence                        Calculates the mean of Jensen-Shannon (JS)
+                                    divergence.
+MatthewsCorrCoef                    Compute the Matthews correlation
+                                    coefficient (MCC).
+MaximumMeanDiscrepancy              Calculates the mean of maximum mean
+                                    discrepancy (MMD).
+HSIC                                Calculates the Hilbert-Schmidt
+                                    Independence Criterion (HSIC).
+AveragePrecision                    Computes Average Precision accumulating
+                                    predictions and the ground-truth during an
+                                    epoch and applying
+                                    sklearn.metrics.average_precision_score .
+CohenKappa                          Compute different types of Cohen's Kappa:
+                                    Non-Weighted, Linear, Quadratic.
+GpuInfo                             Provides GPU information: a) used memory
+                                    percentage, b) gpu utilization percentage
+                                    values as Metric on each iterations.
+PrecisionRecallCurve                Compute precision-recall pairs for
+                                    different probability thresholds for
+                                    binary classification task by accumulating
+                                    predictions and the ground-truth during an
+                                    epoch and applying
+                                    sklearn.metrics.precision_recall_curve .
+RocCurve                            Compute Receiver operating characteristic
+                                    (ROC) for binary classification task by
+                                    accumulating predictions and the
+                                    ground-truth during an epoch and applying
+                                    sklearn.metrics.roc_curve .
+ROC_AUC                             Computes Area Under the Receiver Operating
+                                    Characteristic Curve (ROC AUC)
+                                    accumulating predictions and the
+                                    ground-truth during an epoch and applying
+                                    sklearn.metrics.roc_auc_score .
+regression.CanberraMetric           Calculates the Canberra Metric.
+regression.FractionalAbsoluteError  Calculates the Fractional Absolute Error.
+regression.FractionalBias           Calculates the Fractional Bias.
+regression.                         Calculates the Geometric Mean Absolute
+GeometricMeanAbsoluteError          Error.
+regression.                         Calculates the Geometric Mean Relative
+GeometricMeanRelativeAbsoluteError  Absolute Error.
+regression.ManhattanDistance        Calculates the Manhattan Distance.
+regression.MaximumAbsoluteError     Calculates the Maximum Absolute Error.
+regression.                         Calculate Mean Absolute Relative Error
+MeanAbsoluteRelativeError           (MARE), also known as Mean Absolute
+                                    Percentage Error (MAPE).
+regression.MeanError                Calculates the Mean Error.
+regression.MeanNormalizedBias       Calculates the Mean Normalized Bias.
+regression.MedianAbsoluteError      Calculates the Median Absolute Error.
+regression.                         Calculates the Median Absolute Percentage
+MedianAbsolutePercentageError       Error.
+regression.                         Calculates the Median Relative Absolute
+MedianRelativeAbsoluteError         Error.
+regression.PearsonCorrelation       Calculates the Pearson correlation
+                                    coefficient.
+regression.SpearmanRankCorrelation  Calculates the Spearman's rank correlation
+                                    coefficient.
+regression.KendallRankCorrelation   Calculates the Kendall rank correlation
+                                    coefficient.
+regression.R2Score                  Calculates the R-Squared, the coefficient
+                                    of determination.
+regression.WaveHedgesDistance       Calculates the Wave Hedges Distance.
+clustering.SilhouetteScore          Calculates the silhouette score.
+clustering.DaviesBouldinScore       Calculates the Davies-Bouldin score.
+clustering.CalinskiHarabaszScore    Calculates the Calinski-Harabasz score.
+fairness.                           Calculates the Subgroup Accuracy
+SubgroupAccuracyDifference          Difference.
+fairness.                           Calculates the Demographic Parity
+DemographicParityDifference         Difference.
+fairness.SelectionRate              Calculates the selection rate (rate of
+                                    positive predictions).
+fairness.SubgroupDifference         A wrapper metric that computes the maximum
+                                    difference between any two subgroups'
+                                    metric values.
+fairness.SubgroupMetric             A wrapper metric that computes a base
+                                    metric for each unique subgroup in the
+                                    dataset.
+rec_sys.HitRate                     Calculates the Hit Rate at k for
+                                    Recommendation Systems.
+rec_sys.NDCG                        Calculates the Normalized Discounted
+                                    Cumulative Gain (NDCG) at k for
+                                    Recommendation Systems.
 
   Note: ~
 
@@ -2178,8 +2201,9 @@ usage_name *ignite.metrics.metric.SingleEpochRunningBatchWise.usage_name*
 
 BatchFiltered                                          *metrics-batchfiltered*
 
+                                         *ignite.metrics.metric.BatchFiltered*
+
 class ignite.metrics.metric.BatchFiltered(*args, **kwargs)
-    *ignite.metrics.metric.BatchFiltered*
     Batch filtered usage of Metrics. This usage is similar to epoch-wise but
     update event is filtered.
 
@@ -2200,8 +2224,9 @@ class ignite.metrics.metric.BatchFiltered(*args, **kwargs)
 
 reinit__is_reduced                                 *metrics-reinit-is-reduced*
 
+                                    *ignite.metrics.metric.reinit__is_reduced*
+
 ignite.metrics.metric.reinit__is_reduced(func)
-    *ignite.metrics.metric.reinit__is_reduced*
     Helper decorator for distributed configuration.
 
     See |ignite.metrics.metric.MetricUsage| on how to use it.
@@ -2214,8 +2239,9 @@ ignite.metrics.metric.reinit__is_reduced(func)
 
 sync_all_reduce                                      *metrics-sync-all-reduce*
 
+                                       *ignite.metrics.metric.sync_all_reduce*
+
 ignite.metrics.metric.sync_all_reduce(*attrs)
-    *ignite.metrics.metric.sync_all_reduce*
     Helper decorator for distributed configuration to collect instance
     attribute value across all participating processes and apply the
     specified reduction operation.
@@ -2265,7 +2291,9 @@ ignite.utils.apply_to_tensor(x, func)
         https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
         Sequence | Mapping | str | bytes
 
-ignite.utils.apply_to_type(x, input_type, func)  *ignite.utils.apply_to_type*
+                                                  *ignite.utils.apply_to_type*
+
+ignite.utils.apply_to_type(x, input_type, func)
     Apply a function on an object of input_type or mapping, or sequence of
     objects of input_type.
 
@@ -2282,8 +2310,9 @@ ignite.utils.apply_to_type(x, input_type, func)  *ignite.utils.apply_to_type*
     Return type: ~
         Any | Sequence | Mapping | str | bytes
 
+                                                 *ignite.utils.convert_tensor*
+
 ignite.utils.convert_tensor(x, device=None, non_blocking=False)
-    *ignite.utils.convert_tensor*
     Move tensors to relevant device.
 
     Parameters: ~
@@ -2302,8 +2331,9 @@ ignite.utils.convert_tensor(x, device=None, non_blocking=False)
         https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
         Sequence | Mapping | str | bytes
 
+                                                *ignite.utils.hash_checkpoint*
+
 ignite.utils.hash_checkpoint(checkpoint_path, output_dir)
-    *ignite.utils.hash_checkpoint*
     Hash the checkpoint file in the format of `<filename>-<hash>.<ext>` to
     be used with `check_hash` of `torch.hub.load_state_dict_from_url()`
     https://docs.pytorch.org/docs/stable/hub.html#torch.hub.load_state_dict_from_url.
@@ -2327,7 +2357,9 @@ ignite.utils.hash_checkpoint(checkpoint_path, output_dir)
 
       New in version 0.4.8.: ~
 
-ignite.utils.manual_seed(seed)  *ignite.utils.manual_seed*
+                                                    *ignite.utils.manual_seed*
+
+ignite.utils.manual_seed(seed)
     Setup random state from a seed for torch, random and optionally numpy
     (if can be imported).
 
@@ -2345,10 +2377,11 @@ ignite.utils.manual_seed(seed)  *ignite.utils.manual_seed*
 
       `torch_xla.core.xla_model.set_rng_state(seed)`.
 
+                                                   *ignite.utils.setup_logger*
+
 ignite.utils.setup_logger(name='ignite', level=20, stream=None,
     format='%(asctime)s %(name)s %(levelname)s: %(message)s', filepath=None,
     distributed_rank=None, reset=False, encoding='utf-8')
-    *ignite.utils.setup_logger*
     Setups logger: name, level, format etc.
 
     Parameters: ~
@@ -2433,7 +2466,9 @@ ignite.utils.setup_logger(name='ignite', level=20, stream=None,
       `encoding` added to correctly handle special characters in the file,
       default “utf-8”.
 
-ignite.utils.to_onehot(indices, num_classes)  *ignite.utils.to_onehot*
+                                                      *ignite.utils.to_onehot*
+
+ignite.utils.to_onehot(indices, num_classes)
     Convert a tensor of indices of any shape (N, ...) to a tensor of one-hot
     indicators of shape (N, num_classes, ...) and of type uint8. Output's
     device is equal to the input's device`.

@@ -1168,7 +1168,7 @@ class numpy.vectorize(pyfunc=np._NoValue, otypes=None, doc=None,
 
     Methods: ~
 
-    __call__(*args, **kwargs)                Call self as a function.
+    __call__(*args, **kwargs)              Call self as a function.
 
     Returns: ~
         out callable
@@ -2332,9 +2332,10 @@ MaskedArray.shrink_mask()           Reduce a mask to nomask when possible.
                      *reference-maskedarray.baseclass-handling-the-fill-value*
 Handling the fill_value
 
-MaskedArray.get_fill_value()         The filling value of the masked array is
-                                     a scalar.
-MaskedArray.set_fill_value([value])
+MaskedArray.get_fill_value()        The filling value of the masked array is a
+                                    scalar.
+MaskedArray.set_fill_value([value]
+)
 
                *reference-maskedarray.baseclass-counting-the-missing-elements*
 Counting the missing elements
@@ -3472,8 +3473,8 @@ class numpy.random.SeedSequence(entropy=None, *, spawn_key=(), pool_size=4,
 
     generate_state(n_words[, dtype])  Return the requested number of words for
                                       PRNG seeding.
-    spawn(n_children)                 Spawn a number of child SeedSequence s by
-                                      extending the spawn_key.
+    spawn(n_children)                 Spawn a number of child SeedSequence s
+                                      by extending the spawn_key.
 
     Notes: ~
 
@@ -5111,11 +5112,11 @@ random.Generator.gamma(shape, scale=1.0, size=None)
 
     >python
         >>> import matplotlib.pyplot as plt
-        >>> import scipy.special as sps  
+        >>> import scipy.special as sps
         >>> count, bins, _ = plt.hist(s, 50, density=True)
-        >>> y = bins**(shape-1)*(np.exp(-bins/scale) /  
+        >>> y = bins**(shape-1)*(np.exp(-bins/scale) /
         ...                      (sps.gamma(shape)*scale**shape))
-        >>> plt.plot(bins, y, linewidth=2, color='r')  
+        >>> plt.plot(bins, y, linewidth=2, color='r')
         >>> plt.show()
 <
     0.18 │     ███
@@ -6540,7 +6541,7 @@ random.Generator.negative_binomial(n, p, size=None)
     >python
         >>> rng = np.random.default_rng()
         >>> s = rng.negative_binomial(1, 0.1, 100000)
-        >>> for i in range(1, 11): 
+        >>> for i in range(1, 11):
         ...    probability = sum(s<i) / 100000.
         ...    print(i, "wells drilled, probability of one success =", probability)
 <
@@ -7302,28 +7303,28 @@ random.Generator.power(a, size=None)
     Compare the power function distribution to the inverse of the Pareto.
 
     >python
-        >>> from scipy import stats  
+        >>> from scipy import stats
         >>> rvs = rng.power(5, 1000000)
         >>> rvsp = rng.pareto(5, 1000000)
         >>> xx = np.linspace(0,1,100)
-        >>> powpdf = stats.powerlaw.pdf(xx,5)  
+        >>> powpdf = stats.powerlaw.pdf(xx,5)
 <
     >python
         >>> plt.figure()
         >>> plt.hist(rvs, bins=50, density=True)
-        >>> plt.plot(xx,powpdf,'r-')  
+        >>> plt.plot(xx,powpdf,'r-')
         >>> plt.title('power(5)')
 <
     >python
         >>> plt.figure()
         >>> plt.hist(1./(1.+rvsp), bins=50, density=True)
-        >>> plt.plot(xx,powpdf,'r-')  
+        >>> plt.plot(xx,powpdf,'r-')
         >>> plt.title('inverse of 1 + Generator.pareto(5)')
 <
     >python
         >>> plt.figure()
         >>> plt.hist(1./(1.+rvsp), bins=50, density=True)
-        >>> plt.plot(xx,powpdf,'r-')  
+        >>> plt.plot(xx,powpdf,'r-')
         >>> plt.title('inverse of stats.pareto(5)')
 <
      power(5)
@@ -7823,11 +7824,11 @@ random.Generator.standard_gamma(shape, size=None, dtype=np.float64,
 
     >python
         >>> import matplotlib.pyplot as plt
-        >>> import scipy.special as sps  
+        >>> import scipy.special as sps
         >>> count, bins, _ = plt.hist(s, 50, density=True)
-        >>> y = bins**(shape-1) * ((np.exp(-bins/scale))/  
+        >>> y = bins**(shape-1) * ((np.exp(-bins/scale))/
         ...                       (sps.gamma(shape) * scale**shape))
-        >>> plt.plot(bins, y, linewidth=2, color='r')  
+        >>> plt.plot(bins, y, linewidth=2, color='r')
         >>> plt.show()
 <
     0.35 │    ██
@@ -8277,11 +8278,11 @@ random.Generator.vonmises(mu, kappa, size=None)
 
     >python
         >>> import matplotlib.pyplot as plt
-        >>> from scipy.special import i0  
+        >>> from scipy.special import i0
         >>> plt.hist(s, 50, density=True)
         >>> x = np.linspace(-np.pi, np.pi, num=51)
-        >>> y = np.exp(kappa*np.cos(x-mu))/(2*np.pi*i0(kappa))  
-        >>> plt.plot(x, y, linewidth=2, color='r')  
+        >>> y = np.exp(kappa*np.cos(x-mu))/(2*np.pi*i0(kappa))
+        >>> plt.plot(x, y, linewidth=2, color='r')
         >>> plt.show()
 <
     0.8 │             ╭──╮
@@ -8558,7 +8559,7 @@ random.Generator.zipf(a, size=None)
 
     >python
         >>> import matplotlib.pyplot as plt
-        >>> from scipy.special import zeta  
+        >>> from scipy.special import zeta
 <
     |numpy.bincount| provides a fast histogram for small integers.
 
@@ -8569,7 +8570,7 @@ random.Generator.zipf(a, size=None)
     >python
         >>> plt.bar(k, count[1:], alpha=0.5, label='sample count')
         >>> plt.plot(k, n*(k**-a)/zeta(a), 'k.-', alpha=0.5,
-        ...          label='expected count')   
+        ...          label='expected count')
         >>> plt.semilogy()
         >>> plt.grid(alpha=0.4)
         >>> plt.legend()
@@ -9317,11 +9318,11 @@ random.gamma(shape, scale=1.0, size=None)
 
     >python
         >>> import matplotlib.pyplot as plt
-        >>> import scipy.special as sps  
+        >>> import scipy.special as sps
         >>> count, bins, ignored = plt.hist(s, 50, density=True)
-        >>> y = bins**(shape-1)*(np.exp(-bins/scale) /  
+        >>> y = bins**(shape-1)*(np.exp(-bins/scale) /
         ...                      (sps.gamma(shape)*scale**shape))
-        >>> plt.plot(bins, y, linewidth=2, color='r')  
+        >>> plt.plot(bins, y, linewidth=2, color='r')
         >>> plt.show()
 <
     0.175 │       ████
@@ -10525,7 +10526,7 @@ random.negative_binomial(n, p, size=None)
 
     >python
         >>> s = np.random.negative_binomial(1, 0.1, 100000)
-        >>> for i in range(1, 11): 
+        >>> for i in range(1, 11):
         ...    probability = sum(s<i) / 100000.
         ...    print(i, "wells drilled, probability of one success =", probability)
 <
@@ -11251,28 +11252,28 @@ random.power(a, size=None)
     Compare the power function distribution to the inverse of the Pareto.
 
     >python
-        >>> from scipy import stats 
+        >>> from scipy import stats
         >>> rvs = np.random.power(5, 1000000)
         >>> rvsp = np.random.pareto(5, 1000000)
         >>> xx = np.linspace(0,1,100)
-        >>> powpdf = stats.powerlaw.pdf(xx,5)  
+        >>> powpdf = stats.powerlaw.pdf(xx,5)
 <
     >python
         >>> plt.figure()
         >>> plt.hist(rvs, bins=50, density=True)
-        >>> plt.plot(xx,powpdf,'r-')  
+        >>> plt.plot(xx,powpdf,'r-')
         >>> plt.title('np.random.power(5)')
 <
     >python
         >>> plt.figure()
         >>> plt.hist(1./(1.+rvsp), bins=50, density=True)
-        >>> plt.plot(xx,powpdf,'r-')  
+        >>> plt.plot(xx,powpdf,'r-')
         >>> plt.title('inverse of 1 + np.random.pareto(5)')
 <
     >python
         >>> plt.figure()
         >>> plt.hist(1./(1.+rvsp), bins=50, density=True)
-        >>> plt.plot(xx,powpdf,'r-')  
+        >>> plt.plot(xx,powpdf,'r-')
         >>> plt.title('inverse of stats.pareto(5)')
 <
     5 │                                                       █·
@@ -12071,11 +12072,11 @@ random.standard_gamma(shape, size=None)
 
     >python
         >>> import matplotlib.pyplot as plt
-        >>> import scipy.special as sps  
+        >>> import scipy.special as sps
         >>> count, bins, ignored = plt.hist(s, 50, density=True)
-        >>> y = bins**(shape-1) * ((np.exp(-bins/scale))/  
+        >>> y = bins**(shape-1) * ((np.exp(-bins/scale))/
         ...                       (sps.gamma(shape) * scale**shape))
-        >>> plt.plot(bins, y, linewidth=2, color='r')  
+        >>> plt.plot(bins, y, linewidth=2, color='r')
         >>> plt.show()
 <
     0.35 │    ██·
@@ -12576,11 +12577,11 @@ random.vonmises(mu, kappa, size=None)
 
     >python
         >>> import matplotlib.pyplot as plt
-        >>> from scipy.special import i0  
+        >>> from scipy.special import i0
         >>> plt.hist(s, 50, density=True)
         >>> x = np.linspace(-np.pi, np.pi, num=51)
-        >>> y = np.exp(kappa*np.cos(x-mu))/(2*np.pi*i0(kappa))  
-        >>> plt.plot(x, y, linewidth=2, color='r')  
+        >>> y = np.exp(kappa*np.cos(x-mu))/(2*np.pi*i0(kappa))
+        >>> plt.plot(x, y, linewidth=2, color='r')
         >>> plt.show()
 <
     numpy.random.vonmises
@@ -12891,7 +12892,7 @@ random.zipf(a, size=None)
 
     >python
         >>> import matplotlib.pyplot as plt
-        >>> from scipy.special import zeta  
+        >>> from scipy.special import zeta
 <
     |numpy.bincount| provides a fast histogram for small integers.
 
@@ -12902,7 +12903,7 @@ random.zipf(a, size=None)
     >python
         >>> plt.bar(k, count[1:], alpha=0.5, label='sample count')
         >>> plt.plot(k, n*(k**-a)/zeta(a), 'k.-', alpha=0.5,
-        ...          label='expected count')   
+        ...          label='expected count')
         >>> plt.semilogy()
         >>> plt.grid(alpha=0.4)
         >>> plt.legend()
@@ -13025,7 +13026,9 @@ numpy.random.default_rng(seed=None)
                [0.7611397 , 0.78606431, 0.12811363]])
 <
 
-class numpy.random.Generator(bit_generator)  *numpy.random.Generator*
+                                                      *numpy.random.Generator*
+
+class numpy.random.Generator(bit_generator)
     Container for the BitGenerators.
 
     |numpy.random.Generator| exposes a number of methods for generating
@@ -13128,12 +13131,12 @@ first argument and as the value of the `out` parameter. For example,
     >>> import numpy as np
     >>> rng = np.random.default_rng()
     >>> x = np.arange(0, 15).reshape(3, 5)
-    >>> x 
+    >>> x
     array([[ 0,  1,  2,  3,  4],
            [ 5,  6,  7,  8,  9],
            [10, 11, 12, 13, 14]])
     >>> y = rng.permuted(x, axis=1, out=x)
-    >>> x 
+    >>> x
     array([[ 1,  0,  2,  4,  3],  # random
            [ 6,  7,  8,  9,  5],
            [10, 14, 11, 13, 12]])
@@ -13166,7 +13169,7 @@ rearrange the columns. For example
     array([[ 0,  1,  2,  3,  4],
            [ 5,  6,  7,  8,  9],
            [10, 11, 12, 13, 14]])
-    >>> rng.permutation(x, axis=1) 
+    >>> rng.permutation(x, axis=1)
     array([[ 1,  3,  2,  0,  4],  # random
            [ 6,  8,  7,  5,  9],
            [11, 13, 12, 10, 14]])
@@ -13183,7 +13186,7 @@ use of |numpy.random.Generator.permuted| to the above example of
 >python
     >>> import numpy as np
     >>> rng = np.random.default_rng()
-    >>> rng.permuted(x, axis=1) 
+    >>> rng.permuted(x, axis=1)
     array([[ 1,  0,  2,  4,  3],  # random
            [ 5,  7,  6,  9,  8],
            [10, 14, 12, 13, 11]])
@@ -13204,79 +13207,76 @@ in-place.
     >>> rng = np.random.default_rng()
     >>> a = ['A', 'B', 'C', 'D', 'E']
     >>> rng.shuffle(a)  # shuffle the list in-place
-    >>> a 
+    >>> a
     ['B', 'D', 'A', 'E', 'C']  # random
 <
 
 DISTRIBUTIONS                       *reference-random-generator-distributions*
 
-beta(a, b[, size])                   Draw samples from a Beta distribution.
-    binomial(n, p[, size])               Draw samples from a binomial
-                                     distribution.
-chisquare(df[, size])                Draw samples from a chi-square
-                                     distribution.
-dirichlet(alpha[, size])             Draw samples from the Dirichlet
-                                     distribution.
-exponential([scale, size])           Draw samples from an exponential
-                                     distribution.
-f(dfnum, dfden[, size])              Draw samples from an F distribution.
-    gamma(shape[, scale, size])          Draw samples from a Gamma distribution.
-    geometric(p[, size])                 Draw samples from the geometric
-                                     distribution.
-gumbel([loc, scale, size])           Draw samples from a Gumbel distribution.
-    hypergeometric(ngood, nbad,          Draw samples from a Hypergeometric
-    nsample[, size])                     distribution.
-    laplace([loc, scale, size])          Draw samples from the Laplace or double
-                                     exponential distribution with specified
-                                     location (or mean) and scale (decay).
-logistic([loc, scale, size])         Draw samples from a logistic
-                                     distribution.
-lognormal([mean, sigma, size])       Draw samples from a log-normal
-                                     distribution.
-logseries(p[, size])                 Draw samples from a logarithmic series
-                                     distribution.
-multinomial(n, pvals[, size])        Draw samples from a multinomial
-                                     distribution.
-multivariate_hypergeometric(colors,  Generate variates from a multivariate
-    nsample)                             hypergeometric distribution.
-    multivariate_normal(mean, cov[,      Draw random samples from a multivariate
-    size, ...])                          normal distribution.
-    negative_binomial(n, p[, size])      Draw samples from a negative binomial
-                                     distribution.
-noncentral_chisquare(df, nonc[,      Draw samples from a noncentral chi-square
-    size])                               distribution.
-    noncentral_f(dfnum, dfden, nonc[,    Draw samples from the noncentral F
-    size])                               distribution.
-    normal([loc, scale, size])           Draw random samples from a normal
-                                     (Gaussian) distribution.
-pareto(a[, size])                    Draw samples from a Pareto II (AKA Lomax)
-                                     distribution with specified shape.
-poisson([lam, size])                 Draw samples from a Poisson distribution.
-    power(a[, size])                     Draws samples in [0, 1] from a power
-                                     distribution with positive exponent a -
-                                     1.
-rayleigh([scale, size])              Draw samples from a Rayleigh
-                                     distribution.
-standard_cauchy([size])              Draw samples from a standard Cauchy
-                                     distribution with mode = 0.
-standard_exponential([size, dtype,   Draw samples from the standard
-    method, out])                        exponential distribution.
-    standard_gamma(shape[, size, dtype,  Draw samples from a standard Gamma
-    out])                                distribution.
-    standard_normal([size, dtype, out])  Draw samples from a standard Normal
-                                     distribution (mean=0, stdev=1).
-standard_t(df[, size])               Draw samples from a standard Student's t
-                                     distribution with df degrees of freedom.
-triangular(left, mode, right[,       Draw samples from the triangular
-    size])                               distribution over the interval [left,
-                                     right].
-uniform([low, high, size])           Draw samples from a uniform distribution.
-    vonmises(mu, kappa[, size])          Draw samples from a von Mises
-                                     distribution.
-wald(mean, scale[, size])            Draw samples from a Wald, or inverse
-                                     Gaussian, distribution.
-weibull(a[, size])                   Draw samples from a Weibull distribution.
-    zipf(a[, size])                      Draw samples from a Zipf distribution.
+beta(a, b[, size])                  Draw samples from a Beta distribution.
+    binomial(n, p[, size])              Draw samples from a binomial distribution.
+    chisquare(df[, size])               Draw samples from a chi-square
+                                    distribution.
+dirichlet(alpha[, size])            Draw samples from the Dirichlet
+                                    distribution.
+exponential([scale, size])          Draw samples from an exponential
+                                    distribution.
+f(dfnum, dfden[, size])             Draw samples from an F distribution.
+    gamma(shape[, scale, size])         Draw samples from a Gamma distribution.
+    geometric(p[, size])                Draw samples from the geometric
+                                    distribution.
+gumbel([loc, scale, size])          Draw samples from a Gumbel distribution.
+    hypergeometric(ngood, nbad,         Draw samples from a Hypergeometric
+    nsample[, size])                    distribution.
+    laplace([loc, scale, size])         Draw samples from the Laplace or double
+                                    exponential distribution with specified
+                                    location (or mean) and scale (decay).
+logistic([loc, scale, size])        Draw samples from a logistic distribution.
+    lognormal([mean, sigma, size])      Draw samples from a log-normal
+                                    distribution.
+logseries(p[, size])                Draw samples from a logarithmic series
+                                    distribution.
+multinomial(n, pvals[, size])       Draw samples from a multinomial
+                                    distribution.
+multivariate_                       Generate variates from a multivariate
+hypergeometric(colors,              hypergeometric distribution.
+    nsample)
+    multivariate_normal(mean, cov[,     Draw random samples from a multivariate
+    size, ...])                         normal distribution.
+    negative_binomial(n, p[, size])     Draw samples from a negative binomial
+                                    distribution.
+noncentral_chisquare(df, nonc[,     Draw samples from a noncentral chi-square
+    size])                              distribution.
+    noncentral_f(dfnum, dfden, nonc[,   Draw samples from the noncentral F
+    size])                              distribution.
+    normal([loc, scale, size])          Draw random samples from a normal
+                                    (Gaussian) distribution.
+pareto(a[, size])                   Draw samples from a Pareto II (AKA Lomax)
+                                    distribution with specified shape.
+poisson([lam, size])                Draw samples from a Poisson distribution.
+    power(a[, size])                    Draws samples in [0, 1] from a power
+                                    distribution with positive exponent a - 1.
+rayleigh([scale, size])             Draw samples from a Rayleigh distribution.
+    standard_cauchy([size])             Draw samples from a standard Cauchy
+                                    distribution with mode = 0.
+standard_exponential([size, dtype,  Draw samples from the standard exponential
+    method, out])                       distribution.
+    standard_gamma(shape[, size,        Draw samples from a standard Gamma
+    dtype, out])                        distribution.
+    standard_normal([size, dtype,       Draw samples from a standard Normal
+    out])                               distribution (mean=0, stdev=1).
+    standard_t(df[, size])              Draw samples from a standard Student's t
+                                    distribution with df degrees of freedom.
+triangular(left, mode, right[,      Draw samples from the triangular
+    size])                              distribution over the interval [left,
+                                    right].
+uniform([low, high, size])          Draw samples from a uniform distribution.
+    vonmises(mu, kappa[, size])         Draw samples from a von Mises
+                                    distribution.
+wald(mean, scale[, size])           Draw samples from a Wald, or inverse
+                                    Gaussian, distribution.
+weibull(a[, size])                  Draw samples from a Weibull distribution.
+    zipf(a[, size])                     Draw samples from a Zipf distribution.
 
 ----------------------------------------------------------------------------
 Random sampling                                 *numpy-reference-random-index*
@@ -13303,20 +13303,20 @@ samples from different distributions.
 Generate one random float uniformly distributed over the range `\([0, 1)\)`:
 
 >python
-    >>> rng.random()  
+    >>> rng.random()
     0.06369197489564249  # may vary
 <
 Generate an array of 10 numbers according to a unit Gaussian distribution:
 
 >python
-    >>> rng.standard_normal(10)  
+    >>> rng.standard_normal(10)
     array([-0.31018314, -1.8922078 , -0.3628523 , -0.63526532,  0.43181166,  # may vary
             0.51640373,  1.25693945,  0.07779185,  0.84090247, -2.13406828])
 <
 Generate an array of 5 integers uniformly over the range `\([0, 10)\)`:
 
 >python
-    >>> rng.integers(low=0, high=10, size=5)  
+    >>> rng.integers(low=0, high=10, size=5)
     array([8, 7, 6, 2, 0])  # may vary
 <
 Our RNGs are deterministic sequences and can be reproduced by specifying a
@@ -13330,10 +13330,10 @@ first place.
 >python
     >>> import numpy as np
     >>> rng1 = np.random.default_rng()
-    >>> rng1.random()  
+    >>> rng1.random()
     0.6596288841243357  # may vary
     >>> rng2 = np.random.default_rng()
-    >>> rng2.random()  
+    >>> rng2.random()
     0.11885628817151628  # may vary
 <
   Warning: ~
@@ -13356,7 +13356,7 @@ arbitrary 128-bit integer.
 >python
     >>> import numpy as np
     >>> import secrets
-    >>> secrets.randbits(128)  
+    >>> secrets.randbits(128)
     122807528840384100672342137672332424406  # may vary
     >>> rng1 = np.random.default_rng(122807528840384100672342137672332424406)
     >>> rng1.random()
@@ -13932,21 +13932,21 @@ integers   randint, random_integers  Use the endpoint kwarg to adjust the
 
     In [3]: %timeit -n 1 rng.standard_normal(100000)
        ...: %timeit -n 1 numpy.random.standard_normal(100000)
-       ...: 
+       ...:
     1.04 ms +- 24.2 us per loop (mean +- std. dev. of 7 runs, 1 loop each)
     1.75 ms +- 8.26 us per loop (mean +- std. dev. of 7 runs, 1 loop each)
 <
 >python
     In [4]: %timeit -n 1 rng.standard_exponential(100000)
        ...: %timeit -n 1 numpy.random.standard_exponential(100000)
-       ...: 
+       ...:
     490 us +- 4.59 us per loop (mean +- std. dev. of 7 runs, 1 loop each)
     1.26 ms +- 14.2 us per loop (mean +- std. dev. of 7 runs, 1 loop each)
 <
 >python
     In [5]: %timeit -n 1 rng.standard_gamma(3.0, 100000)
        ...: %timeit -n 1 numpy.random.standard_gamma(3.0, 100000)
-       ...: 
+       ...:
     1.86 ms +- 9.67 us per loop (mean +- std. dev. of 7 runs, 1 loop each)
     3.44 ms +- 17.1 us per loop (mean +- std. dev. of 7 runs, 1 loop each)
 <
@@ -14027,13 +14027,13 @@ integers   randint, random_integers  Use the endpoint kwarg to adjust the
     In [15]: a = np.arange(12).reshape((3, 4))
 
     In [16]: a
-    Out[16]: 
+    Out[16]:
     array([[ 0,  1,  2,  3],
            [ 4,  5,  6,  7],
            [ 8,  9, 10, 11]])
 
     In [17]: rng.choice(a, axis=1, size=5)
-    Out[17]: 
+    Out[17]:
     array([[ 2,  2,  1,  0,  1],
            [ 6,  6,  5,  4,  5],
            [10, 10,  9,  8,  9]])
@@ -14041,7 +14041,7 @@ integers   randint, random_integers  Use the endpoint kwarg to adjust the
     In [18]: rng.shuffle(a, axis=1)        # Shuffle in-place
 
     In [19]: a
-    Out[19]: 
+    Out[19]:
     array([[ 2,  3,  1,  0],
            [ 6,  7,  5,  4],
            [10, 11,  9,  8]])
@@ -15149,7 +15149,9 @@ numpy.ctypeslib.as_array(obj, shape=None)
         array([0, 1, 2, 3, 4], dtype=int32)
 <
 
-numpy.ctypeslib.as_ctypes(obj)  *numpy.ctypeslib.as_ctypes*
+                                                   *numpy.ctypeslib.as_ctypes*
+
+numpy.ctypeslib.as_ctypes(obj)
     Create and return a ctypes object from a numpy array. Actually anything
     that exposes the __array_interface__ is accepted.
 
@@ -15176,7 +15178,9 @@ numpy.ctypeslib.as_ctypes(obj)  *numpy.ctypeslib.as_ctypes*
         [1, 2, 3]
 <
 
-numpy.ctypeslib.as_ctypes_type(dtype)  *numpy.ctypeslib.as_ctypes_type*
+                                              *numpy.ctypeslib.as_ctypes_type*
+
+numpy.ctypeslib.as_ctypes_type(dtype)
     Convert a dtype into a ctypes type.
 
     Parameters: ~
@@ -15231,12 +15235,13 @@ numpy.ctypeslib.as_ctypes_type(dtype)  *numpy.ctypeslib.as_ctypes_type*
         <class 'struct'>
 <
 
+                                                *numpy.ctypeslib.load_library*
+
 numpy.ctypeslib.load_library(libname, loader_path)
-    *numpy.ctypeslib.load_library*
     It is possible to load a library using
 
     >python
-        >>> lib = ctypes.cdll[<full_path_name>] 
+        >>> lib = ctypes.cdll[<full_path_name>]
 <
     But there are cross-platform considerations, such as library file
     extensions, plus the fact Windows will just load the first library it
@@ -15265,8 +15270,9 @@ numpy.ctypeslib.load_library(libname, loader_path)
             If there is no library with the expected extension, or the
             library is defective and cannot be loaded.
 
+                                                   *numpy.ctypeslib.ndpointer*
+
 numpy.ctypeslib.ndpointer(dtype=None, ndim=None, shape=None, flags=None)
-    *numpy.ctypeslib.ndpointer*
     Array-checking restype/argtypes.
 
     An ndpointer instance is used to describe an ndarray in restypes and
@@ -15312,9 +15318,9 @@ numpy.ctypeslib.ndpointer(dtype=None, ndim=None, shape=None, flags=None)
         >>> clib.somefunc.argtypes = [np.ctypeslib.ndpointer(dtype=np.float64,
         ...                                                  ndim=1,
         ...                                                  flags='C_CONTIGUOUS')]
-        ... 
+        ...
         >>> clib.somefunc(np.array([1, 2, 3], dtype=np.float64))
-        ... 
+        ...
 <
 
 class numpy.ctypeslib.c_intp *numpy.ctypeslib.c_intp*
@@ -16535,47 +16541,49 @@ ma.masked_less_equal(x, value[,     Mask an array where less than or equal to
 
 > to an ndarray                          *reference-routines.ma-to-an-ndarray*
 
-ma.compress_cols(a)                  Suppress whole columns of a 2-D array
-                                     that contain masked values.
-ma.compress_rowcols(x[, axis])       Suppress the rows and/or columns of a 2-D
-                                     array that contain masked values.
-ma.compress_rows(a)                  Suppress whole rows of a 2-D array that
-                                     contain masked values.
-ma.compressed(x)                     Return all the non-masked data as a 1-D
-                                     array.
-ma.filled(a[, fill_value])           Return input as an ndarray, with masked
-                                     values replaced by fill_value.
-ma.MaskedArray.compressed()          Return all the non-masked data as a 1-D
-                                     array.
-ma.MaskedArray.filled([fill_value])  Return a copy of self, with masked values
-                                     filled with a given value.
+ma.compress_cols(a)                 Suppress whole columns of a 2-D array that
+                                    contain masked values.
+ma.compress_rowcols(x[, axis])      Suppress the rows and/or columns of a 2-D
+                                    array that contain masked values.
+ma.compress_rows(a)                 Suppress whole rows of a 2-D array that
+                                    contain masked values.
+ma.compressed(x)                    Return all the non-masked data as a 1-D
+                                    array.
+ma.filled(a[, fill_value])          Return input as an ndarray, with masked
+                                    values replaced by fill_value.
+ma.MaskedArray.compressed()         Return all the non-masked data as a 1-D
+                                    array.
+ma.MaskedArray.filled([fill_value]  Return a copy of self, with masked values
+)                                   filled with a given value.
 
 > to another object                  *reference-routines.ma-to-another-object*
 
-ma.MaskedArray.tofile(fid[, sep,     Save a masked array to a file in binary
-    format])                             format.
-    ma.MaskedArray.tolist([fill_value])  Return the data portion of the masked
-                                     array as a hierarchical Python list.
-ma.MaskedArray.torecords()           Transforms a masked array into a
-                                     flexible-type array.
-ma.MaskedArray.tobytes([fill_value,  Return the array data as a string
-    order])                              containing the raw bytes in the array.
+ma.MaskedArray.tofile(fid[, sep,    Save a masked array to a file in binary
+    format])                            format.
+    ma.MaskedArray.tolist([fill_value]  Return the data portion of the masked
+)                                   array as a hierarchical Python list.
+    ma.MaskedArray.torecords()          Transforms a masked array into a
+                                    flexible-type array.
+ma.MaskedArray.tobytes([fill_       Return the array data as a string
+    value,                              containing the raw bytes in the array.
+    order])
 
 Filling a masked array          *reference-routines.ma-filling-a-masked-array*
 
-ma.common_fill_value(a, b)            Return the common filling value of two
-                                      masked arrays, if any.
-ma.default_fill_value(obj)            Return the default fill value for the
-                                      argument object.
-ma.maximum_fill_value(obj)            Return the minimum value that can be
-                                      represented by the dtype of an object.
-ma.minimum_fill_value(obj)            Return the maximum value that can be
-                                      represented by the dtype of an object.
-ma.set_fill_value(a, fill_value)      Set the filling value of a, if a is a
-                                      masked array.
-ma.MaskedArray.get_fill_value()       The filling value of the masked array is
-                                      a scalar.
-ma.MaskedArray.set_fill_value([value])
+ma.common_fill_value(a, b)          Return the common filling value of two
+                                    masked arrays, if any.
+ma.default_fill_value(obj)          Return the default fill value for the
+                                    argument object.
+ma.maximum_fill_value(obj)          Return the minimum value that can be
+                                    represented by the dtype of an object.
+ma.minimum_fill_value(obj)          Return the maximum value that can be
+                                    represented by the dtype of an object.
+ma.set_fill_value(a, fill_value)    Set the filling value of a, if a is a
+                                    masked array.
+ma.MaskedArray.get_fill_value()     The filling value of the masked array is a
+                                    scalar.
+ma.MaskedArray.set_fill_
+value([value])
 
 ma.MaskedArray.fill_value  The filling value of the masked array is a scalar.
 
@@ -17222,8 +17230,8 @@ Misc                             *reference-routines.polynomials-package-misc*
 
 CONFIGURATION           *reference-routines.polynomials-package-configuration*
 
-numpy.polynomial.set_default_printstyle(style)  Set the default format for the string
-                                      representation of polynomials.
+numpy.polynomial.set_default_       Set the default format for the string
+printstyle(style)                   representation of polynomials.
 
 ----------------------------------------------------------------------------
                               *numpy-reference-routines.polynomials.chebyshev*
@@ -18763,35 +18771,35 @@ https://numpy.org/doc/stable/reference/testing.html#testing-guidelines
 
 ASSERTS                                   *reference-routines.testing-asserts*
 
-assert_allclose(actual, desired[,     Raises an AssertionError if two objects
-    rtol, ...])                           are not equal up to desired tolerance.
-    assert_array_almost_equal_nulp(x,     Compare two arrays relatively to their
-    y[, nulp])                            spacing.
-    assert_array_max_ulp(a, b[, maxulp,   Check that all items of arrays differ in
-    dtype])                               at most N Units in the Last Place.
-    assert_array_equal(actual, desired[,  Raises an AssertionError if two
-    ...])                                 array_like objects are not equal.
-    assert_array_less(x, y[, err_msg,     Raises an AssertionError if two
-    verbose, ...])                        array_like objects are not ordered by
-                                      less than.
-assert_equal(actual, desired[,        Raises an AssertionError if two objects
-    err_msg, ...])                        are not equal.
-    assert_raises(assert_raises)          Fail unless an exception of class
-                                      exception_class is thrown by callable
-                                      when invoked with arguments args and
-                                      keyword arguments kwargs.
-assert_raises_regex(exception_class,  Fail unless an exception of class
-    ...)                                  exception_class and with message that
-                                      matches expected_regexp is thrown by
-                                      callable when invoked with arguments
-                                      args and keyword arguments kwargs.
-assert_warns(warning_class, *args,    Fail unless the given callable throws
-    **kwargs)                             the specified warning.
-    assert_no_warnings(*args, **kwargs)   Fail if the given callable produces any
-                                      warnings.
-assert_no_gc_cycles(*args, **kwargs)  Fail if the given callable produces any
-                                      reference cycles.
-assert_string_equal(actual, desired)  Test if two strings are equal.
+assert_allclose(actual, desired[,   Raises an AssertionError if two objects
+    rtol, ...])                         are not equal up to desired tolerance.
+    assert_array_almost_equal_nulp(x,   Compare two arrays relatively to their
+    y[, nulp])                          spacing.
+    assert_array_max_ulp(a, b[,         Check that all items of arrays differ in
+    maxulp, dtype])                     at most N Units in the Last Place.
+    assert_array_equal(actual,          Raises an AssertionError if two array_like
+    desired[, ...])                     objects are not equal.
+    assert_array_less(x, y[, err_msg,   Raises an AssertionError if two array_like
+    verbose, ...])                      objects are not ordered by less than.
+    assert_equal(actual, desired[,      Raises an AssertionError if two objects
+    err_msg, ...])                      are not equal.
+    assert_raises(assert_raises)        Fail unless an exception of class
+                                    exception_class is thrown by callable when
+                                    invoked with arguments args and keyword
+                                    arguments kwargs.
+assert_raises_regex(exception_      Fail unless an exception of class
+    class,                              exception_class and with message that
+    ...)                                matches expected_regexp is thrown by
+                                    callable when invoked with arguments args
+                                    and keyword arguments kwargs.
+assert_warns(warning_class, *args,  Fail unless the given callable throws the
+    **kwargs)                           specified warning.
+    assert_no_warnings(*args,           Fail if the given callable produces any
+    **kwargs)                           warnings.
+    assert_no_gc_cycles(*args,          Fail if the given callable produces any
+    **kwargs)                           reference cycles.
+    assert_string_equal(actual,         Test if two strings are equal.
+    desired)
 
 ASSERTS (NOT RECOMMENDED) *reference-routines.testing-asserts-not-recommended*
 
@@ -18817,13 +18825,15 @@ decorate_methods(cls, decorator[,   Apply a decorator to all methods in a
 
 TEST RUNNING                         *reference-routines.testing-test-running*
 
-clear_and_catch_warnings([record,    Context manager that resets warning
-    modules])                            registry for catching warnings
-    measure(code_str[, times, label])    Return elapsed time for executing code in
-                                     the namespace of the caller.
-rundocs([filename, raise_on_error])  Run doctests found in the given file.
-    suppress_warnings([forwarding_rule,  Context manager and decorator doing much
-    _warn])                              the same as warnings.catch_warnings.
+clear_and_catch_warnings([record,   Context manager that resets warning
+    modules])                           registry for catching warnings
+    measure(code_str[, times, label])   Return elapsed time for executing code in
+                                    the namespace of the caller.
+rundocs([filename,                  Run doctests found in the given file.
+    raise_on_error])
+    suppress_warnings([forwarding_      Context manager and decorator doing much
+    rule,                               the same as warnings.catch_warnings.
+    _warn])
 
 *reference-routines.testing-testing-custom-array-containers-numpy-testing-overrides*
 TESTING CUSTOM ARRAY CONTAINERS (NUMPY.TESTING.OVERRIDES)
@@ -18833,14 +18843,14 @@ TESTING CUSTOM ARRAY CONTAINERS (NUMPY.TESTING.OVERRIDES)
 These functions can be useful when testing custom array container
 implementations which make use of `__array_ufunc__`/`__array_function__`.
 
-allows_array_function_override(func)  Determine if a Numpy function can be
-                                      overridden via __array_function__
-allows_array_ufunc_override(func)     Determine if a function can be
-                                      overridden via __array_ufunc__
-get_overridable_numpy_ufuncs()        List all numpy ufuncs overridable via
-                                      __array_ufunc__
-get_overridable_numpy_array_functions()  List all numpy functions overridable via
-                                      __array_function__
+allows_array_function_              Determine if a Numpy function can be
+override(func)                      overridden via __array_function__
+    allows_array_ufunc_override(func)   Determine if a function can be overridden
+                                    via __array_ufunc__
+get_overridable_numpy_ufuncs()      List all numpy ufuncs overridable via
+                                    __array_ufunc__
+get_overridable_numpy_array_        List all numpy functions overridable via
+functions()                         __array_function__
 
 GUIDELINES                             *reference-routines.testing-guidelines*
 
@@ -19325,7 +19335,9 @@ numpy.typing.ArrayLike  = typing.Union[...]
       ...     return np.array(a)
 <
 
-numpy.typing.DTypeLike  = typing.Union[...] *numpy.typing.DTypeLike*
+                                                      *numpy.typing.DTypeLike*
+
+numpy.typing.DTypeLike  = typing.Union[...]
     A Union representing objects that can be coerced into a |numpy.dtype|.
 
     Among others this includes the likes of:
@@ -19353,7 +19365,9 @@ numpy.typing.DTypeLike  = typing.Union[...] *numpy.typing.DTypeLike*
         ...     return np.dtype(d)
 <
 
-numpy.typing.NDArray  = NDArray *numpy.typing.NDArray*
+                                                        *numpy.typing.NDArray*
+
+numpy.typing.NDArray  = NDArray
     A |numpy.ndarray| type alias generic
     https://docs.python.org/3/glossary.html#term-generic-type w.r.t. its
     |numpy.dtype.type|.

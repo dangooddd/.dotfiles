@@ -1,0 +1,931 @@
+*tokenizers-main.txt*	Tokenizers documentation: main
+Version v0.23.3 — https://huggingface.co/docs/tokenizers/v0.23.3/en/
+
+==============================================================================
+MAIN                                                 *tokenizers-section-main*
+
+
+----------------------------------------------------------------------------
+Components                                             *tokenizers-components*
+
+When building a Tokenizer, you can attach various types of components to
+this Tokenizer in order to customize its behavior. This page lists most
+provided components.
+
+NORMALIZERS                                           *components-normalizers*
+
+A `Normalizer` is in charge of pre-processing the input string in order
+to normalize it as relevant for a given use case. Some common examples
+of normalization are the Unicode normalization algorithms (NFD, NFKD,
+NFC & NFKC), lowercasing etc... The specificity of `tokenizers` is that
+we keep track of the alignment while normalizing. This is essential to
+allow mapping from the generated tokens back to the input text.
+
+The `Normalizer` is optional.
+
+Name            Description                     Example
+--------------  ------------------------------  ------------------------------
+NFD             NFD unicode normalization
+NFKD            NFKD unicode normalization
+NFC             NFC unicode normalization
+NFKC            NFKC unicode normalization
+Lowercase       Replaces all uppercase to       Input: HELLO ὈΔΥΣΣΕΎΣ Output:
+                lowercase                       helloὀδυσσεύς`
+Strip           Removes all whitespace          Input: "hi" Output: "hi"
+                characters on the specified
+                sides (left, right or both) of
+                the input
+StripAccents    Removes all accent symbols in   Input: é Output: e
+                unicode (to be used with NFD
+                for consistency)
+Replace         Replaces a custom string or     Replace("a", "e") will behave
+                regexp and changes it with      like this: Input: "banana"
+                given content                   Output: "benene"
+BertNormalizer  Provides an implementation of
+                the Normalizer used in the
+                original BERT. Options that
+                can be set are: clean_text
+                handle_chinese_chars
+                strip_accents lowercase
+Sequence        Composes multiple normalizers   Sequence([NFKC(),
+                that will run in the provided   Lowercase()])
+                order
+
+PRE-TOKENIZERS                                     *components-pre-tokenizers*
+
+The `PreTokenizer` takes care of splitting the input according to a set
+of rules. This pre-processing lets you ensure that the underlying
+`Model` does not build tokens across multiple “splits”. For example if
+you don't want to have whitespaces inside a token, then you can have a
+`PreTokenizer` that splits on these whitespaces.
+
+You can easily combine multiple `PreTokenizer` together using a
+`Sequence` (see below). The `PreTokenizer` is also allowed to modify the
+string, just like a `Normalizer` does. This is necessary to allow some
+complicated algorithms that require to split before normalizing (e.g.
+the ByteLevel)
+
+Name                Description                   Example
+------------------  ----------------------------  ----------------------------
+ByteLevel           Splits on whitespaces while   Input: "Hello my friend, how
+                    remapping all the bytes to a  are you?" Output: "Hello",
+                    set of visible characters.    "Ġmy", Ġfriend", ",",
+                    This technique as been        "Ġhow", "Ġare", "Ġyou", "?"
+                    introduced by OpenAI with
+                    GPT-2 and has some more or
+                    less nice properties: Since
+                    it maps on bytes, a
+                    tokenizer using this only
+                    requires 256 characters as
+                    initial alphabet (the number
+                    of values a byte can have),
+                    as opposed to the 130,000+
+                    Unicode characters. A
+                    consequence of the previous
+                    point is that it is
+                    absolutely unnecessary to
+                    have an unknown token using
+                    this since we can represent
+                    anything with 256 tokens
+                    (Youhou!! 🎉🎉) For non
+                    ascii characters, it gets
+                    completely unreadable, but
+                    it works nonetheless!
+Whitespace          Splits on word boundaries     Input: "Hello there!"
+                    (using the following regular  Output: "Hello", "there",
+                    expression:                   "!"
+                    \w+&#124;[^\w\s]+
+WhitespaceSplit     Splits on any whitespace      Input: "Hello there!"
+                    character                     Output: "Hello", "there!"
+Punctuation         Will isolate all punctuation  Input: "Hello?" Output:
+                    characters                    "Hello", "?"
+Metaspace           Splits on whitespaces and     Input: "Hello there" Output:
+                    replaces them with a special  "Hello", "▁there"
+                    char “▁” (U+2581)
+CharDelimiterSplit  Splits on a given character   Example with x: Input:
+                                                  "Helloxthere" Output:
+                                                  "Hello", "there"
+Digits              Splits the numbers from any   Input: "Hello123there"
+                    other characters.             Output: "Hello", "123",
+                                                  "there"
+Split               Versatile pre-tokenizer that  Example with pattern = ,
+                    splits on provided pattern    behavior = "isolated",
+                    and according to provided     invert = False: Input:
+                    behavior. The pattern can be  "Hello, how are you?"
+                    inverted if necessary.        Output: "Hello,", " ",
+                    pattern should be either a    "how", " ", "are", " ",
+                    custom string or regexp.      "you?"
+                    behavior should be one of:
+                    removed isolated
+                    merged_with_previous
+                    merged_with_next contiguous
+                    invert should be a boolean
+                    flag.
+Sequence            Lets you compose multiple     Sequence([Punctuation(),
+                    PreTokenizer that will be     WhitespaceSplit()])
+                    run in the given order
+
+MODELS                                                     *components-models*
+
+Models are the core algorithms used to actually tokenize, and therefore,
+they are the only mandatory component of a Tokenizer.
+
+Name       Description
+---------  -------------------------------------------------------------------
+WordLevel  This is the “classic” tokenization algorithm. It let's you simply
+           map words to IDs without anything fancy. This has the advantage of
+           being really simple to use and understand, but it requires
+           extremely large vocabularies for a good coverage. Using this Model
+           requires the use of a PreTokenizer. No choice will be made by this
+           model directly, it simply maps input tokens to IDs.
+BPE        One of the most popular subword tokenization algorithm. The
+           Byte-Pair-Encoding works by starting with characters, while merging
+           those that are the most frequently seen together, thus creating new
+           tokens. It then works iteratively to build new tokens out of the
+           most frequent pairs it sees in a corpus. BPE is able to build words
+           it has never seen by using multiple subword tokens, and thus
+           requires smaller vocabularies, with less chances of having “unk”
+           (unknown) tokens.
+WordPiece  This is a subword tokenization algorithm quite similar to BPE, used
+           mainly by Google in models like BERT. It uses a greedy algorithm,
+           that tries to build long words first, splitting in multiple tokens
+           when entire words don't exist in the vocabulary. This is different
+           from BPE that starts from characters, building bigger tokens as
+           possible. It uses the famous ## prefix to identify tokens that are
+           part of a word (ie not starting a word).
+Unigram    Unigram is also a subword tokenization algorithm, and works by
+           trying to identify the best set of subword tokens to maximize the
+           probability for a given sentence. This is different from BPE in the
+           way that this is not deterministic based on a set of rules applied
+           sequentially. Instead Unigram will be able to compute multiple ways
+           of tokenizing, while choosing the most probable one.
+
+POST-PROCESSORS                                   *components-post-processors*
+
+After the whole pipeline, we sometimes want to insert some special
+tokens before feed a tokenized string into a model like ”[CLS] My horse
+is amazing [SEP]”. The `PostProcessor` is the component doing just that.
+
+Name                Description                   Example
+------------------  ----------------------------  ----------------------------
+TemplateProcessing  Let's you easily template     Example, when specifying a
+                    the post processing, adding   template with these values:
+                    special tokens, and           single: "[CLS] $A [SEP]"
+                    specifying the type_id for    pair: "[CLS] $A [SEP] $B
+                    each sequence/special token.  [SEP]" special tokens:
+                    The template is given two     "[CLS]" "[SEP]" Input: ("I
+                    strings representing the      like this", "but not this")
+                    single sequence and the pair  Output: "[CLS] I like this
+                    of sequences, as well as a    [SEP] but not this [SEP]"
+                    set of special tokens to
+                    use.
+
+DECODERS                                                 *components-decoders*
+
+The Decoder knows how to go from the IDs used by the Tokenizer, back to
+a readable piece of text. Some `Normalizer` and `PreTokenizer` use
+special characters or identifiers that need to be reverted for example.
+
+Name       Description
+---------  -------------------------------------------------------------------
+ByteLevel  Reverts the ByteLevel PreTokenizer. This PreTokenizer encodes at
+           the byte-level, using a set of visible Unicode characters to
+           represent each byte, so we need a Decoder to revert this process
+           and get something readable again.
+Metaspace  Reverts the Metaspace PreTokenizer. This PreTokenizer uses a
+           special identifier ▁ to identify whitespaces, and so this Decoder
+           helps with decoding these.
+WordPiece  Reverts the WordPiece Model. This model uses a special identifier
+           ## for continuing subwords, and so this Decoder helps with decoding
+           these.
+
+----------------------------------------------------------------------------
+Tokenizers                                                  *tokenizers-index*
+
+Fast State-of-the-art tokenizers, optimized for both research and
+production
+
+🤗 Tokenizers https://github.com/huggingface/tokenizers provides an
+implementation of today's most used tokenizers, with a focus on
+performance and versatility. These tokenizers are also used in
+🤗 Transformers https://github.com/huggingface/transformers.
+
+MAIN FEATURES:                                           *index-main-features*
+
+- Train new vocabularies and tokenize, using today's most used
+  tokenizers.
+- Extremely fast (both training and tokenization), thanks to the Rust
+  implementation. Takes less than 20 seconds to tokenize a GB of text on
+  a server's CPU.
+- Easy to use, but also extremely versatile.
+- Designed for both research and production.
+- Full alignment tracking. Even with destructive normalization, it's
+  always possible to get the part of the original sentence that
+  corresponds to any token.
+- Does all the pre-processing: Truncation, Padding, add the special
+  tokens your model needs.
+
+----------------------------------------------------------------------------
+Installation                                         *tokenizers-installation*
+
+🤗 Tokenizers is tested on Python 3.5+.
+
+You should install 🤗 Tokenizers in a virtual environment
+https://docs.python.org/3/library/venv.html. If you're unfamiliar with
+Python virtual environments, check out the user guide
+https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/.
+Create a virtual environment with the version of Python you're going to
+use and activate it.
+
+INSTALLATION WITH PIP                                  *installation-with-pip*
+
+🤗 Tokenizers can be installed using pip as follows:
+
+>bash
+    pip install tokenizers
+<
+
+INSTALLATION FROM SOURCES                          *installation-from-sources*
+
+To use this method, you need to have the Rust language installed. You
+can follow the official guide
+https://www.rust-lang.org/learn/get-started for more information.
+
+If you are using a unix based OS, the installation should be as simple
+as running:
+
+>bash
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+<
+Or you can easily update it with the following command:
+
+>bash
+    rustup update
+<
+Once rust is installed, we can start retrieving the sources for 🤗
+Tokenizers:
+
+>bash
+    git clone https://github.com/huggingface/tokenizers
+<
+Then we go into the python bindings folder:
+
+>bash
+    cd tokenizers/bindings/python
+<
+At this point you should have your virtual environment already
+activated. In order to compile 🤗 Tokenizers, you need to:
+
+>bash
+    pip install -e .
+<
+
+----------------------------------------------------------------------------
+The tokenization pipeline                                *tokenizers-pipeline*
+
+When calling `Tokenizer.encode` or `Tokenizer.encode_batch`, the input
+text(s) go through the following pipeline:
+
+- `normalization`
+- `pre-tokenization`
+- `model`
+- `post-processing`
+
+We'll see in details what happens during each of those steps in detail,
+as well as when you want to `decode <decoding>` some token ids, and how
+the 🤗 Tokenizers library allows you to customize each of those steps to
+your needs. If you're already familiar with those steps and want to
+learn by seeing some code, jump to
+`our BERT from scratch example <example>`.
+
+For the examples that require a `Tokenizer` we will use the tokenizer we
+trained in the `quicktour`, which you can load with:
+
+>python
+    from tokenizers import Tokenizer
+    tokenizer = Tokenizer.from_file("data/tokenizer-wiki.json")
+<
+
+NORMALIZATION                                         *pipeline-normalization*
+
+Normalization is, in a nutshell, a set of operations you apply to a raw
+string to make it less random or “cleaner”. Common operations include
+stripping whitespace, removing accented characters or lowercasing all
+text. If you're familiar with Unicode normalization
+https://unicode.org/reports/tr15, it is also a very common normalization
+operation applied in most tokenizers.
+
+Each normalization operation is represented in the 🤗 Tokenizers library
+by a `Normalizer`, and you can combine several of those by using a
+`normalizers.Sequence`. Here is a normalizer applying NFD Unicode
+normalization and removing accents as an example:
+
+>python
+    from tokenizers import normalizers
+    from tokenizers.normalizers import NFD, StripAccents
+    normalizer = normalizers.Sequence([NFD(), StripAccents()])
+<
+You can manually test that normalizer by applying it to any string:
+
+>python
+    normalizer.normalize_str("Héllò hôw are ü?")
+    # "Hello how are u?"
+<
+When building a `Tokenizer`, you can customize its normalizer by just
+changing the corresponding attribute:
+
+>python
+    tokenizer.normalizer = normalizer
+<
+Of course, if you change the way a tokenizer applies normalization, you
+should probably retrain it from scratch afterward.
+
+PRE-TOKENIZATION                                   *pipeline-pre-tokenization*
+
+Pre-tokenization is the act of splitting a text into smaller objects
+that give an upper bound to what your tokens will be at the end of
+training. A good way to think of this is that the pre-tokenizer will
+split your text into “words” and then, your final tokens will be parts
+of those words.
+
+An easy way to pre-tokenize inputs is to split on spaces and
+punctuations, which is done by the `pre_tokenizers.Whitespace`
+pre-tokenizer:
+
+>python
+    from tokenizers.pre_tokenizers import Whitespace
+    pre_tokenizer = Whitespace()
+    pre_tokenizer.pre_tokenize_str("Hello! How are you? I'm fine, thank you.")
+    # [("Hello", (0, 5)), ("!", (5, 6)), ("How", (7, 10)), ("are", (11, 14)), ("you", (15, 18)),
+    #  ("?", (18, 19)), ("I", (20, 21)), ("'", (21, 22)), ('m', (22, 23)), ("fine", (24, 28)),
+    #  (",", (28, 29)), ("thank", (30, 35)), ("you", (36, 39)), (".", (39, 40))]
+<
+The output is a list of tuples, with each tuple containing one word and
+its span in the original sentence (which is used to determine the final
+`offsets` of our `Encoding`). Note that splitting on punctuation will
+split contractions like `"I'm"` in this example.
+
+You can combine together any `PreTokenizer` together. For instance, here
+is a pre-tokenizer that will split on space, punctuation and digits,
+separating numbers in their individual digits:
+
+>python
+    from tokenizers import pre_tokenizers
+    from tokenizers.pre_tokenizers import Digits
+    pre_tokenizer = pre_tokenizers.Sequence([Whitespace(), Digits(individual_digits=True)])
+    pre_tokenizer.pre_tokenize_str("Call 911!")
+    # [("Call", (0, 4)), ("9", (5, 6)), ("1", (6, 7)), ("1", (7, 8)), ("!", (8, 9))]
+<
+As we saw in the `quicktour`, you can customize the pre-tokenizer of a
+`Tokenizer` by just changing the corresponding attribute:
+
+>python
+    tokenizer.pre_tokenizer = pre_tokenizer
+<
+Of course, if you change the way the pre-tokenizer, you should probably
+retrain your tokenizer from scratch afterward.
+
+MODEL                                                         *pipeline-model*
+
+Once the input texts are normalized and pre-tokenized, the `Tokenizer`
+applies the model on the pre-tokens. This is the part of the pipeline
+that needs training on your corpus (or that has been trained if you are
+using a pretrained tokenizer).
+
+The role of the model is to split your “words” into tokens, using the
+rules it has learned. It's also responsible for mapping those tokens to
+their corresponding IDs in the vocabulary of the model.
+
+This model is passed along when initializing the `Tokenizer` so you
+already know how to customize this part. Currently, the 🤗 Tokenizers
+library supports:
+
+- `models.BPE`
+- `models.Unigram`
+- `models.WordLevel`
+- `models.WordPiece`
+
+For more details about each model and its behavior, you can check
+|components-models|
+
+POST-PROCESSING                                     *pipeline-post-processing*
+
+Post-processing is the last step of the tokenization pipeline, to
+perform any additional transformation to the `Encoding` before it's
+returned, like adding potential special tokens.
+
+As we saw in the quick tour, we can customize the post processor of a
+`Tokenizer` by setting the corresponding attribute. For instance, here
+is how we can post-process to make the inputs suitable for the BERT
+model:
+
+>python
+    from tokenizers.processors import TemplateProcessing
+    tokenizer.post_processor = TemplateProcessing(
+        single="[CLS] $A [SEP]",
+        pair="[CLS] $A [SEP] $B:1 [SEP]:1",
+        special_tokens=[("[CLS]", 1), ("[SEP]", 2)],
+    )
+<
+Note that contrarily to the pre-tokenizer or the normalizer, you don't
+need to retrain a tokenizer after changing its post-processor.
+
+                         *pipeline-all-together-a-bert-tokenizer-from-scratch*
+ALL TOGETHER: A BERT TOKENIZER FROM SCRATCH
+
+Let's put all those pieces together to build a BERT tokenizer. First,
+BERT relies on WordPiece, so we instantiate a new `Tokenizer` with this
+model:
+
+>python
+    from tokenizers import Tokenizer
+    from tokenizers.models import WordPiece
+    bert_tokenizer = Tokenizer(WordPiece(unk_token="[UNK]"))
+<
+Then we know that BERT preprocesses texts by removing accents and
+lowercasing. We also use a unicode normalizer:
+
+>python
+    from tokenizers import normalizers
+    from tokenizers.normalizers import NFD, Lowercase, StripAccents
+    bert_tokenizer.normalizer = normalizers.Sequence([NFD(), Lowercase(), StripAccents()])
+<
+The pre-tokenizer is just splitting on whitespace and punctuation:
+
+>python
+    from tokenizers.pre_tokenizers import Whitespace
+    bert_tokenizer.pre_tokenizer = Whitespace()
+<
+And the post-processing uses the template we saw in the previous
+section:
+
+>python
+    from tokenizers.processors import TemplateProcessing
+    bert_tokenizer.post_processor = TemplateProcessing(
+        single="[CLS] $A [SEP]",
+        pair="[CLS] $A [SEP] $B:1 [SEP]:1",
+        special_tokens=[
+            ("[CLS]", 1),
+            ("[SEP]", 2),
+        ],
+    )
+<
+We can use this tokenizer and train on it on wikitext like in the
+`quicktour`:
+
+>python
+    from tokenizers.trainers import WordPieceTrainer
+    trainer = WordPieceTrainer(vocab_size=30522, special_tokens=["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"])
+    files = [f"data/wikitext-103-raw/wiki.{split}.raw" for split in ["test", "train", "valid"]]
+    bert_tokenizer.train(files, trainer)
+    bert_tokenizer.save("data/bert-wiki.json")
+<
+
+DECODING                                                   *pipeline-decoding*
+
+On top of encoding the input texts, a `Tokenizer` also has an API for
+decoding, that is converting IDs generated by your model back to a text.
+This is done by the methods `Tokenizer.decode` (for one predicted text)
+and `Tokenizer.decode_batch` (for a batch of predictions).
+
+The `decoder` will first convert the IDs back to tokens (using the
+tokenizer's vocabulary) and remove all special tokens, then join those
+tokens with spaces:
+
+>python
+    output = tokenizer.encode("Hello, y'all! How are you 😁 ?")
+    print(output.ids)
+    # [1, 27253, 16, 93, 11, 5097, 5, 7961, 5112, 6218, 0, 35, 2]
+    tokenizer.decode([1, 27253, 16, 93, 11, 5097, 5, 7961, 5112, 6218, 0, 35, 2])
+    # "Hello , y ' all ! How are you ?"
+<
+If you used a model that added special characters to represent subtokens
+of a given “word” (like the `"##"` in WordPiece) you will need to
+customize the `decoder` to treat them properly. If we take our previous
+`bert_tokenizer` for instance the default decoding will give:
+
+>python
+    output = bert_tokenizer.encode("Welcome to the 🤗 Tokenizers library.")
+    print(output.tokens)
+    # ["[CLS]", "welcome", "to", "the", "[UNK]", "tok", "##eni", "##zer", "##s", "library", ".", "[SEP]"]
+    bert_tokenizer.decode(output.ids)
+    # "welcome to the tok ##eni ##zer ##s library ."
+<
+But by changing it to a proper decoder, we get:
+
+>python
+    from tokenizers import decoders
+    bert_tokenizer.decoder = decoders.WordPiece()
+    bert_tokenizer.decode(output.ids)
+    # "welcome to the tokenizers library."
+<
+
+----------------------------------------------------------------------------
+Quicktour                                               *tokenizers-quicktour*
+
+Let's have a quick look at the 🤗 Tokenizers library features. The
+library provides an implementation of today's most used tokenizers that
+is both easy to use and blazing fast.
+
+BUILD A TOKENIZER FROM SCRATCH      *quicktour-build-a-tokenizer-from-scratch*
+
+To illustrate how fast the 🤗 Tokenizers library is, let's train a new
+tokenizer on wikitext-103
+https://www.salesforce.com/blog/the-wikitext-long-term-dependency-language-modeling-dataset/
+(516M of text) in just a few seconds. First things first, you will need
+to download this dataset and unzip it with:
+
+>bash
+    wget https://s3.amazonaws.com/research.metamind.io/wikitext/wikitext-103-raw-v1.zip
+    unzip wikitext-103-raw-v1.zip
+<
+
+Training the tokenizer                      *quicktour-training-the-tokenizer*
+
+In this tour, we will build and train a Byte-Pair Encoding (BPE)
+tokenizer. For more information about the different type of tokenizers,
+check out this guide
+https://huggingface.co/transformers/tokenizer_summary.html in the 🤗
+Transformers documentation. Here, training the tokenizer means it will
+learn merge rules by:
+
+- Start with all the characters present in the training corpus as
+  tokens.
+- Identify the most common pair of tokens and merge it into one token.
+- Repeat until the vocabulary (e.g., the number of tokens) has reached
+  the size we want.
+
+The main API of the library is the `class` `Tokenizer`, here is how we
+instantiate one with a BPE model:
+
+>python
+    from tokenizers import Tokenizer
+    from tokenizers.models import BPE
+    tokenizer = Tokenizer(BPE(unk_token="[UNK]"))
+<
+To train our tokenizer on the wikitext files, we will need to
+instantiate a trainer, in this case a `BpeTrainer`
+
+>python
+    from tokenizers.trainers import BpeTrainer
+    trainer = BpeTrainer(special_tokens=["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"])
+<
+We can set the training arguments like `vocab_size` or `min_frequency`
+(here left at their default values of 30,000 and 0) but the most
+important part is to give the `special_tokens` we plan to use later on
+(they are not used at all during training) so that they get inserted in
+the vocabulary.
+
+  Tip: ~
+
+  The order in which you write the special tokens list matters: here
+  `"[UNK]"` will get the ID 0, `"[CLS]"` will get the ID 1 and so forth.
+
+We could train our tokenizer right now, but it wouldn't be optimal.
+Without a pre-tokenizer that will split our inputs into words, we might
+get tokens that overlap several words: for instance we could get an
+`"it is"` token since those two words often appear next to each other.
+Using a pre-tokenizer will ensure no token is bigger than a word
+returned by the pre-tokenizer. Here we want to train a subword BPE
+tokenizer, and we will use the easiest pre-tokenizer possible by
+splitting on whitespace.
+
+>python
+    from tokenizers.pre_tokenizers import Whitespace
+    tokenizer.pre_tokenizer = Whitespace()
+<
+Now, we can just call the `Tokenizer.train` method with any list of
+files we want to use:
+
+>python
+    files = [f"data/wikitext-103-raw/wiki.{split}.raw" for split in ["test", "train", "valid"]]
+    tokenizer.train(files, trainer)
+<
+This should only take a few seconds to train our tokenizer on the full
+wikitext dataset! To save the tokenizer in one file that contains all
+its configuration and vocabulary, just use the `Tokenizer.save` method:
+
+>python
+    tokenizer.save("data/tokenizer-wiki.json")
+<
+and you can reload your tokenizer from that file with the
+`Tokenizer.from_file` `classmethod`:
+
+>python
+    tokenizer = Tokenizer.from_file("data/tokenizer-wiki.json")
+<
+
+Using the tokenizer                            *quicktour-using-the-tokenizer*
+
+Now that we have trained a tokenizer, we can use it on any text we want
+with the `Tokenizer.encode` method:
+
+>python
+    output = tokenizer.encode("Hello, y'all! How are you 😁 ?")
+<
+This applied the full pipeline of the tokenizer on the text, returning
+an `Encoding` object. To learn more about this pipeline, and how to
+apply (or customize) parts of it, check out this page
+https://github.com/huggingface/tokenizers/blob/main/docs/source-doc-builder/pipeline.mdx.
+
+This `Encoding` object then has all the attributes you need for your
+deep learning model (or other). The `tokens` attribute contains the
+segmentation of your text in tokens:
+
+>python
+    print(output.tokens)
+    # ["Hello", ",", "y", "'", "all", "!", "How", "are", "you", "[UNK]", "?"]
+<
+Similarly, the `ids` attribute will contain the index of each of those
+tokens in the tokenizer's vocabulary:
+
+>python
+    print(output.ids)
+    # [27253, 16, 93, 11, 5097, 5, 7961, 5112, 6218, 0, 35]
+<
+An important feature of the 🤗 Tokenizers library is that it comes with
+full alignment tracking, meaning you can always get the part of your
+original sentence that corresponds to a given token. Those are stored in
+the `offsets` attribute of our `Encoding` object. For instance, let's
+assume we would want to find back what caused the `"[UNK]"` token to
+appear, which is the token at index 9 in the list, we can just ask for
+the offset at the index:
+
+>python
+    print(output.offsets[9])
+    # (26, 27)
+<
+and those are the indices that correspond to the emoji in the original
+sentence:
+
+>python
+    sentence = "Hello, y'all! How are you 😁 ?"
+    sentence[26:27]
+    # "😁"
+<
+
+Post-processing                                    *quicktour-post-processing*
+
+We might want our tokenizer to automatically add special tokens, like
+`"[CLS]"` or `"[SEP]"`. To do this, we use a post-processor.
+`TemplateProcessing` is the most commonly used, you just have to specify
+a template for the processing of single sentences and pairs of
+sentences, along with the special tokens and their IDs.
+
+When we built our tokenizer, we set `"[CLS]"` and `"[SEP]"` in positions
+1 and 2 of our list of special tokens, so this should be their IDs. To
+double-check, we can use the `Tokenizer.token_to_id` method:
+
+>python
+    tokenizer.token_to_id("[SEP]")
+    # 2
+<
+Here is how we can set the post-processing to give us the traditional
+BERT inputs:
+
+>python
+    from tokenizers.processors import TemplateProcessing
+    tokenizer.post_processor = TemplateProcessing(
+        single="[CLS] $A [SEP]",
+        pair="[CLS] $A [SEP] $B:1 [SEP]:1",
+        special_tokens=[
+            ("[CLS]", tokenizer.token_to_id("[CLS]")),
+            ("[SEP]", tokenizer.token_to_id("[SEP]")),
+        ],
+    )
+<
+Let's go over this snippet of code in more details. First we specify the
+template for single sentences: those should have the form
+`"[CLS] $A [SEP]"` where `$A` represents our sentence.
+
+Then, we specify the template for sentence pairs, which should have the
+form `"[CLS] $A [SEP] $B [SEP]"` where `$A` represents the first
+sentence and `$B` the second one. The `:1` added in the template
+represent the `type IDs` we want for each part of our input: it defaults
+to 0 for everything (which is why we don't have `$A:0`) and here we set
+it to 1 for the tokens of the second sentence and the last `"[SEP]"`
+token.
+
+Lastly, we specify the special tokens we used and their IDs in our
+tokenizer's vocabulary.
+
+To check out this worked properly, let's try to encode the same sentence
+as before:
+
+>python
+    output = tokenizer.encode("Hello, y'all! How are you 😁 ?")
+    print(output.tokens)
+    # ["[CLS]", "Hello", ",", "y", "'", "all", "!", "How", "are", "you", "[UNK]", "?", "[SEP]"]
+<
+To check the results on a pair of sentences, we just pass the two
+sentences to `Tokenizer.encode`:
+
+>python
+    output = tokenizer.encode("Hello, y'all!", "How are you 😁 ?")
+    print(output.tokens)
+    # ["[CLS]", "Hello", ",", "y", "'", "all", "!", "[SEP]", "How", "are", "you", "[UNK]", "?", "[SEP]"]
+<
+You can then check the type IDs attributed to each token is correct with
+
+>python
+    print(output.type_ids)
+    # [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]
+<
+If you save your tokenizer with `Tokenizer.save`, the post-processor
+will be saved along.
+
+                            *quicktour-encoding-multiple-sentences-in-a-batch*
+Encoding multiple sentences in a batch
+
+To get the full speed of the 🤗 Tokenizers library, it's best to process
+your texts by batches by using the `Tokenizer.encode_batch` method:
+
+>python
+    output = tokenizer.encode_batch(["Hello, y'all!", "How are you 😁 ?"])
+<
+The output is then a list of `Encoding` objects like the ones we saw
+before. You can process together as many texts as you like, as long as
+it fits in memory.
+
+To process a batch of sentences pairs, pass two lists to the
+`Tokenizer.encode_batch` method: the list of sentences A and the list of
+sentences B:
+
+>python
+    output = tokenizer.encode_batch(
+        [["Hello, y'all!", "How are you 😁 ?"], ["Hello to you too!", "I'm fine, thank you!"]]
+    )
+<
+When encoding multiple sentences, you can automatically pad the outputs
+to the longest sentence present by using `Tokenizer.enable_padding`,
+with the `pad_token` and its ID (which we can double-check the id for
+the padding token with `Tokenizer.token_to_id` like before):
+
+>python
+    tokenizer.enable_padding(pad_id=3, pad_token="[PAD]")
+<
+We can set the `direction` of the padding (defaults to the right) or a
+given `length` if we want to pad every sample to that specific number
+(here we leave it unset to pad to the size of the longest text).
+
+>python
+    output = tokenizer.encode_batch(["Hello, y'all!", "How are you 😁 ?"])
+    print(output[1].tokens)
+    # ["[CLS]", "How", "are", "you", "[UNK]", "?", "[SEP]", "[PAD]"]
+<
+In this case, the `attention mask` generated by the tokenizer takes the
+padding into account:
+
+>python
+    print(output[1].attention_mask)
+    # [1, 1, 1, 1, 1, 1, 1, 0]
+<
+
+PRETRAINED                                              *quicktour-pretrained*
+
+Using a pretrained tokenizer          *quicktour-using-a-pretrained-tokenizer*
+
+You can load any tokenizer from the Hugging Face Hub as long as a
+`tokenizer.json` file is available in the repository.
+
+>python
+    from tokenizers import Tokenizer
+
+    tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+<
+
+     *quicktour-importing-a-pretrained-tokenizer-from-legacy-vocabulary-files*
+Importing a pretrained tokenizer from legacy vocabulary files
+
+You can also import a pretrained tokenizer directly in, as long as you
+have its vocabulary file. For instance, here is how to import the
+classic pretrained BERT tokenizer:
+
+>python
+    from tokenizers import BertWordPieceTokenizer
+
+    tokenizer = BertWordPieceTokenizer("bert-base-uncased-vocab.txt", lowercase=True)
+<
+as long as you have downloaded the file `bert-base-uncased-vocab.txt`
+with
+
+>bash
+    wget https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt
+<
+
+----------------------------------------------------------------------------
+Training from memory                         *tokenizers-training_from_memory*
+
+In the |tokenizers-quicktour|, we saw how to build and train a tokenizer
+using text files, but we can actually use any Python Iterator. In this
+section we'll see a few different ways of training our tokenizer.
+
+For all the examples listed below, we'll use the same
+|tokenizers.Tokenizer| and `Trainer`, built as following:
+
+>python
+    from tokenizers import Tokenizer, decoders, models, normalizers, pre_tokenizers, trainers
+    tokenizer = Tokenizer(models.Unigram())
+    tokenizer.normalizer = normalizers.NFKC()
+    tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel()
+    tokenizer.decoder = decoders.ByteLevel()
+    trainer = trainers.UnigramTrainer(
+        vocab_size=20000,
+        initial_alphabet=pre_tokenizers.ByteLevel.alphabet(),
+        special_tokens=["<PAD>", "<BOS>", "<EOS>"],
+    )
+<
+This tokenizer is based on the |tokenizers.models.Unigram| model. It
+takes care of normalizing the input using the NFKC Unicode normalization
+method, and uses a |tokenizers.pre_tokenizers.ByteLevel| pre-tokenizer
+with the corresponding decoder.
+
+For more information on the components used here, you can check
+|tokenizers-components|.
+
+THE MOST BASIC WAY                   *training_from_memory-the-most-basic-way*
+
+As you probably guessed already, the easiest way to train our tokenizer
+is by using a `List`{.interpreted-text role=“obj”}:
+
+>python
+    # First few lines of the "Zen of Python" https://www.python.org/dev/peps/pep-0020/
+    data = [
+        "Beautiful is better than ugly."
+        "Explicit is better than implicit."
+        "Simple is better than complex."
+        "Complex is better than complicated."
+        "Flat is better than nested."
+        "Sparse is better than dense."
+        "Readability counts."
+    ]
+    tokenizer.train_from_iterator(data, trainer=trainer)
+<
+Easy, right? You can use anything working as an iterator here, be it a
+`List`{.interpreted-text role=“obj”}, `Tuple`{.interpreted-text
+role=“obj”}, or a `np.Array`{.interpreted-text role=“obj”}. Anything
+works as long as it provides strings.
+
+                             *training_from_memory-using-the-datasets-library*
+USING THE 🤗 DATASETS LIBRARY
+
+An awesome way to access one of the many datasets that exist out there
+is by using the 🤗 Datasets library. For more information about it, you
+should check the official documentation here
+https://huggingface.co/docs/datasets/.
+
+Let's start by loading our dataset:
+
+>python
+    import datasets  # type: ignore[import-not-found]
+    dataset = datasets.load_dataset("Salesforce/wikitext", "wikitext-103-raw-v1", split="train+test+validation")
+<
+The next step is to build an iterator over this dataset. The easiest way
+to do this is probably by using a generator:
+
+>python
+    def batch_iterator(batch_size=1000):
+        # Only keep the text column to avoid decoding the rest of the columns unnecessarily
+        tok_dataset = dataset.select_columns("text")
+        for batch in tok_dataset.iter(batch_size):
+            yield batch["text"]
+<
+As you can see here, for improved efficiency we can actually provide a
+batch of examples used to train, instead of iterating over them one by
+one. By doing so, we can expect performances very similar to those we
+got while training directly from files.
+
+With our iterator ready, we just need to launch the training. In order
+to improve the look of our progress bars, we can specify the total
+length of the dataset:
+
+>python
+    tokenizer.train_from_iterator(batch_iterator(), trainer=trainer, length=len(dataset))
+<
+And that's it!
+
+USING GZIP FILES                       *training_from_memory-using-gzip-files*
+
+Since gzip files in Python can be used as iterators, it is extremely
+simple to train on such files:
+
+>python
+    import gzip
+    with gzip.open("data/my-file.0.gz", "rt") as f:
+        tokenizer.train_from_iterator(f, trainer=trainer)
+<
+Now if we wanted to train from multiple gzip files, it wouldn't be much
+harder:
+
+>python
+    files = ["data/my-file.0.gz", "data/my-file.1.gz", "data/my-file.2.gz"]
+    def gzip_iterator():
+        for path in files:
+            with gzip.open(path, "rt") as f:
+                for line in f:
+                    yield line
+    tokenizer.train_from_iterator(gzip_iterator(), trainer=trainer)
+<
+And voilà!
+
+ vim:tw=78:ts=8:ft=help:norl:

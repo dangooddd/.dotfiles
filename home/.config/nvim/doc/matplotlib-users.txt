@@ -77,25 +77,22 @@ and some commonly used `set_*` methods that update the underlying data.
 While updating data is the most common operation in animations, you can also
 update other aspects such as color or text position.
 
-Plotting method                  Artist                      Data set methods
--------------------------------  --------------------------  ------------------
-Axes.plot                        lines.Line2D                set_data,
-                                                             set_xdata,
-                                                             set_ydata
-Axes.scatter                     collections.PathCollection  set_offsets
-Axes.imshow                      image.AxesImage             AxesImage.set_data
-Axes.annotate                    text.Annotation             update_positions
-Axes.barh                        patches.Rectangle           set_angle,
-                                                             set_bounds,
-                                                             set_height,
-                                                             set_width, set_x,
-                                                             set_y, set_xy
-Axes.fill                        patches.Polygon             set_xy
-Axes.add_patch(patches.Ellipse)  patches.Ellipse             set_angle,
-                                                             set_center,
-                                                             set_height,
-                                                             set_width
-Axes.set_title, Axes.text        text.Text                   set_text
+Plotting method           Artist                     Data set methods
+------------------------  -------------------------  -------------------------
+Axes.plot                 lines.Line2D               set_data, set_xdata,
+                                                     set_ydata
+Axes.scatter              collections.               set_offsets
+                          PathCollection
+Axes.imshow               image.AxesImage            AxesImage.set_data
+Axes.annotate             text.Annotation            update_positions
+Axes.barh                 patches.Rectangle          set_angle, set_bounds,
+                                                     set_height, set_width,
+                                                     set_x, set_y, set_xy
+Axes.fill                 patches.Polygon            set_xy
+Axes.add_patch(patches.   patches.Ellipse            set_angle, set_center,
+    Ellipse)                                             set_height, set_width
+    Axes.set_title,           text.Text                  set_text
+    Axes.text
 
 Covering the set methods for all types of artists is beyond the scope of
 this tutorial but can be found in their respective documentations. An
@@ -7245,7 +7242,7 @@ this).
   discouraged. Use the suggested replacement instead.
 
   Colormap   Use identical replacement instead
-  ---------  -------------------------------------------------------------------
+  ---------  -----------------------------------------------------------------
   gist_gray  gray
   gist_yarg  gray_r
   binary     gray_r
@@ -12392,11 +12389,13 @@ Blocking the prompt     *explain-figure-interactive_guide-blocking-the-prompt*
 
 *explain-figure-interactive_guide-cp-block-the-prompt*
 
-pyplot.show                           Display all open figures.
-pyplot.pause                          Run the GUI event loop for interval
-                                      seconds.
-backend_bases.FigureCanvasBase.start_event_loop  Start a blocking event loop.
-backend_bases.FigureCanvasBase.stop_event_loop  Stop the current blocking event loop.
+pyplot.show                         Display all open figures.
+pyplot.pause                        Run the GUI event loop for interval
+                                    seconds.
+backend_bases.FigureCanvasBase.     Start a blocking event loop.
+start_event_loop
+backend_bases.FigureCanvasBase.     Stop the current blocking event loop.
+stop_event_loop
 
 The simplest solution is to start the GUI event loop and let it run
 exclusively, which results in responsive figure windows. However, the CLI
@@ -12480,14 +12479,15 @@ SCRIPTS AND FUNCTIONS *explain-figure-interactive_guide-scripts-and-functions*
 
 *explain-figure-interactive_guide-interactive-scripts*
 
-backend_bases.FigureCanvasBase.flush_events  Flush the GUI events for the figure.
-backend_bases.FigureCanvasBase.draw_idle  Request a widget redraw once control
-                                      returns to the GUI event loop.
-figure.Figure.ginput                  Blocking call to interact with a figure.
-pyplot.ginput                         Blocking call to interact with a figure.
-pyplot.show                           Display all open figures.
-pyplot.pause                          Run the GUI event loop for interval
-                                      seconds.
+backend_bases.FigureCanvasBase.     Flush the GUI events for the figure.
+flush_events
+backend_bases.FigureCanvasBase.     Request a widget redraw once control
+draw_idle                           returns to the GUI event loop.
+figure.Figure.ginput                Blocking call to interact with a figure.
+pyplot.ginput                       Blocking call to interact with a figure.
+pyplot.show                         Display all open figures.
+pyplot.pause                        Run the GUI event loop for interval
+                                    seconds.
 
 There are several use-cases for using interactive figures in scripts:
 
@@ -12529,9 +12529,10 @@ Explicitly spinning the event loop
 
 *explain-figure-interactive_guide-spin-event-loop*
 
-backend_bases.FigureCanvasBase.flush_events  Flush the GUI events for the figure.
-backend_bases.FigureCanvasBase.draw_idle  Request a widget redraw once control
-                                      returns to the GUI event loop.
+backend_bases.FigureCanvasBase.     Flush the GUI events for the figure.
+flush_events
+backend_bases.FigureCanvasBase.     Request a widget redraw once control
+draw_idle                           returns to the GUI event loop.
 
 If you have open windows that have pending UI events (mouse clicks, button
 presses, or draws) you can explicitly process those events by calling
@@ -12633,10 +12634,12 @@ IDLE DRAW                         *explain-figure-interactive_guide-draw-idle*
 
 *explain-figure-interactive_guide-idle-draw*
 
-backend_bases.FigureCanvasBase.draw   Render the Figure.
-backend_bases.FigureCanvasBase.draw_idle  Request a widget redraw once control
-                                      returns to the GUI event loop.
-backend_bases.FigureCanvasBase.flush_events  Flush the GUI events for the figure.
+backend_bases.FigureCanvasBase.     Render the Figure.
+draw
+backend_bases.FigureCanvasBase.     Request a widget redraw once control
+draw_idle                           returns to the GUI event loop.
+backend_bases.FigureCanvasBase.     Flush the GUI events for the figure.
+flush_events
 
 In almost all cases, we recommend using
 |matplotlib.backend_bases.FigureCanvasBase.draw_idle| over

@@ -85,7 +85,8 @@ class verl.DataProto(batch: TensorDict = None, non_tensor_batch: dict =
             |verl.DataProto|
 
     make_iterator(mini_batch_size, epochs, seed=None,
-    dataloader_kwargs=None) *verl.DataProto.make_iterator*
+    dataloader_kwargs=None)
+    *verl.DataProto.make_iterator*
         Make an iterator from the DataProto. This is built upon that
         TensorDict can be used as a normal Pytorch dataset. See
         https://pytorch.org/tensordict/stable/tutorials/data_fashion for
@@ -109,7 +110,8 @@ class verl.DataProto(batch: TensorDict = None, non_tensor_batch: dict =
             Iterator
 
     select(batch_keys=None, non_tensor_batch_keys=None, meta_info_keys=None,
-    deepcopy=False) → |verl.DataProto| *verl.DataProto.select*
+    deepcopy=False) → |verl.DataProto|
+    *verl.DataProto.select*
         Select a subset of the DataProto via batch_keys and meta_info_keys
 
         Parameters: ~
@@ -124,7 +126,8 @@ class verl.DataProto(batch: TensorDict = None, non_tensor_batch: dict =
         Return type: ~
             |verl.DataProto|
 
-    to(device) → |verl.DataProto| *verl.DataProto.to*
+    to(device) → |verl.DataProto|
+    *verl.DataProto.to*
         move the batch to device
 
         Parameters: ~
@@ -136,7 +139,8 @@ class verl.DataProto(batch: TensorDict = None, non_tensor_batch: dict =
         Return type: ~
             |verl.DataProto|
 
-    union(other: |verl.DataProto|) → |verl.DataProto| *verl.DataProto.union*
+    union(other: |verl.DataProto|) → |verl.DataProto|
+    *verl.DataProto.union*
         Union with another DataProto. Union batch and meta_info separately.
         Throw an error if
 
@@ -193,33 +197,40 @@ class verl.single_controller.Worker(cuda_visible_devices=None)
     *verl.single_controller.Worker.get_master_addr_port*
         Get the master address and port for distributed communication.
 
-    property rank *verl.single_controller.Worker.rank*
+    property rank
+    *verl.single_controller.Worker.rank*
         Get the rank of this worker in the distributed setup.
 
-    property world_size *verl.single_controller.Worker.world_size*
+    property world_size
+    *verl.single_controller.Worker.world_size*
         Get the total number of workers in the distributed setup.
+
+                                          *verl.single_controller.WorkerGroup*
 
 class verl.single_controller.WorkerGroup(resource_pool:
     |verl.single_controller.ResourcePool|, **kwargs)
-    *verl.single_controller.WorkerGroup*
     Base class for managing a group of workers in a distributed system. The
     class provides methods for worker management, aliveness checking, and
     method binding.
 
     __init__(resource_pool: |verl.single_controller.ResourcePool|, **kwargs)
-    → None *verl.single_controller.WorkerGroup.__init__*
+    → None
+    *verl.single_controller.WorkerGroup.__init__*
 
-    property world_size *verl.single_controller.WorkerGroup.world_size*
+    property world_size
+    *verl.single_controller.WorkerGroup.world_size*
         Number of workers in the group.
 
+                                    *verl.single_controller.ClassWithInitArgs*
+
 class verl.single_controller.ClassWithInitArgs(cls, *args, **kwargs)
-    *verl.single_controller.ClassWithInitArgs*
     Wrapper class that stores constructor arguments for deferred
     instantiation. This class is particularly useful for remote class
     instantiation where the actual construction needs to happen at a
     different time or location.
 
-    __call__() → Any *verl.single_controller.ClassWithInitArgs.__call__*
+    __call__() → Any
+    *verl.single_controller.ClassWithInitArgs.__call__*
         Instantiate the stored class with the stored arguments.
 
     __init__(cls, *args, **kwargs) → None
@@ -231,16 +242,18 @@ class verl.single_controller.ClassWithInitArgs(cls, *args, **kwargs)
             - *args -- Positional arguments for the class constructor
             - **kwargs -- Keyword arguments for the class constructor
 
+                                         *verl.single_controller.ResourcePool*
+
 class verl.single_controller.ResourcePool(process_on_nodes=None,
     max_colocate_count: int = 10, n_gpus_per_node=8)
-    *verl.single_controller.ResourcePool*
     Manages a pool of resources across multiple nodes, tracking process
     counts and GPU allocations. The class provides methods to calculate
     world size, local world sizes, and local ranks across all nodes in the
     pool.
 
     __init__(process_on_nodes=None, max_colocate_count: int = 10,
-    n_gpus_per_node=8) → None *verl.single_controller.ResourcePool.__init__*
+    n_gpus_per_node=8) → None
+    *verl.single_controller.ResourcePool.__init__*
         Initialize the ResourcePool with node processes and GPU
         configuration.
 
@@ -261,15 +274,17 @@ class verl.single_controller.ResourcePool(process_on_nodes=None,
     *verl.single_controller.ResourcePool.local_world_size_list*
         Returns a flat list where each process has its local world size.
 
-    property world_size *verl.single_controller.ResourcePool.world_size*
+    property world_size
+    *verl.single_controller.ResourcePool.world_size*
         Total number of processes across all nodes in the pool.
+
+                                   *verl.single_controller.ray.RayWorkerGroup*
 
 class verl.single_controller.ray.RayWorkerGroup(resource_pool:
     RayResourcePool = None, ray_cls_with_init: RayClassWithInitArgs = None,
     bin_pack: bool = True, name_prefix: str = None, detached=False,
     worker_names=None, worker_handles: list[ActorHandle] = None,
     ray_wait_register_center_timeout: int = 300, **kwargs)
-    *verl.single_controller.ray.RayWorkerGroup*
     A group of Ray workers that can be managed collectively.
 
     This class extends WorkerGroup to provide Ray-specific functionality for
@@ -280,7 +295,8 @@ class verl.single_controller.ray.RayWorkerGroup(resource_pool:
     RayClassWithInitArgs = None, bin_pack: bool = True, name_prefix: str =
     None, detached=False, worker_names=None, worker_handles:
     list[ActorHandle] = None, ray_wait_register_center_timeout: int = 300,
-    **kwargs) → None *verl.single_controller.ray.RayWorkerGroup.__init__*
+    **kwargs) → None
+    *verl.single_controller.ray.RayWorkerGroup.__init__*
         Initialize a RayWorkerGroup.
 
         Parameters: ~
@@ -296,9 +312,10 @@ class verl.single_controller.ray.RayWorkerGroup(resource_pool:
               register center
             - **kwargs -- Additional keyword arguments
 
+                      *verl.single_controller.ray.create_colocated_worker_cls*
+
 verl.single_controller.ray.create_colocated_worker_cls(class_dict: dict[str,
     RayClassWithInitArgs])
-    *verl.single_controller.ray.create_colocated_worker_cls*
     This function should return a class instance that delegates the calls to
     every cls in cls_dict
 
@@ -334,10 +351,12 @@ Core functions to implement PPO algorithms. The function implemented in this
 file should be used by trainer with different distributed strategies to
 implement PPO-like algorithms.
 
+                                        *verl.trainer.ppo.core_algos.agg_loss*
+
 verl.trainer.ppo.core_algos.agg_loss(loss_mat: Tensor, loss_mask: Tensor,
     loss_agg_mode: str, dp_size: int = 1, batch_num_tokens: int | None = None,
-    global_batch_size: int | None = None, loss_scale_factor: int | None = None)
-    *verl.trainer.ppo.core_algos.agg_loss*
+    global_batch_size: int | None = None, loss_scale_factor: int | None =
+    None)
     Aggregate the loss across global batch to ensure the loss is invariant
     to fsdp/megatron parallelism.
 
@@ -363,10 +382,11 @@ verl.trainer.ppo.core_algos.agg_loss(loss_mat: Tensor, loss_mask: Tensor,
     Return type: ~
         loss
 
+                             *verl.trainer.ppo.core_algos.compute_policy_loss*
+
 verl.trainer.ppo.core_algos.compute_policy_loss(old_log_prob, log_prob,
     advantages, response_mask, cliprange=None, cliprange_low=None,
     cliprange_high=None, clip_ratio_c=3.0, loss_agg_mode: str = 'token-mean')
-    *verl.trainer.ppo.core_algos.compute_policy_loss*
     Compute the clipped policy objective and related metrics for PPO.
 
     Adapted from
@@ -394,9 +414,10 @@ verl.trainer.ppo.core_algos.compute_policy_loss(old_log_prob, log_prob,
         - loss_agg_mode (str, optional) -- Aggregation mode for agg_loss.
           Defaults to “token-mean”.
 
+                                      *verl.trainer.ppo.core_algos.kl_penalty*
+
 verl.trainer.ppo.core_algos.kl_penalty(logprob: FloatTensor, ref_logprob:
     FloatTensor, kl_penalty) → FloatTensor
-    *verl.trainer.ppo.core_algos.kl_penalty*
     Compute KL divergence given logprob and ref_logprob. Optionally using
     straight through to bind k2 on other kl penalty compute method for
     unbiased KL gradient estimation. See more description in
@@ -409,9 +430,10 @@ verl.trainer.ppo.core_algos.kl_penalty(logprob: FloatTensor, ref_logprob:
     Returns: ~
         kl_estimate
 
+                                 *verl.trainer.ppo.reward.load_reward_manager*
+
 verl.trainer.ppo.reward.load_reward_manager(config: DictConfig, tokenizer:
     Any, **reward_kwargs: Any) → RewardManagerBase
-    *verl.trainer.ppo.reward.load_reward_manager*
     Load and initialize a reward manager based on the configuration.
 
     Parameters: ~
@@ -424,9 +446,11 @@ verl.trainer.ppo.reward.load_reward_manager(config: DictConfig, tokenizer:
     Returns: ~
         An instance of the specified reward manager class.
 
+                              *verl.workers.reward_manager.NaiveRewardManager*
+
 class verl.workers.reward_manager.NaiveRewardManager(tokenizer, num_examine,
-    compute_score=None, reward_fn_key='data_source', compute_score_timeout=None)
-    *verl.workers.reward_manager.NaiveRewardManager*
+    compute_score=None, reward_fn_key='data_source',
+    compute_score_timeout=None)
     The reward manager.
 
                                *verl.workers.reward_manager.DAPORewardManager*
@@ -473,9 +497,10 @@ FILE SYSTEM UTILITIES                         *api-utils-module-verl.utils.fs*
 
 File-system agnostic IO APIs
 
+                                                 *verl.utils.fs.copy_to_local*
+
 verl.utils.fs.copy_to_local(src: str, cache_dir=None, filelock='.file.lock',
     verbose=False, always_recopy=False, use_shm: bool = False) → str
-    *verl.utils.fs.copy_to_local*
     Copy files/directories from HDFS to local cache with validation.
 
     Parameters: ~
@@ -502,9 +527,10 @@ TRACKING UTILITIES                      *api-utils-module-verl.utils.tracking*
 
 A unified tracking interface that supports logging data to different backend
 
+                                                *verl.utils.tracking.Tracking*
+
 class verl.utils.tracking.Tracking(project_name, experiment_name,
     default_backend: str | list[str] = 'console', config=None)
-    *verl.utils.tracking.Tracking*
     A unified tracking interface for logging experiment data to multiple
     backends.
 
@@ -518,7 +544,8 @@ class verl.utils.tracking.Tracking(project_name, experiment_name,
     logger *verl.utils.tracking.Tracking.logger*
         Dictionary of initialized logger instances for each backend.
 
-    finish(exit_code: int = 0) *verl.utils.tracking.Tracking.finish*
+    finish(exit_code: int = 0)
+    *verl.utils.tracking.Tracking.finish*
         Flush and finalize every configured backend exactly once.
 
 METRICS UTILITIES                         *api-utils-module-verl.utils.metric*
@@ -559,9 +586,10 @@ CHECKPOINT MANAGEMENT
 
 *api-utils-checkpoint-management*
 
+              *verl.utils.checkpoint.checkpoint_manager.find_latest_ckpt_path*
+
 verl.utils.checkpoint.checkpoint_manager.find_latest_ckpt_path(path,
     directory_format='global_step_{}')
-    *verl.utils.checkpoint.checkpoint_manager.find_latest_ckpt_path*
     Return the most recent checkpoint directory based on a tracker file.
 
     Parameters: ~
@@ -577,6 +605,8 @@ verl.utils.checkpoint.checkpoint_manager.find_latest_ckpt_path(path,
     Return type: ~
         str or None
 
+         *verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager*
+
 class
 verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager(model:
     FullyShardedDataParallel, optimizer: Optimizer | None = None, lr_scheduler:
@@ -585,7 +615,6 @@ verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager(model:
     False, per_tensor_param_fn: Callable[[], tuple[Generator[tuple[str, Tensor],
     None, None], dict | None]] | None = None, hf_export_dtype: dtype | None =
     None, **kwargs)
-    *verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager*
     Manage FSDP checkpointing in SPMD training.
 
     - Saves/loads per-rank sharded model & optimizer states
@@ -630,9 +659,10 @@ verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager(model:
         - hdfs_path -- Unused (for API compatibility).
         - del_local_after_load -- Remove local files after loading.
 
+*verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager.save_checkpoint*
+
 save_checkpoint(local_path: str, hdfs_path: str = None, global_step: int =
     0, max_ckpt_to_keep=None)
-    *verl.utils.checkpoint.fsdp_checkpoint_manager.FSDPCheckpointManager.save_checkpoint*
     Save an FSDP checkpoint for this rank.
 
     Writes: ~
@@ -654,10 +684,11 @@ DATASET UTILITIES             *api-utils-module-verl.utils.dataset.rl_dataset*
 
 *api-utils-dataset-utilities*
 
+                                   *verl.utils.dataset.rl_dataset.RLHFDataset*
+
 class verl.utils.dataset.rl_dataset.RLHFDataset(data_files: str | list[str],
     tokenizer: PythonBackend, config: DictConfig, processor: ProcessorMixin |
     None = None, max_samples: int = -1)
-    *verl.utils.dataset.rl_dataset.RLHFDataset*
     Load and preprocess RLHF data from Parquet files.
 
     - Caches files locally.
@@ -706,7 +737,8 @@ class verl.utils.dataset.rl_dataset.RLHFDataset(data_files: str | list[str],
         Return type: ~
             images
 
-    split(num_splits: int) *verl.utils.dataset.rl_dataset.RLHFDataset.split*
+    split(num_splits: int)
+    *verl.utils.dataset.rl_dataset.RLHFDataset.split*
         split the dataset into num_splits sub-datasets :param num_splits:
         specified number of splits
 
@@ -719,8 +751,9 @@ class verl.utils.dataset.rl_dataset.RLHFDataset(data_files: str | list[str],
         Raises: ~
             ValueError -- if num_splits is not a positive integer
 
+                                    *verl.utils.dataset.rl_dataset.collate_fn*
+
 verl.utils.dataset.rl_dataset.collate_fn(data_list: list[dict]) → dict
-    *verl.utils.dataset.rl_dataset.collate_fn*
     Collate a batch of sample dicts into batched tensors and arrays.
 
     Parameters: ~
@@ -738,9 +771,10 @@ TORCH FUNCTIONAL UTILITIES      *api-utils-module-verl.utils.torch_functional*
 
 Contain small torch utilities
 
+               *verl.utils.torch_functional.get_constant_schedule_with_warmup*
+
 verl.utils.torch_functional.get_constant_schedule_with_warmup(optimizer:
     Optimizer, num_warmup_steps: int, last_epoch: int = -1)
-    *verl.utils.torch_functional.get_constant_schedule_with_warmup*
     Create a constant LR schedule with a linear warmup phase.
 
     Parameters: ~
@@ -757,9 +791,10 @@ verl.utils.torch_functional.get_constant_schedule_with_warmup(optimizer:
     Return type: ~
         LambdaLR
 
+                            *verl.utils.torch_functional.logprobs_from_logits*
+
 verl.utils.torch_functional.logprobs_from_logits(logits, labels,
     inplace_backward=True, batch_invariant=False, temperature=None)
-    *verl.utils.torch_functional.logprobs_from_logits*
     Compute per-token log-probabilities for the given labels.
 
     Uses a Flash-Attention--based cross-entropy (if available) for efficient
@@ -791,8 +826,9 @@ verl.utils.torch_functional.logprobs_from_logits(logits, labels,
     Return type: ~
         Tensor
 
+                                     *verl.utils.torch_functional.masked_mean*
+
 verl.utils.torch_functional.masked_mean(values, mask, axis=None)
-    *verl.utils.torch_functional.masked_mean*
     Compute the mean of values over elements selected by mask.
 
     Parameters: ~
@@ -808,8 +844,9 @@ verl.utils.torch_functional.masked_mean(values, mask, axis=None)
     Return type: ~
         Tensor
 
+                                   *verl.utils.torch_functional.masked_whiten*
+
 verl.utils.torch_functional.masked_whiten(values, mask, shift_mean=True)
-    *verl.utils.torch_functional.masked_whiten*
     Whiten values by normalizing with mean and variance computed over mask.
 
     Parameters: ~
@@ -829,8 +866,9 @@ SEQUENCE LENGTH BALANCING       *api-utils-module-verl.utils.seqlen_balancing*
 
 *api-utils-sequence-length-balancing*
 
+                                 *verl.utils.seqlen_balancing.get_reverse_idx*
+
 verl.utils.seqlen_balancing.get_reverse_idx(idx_map)
-    *verl.utils.seqlen_balancing.get_reverse_idx*
     Build the inverse of an index mapping.
 
     Parameters: ~
@@ -842,10 +880,12 @@ verl.utils.seqlen_balancing.get_reverse_idx(idx_map)
     Return type: ~
         List[int]
 
+                         *verl.utils.seqlen_balancing.rearrange_micro_batches*
+
 verl.utils.seqlen_balancing.rearrange_micro_batches(batch, max_token_len,
     dp_group=None, num_batches_divided_by=None, same_micro_num_in_dp=True,
-    min_num_micro_batch=None, use_dynamic_bsz_balance=True, force_group_size=1)
-    *verl.utils.seqlen_balancing.rearrange_micro_batches*
+    min_num_micro_batch=None, use_dynamic_bsz_balance=True,
+    force_group_size=1)
     Split a batch into micro-batches by total token count, with optional DP
     sync and padding.
 
@@ -881,10 +921,11 @@ Utilities for DeepSpeed Ulysses Sequence Parallelism. DeepSpeed Ulysses
 Paper: https://arxiv.org/abs/2309.14509 Inspired from:
 https://github.com/deepspeedai/DeepSpeed/blob/master/deepspeed/sequence/layer.py
 
+                                 *verl.utils.ulysses.gather_outputs_and_unpad*
+
 verl.utils.ulysses.gather_outputs_and_unpad(x: Tensor, gather_dim: int,
     unpad_dim: int = None, padding_size: int = 0, grad_scaler: bool = True,
     group: ProcessGroup | None = None)
-    *verl.utils.ulysses.gather_outputs_and_unpad*
     Gather a tensor across a process group and optionally unpad its padded
     elements.
 
@@ -907,10 +948,11 @@ verl.utils.ulysses.gather_outputs_and_unpad(x: Tensor, gather_dim: int,
     Return type: ~
         Tensor
 
+                             *verl.utils.ulysses.ulysses_pad_and_slice_inputs*
+
 verl.utils.ulysses.ulysses_pad_and_slice_inputs(input_ids_rmpad: Tensor,
     position_ids_rmpad: Tensor | None = None, sp_size: int = 1,
     skip_position_ids_rmpad: bool = False, pad_value=0)
-    *verl.utils.ulysses.ulysses_pad_and_slice_inputs*
     Pad and slice input_ids to be divisible by sp_size Pad position_ids to
     be divisible by sp_size.
 
@@ -951,9 +993,10 @@ DEBUG UTILITIES                         *api-utils-module-verl.utils.profiler*
 
 *api-utils-debug-utilities*
 
+                                         *verl.utils.profiler.GPUMemoryLogger*
+
 class verl.utils.profiler.GPUMemoryLogger(role: str, logger: Logger = None,
     level=10, log_only_rank_0: bool = True)
-    *verl.utils.profiler.GPUMemoryLogger*
     A decorator class to log GPU memory usage.
 
     Example: ~

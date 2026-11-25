@@ -236,15 +236,24 @@ example `(language_model, fsdp2, cuda)` or
 
 model_type      backend       device      Engine class
 --------------  ------------  ----------  ------------------------------------
-language_model  fsdp / fsdp2  cuda / npu  verl.workers.engine.fsdp.FSDPEngineWithLMHead
-language_model  megatron      cuda        verl.workers.engine.megatron.MegatronEngineWithLMHead
-language_model  megatron      npu         verl.workers.engine.mindspeed.MindspeedEngineWithLMHead
-language_model  automodel     cuda        verl.workers.engine.automodel.AutomodelEngineWithLMHead
-language_model  veomni        cuda / npu  verl.workers.engine.veomni.VeOmniEngineWithLMHead
-language_model  torchtitan    cuda / npu  verl.workers.engine.torchtitan.TorchTitanEngineWithLMHead
-language_model  fsdp_turbo    cuda / npu  verl.workers.engine.fsdp.FSDPTurboEngineWithLMHead
-value_model     fsdp / fsdp2  cuda / npu  verl.workers.engine.fsdp.FSDPEngineWithValueHead
-value_model     megatron      cuda        verl.workers.engine.megatron.MegatronEngineWithValueHead
+language_model  fsdp / fsdp2  cuda / npu  verl.workers.engine.fsdp.
+                                          FSDPEngineWithLMHead
+language_model  megatron      cuda        verl.workers.engine.megatron.
+                                          MegatronEngineWithLMHead
+language_model  megatron      npu         verl.workers.engine.mindspeed.
+                                          MindspeedEngineWithLMHead
+language_model  automodel     cuda        verl.workers.engine.automodel.
+                                          AutomodelEngineWithLMHead
+language_model  veomni        cuda / npu  verl.workers.engine.veomni.
+                                          VeOmniEngineWithLMHead
+language_model  torchtitan    cuda / npu  verl.workers.engine.torchtitan.
+                                          TorchTitanEngineWithLMHead
+language_model  fsdp_turbo    cuda / npu  verl.workers.engine.fsdp.
+                                          FSDPTurboEngineWithLMHead
+value_model     fsdp / fsdp2  cuda / npu  verl.workers.engine.fsdp.
+                                          FSDPEngineWithValueHead
+value_model     megatron      cuda        verl.workers.engine.megatron.
+                                          MegatronEngineWithValueHead
 
                         *workers-engine_workers-migrating-from-legacy-workers*
 MIGRATING FROM LEGACY WORKERS
@@ -254,27 +263,31 @@ modules (together with `verl.workers.actor` / `verl.workers.critic` /
 `verl.workers.sharding_manager` / `verl.workers.legacy`) have been removed.
 The table below summarises the equivalent entry points:
 
-Legacy (removed)                      Current (verl.workers.engine_workers)
-------------------------------------  ----------------------------------------
-verl.workers.fsdp_workers.ActorRolloutRefWorker  ActorRolloutRefWorker
-                                      (strategy=fsdp/fsdp2)
-verl.workers.megatron_workers.ActorRolloutRefWorker  ActorRolloutRefWorker
-                                      (strategy=megatron)
-verl.workers.fsdp_workers.CriticWorker  TrainingWorker (with critic config +
-                                      value-model engine)
-verl.workers.megatron_workers.CriticWorker  TrainingWorker (with critic config +
-                                      value-model engine)
-verl.workers.actor.DataParallelPPOActor  FSDPEngineWithLMHead + TrainingWorker
-verl.workers.actor.MegatronPPOActor   MegatronEngineWithLMHead +
-                                      TrainingWorker
-verl.workers.critic.DataParallelPPOCritic  FSDPEngineWithValueHead + TrainingWorker
-verl.workers.critic.MegatronPPOCritic  MegatronEngineWithValueHead +
-                                      TrainingWorker
-verl.workers.sharding_manager.FSDPUlyssesShardingManager  verl.utils.ulysses.FSDPUlyssesShardingManager
-Dispatch.MEGATRON_PP_AS_DP_PROTO      make_nd_compute_dataproto_dispatch_fn(mesh_name=...)
-                                      (derived from engine)
-use_legacy_worker_impl: True          (removed; only the unified engine is
-                                      available)
+Legacy (removed)                    Current (verl.workers.engine_workers)
+----------------------------------  ------------------------------------------
+verl.workers.fsdp_workers.          ActorRolloutRefWorker
+ActorRolloutRefWorker               (strategy=fsdp/fsdp2)
+verl.workers.megatron_workers.      ActorRolloutRefWorker (strategy=megatron)
+ActorRolloutRefWorker
+verl.workers.fsdp_workers.          TrainingWorker (with critic config +
+CriticWorker                        value-model engine)
+verl.workers.megatron_workers.      TrainingWorker (with critic config +
+CriticWorker                        value-model engine)
+verl.workers.actor.                 FSDPEngineWithLMHead + TrainingWorker
+DataParallelPPOActor
+verl.workers.actor.                 MegatronEngineWithLMHead + TrainingWorker
+MegatronPPOActor
+verl.workers.critic.                FSDPEngineWithValueHead + TrainingWorker
+DataParallelPPOCritic
+verl.workers.critic.                MegatronEngineWithValueHead +
+MegatronPPOCritic                   TrainingWorker
+verl.workers.sharding_manager.      verl.utils.ulysses.
+FSDPUlyssesShardingManager          FSDPUlyssesShardingManager
+Dispatch.MEGATRON_PP_AS_DP_PROTO    make_nd_compute_dataproto_dispatch_
+                                    fn(mesh_name=...)
+                                    (derived from engine)
+use_legacy_worker_impl: True        (removed; only the unified engine is
+                                    available)
 
 EXTENDING                                   *workers-engine_workers-extending*
 

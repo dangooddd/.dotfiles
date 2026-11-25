@@ -27,8 +27,6 @@ class ignite.distributed.auto.DistributedProxySampler(sampler,
 
       Input sampler is assumed to have a constant size.
 
-    Methods: ~
-
 ----------------------------------------------------------------------------
 auto_dataloader                      *ignite.distributed.auto.auto_dataloader*
 
@@ -414,7 +412,8 @@ class ignite.distributed.launcher.Parallel(backend=None,
 
     run  Execute func with provided arguments in distributed context.
 
-    run(func, *args, **kwargs) *ignite.distributed.launcher.Parallel.run*
+    run(func, *args, **kwargs)
+    *ignite.distributed.launcher.Parallel.run*
         Execute `func` with provided arguments in distributed context.
 
         Parameters: ~
@@ -731,9 +730,10 @@ class ignite.engine.deterministic.DeterministicEngine(process_function)
 
     Methods: ~
 
-    state_dict  Returns a dictionary containing engine's state: "epoch_length",
-                "iteration", one of "max_epochs" or "max_iters", and other state
-                values defined by engine.state_dict_user_keys.
+    state_dict  Returns a dictionary containing engine's state:
+                "epoch_length", "iteration", one of "max_epochs" or
+                "max_iters", and other state values defined by
+                engine.state_dict_user_keys.
 
     state_dict()
     *ignite.engine.deterministic.DeterministicEngine.state_dict*
@@ -798,7 +798,7 @@ class ignite.engine.deterministic.ReproducibleBatchSampler(batch_sampler,
 <
     Methods: ~
 
-    setup_batch_indices                    Setup batch indices.
+    setup_batch_indices                  Setup batch indices.
 
     setup_batch_indices()
     *ignite.engine.deterministic.ReproducibleBatchSampler.setup_batch_indices*
@@ -965,18 +965,20 @@ class ignite.engine.engine.Engine(process_function)
 <
     Methods: ~
 
-    add_event_handler      Add an event handler to be executed when the specified
-                           event is fired.
-    fire_event             Execute all the handlers associated with given event.
-    has_event_handler      Check if the specified event has the specified handler.
+    add_event_handler      Add an event handler to be executed when the
+                           specified event is fired.
+    fire_event             Execute all the handlers associated with given
+                           event.
+    has_event_handler      Check if the specified event has the specified
+                           handler.
     has_registered_events  Check whether engine has a registered event.
     interrupt              Sends interrupt signal to the engine, so that it
                            interrupts the run after the current iteration.
     load_state_dict        Setups engine from state_dict.
     on                     Decorator shortcut for add_event_handler().
     register_events        Add events that can be fired.
-    remove_event_handler   Remove event handler handler from registered handlers
-                           of the engine
+    remove_event_handler   Remove event handler handler from registered
+                           handlers of the engine
     run                    Runs the process_function over the passed data.
     set_data               Method to set data.
     state_dict             Returns a dictionary containing engine's state:
@@ -1043,7 +1045,8 @@ class ignite.engine.engine.Engine(process_function)
           event filter to the Engine. See |ignite.engine.events.Events| for
           more details.
 
-    fire_event(event_name) *ignite.engine.engine.Engine.fire_event*
+    fire_event(event_name)
+    *ignite.engine.engine.Engine.fire_event*
         Execute all the handlers associated with given event.
 
         This method executes all handlers associated with the event
@@ -1094,7 +1097,8 @@ class ignite.engine.engine.Engine(process_function)
         Return type: ~
             bool
 
-    interrupt() *ignite.engine.engine.Engine.interrupt*
+    interrupt()
+    *ignite.engine.engine.Engine.interrupt*
         Sends interrupt signal to the engine, so that it interrupts the run
         after the current iteration. The run can be resumed by calling
         |ignite.engine.engine.Engine.run|. Data iteration will continue from
@@ -1205,7 +1209,8 @@ class ignite.engine.engine.Engine(process_function)
 
           `max_iters` instead of `max_epochs`.
 
-    on(event_name, *args, **kwargs) *ignite.engine.engine.Engine.on*
+    on(event_name, *args, **kwargs)
+    *ignite.engine.engine.Engine.on*
         Decorator shortcut for
         |ignite.engine.engine.Engine.add_event_handler|.
 
@@ -1397,7 +1402,8 @@ class ignite.engine.engine.Engine(process_function)
               trainer.run(train_loader, max_epochs=2)
 <
 
-    set_data(data) *ignite.engine.engine.Engine.set_data*
+    set_data(data)
+    *ignite.engine.engine.Engine.set_data*
         Method to set data. After calling the method the next batch passed
         to processing_function is from newly provided data. Please, note
         that epoch length is not modified.
@@ -1437,7 +1443,8 @@ class ignite.engine.engine.Engine(process_function)
             trainer.run(data1, max_epochs=100)
 <
 
-    state_dict() *ignite.engine.engine.Engine.state_dict*
+    state_dict()
+    *ignite.engine.engine.Engine.state_dict*
         Returns a dictionary containing engine's state: `"epoch_length"`,
         `"iteration"`, one of `"max_epochs"` or `"max_iters"`, and other
         state values defined by `engine.state_dict_user_keys`.
@@ -1469,7 +1476,8 @@ class ignite.engine.engine.Engine(process_function)
 
           `max_iters`.
 
-    terminate(skip_completed=False) *ignite.engine.engine.Engine.terminate*
+    terminate(skip_completed=False)
+    *ignite.engine.engine.Engine.terminate*
         Sends terminate signal to the engine, so that it terminates
         completely the run. The run is terminated after the event on which
         `terminate` method was called. The following events are triggered:
@@ -1609,13 +1617,14 @@ class ignite.engine.events.CallableEventWithFilter(value, event_filter=None,
 
     Methods: ~
 
-    before_and_after_event_filter        A wrapper for before and after event
-                                         filter.
-    default_event_filter                 Default event filter.
-    every_before_and_after_event_filter  A wrapper which triggers for every every
-                                         iterations after after and before before.
-    every_event_filter                   A wrapper for every event filter.
-    once_event_filter                    A wrapper for once event filter.
+    before_and_after_event_filter       A wrapper for before and after event
+                                        filter.
+    default_event_filter                Default event filter.
+    every_before_and_after_event_       A wrapper which triggers for every
+    filter                              every iterations after after and
+                                        before before.
+    every_event_filter                  A wrapper for every event filter.
+    once_event_filter                   A wrapper for once event filter.
 
     static before_and_after_event_filter(before=None, after=None)
     *ignite.engine.events.CallableEventWithFilter.before_and_after_event_filter*
@@ -1752,15 +1761,19 @@ class ignite.engine.events.Events(value, names=<not given>, *values,
     The table below illustrates which events are triggered when various
     termination methods are called.
 
-    Method                     TERMINATE_SINGLE_EPOCH  EPOCH_COMPLETED  TERMINATE  COMPLETED
-    -------------------------  ----------------------  ---------------  ---------  ---------
-    no termination             ✗                       ✔                ✗          ✔
-    terminate_epoch()          ✔                       ✔                ✗          ✔
-    terminate_epoch() with     ✔                       ✗                ✗          ✔
-    skip_epoch_completed=True
-    terminate()                ✗                       ✔                ✔          ✔
-    terminate() with           ✗                       ✔                ✔          ✗
-    skip_completed=True
+    Method             TERMINATE_        EPOCH_COMPLETED  TERMINATE  COMPLETED
+                       SINGLE_EPOCH
+    -----------------  ----------------  ---------------  ---------  ---------
+    no termination     ✗                 ✔                ✗          ✔
+    terminate_epoch()  ✔                 ✔                ✗          ✔
+    terminate_epoch()  ✔                 ✗                ✗          ✔
+    with
+    skip_epoch_
+    completed=True
+    terminate()        ✗                 ✔                ✔          ✔
+    terminate() with   ✗                 ✔                ✔          ✗
+    skip_completed=
+    True
 
     Since v0.3.0, Events become more flexible and allow to pass an event
     filter to the Engine:
@@ -1820,7 +1833,8 @@ class ignite.engine.events.Events(value, names=<not given>, *values,
             FOO_EVENT = "foo_event"
             BAR_EVENT = "bar_event"
 <
-    COMPLETED  = 'completed' *ignite.engine.events.Events.COMPLETED*
+    COMPLETED  = 'completed'
+    *ignite.engine.events.Events.COMPLETED*
         triggered when engine's run is completed, or after receiving
         terminate() call.
 
@@ -1849,7 +1863,8 @@ class ignite.engine.events.Events(value, names=<not given>, *values,
     *ignite.engine.events.Events.GET_BATCH_STARTED*
         triggered before next batch is fetched.
 
-    INTERRUPT  = 'interrupt' *ignite.engine.events.Events.INTERRUPT*
+    INTERRUPT  = 'interrupt'
+    *ignite.engine.events.Events.INTERRUPT*
         triggered when the run is interrupted, after receiving interrupt()
         call.
 
@@ -1861,10 +1876,12 @@ class ignite.engine.events.Events(value, names=<not given>, *values,
     *ignite.engine.events.Events.ITERATION_STARTED*
         triggered when an iteration is started.
 
-    STARTED  = 'started' *ignite.engine.events.Events.STARTED*
+    STARTED  = 'started'
+    *ignite.engine.events.Events.STARTED*
         triggered when engine's run is started.
 
-    TERMINATE  = 'terminate' *ignite.engine.events.Events.TERMINATE*
+    TERMINATE  = 'terminate'
+    *ignite.engine.events.Events.TERMINATE*
         triggered when the run is about to end completely, after receiving
         terminate() call.
 
@@ -1896,7 +1913,6 @@ class ignite.engine.events.EventsList
         def call_on_events(engine):
             # do something
 <
-    Methods: ~
 
 ----------------------------------------------------------------------------
 RemovableEventHandle               *ignite.engine.events.RemovableEventHandle*
@@ -1935,7 +1951,8 @@ class ignite.engine.events.RemovableEventHandle(event_name, handler, engine)
 
     remove  Remove handler from engine.
 
-    remove() *ignite.engine.events.RemovableEventHandle.remove*
+    remove()
+    *ignite.engine.events.RemovableEventHandle.remove*
         Remove handler from engine.
 
         Return type: ~
@@ -2461,7 +2478,9 @@ class ignite.handlers.BasicTimeProfiler
     write_results  Method to store the unaggregated profiling results to a csv
                    file
 
-attach(engine)  *ignite.handlers.BasicTimeProfiler.attach*
+                                    *ignite.handlers.BasicTimeProfiler.attach*
+
+attach(engine)
     Attach BasicTimeProfiler to the given engine.
 
     Parameters: ~
@@ -2471,7 +2490,9 @@ attach(engine)  *ignite.handlers.BasicTimeProfiler.attach*
     Return type: ~
         None
 
-get_results()  *ignite.handlers.BasicTimeProfiler.get_results*
+                               *ignite.handlers.BasicTimeProfiler.get_results*
+
+get_results()
     Method to fetch the aggregated profiler results after the engine is run
 
     >python
@@ -2529,7 +2550,9 @@ static print_results(results)
         not yet triggered
 <
 
-write_results(output_path)  *ignite.handlers.BasicTimeProfiler.write_results*
+                             *ignite.handlers.BasicTimeProfiler.write_results*
+
+write_results(output_path)
     Method to store the unaggregated profiling results to a csv file
 
     Parameters: ~
@@ -2635,11 +2658,13 @@ class ignite.handlers.Checkpoint(to_save, save_handler, filename_prefix='',
         `{global_step}_{score_name}={score}`.
 
     score_function  score_name  global_step_transform  suffix
-    --------------  ----------  ---------------------  ----------------------------------
-    None            None        None                   {engine.state.iteration}
+    --------------  ----------  ---------------------  -----------------------
+    None            None        None                   {engine.state.
+                                                       iteration}
     X               None        None                   {score}
     X               None        X                      {global_step}_{score}
-    X               X           X                      {global_step}_{score_name}={score}
+    X               X           X                      {global_step}_{score_
+                                                       name}={score}
     None            None        X                      {global_step}
     X               X           None                   {score_name}={score}
 
@@ -2834,21 +2859,22 @@ class ignite.handlers.Checkpoint(to_save, save_handler, filename_prefix='',
 
     Methods: ~
 
-    get_default_score_fn    Helper method to get default score function based on
-                            the metric name.
-    load_objects            Helper method to apply load_state_dict on the objects
-                            from to_load using states from checkpoint.
+    get_default_score_fn    Helper method to get default score function based
+                            on the metric name.
+    load_objects            Helper method to apply load_state_dict on the
+                            objects from to_load using states from checkpoint.
     load_state_dict         Method replaces internal state of the class with
                             provided state dict data.
-    reload_objects          Helper method to apply load_state_dict on the objects
-                            from to_load.
+    reload_objects          Helper method to apply load_state_dict on the
+                            objects from to_load.
     reset                   Method to reset saved checkpoint names.
-    setup_filename_pattern  Helper method to get the default filename pattern for
-                            a checkpoint.
-    state_dict              Method returns state dict with saved items: list of
-                            (priority, filename) pairs.
+    setup_filename_pattern  Helper method to get the default filename pattern
+                            for a checkpoint.
+    state_dict              Method returns state dict with saved items: list
+                            of (priority, filename) pairs.
 
-    class Item(priority, filename) *ignite.handlers.Checkpoint.Item*
+    class Item(priority, filename)
+    *ignite.handlers.Checkpoint.Item*
         Create new instance of Item(priority, filename)
 
         Parameters: ~
@@ -2971,7 +2997,8 @@ class ignite.handlers.Checkpoint(to_save, save_handler, filename_prefix='',
           method `load_state_dict` will applied to their internal wrapped
           model (`obj.module`).
 
-    load_state_dict(state_dict) *ignite.handlers.Checkpoint.load_state_dict*
+    load_state_dict(state_dict)
+    *ignite.handlers.Checkpoint.load_state_dict*
         Method replaces internal state of the class with provided state dict
         data.
 
@@ -3045,7 +3072,8 @@ class ignite.handlers.Checkpoint(to_save, save_handler, filename_prefix='',
           `Path` https://docs.python.org/3/library/pathlib.html#pathlib.Path
           or |ignite.handlers.DiskSaver|.
 
-    reset() *ignite.handlers.Checkpoint.reset*
+    reset()
+    *ignite.handlers.Checkpoint.reset*
         Method to reset saved checkpoint names.
 
         Use this method if the engine will independently run multiple times:
@@ -3108,7 +3136,8 @@ class ignite.handlers.Checkpoint(to_save, save_handler, filename_prefix='',
 <
           New in version 0.4.3.: ~
 
-    state_dict() *ignite.handlers.Checkpoint.state_dict*
+    state_dict()
+    *ignite.handlers.Checkpoint.state_dict*
         Method returns state dict with saved items: list of
         `(priority, filename)` pairs. Can be used to save internal state of
         the class.
@@ -3154,7 +3183,8 @@ class ignite.handlers.DiskSaver(dirname, atomic=True, create_dir=True,
 
     remove  Method to remove saved checkpoint.
 
-    remove(filename) *ignite.handlers.DiskSaver.remove*
+    remove(filename)
+    *ignite.handlers.DiskSaver.remove*
         Method to remove saved checkpoint.
 
         Parameters: ~
@@ -3310,7 +3340,8 @@ class ignite.handlers.EMAHandler(model, momentum=0.0002,
     attach  Attach the handler to engine.
 
     attach(engine, name='ema_momentum', warn_if_exists=True,
-    event=Events.ITERATION_COMPLETED) *ignite.handlers.EMAHandler.attach*
+    event=Events.ITERATION_COMPLETED)
+    *ignite.handlers.EMAHandler.attach*
         Attach the handler to engine. After the handler is attached, the
         `Engine.state` will add an new attribute with name `name` if the
         attribute does not exist. Then, the current momentum can be
@@ -3484,7 +3515,8 @@ class ignite.handlers.EarlyStopping(patience, score_function, trainer,
         Return type: ~
             None
 
-    reset() *ignite.handlers.EarlyStopping.reset*
+    reset()
+    *ignite.handlers.EarlyStopping.reset*
         Reset the early stopping state, including the counter and best
         score.
 
@@ -3493,7 +3525,8 @@ class ignite.handlers.EarlyStopping(patience, score_function, trainer,
         Return type: ~
             None
 
-    state_dict() *ignite.handlers.EarlyStopping.state_dict*
+    state_dict()
+    *ignite.handlers.EarlyStopping.state_dict*
         Method returns state dict with `counter` and `best_score`. Can be
         used to save internal state of the class.
 
@@ -3553,7 +3586,8 @@ class ignite.handlers.EpochOutputStore(output_transform=<function
     store   Store self.data on engine.state.{self.name}
     update  Append the output of Engine to attribute data.
 
-    attach(engine, name=None) *ignite.handlers.EpochOutputStore.attach*
+    attach(engine, name=None)
+    *ignite.handlers.EpochOutputStore.attach*
         Attaching reset method at EPOCH_STARTED and update method at
         ITERATION_COMPLETED.
 
@@ -3566,13 +3600,15 @@ class ignite.handlers.EpochOutputStore(output_transform=<function
         Return type: ~
             None
 
-    reset() *ignite.handlers.EpochOutputStore.reset*
+    reset()
+    *ignite.handlers.EpochOutputStore.reset*
         Reset the attribute data to empty list.
 
         Return type: ~
             None
 
-    store(engine) *ignite.handlers.EpochOutputStore.store*
+    store(engine)
+    *ignite.handlers.EpochOutputStore.store*
         Store self.data on engine.state.{self.name}
 
         Parameters: ~
@@ -3581,7 +3617,8 @@ class ignite.handlers.EpochOutputStore(output_transform=<function
         Return type: ~
             None
 
-    update(engine) *ignite.handlers.EpochOutputStore.update*
+    update(engine)
+    *ignite.handlers.EpochOutputStore.update*
         Append the output of Engine to attribute data.
 
         Parameters: ~
@@ -3659,11 +3696,13 @@ class ignite.handlers.FastaiLRFinder
     attach              Attaches lr_finder to a given trainer.
     get_results         returns: ~ Dictionary with loss and lr logs from the
                         previous run
-    lr_suggestion       returns: ~ Learning rate at the minimum numerical gradient
+    lr_suggestion       returns: ~ Learning rate at the minimum numerical
+                        gradient
     plot                Plots the learning rate range test.
 
+                           *ignite.handlers.FastaiLRFinder.apply_suggested_lr*
+
 apply_suggested_lr(optimizer)
-    *ignite.handlers.FastaiLRFinder.apply_suggested_lr*
     Applying the suggested learning rate(s) on the given optimizer.
 
     Parameters: ~
@@ -3679,10 +3718,11 @@ apply_suggested_lr(optimizer)
       The given optimizer must be the same as the one we before found the
       suggested learning rate for.
 
+                                       *ignite.handlers.FastaiLRFinder.attach*
+
 attach(trainer, to_save, output_transform=<function
     FastaiLRFinder.<lambda>>, num_iter=None, start_lr=None, end_lr=10.0,
     step_mode='exp', smooth_f=0.05, diverge_th=5.0)
-    *ignite.handlers.FastaiLRFinder.attach*
     Attaches lr_finder to a given trainer. It also resets model and
     optimizer at the end of the run.
 
@@ -3729,14 +3769,18 @@ attach(trainer, to_save, output_transform=<function
 
       lr_finder cannot be attached to more than one trainer at a time.
 
-get_results()  *ignite.handlers.FastaiLRFinder.get_results*
+                                  *ignite.handlers.FastaiLRFinder.get_results*
+
+get_results()
     Returns: ~
         Dictionary with loss and lr logs from the previous run
 
     Return type: ~
         dict[str, list[Any]]
 
-lr_suggestion()  *ignite.handlers.FastaiLRFinder.lr_suggestion*
+                                *ignite.handlers.FastaiLRFinder.lr_suggestion*
+
+lr_suggestion()
     Returns: ~
         Learning rate at the minimum numerical gradient (ignoring the
         increasing part of the curve)
@@ -3813,7 +3857,9 @@ class ignite.handlers.HandlersTimeProfiler
     write_results  Method to store the unaggregated profiling results to a csv
                    file
 
-attach(engine)  *ignite.handlers.HandlersTimeProfiler.attach*
+                                 *ignite.handlers.HandlersTimeProfiler.attach*
+
+attach(engine)
     Attach HandlersTimeProfiler to the given engine.
 
     Parameters: ~
@@ -3823,7 +3869,9 @@ attach(engine)  *ignite.handlers.HandlersTimeProfiler.attach*
     Return type: ~
         None
 
-get_results()  *ignite.handlers.HandlersTimeProfiler.get_results*
+                            *ignite.handlers.HandlersTimeProfiler.get_results*
+
+get_results()
     Method to fetch the aggregated profiler results after the engine is run
 
     >python
@@ -3867,8 +3915,9 @@ static print_results(results)
          mean: 0.00866s, std: 0.00113s]
 <
 
+                          *ignite.handlers.HandlersTimeProfiler.write_results*
+
 write_results(output_path)
-    *ignite.handlers.HandlersTimeProfiler.write_results*
     Method to store the unaggregated profiling results to a csv file
 
     Parameters: ~
@@ -4004,7 +4053,6 @@ class ignite.handlers.ModelCheckpoint(dirname, filename_prefix='',
         ['myprefix_mymodel_20.pt', 'myprefix_mymodel_30.pt']
         /tmp/models/myprefix_mymodel_30.pt
 <
-    Methods: ~
 
 ----------------------------------------------------------------------------
 TerminateOnNan                                *ignite.handlers.TerminateOnNan*
@@ -4031,7 +4079,6 @@ class ignite.handlers.TerminateOnNan(output_transform=<function
     >python
         trainer.add_event_handler(Events.ITERATION_COMPLETED, TerminateOnNan())
 <
-    Methods: ~
 
 ----------------------------------------------------------------------------
 TimeLimit                                          *ignite.handlers.TimeLimit*
@@ -4056,8 +4103,6 @@ class ignite.handlers.TimeLimit(limit_sec=28800)
         trainer.add_event_handler(Events.ITERATION_COMPLETED, handler)
 <
       New in version 0.4.3.: ~
-
-    Methods: ~
 
 ----------------------------------------------------------------------------
 Timer                                                  *ignite.handlers.Timer*
@@ -4164,7 +4209,8 @@ class ignite.handlers.Timer(average=False)
     value   Return the average timer value.
 
     attach(engine, start=Events.STARTED, pause=Events.COMPLETED,
-    resume=None, step=None) *ignite.handlers.Timer.attach*
+    resume=None, step=None)
+    *ignite.handlers.Timer.attach*
         Register callbacks to control the timer.
 
         Parameters: ~
@@ -4185,7 +4231,8 @@ class ignite.handlers.Timer(average=False)
         Return type: ~
             |ignite.handlers.Timer|
 
-    pause(*args) *ignite.handlers.Timer.pause*
+    pause(*args)
+    *ignite.handlers.Timer.pause*
         Pause the current running timer.
 
         Parameters: ~
@@ -4194,7 +4241,8 @@ class ignite.handlers.Timer(average=False)
         Return type: ~
             None
 
-    reset(*args) *ignite.handlers.Timer.reset*
+    reset(*args)
+    *ignite.handlers.Timer.reset*
         Reset the timer to zero.
 
         Parameters: ~
@@ -4203,7 +4251,8 @@ class ignite.handlers.Timer(average=False)
         Return type: ~
             |ignite.handlers.Timer|
 
-    resume(*args) *ignite.handlers.Timer.resume*
+    resume(*args)
+    *ignite.handlers.Timer.resume*
         Resume the current running timer.
 
         Parameters: ~
@@ -4212,7 +4261,8 @@ class ignite.handlers.Timer(average=False)
         Return type: ~
             None
 
-    step(*args) *ignite.handlers.Timer.step*
+    step(*args)
+    *ignite.handlers.Timer.step*
         Increment the timer.
 
         Parameters: ~
@@ -4221,7 +4271,8 @@ class ignite.handlers.Timer(average=False)
         Return type: ~
             None
 
-    value() *ignite.handlers.Timer.value*
+    value()
+    *ignite.handlers.Timer.value*
         Return the average timer value.
 
         Return type: ~
@@ -4321,9 +4372,10 @@ class ignite.handlers.base_logger.BaseLogger
         Return type: ~
             |ignite.engine.events.RemovableEventHandle|
 
+                      *ignite.handlers.base_logger.BaseOptimizerParamsHandler*
+
 class ignite.handlers.base_logger.BaseOptimizerParamsHandler(optimizer,
     param_name='lr', tag=None)
-    *ignite.handlers.base_logger.BaseOptimizerParamsHandler*
     Base handler for logging optimizer parameters
 
     Parameters: ~
@@ -4333,9 +4385,10 @@ class ignite.handlers.base_logger.BaseOptimizerParamsHandler(optimizer,
         - param_name (str) --
         - tag (str | None) --
 
+                               *ignite.handlers.base_logger.BaseOutputHandler*
+
 class ignite.handlers.base_logger.BaseOutputHandler(tag, metric_names=None,
     output_transform=None, global_step_transform=None, state_attributes=None)
-    *ignite.handlers.base_logger.BaseOutputHandler*
     Helper handler to log engine's output and/or metrics
 
     Parameters: ~
@@ -4360,9 +4413,10 @@ class ignite.handlers.base_logger.BaseWeightsHandler(model, tag=None,
           https://docs.pytorch.org/docs/stable/generated/torch.nn.parameter.Parameter.html#torch.nn.parameter.Parameter],
           bool] | None) --
 
+                        *ignite.handlers.base_logger.BaseWeightsScalarHandler*
+
 class ignite.handlers.base_logger.BaseWeightsScalarHandler(model,
     reduction=<function norm>, tag=None, whitelist=None)
-    *ignite.handlers.base_logger.BaseWeightsScalarHandler*
     Helper handler to log model's weights or gradients as scalars.
 
     Parameters: ~
@@ -4580,7 +4634,8 @@ class ignite.handlers.clearml_logger.ClearMLLogger(**kwargs)
         Return type: ~
             bool
 
-    get_task() *ignite.handlers.clearml_logger.ClearMLLogger.get_task*
+    get_task()
+    *ignite.handlers.clearml_logger.ClearMLLogger.get_task*
         Returns the task context that the logger is reporting.
 
         Returns: ~
@@ -4608,9 +4663,10 @@ class ignite.handlers.clearml_logger.ClearMLLogger(**kwargs)
         Return type: ~
             None
 
+                                 *ignite.handlers.clearml_logger.ClearMLSaver*
+
 class ignite.handlers.clearml_logger.ClearMLSaver(logger=None,
     output_uri=None, dirname=None, *args, **kwargs)
-    *ignite.handlers.clearml_logger.ClearMLSaver*
     Handler that saves input checkpoint as ClearML artifacts
 
     Parameters: ~
@@ -4670,7 +4726,8 @@ class ignite.handlers.clearml_logger.ClearMLSaver(logger=None,
         Return type: ~
             str | None
 
-    remove(filename) *ignite.handlers.clearml_logger.ClearMLSaver.remove*
+    remove(filename)
+    *ignite.handlers.clearml_logger.ClearMLSaver.remove*
         Method to remove saved checkpoint.
 
         Parameters: ~
@@ -4756,9 +4813,10 @@ class ignite.handlers.clearml_logger.GradsHistHandler(model, tag=None,
 
       whitelist added.
 
+                           *ignite.handlers.clearml_logger.GradsScalarHandler*
+
 class ignite.handlers.clearml_logger.GradsScalarHandler(model,
     reduction=<function norm>, tag=None, whitelist=None)
-    *ignite.handlers.clearml_logger.GradsScalarHandler*
     Helper handler to log model's gradients as scalars. Handler, upon
     construction, iterates over named parameters of the model and keep
     reference to ones permitted by the whitelist. Then at every call,
@@ -4848,9 +4906,10 @@ class ignite.handlers.clearml_logger.GradsScalarHandler(model,
 
       whitelist added.
 
+                       *ignite.handlers.clearml_logger.OptimizerParamsHandler*
+
 class ignite.handlers.clearml_logger.OptimizerParamsHandler(optimizer,
     param_name='lr', tag=None)
-    *ignite.handlers.clearml_logger.OptimizerParamsHandler*
     Helper handler to log optimizer parameters
 
     Parameters: ~
@@ -4888,9 +4947,10 @@ class ignite.handlers.clearml_logger.OptimizerParamsHandler(optimizer,
         )
 <
 
+                                *ignite.handlers.clearml_logger.OutputHandler*
+
 class ignite.handlers.clearml_logger.OutputHandler(tag, metric_names=None,
     output_transform=None, global_step_transform=None, state_attributes=None)
-    *ignite.handlers.clearml_logger.OutputHandler*
     Helper handler to log engine's output and/or metrics
 
     Parameters: ~
@@ -5085,9 +5145,10 @@ class ignite.handlers.clearml_logger.WeightsHistHandler(model, tag=None,
 
       whitelist added.
 
+                         *ignite.handlers.clearml_logger.WeightsScalarHandler*
+
 class ignite.handlers.clearml_logger.WeightsScalarHandler(model,
     reduction=<function norm>, tag=None, whitelist=None)
-    *ignite.handlers.clearml_logger.WeightsScalarHandler*
     Helper handler to log model's weights as scalars. Handler, upon
     construction, iterates over named parameters of the model and keep
     reference to ones permitted by whitelist. Then at every call, applies
@@ -5174,9 +5235,10 @@ class ignite.handlers.clearml_logger.WeightsScalarHandler(model,
 
       whitelist added.
 
+                      *ignite.handlers.clearml_logger.global_step_from_engine*
+
 ignite.handlers.clearml_logger.global_step_from_engine(engine,
     custom_event_name=None, fallback_attr='epoch')
-    *ignite.handlers.clearml_logger.global_step_from_engine*
     Helper method to setup global_step_transform function using another
     engine. This can be helpful for logging trainer epoch/iteration while
     output handler is attached to an evaluator.
@@ -6130,9 +6192,10 @@ class ignite.handlers.mlflow_logger.MLflowLogger(tracking_uri=None)
           # }
 <
 
+                        *ignite.handlers.mlflow_logger.OptimizerParamsHandler*
+
 class ignite.handlers.mlflow_logger.OptimizerParamsHandler(optimizer,
     param_name='lr', tag=None)
-    *ignite.handlers.mlflow_logger.OptimizerParamsHandler*
     Helper handler to log optimizer parameters
 
     Parameters: ~
@@ -6168,9 +6231,10 @@ class ignite.handlers.mlflow_logger.OptimizerParamsHandler(optimizer,
         )
 <
 
+                                 *ignite.handlers.mlflow_logger.OutputHandler*
+
 class ignite.handlers.mlflow_logger.OutputHandler(tag, metric_names=None,
     output_transform=None, global_step_transform=None, state_attributes=None)
-    *ignite.handlers.mlflow_logger.OutputHandler*
     Helper handler to log engine's output and/or metrics.
 
     Parameters: ~
@@ -6273,9 +6337,10 @@ class ignite.handlers.mlflow_logger.OutputHandler(tag, metric_names=None,
 
       state_attributes
 
+                       *ignite.handlers.mlflow_logger.global_step_from_engine*
+
 ignite.handlers.mlflow_logger.global_step_from_engine(engine,
     custom_event_name=None, fallback_attr='epoch')
-    *ignite.handlers.mlflow_logger.global_step_from_engine*
     Helper method to setup global_step_transform function using another
     engine. This can be helpful for logging trainer epoch/iteration while
     output handler is attached to an evaluator.
@@ -6561,8 +6626,9 @@ class ignite.handlers.neptune_logger.NeptuneLogger(api_token=None,
       scalar values (i.e. int, float) - 0d and 1d pytorch tensors - dicts
       and list/tuples of previous types
 
+                                 *ignite.handlers.neptune_logger.NeptuneSaver*
+
 class ignite.handlers.neptune_logger.NeptuneSaver(neptune_logger)
-    *ignite.handlers.neptune_logger.NeptuneSaver*
     Handler that saves input checkpoint to the Neptune server.
 
     Parameters: ~
@@ -6615,7 +6681,8 @@ class ignite.handlers.neptune_logger.NeptuneSaver(neptune_logger)
         # We need to close the logger when we are done
         npt_logger.close()
 <
-    remove(filename) *ignite.handlers.neptune_logger.NeptuneSaver.remove*
+    remove(filename)
+    *ignite.handlers.neptune_logger.NeptuneSaver.remove*
         Method to remove saved checkpoint.
 
         Parameters: ~
@@ -6624,9 +6691,10 @@ class ignite.handlers.neptune_logger.NeptuneSaver(neptune_logger)
         Return type: ~
             None
 
+                       *ignite.handlers.neptune_logger.OptimizerParamsHandler*
+
 class ignite.handlers.neptune_logger.OptimizerParamsHandler(optimizer,
     param_name='lr', tag=None)
-    *ignite.handlers.neptune_logger.OptimizerParamsHandler*
     Helper handler to log optimizer parameters
 
     Parameters: ~
@@ -6668,9 +6736,10 @@ class ignite.handlers.neptune_logger.OptimizerParamsHandler(optimizer,
         )
 <
 
+                                *ignite.handlers.neptune_logger.OutputHandler*
+
 class ignite.handlers.neptune_logger.OutputHandler(tag, metric_names=None,
     output_transform=None, global_step_transform=None, state_attributes=None)
-    *ignite.handlers.neptune_logger.OutputHandler*
     Helper handler to log engine's output and/or metrics.
 
     Parameters: ~
@@ -6789,9 +6858,10 @@ class ignite.handlers.neptune_logger.OutputHandler(tag, metric_names=None,
 
       state_attributes
 
+                         *ignite.handlers.neptune_logger.WeightsScalarHandler*
+
 class ignite.handlers.neptune_logger.WeightsScalarHandler(model,
     reduction=<function norm>, tag=None, whitelist=None)
-    *ignite.handlers.neptune_logger.WeightsScalarHandler*
     Helper handler to log model's weights as scalars. Handler, upon
     construction, iterates over named parameters of the model and keep
     reference to ones permitted by whitelist. Then at every call, applies
@@ -6888,9 +6958,10 @@ class ignite.handlers.neptune_logger.WeightsScalarHandler(model,
 
       whitelist added.
 
+                      *ignite.handlers.neptune_logger.global_step_from_engine*
+
 ignite.handlers.neptune_logger.global_step_from_engine(engine,
     custom_event_name=None, fallback_attr='epoch')
-    *ignite.handlers.neptune_logger.global_step_from_engine*
     Helper method to setup global_step_transform function using another
     engine. This can be helpful for logging trainer epoch/iteration while
     output handler is attached to an evaluator.
@@ -6937,9 +7008,10 @@ class ignite.handlers.param_scheduler.BaseParamScheduler(param_name,
     get_param        Method to get current parameter values
     load_state_dict  Copies parameters from state_dict into this
                      BaseParamScheduler.
-    plot_values      Method to plot simulated scheduled values during num_events
+    plot_values      Method to plot simulated scheduled values during
+                     num_events events.
+    simulate_values  Method to simulate scheduled values during num_events
                      events.
-    simulate_values  Method to simulate scheduled values during num_events events.
     state_dict       Returns a dictionary containing a whole state of
                      BaseParamScheduler.
 
@@ -7251,12 +7323,15 @@ class ignite.handlers.param_scheduler.ConcatScheduler(schedulers, durations,
     Methods: ~
 
     get_param        Method to get current parameter values
-    load_state_dict  Copies parameters from state_dict into this ConcatScheduler.
-    simulate_values  Method to simulate scheduled values during num_events events.
+    load_state_dict  Copies parameters from state_dict into this
+                     ConcatScheduler.
+    simulate_values  Method to simulate scheduled values during num_events
+                     events.
     state_dict       Returns a dictionary containing a whole state of
                      ConcatScheduler.
 
-    get_param() *ignite.handlers.param_scheduler.ConcatScheduler.get_param*
+    get_param()
+    *ignite.handlers.param_scheduler.ConcatScheduler.get_param*
         Method to get current parameter values
 
         Returns: ~
@@ -7527,8 +7602,6 @@ class ignite.handlers.param_scheduler.CyclicalScheduler(optimizer,
 
       `warmup_duration`.
 
-    Methods: ~
-
 ----------------------------------------------------------------------------
 LRScheduler                      *ignite.handlers.param_scheduler.LRScheduler*
 
@@ -7630,9 +7703,11 @@ class ignite.handlers.param_scheduler.LRScheduler(lr_scheduler,
     Methods: ~
 
     get_param        Method to get current optimizer's parameter value
-    simulate_values  Method to simulate scheduled values during num_events events.
+    simulate_values  Method to simulate scheduled values during num_events
+                     events.
 
-    get_param() *ignite.handlers.param_scheduler.LRScheduler.get_param*
+    get_param()
+    *ignite.handlers.param_scheduler.LRScheduler.get_param*
         Method to get current optimizer's parameter value
 
         Return type: ~
@@ -7929,8 +8004,10 @@ class ignite.handlers.param_scheduler.ParamGroupScheduler(schedulers,
     Methods: ~
 
     get_param        Method to get current schedulers' parameter values
-    load_state_dict  Copies parameters from state_dict into this ParamScheduler.
-    simulate_values  Method to simulate scheduled values during num_events events.
+    load_state_dict  Copies parameters from state_dict into this
+                     ParamScheduler.
+    simulate_values  Method to simulate scheduled values during num_events
+                     events.
     state_dict       Returns a dictionary containing a whole state of
                      ParamGroupScheduler.
 
@@ -8015,7 +8092,8 @@ class ignite.handlers.param_scheduler.ParamScheduler(optimizer, param_name,
     Methods: ~
 
     attach           Attach the handler to the engine.
-    simulate_values  Method to simulate scheduled values during num_events events.
+    simulate_values  Method to simulate scheduled values during num_events
+                     events.
 
     attach(engine, event=Events.ITERATION_STARTED)
     *ignite.handlers.param_scheduler.ParamScheduler.attach*
@@ -8049,7 +8127,7 @@ class ignite.handlers.param_scheduler.ParamScheduler(optimizer, param_name,
         Return type: ~
             list[list[int]]
 
-        Examples:
+        Examples: ~
 
         >python
             lr_values = np.array(LinearCyclicalScheduler.simulate_values(num_events=50, param_name='lr',
@@ -8216,7 +8294,8 @@ class ignite.handlers.param_scheduler.PiecewiseLinear(optimizer, param_name,
 
     get_param  Method to get current parameter values
 
-    get_param() *ignite.handlers.param_scheduler.PiecewiseLinear.get_param*
+    get_param()
+    *ignite.handlers.param_scheduler.PiecewiseLinear.get_param*
         Method to get current parameter values
 
         Returns: ~
@@ -8359,7 +8438,8 @@ class ignite.handlers.param_scheduler.ReduceLROnPlateauScheduler(optimizer,
     Methods: ~
 
     get_param        Method to get current parameter values
-    simulate_values  Method to simulate scheduled values during num_events events.
+    simulate_values  Method to simulate scheduled values during num_events
+                     events.
 
     get_param()
     *ignite.handlers.param_scheduler.ReduceLROnPlateauScheduler.get_param*
@@ -8589,9 +8669,10 @@ class ignite.handlers.polyaxon_logger.OptimizerParamsHandler(optimizer,
         )
 <
 
+                               *ignite.handlers.polyaxon_logger.OutputHandler*
+
 class ignite.handlers.polyaxon_logger.OutputHandler(tag, metric_names=None,
     output_transform=None, global_step_transform=None, state_attributes=None)
-    *ignite.handlers.polyaxon_logger.OutputHandler*
     Helper handler to log engine's output and/or metrics.
 
     Parameters: ~
@@ -8694,8 +8775,9 @@ class ignite.handlers.polyaxon_logger.OutputHandler(tag, metric_names=None,
 
       state_attributes
 
+                              *ignite.handlers.polyaxon_logger.PolyaxonLogger*
+
 class ignite.handlers.polyaxon_logger.PolyaxonLogger(*args, **kwargs)
-    *ignite.handlers.polyaxon_logger.PolyaxonLogger*
     Polyaxon tracking client https://polyaxon.com/ handler to log parameters
     and metrics during the training and validation.
 
@@ -8797,9 +8879,10 @@ class ignite.handlers.polyaxon_logger.PolyaxonLogger(*args, **kwargs)
       scalar values (i.e. int, float) - 0d and 1d pytorch tensors - dicts
       and list/tuples of previous types
 
+                     *ignite.handlers.polyaxon_logger.global_step_from_engine*
+
 ignite.handlers.polyaxon_logger.global_step_from_engine(engine,
     custom_event_name=None, fallback_attr='epoch')
-    *ignite.handlers.polyaxon_logger.global_step_from_engine*
     Helper method to setup global_step_transform function using another
     engine. This can be helpful for logging trainer epoch/iteration while
     output handler is attached to an evaluator.
@@ -9353,8 +9436,8 @@ class ignite.handlers.state_param_scheduler.StateParamScheduler(param_name,
     Methods: ~
 
     attach           Attach the handler to the engine.
-    simulate_values  Method to simulate scheduled engine state parameter values
-                     during num_events events.
+    simulate_values  Method to simulate scheduled engine state parameter
+                     values during num_events events.
 
     attach(engine, event=Events.ITERATION_COMPLETED)
     *ignite.handlers.state_param_scheduler.StateParamScheduler.attach*
@@ -9390,7 +9473,7 @@ class ignite.handlers.state_param_scheduler.StateParamScheduler(param_name,
         Return type: ~
             list[list[int]]
 
-        Examples:
+        Examples: ~
 
         >python
             import matplotlib.pyplot as plt
@@ -9613,9 +9696,10 @@ class ignite.handlers.tensorboard_logger.GradsHistHandler(model, tag=None,
 
       whitelist added.
 
+                       *ignite.handlers.tensorboard_logger.GradsScalarHandler*
+
 class ignite.handlers.tensorboard_logger.GradsScalarHandler(model,
     reduction=<function norm>, tag=None, whitelist=None)
-    *ignite.handlers.tensorboard_logger.GradsScalarHandler*
     Helper handler to log model's gradients as scalars. Handler, upon
     construction, iterates over named parameters of the model and keep
     reference to ones permitted by the whitelist. Then at every call,
@@ -9695,9 +9779,10 @@ class ignite.handlers.tensorboard_logger.GradsScalarHandler(model,
 
       whitelist added.
 
+                   *ignite.handlers.tensorboard_logger.OptimizerParamsHandler*
+
 class ignite.handlers.tensorboard_logger.OptimizerParamsHandler(optimizer,
     param_name='lr', tag=None)
-    *ignite.handlers.tensorboard_logger.OptimizerParamsHandler*
     Helper handler to log optimizer parameters
 
     Parameters: ~
@@ -9840,8 +9925,9 @@ class ignite.handlers.tensorboard_logger.OutputHandler(tag,
 
       state_attributes
 
+                        *ignite.handlers.tensorboard_logger.TensorboardLogger*
+
 class ignite.handlers.tensorboard_logger.TensorboardLogger(*args, **kwargs)
-    *ignite.handlers.tensorboard_logger.TensorboardLogger*
     TensorBoard handler to log metrics, model/optimizer parameters,
     gradients during the training and validation.
 
@@ -10084,9 +10170,10 @@ class ignite.handlers.tensorboard_logger.WeightsHistHandler(model, tag=None,
 
       whitelist added.
 
+                     *ignite.handlers.tensorboard_logger.WeightsScalarHandler*
+
 class ignite.handlers.tensorboard_logger.WeightsScalarHandler(model,
     reduction=<function norm>, tag=None, whitelist=None)
-    *ignite.handlers.tensorboard_logger.WeightsScalarHandler*
     Helper handler to log model's weights as scalars. Handler, upon
     construction, iterates over named parameters of the model and keep
     reference to ones permitted by whitelist. Then at every call, applies
@@ -10163,9 +10250,10 @@ class ignite.handlers.tensorboard_logger.WeightsScalarHandler(model,
 
       whitelist added.
 
+                  *ignite.handlers.tensorboard_logger.global_step_from_engine*
+
 ignite.handlers.tensorboard_logger.global_step_from_engine(engine,
     custom_event_name=None, fallback_attr='epoch')
-    *ignite.handlers.tensorboard_logger.global_step_from_engine*
     Helper method to setup global_step_transform function using another
     engine. This can be helpful for logging trainer epoch/iteration while
     output handler is attached to an evaluator.
@@ -10412,9 +10500,10 @@ class ignite.handlers.visdom_logger.GradsScalarHandler(model,
         )
 <
 
+                        *ignite.handlers.visdom_logger.OptimizerParamsHandler*
+
 class ignite.handlers.visdom_logger.OptimizerParamsHandler(optimizer,
     param_name='lr', tag=None, show_legend=False)
-    *ignite.handlers.visdom_logger.OptimizerParamsHandler*
     Helper handler to log optimizer parameters
 
     Parameters: ~
@@ -10555,9 +10644,10 @@ class ignite.handlers.visdom_logger.OutputHandler(tag, metric_names=None,
             return engine.state.get_event_attrib_value(event_name)
 <
 
+                                  *ignite.handlers.visdom_logger.VisdomLogger*
+
 class ignite.handlers.visdom_logger.VisdomLogger(server=None, port=None,
     num_workers=1, raise_exceptions=True, **kwargs)
-    *ignite.handlers.visdom_logger.VisdomLogger*
     VisdomLogger handler to log metrics, model/optimizer parameters,
     gradients during the training and validation.
 
@@ -10703,9 +10793,10 @@ class ignite.handlers.visdom_logger.VisdomLogger(server=None, port=None,
 
       state_attributes
 
+                          *ignite.handlers.visdom_logger.WeightsScalarHandler*
+
 class ignite.handlers.visdom_logger.WeightsScalarHandler(model,
     reduction=<function norm>, tag=None, show_legend=False)
-    *ignite.handlers.visdom_logger.WeightsScalarHandler*
     Helper handler to log model's weights as scalars. Handler iterates over
     named parameters of the model, applies reduction function to each
     parameter produce a scalar and then logs the scalar.
@@ -10735,9 +10826,10 @@ class ignite.handlers.visdom_logger.WeightsScalarHandler(model,
         )
 <
 
+                       *ignite.handlers.visdom_logger.global_step_from_engine*
+
 ignite.handlers.visdom_logger.global_step_from_engine(engine,
     custom_event_name=None, fallback_attr='epoch')
-    *ignite.handlers.visdom_logger.global_step_from_engine*
     Helper method to setup global_step_transform function using another
     engine. This can be helpful for logging trainer epoch/iteration while
     output handler is attached to an evaluator.
@@ -10947,8 +11039,9 @@ class ignite.handlers.wandb_logger.OutputHandler(tag, metric_names=None,
 
       state_attributes
 
+                                    *ignite.handlers.wandb_logger.WandBLogger*
+
 class ignite.handlers.wandb_logger.WandBLogger(*args, **kwargs)
-    *ignite.handlers.wandb_logger.WandBLogger*
     Weights & Biases https://wandb.ai/site handler to log metrics,
     model/optimizer parameters, gradients during training and validation. It
     can also be used to log model checkpoints to the Weights & Biases cloud.
@@ -11079,9 +11172,10 @@ class ignite.handlers.wandb_logger.WandBLogger(*args, **kwargs)
       values (i.e. int, float) - 0d and 1d pytorch tensors - dicts and
       list/tuples of previous types
 
+                        *ignite.handlers.wandb_logger.global_step_from_engine*
+
 ignite.handlers.wandb_logger.global_step_from_engine(engine,
     custom_event_name=None, fallback_attr='epoch')
-    *ignite.handlers.wandb_logger.global_step_from_engine*
     Helper method to setup global_step_transform function using another
     engine. This can be helpful for logging trainer epoch/iteration while
     output handler is attached to an evaluator.
@@ -11285,7 +11379,8 @@ class ignite.metrics.Accuracy(output_transform=<function Accuracy.<lambda>>,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.Accuracy.compute*
+    compute()
+    *ignite.metrics.Accuracy.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -11303,7 +11398,8 @@ class ignite.metrics.Accuracy(output_transform=<function Accuracy.<lambda>>,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.Accuracy.reset*
+    reset()
+    *ignite.metrics.Accuracy.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -11311,7 +11407,8 @@ class ignite.metrics.Accuracy(output_transform=<function Accuracy.<lambda>>,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.Accuracy.update*
+    update(output)
+    *ignite.metrics.Accuracy.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -11468,7 +11565,8 @@ class ignite.metrics.Average(output_transform=<function Average.<lambda>>,
 
     compute  Computes the metric based on its accumulated state.
 
-    compute() *ignite.metrics.Average.compute*
+    compute()
+    *ignite.metrics.Average.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -11597,8 +11695,6 @@ class ignite.metrics.AveragePrecision(output_transform=<function
 
       `skip_unrolling` argument is added.
 
-    Methods: ~
-
 ----------------------------------------------------------------------------
 Bleu                                                     *ignite.metrics.Bleu*
 
@@ -11683,7 +11779,8 @@ class ignite.metrics.Bleu(ngram=4, smooth='no_smooth',
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.Bleu.compute*
+    compute()
+    *ignite.metrics.Bleu.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -11701,7 +11798,8 @@ class ignite.metrics.Bleu(ngram=4, smooth='no_smooth',
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.Bleu.reset*
+    reset()
+    *ignite.metrics.Bleu.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -11709,7 +11807,8 @@ class ignite.metrics.Bleu(ngram=4, smooth='no_smooth',
         Return type: ~
             None
 
-    update(output) *ignite.metrics.Bleu.update*
+    update(output)
+    *ignite.metrics.Bleu.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -11789,7 +11888,8 @@ class ignite.metrics.CharacterErrorRate(output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.CharacterErrorRate.compute*
+    compute()
+    *ignite.metrics.CharacterErrorRate.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -11807,7 +11907,8 @@ class ignite.metrics.CharacterErrorRate(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.CharacterErrorRate.reset*
+    reset()
+    *ignite.metrics.CharacterErrorRate.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -11815,7 +11916,8 @@ class ignite.metrics.CharacterErrorRate(output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.CharacterErrorRate.update*
+    update(output)
+    *ignite.metrics.CharacterErrorRate.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -12109,7 +12211,8 @@ class ignite.metrics.CohenKappa(output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.CohenKappa.compute*
+    compute()
+    *ignite.metrics.CohenKappa.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -12127,7 +12230,8 @@ class ignite.metrics.CohenKappa(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.CohenKappa.reset*
+    reset()
+    *ignite.metrics.CohenKappa.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -12135,7 +12239,8 @@ class ignite.metrics.CohenKappa(output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.CohenKappa.update*
+    update(output)
+    *ignite.metrics.CohenKappa.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -12159,7 +12264,7 @@ class ignite.metrics.CommonObjectDetectionMetrics(num_classes=80,
     Common Object Detection metrics. Included metrics are as follows:
 
     Metric name  Description
-    -----------  -----------------------------------------------------------------
+    -----------  -------------------------------------------------------------
     AP@50..95    Average precision averaged over .50 to.95 IOU thresholds
     AR-100       Average recall with maximum 100 detections
     AP@50        Average precision with IOU threshold=.50
@@ -12189,7 +12294,8 @@ class ignite.metrics.CommonObjectDetectionMetrics(num_classes=80,
           --
         - skip_unrolling (bool) --
 
-    compute() *ignite.metrics.CommonObjectDetectionMetrics.compute*
+    compute()
+    *ignite.metrics.CommonObjectDetectionMetrics.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -12207,7 +12313,8 @@ class ignite.metrics.CommonObjectDetectionMetrics(num_classes=80,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.CommonObjectDetectionMetrics.reset*
+    reset()
+    *ignite.metrics.CommonObjectDetectionMetrics.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -12215,7 +12322,8 @@ class ignite.metrics.CommonObjectDetectionMetrics(num_classes=80,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.CommonObjectDetectionMetrics.update*
+    update(output)
+    *ignite.metrics.CommonObjectDetectionMetrics.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -12393,7 +12501,8 @@ class ignite.metrics.ConfusionMatrix(num_classes, average=None,
     reset      Resets the metric to its initial state.
     update     Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.ConfusionMatrix.compute*
+    compute()
+    *ignite.metrics.ConfusionMatrix.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -12425,7 +12534,8 @@ class ignite.metrics.ConfusionMatrix(num_classes, average=None,
             Tensor
             https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor
 
-    reset() *ignite.metrics.ConfusionMatrix.reset*
+    reset()
+    *ignite.metrics.ConfusionMatrix.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -12433,7 +12543,8 @@ class ignite.metrics.ConfusionMatrix(num_classes, average=None,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.ConfusionMatrix.update*
+    update(output)
+    *ignite.metrics.ConfusionMatrix.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -12574,7 +12685,8 @@ class ignite.metrics.CosineSimilarity(eps=1e-08, output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.CosineSimilarity.compute*
+    compute()
+    *ignite.metrics.CosineSimilarity.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -12592,7 +12704,8 @@ class ignite.metrics.CosineSimilarity(eps=1e-08, output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.CosineSimilarity.reset*
+    reset()
+    *ignite.metrics.CosineSimilarity.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -12600,7 +12713,8 @@ class ignite.metrics.CosineSimilarity(eps=1e-08, output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.CosineSimilarity.update*
+    update(output)
+    *ignite.metrics.CosineSimilarity.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -12825,7 +12939,8 @@ class ignite.metrics.Entropy(output_transform=<function Metric.<lambda>>,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.Entropy.compute*
+    compute()
+    *ignite.metrics.Entropy.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -12843,7 +12958,8 @@ class ignite.metrics.Entropy(output_transform=<function Metric.<lambda>>,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.Entropy.reset*
+    reset()
+    *ignite.metrics.Entropy.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -12851,7 +12967,8 @@ class ignite.metrics.Entropy(output_transform=<function Metric.<lambda>>,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.Entropy.update*
+    update(output)
+    *ignite.metrics.Entropy.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -12993,7 +13110,8 @@ class ignite.metrics.EpochMetric(compute_fn, output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.EpochMetric.compute*
+    compute()
+    *ignite.metrics.EpochMetric.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -13011,7 +13129,8 @@ class ignite.metrics.EpochMetric(compute_fn, output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.EpochMetric.reset*
+    reset()
+    *ignite.metrics.EpochMetric.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -13019,7 +13138,8 @@ class ignite.metrics.EpochMetric(compute_fn, output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.EpochMetric.update*
+    update(output)
+    *ignite.metrics.EpochMetric.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -13204,7 +13324,8 @@ class ignite.metrics.FID(num_features=None, feature_extractor=None,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.FID.compute*
+    compute()
+    *ignite.metrics.FID.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -13222,7 +13343,8 @@ class ignite.metrics.FID(num_features=None, feature_extractor=None,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.FID.reset*
+    reset()
+    *ignite.metrics.FID.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -13230,7 +13352,8 @@ class ignite.metrics.FID(num_features=None, feature_extractor=None,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.FID.update*
+    update(output)
+    *ignite.metrics.FID.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -13475,7 +13598,8 @@ class ignite.metrics.Frequency(output_transform=<function
     Methods: ~
 
     attach     Attaches current metric to provided engine.
-    completed  Helper method to compute metric's value and put into the engine.
+    completed  Helper method to compute metric's value and put into the
+               engine.
     compute    Computes the metric based on its accumulated state.
     reset      Resets the metric to its initial state.
     update     Updates the metric's state using the passed batch output.
@@ -13519,7 +13643,8 @@ class ignite.metrics.Frequency(output_transform=<function
             assert metric.is_attached(engine, usage=BatchWise.usage_name)
 <
 
-    completed(engine, name) *ignite.metrics.Frequency.completed*
+    completed(engine, name)
+    *ignite.metrics.Frequency.completed*
         Helper method to compute metric's value and put into the engine. It
         is automatically attached to the engine with
         |ignite.metrics.Metric.attach|. If metrics' value is torch tensor,
@@ -13538,7 +13663,8 @@ class ignite.metrics.Frequency(output_transform=<function
 
           Changed in version 0.4.5: ~
 
-    compute() *ignite.metrics.Frequency.compute*
+    compute()
+    *ignite.metrics.Frequency.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -13556,7 +13682,8 @@ class ignite.metrics.Frequency(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.Frequency.reset*
+    reset()
+    *ignite.metrics.Frequency.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -13564,7 +13691,8 @@ class ignite.metrics.Frequency(output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.Frequency.update*
+    update(output)
+    *ignite.metrics.Frequency.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -13721,7 +13849,8 @@ class ignite.metrics.GeometricAverage(output_transform=<function
 
     compute  Computes the metric based on its accumulated state.
 
-    compute() *ignite.metrics.GeometricAverage.compute*
+    compute()
+    *ignite.metrics.GeometricAverage.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -13771,13 +13900,15 @@ class ignite.metrics.GpuInfo
     Methods: ~
 
     attach     Attaches current metric to provided engine.
-    completed  Helper method to compute metric's value and put into the engine.
+    completed  Helper method to compute metric's value and put into the
+               engine.
     compute    Computes the metric based on its accumulated state.
     reset      Resets the metric to its initial state.
     update     Updates the metric's state using the passed batch output.
 
+                                               *ignite.metrics.GpuInfo.attach*
+
 attach(engine, name='gpu', event_name=Events.ITERATION_COMPLETED)
-    *ignite.metrics.GpuInfo.attach*
     Attaches current metric to provided engine. On the end of engine's run,
     engine.state.metrics dictionary will contain computed metric's value
     under provided name.
@@ -13815,7 +13946,9 @@ attach(engine, name='gpu', event_name=Events.ITERATION_COMPLETED)
         assert metric.is_attached(engine, usage=BatchWise.usage_name)
 <
 
-completed(engine, name)  *ignite.metrics.GpuInfo.completed*
+                                            *ignite.metrics.GpuInfo.completed*
+
+completed(engine, name)
     Helper method to compute metric's value and put into the engine. It is
     automatically attached to the engine with
     |ignite.metrics.Metric.attach|. If metrics' value is torch tensor, it is
@@ -13834,7 +13967,9 @@ completed(engine, name)  *ignite.metrics.GpuInfo.completed*
 
       Changed in version 0.4.5: ~
 
-compute()  *ignite.metrics.GpuInfo.compute*
+                                              *ignite.metrics.GpuInfo.compute*
+
+compute()
     Computes the metric based on its accumulated state.
 
     By default, this is called at the end of each epoch.
@@ -13851,7 +13986,9 @@ compute()  *ignite.metrics.GpuInfo.compute*
         |ignite.exceptions.NotComputableError| -- raised when the metric
         cannot be computed.
 
-reset()  *ignite.metrics.GpuInfo.reset*
+                                                *ignite.metrics.GpuInfo.reset*
+
+reset()
     Resets the metric to its initial state.
 
     By default, this is called at the start of each epoch.
@@ -13859,7 +13996,9 @@ reset()  *ignite.metrics.GpuInfo.reset*
     Return type: ~
         None
 
-update(output)  *ignite.metrics.GpuInfo.update*
+                                               *ignite.metrics.GpuInfo.update*
+
+update(output)
     Updates the metric's state using the passed batch output.
 
     By default, this is called once for each batch.
@@ -14018,7 +14157,8 @@ class ignite.metrics.HSIC(sigma_x=-1, sigma_y=-1, ignore_invalid_batch=True,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.HSIC.compute*
+    compute()
+    *ignite.metrics.HSIC.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -14036,7 +14176,8 @@ class ignite.metrics.HSIC(sigma_x=-1, sigma_y=-1, ignore_invalid_batch=True,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.HSIC.reset*
+    reset()
+    *ignite.metrics.HSIC.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -14044,7 +14185,8 @@ class ignite.metrics.HSIC(sigma_x=-1, sigma_y=-1, ignore_invalid_batch=True,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.HSIC.update*
+    update(output)
+    *ignite.metrics.HSIC.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -14182,7 +14324,8 @@ class ignite.metrics.InceptionScore(num_features=None,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.InceptionScore.compute*
+    compute()
+    *ignite.metrics.InceptionScore.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -14200,7 +14343,8 @@ class ignite.metrics.InceptionScore(num_features=None,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.InceptionScore.reset*
+    reset()
+    *ignite.metrics.InceptionScore.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -14208,7 +14352,8 @@ class ignite.metrics.InceptionScore(num_features=None,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.InceptionScore.update*
+    update(output)
+    *ignite.metrics.InceptionScore.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -14440,7 +14585,8 @@ class ignite.metrics.JSDivergence(output_transform=<function
 
     compute  Computes the metric based on its accumulated state.
 
-    compute() *ignite.metrics.JSDivergence.compute*
+    compute()
+    *ignite.metrics.JSDivergence.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -14679,7 +14825,8 @@ class ignite.metrics.KLDivergence(output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.KLDivergence.compute*
+    compute()
+    *ignite.metrics.KLDivergence.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -14697,7 +14844,8 @@ class ignite.metrics.KLDivergence(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.KLDivergence.reset*
+    reset()
+    *ignite.metrics.KLDivergence.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -14705,7 +14853,8 @@ class ignite.metrics.KLDivergence(output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.KLDivergence.update*
+    update(output)
+    *ignite.metrics.KLDivergence.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -14842,7 +14991,8 @@ class ignite.metrics.Loss(loss_fn, output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.Loss.compute*
+    compute()
+    *ignite.metrics.Loss.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -14860,7 +15010,8 @@ class ignite.metrics.Loss(loss_fn, output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.Loss.reset*
+    reset()
+    *ignite.metrics.Loss.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -14868,7 +15019,8 @@ class ignite.metrics.Loss(loss_fn, output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.Loss.update*
+    update(output)
+    *ignite.metrics.Loss.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -14937,7 +15089,7 @@ class ignite.metrics.MatthewsCorrCoef(output_transform=<function
           multi-output as `(y_pred_a, y_pred_b)` Alternatively,
           `output_transform` can be used to handle this.
 
-      Examples:
+      Examples: ~
 
       >python
           from collections import OrderedDict
@@ -14999,8 +15151,6 @@ class ignite.metrics.MatthewsCorrCoef(output_transform=<function
           -0.33...
 <
         New in version 0.5.4.: ~
-
-    Methods: ~
 
     Parameters: ~
         - output_transform (Callable) --
@@ -15141,7 +15291,8 @@ class ignite.metrics.MaximumMeanDiscrepancy(var=1.0,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.MaximumMeanDiscrepancy.compute*
+    compute()
+    *ignite.metrics.MaximumMeanDiscrepancy.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -15159,7 +15310,8 @@ class ignite.metrics.MaximumMeanDiscrepancy(var=1.0,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.MaximumMeanDiscrepancy.reset*
+    reset()
+    *ignite.metrics.MaximumMeanDiscrepancy.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -15167,7 +15319,8 @@ class ignite.metrics.MaximumMeanDiscrepancy(var=1.0,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.MaximumMeanDiscrepancy.update*
+    update(output)
+    *ignite.metrics.MaximumMeanDiscrepancy.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -15305,7 +15458,8 @@ class ignite.metrics.MeanAbsoluteError(output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.MeanAbsoluteError.compute*
+    compute()
+    *ignite.metrics.MeanAbsoluteError.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -15323,7 +15477,8 @@ class ignite.metrics.MeanAbsoluteError(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.MeanAbsoluteError.reset*
+    reset()
+    *ignite.metrics.MeanAbsoluteError.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -15331,7 +15486,8 @@ class ignite.metrics.MeanAbsoluteError(output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.MeanAbsoluteError.update*
+    update(output)
+    *ignite.metrics.MeanAbsoluteError.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -15446,7 +15602,8 @@ class ignite.metrics.MeanAveragePrecision(rec_thresholds=None,
     reset    Reset method of the metric
     update   Metric update function using prediction and target.
 
-    compute() *ignite.metrics.MeanAveragePrecision.compute*
+    compute()
+    *ignite.metrics.MeanAveragePrecision.compute*
         Compute method of the metric
 
         Return type: ~
@@ -15454,13 +15611,15 @@ class ignite.metrics.MeanAveragePrecision(rec_thresholds=None,
             https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor |
             float
 
-    reset() *ignite.metrics.MeanAveragePrecision.reset*
+    reset()
+    *ignite.metrics.MeanAveragePrecision.reset*
         Reset method of the metric
 
         Return type: ~
             None
 
-    update(output) *ignite.metrics.MeanAveragePrecision.update*
+    update(output)
+    *ignite.metrics.MeanAveragePrecision.update*
         Metric update function using prediction and target.
 
         Parameters: ~
@@ -15601,7 +15760,8 @@ class ignite.metrics.MeanPairwiseDistance(p=2, eps=1e-06,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.MeanPairwiseDistance.compute*
+    compute()
+    *ignite.metrics.MeanPairwiseDistance.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -15619,7 +15779,8 @@ class ignite.metrics.MeanPairwiseDistance(p=2, eps=1e-06,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.MeanPairwiseDistance.reset*
+    reset()
+    *ignite.metrics.MeanPairwiseDistance.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -15627,7 +15788,8 @@ class ignite.metrics.MeanPairwiseDistance(p=2, eps=1e-06,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.MeanPairwiseDistance.update*
+    update(output)
+    *ignite.metrics.MeanPairwiseDistance.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -15765,7 +15927,8 @@ class ignite.metrics.MeanSquaredError(output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.MeanSquaredError.compute*
+    compute()
+    *ignite.metrics.MeanSquaredError.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -15783,7 +15946,8 @@ class ignite.metrics.MeanSquaredError(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.MeanSquaredError.reset*
+    reset()
+    *ignite.metrics.MeanSquaredError.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -15791,7 +15955,8 @@ class ignite.metrics.MeanSquaredError(output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.MeanSquaredError.update*
+    update(output)
+    *ignite.metrics.MeanSquaredError.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -15969,21 +16134,24 @@ class ignite.metrics.Metric(output_transform=<function Metric.<lambda>>,
     Methods: ~
 
     attach               Attaches current metric to provided engine.
-    completed            Helper method to compute metric's value and put into the
-                         engine.
+    completed            Helper method to compute metric's value and put into
+                         the engine.
     compute              Computes the metric based on its accumulated state.
-    detach               Detaches current metric from the engine and no metric's
-                         computation is done during the run.
-    is_attached          Checks if current metric is attached to provided engine.
+    detach               Detaches current metric from the engine and no
+                         metric's computation is done during the run.
+    is_attached          Checks if current metric is attached to provided
+                         engine.
     iteration_completed  Helper method to update metric's computation.
-    load_state_dict      Method replaces internal state of the class with provided
-                         state dict data.
+    load_state_dict      Method replaces internal state of the class with
+                         provided state dict data.
     reset                Resets the metric to its initial state.
     started              Helper method to start data gathering for metric's
                          computation.
-    state_dict           Method returns state dict with attributes of the metric
-                         specified in its _state_dict_all_req_keys attribute.
-    update               Updates the metric's state using the passed batch output.
+    state_dict           Method returns state dict with attributes of the
+                         metric specified in its _state_dict_all_req_keys
+                         attribute.
+    update               Updates the metric's state using the passed batch
+                         output.
 
     attach(engine, name, usage=<ignite.metrics.metric.EpochWise object>)
     *ignite.metrics.Metric.attach*
@@ -16024,7 +16192,8 @@ class ignite.metrics.Metric(output_transform=<function Metric.<lambda>>,
             assert metric.is_attached(engine, usage=BatchWise.usage_name)
 <
 
-    completed(engine, name) *ignite.metrics.Metric.completed*
+    completed(engine, name)
+    *ignite.metrics.Metric.completed*
         Helper method to compute metric's value and put into the engine. It
         is automatically attached to the engine with
         |ignite.metrics.Metric.attach|. If metrics' value is torch tensor,
@@ -16119,7 +16288,8 @@ class ignite.metrics.Metric(output_transform=<function Metric.<lambda>>,
         Return type: ~
             bool
 
-    iteration_completed(engine) *ignite.metrics.Metric.iteration_completed*
+    iteration_completed(engine)
+    *ignite.metrics.Metric.iteration_completed*
         Helper method to update metric's computation. It is automatically
         attached to the engine with |ignite.metrics.Metric.attach|.
 
@@ -16142,7 +16312,8 @@ class ignite.metrics.Metric(output_transform=<function Metric.<lambda>>,
 
           `y_pred` and `y` can be torch tensors or list of tensors/numbers
 
-    load_state_dict(state_dict) *ignite.metrics.Metric.load_state_dict*
+    load_state_dict(state_dict)
+    *ignite.metrics.Metric.load_state_dict*
         Method replaces internal state of the class with provided state dict
         data.
 
@@ -16165,7 +16336,8 @@ class ignite.metrics.Metric(output_transform=<function Metric.<lambda>>,
         Return type: ~
             None
 
-    started(engine) *ignite.metrics.Metric.started*
+    started(engine)
+    *ignite.metrics.Metric.started*
         Helper method to start data gathering for metric's computation. It
         is automatically attached to the engine with
         |ignite.metrics.Metric.attach|.
@@ -16177,7 +16349,8 @@ class ignite.metrics.Metric(output_transform=<function Metric.<lambda>>,
         Return type: ~
             None
 
-    state_dict() *ignite.metrics.Metric.state_dict*
+    state_dict()
+    *ignite.metrics.Metric.state_dict*
         Method returns state dict with attributes of the metric specified in
         its _state_dict_all_req_keys attribute. Can be used to save internal
         state of the class.
@@ -16250,7 +16423,8 @@ class ignite.metrics.MetricGroup(metrics, output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.MetricGroup.compute*
+    compute()
+    *ignite.metrics.MetricGroup.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -16268,7 +16442,8 @@ class ignite.metrics.MetricGroup(metrics, output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.MetricGroup.reset*
+    reset()
+    *ignite.metrics.MetricGroup.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -16276,7 +16451,8 @@ class ignite.metrics.MetricGroup(metrics, output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.MetricGroup.update*
+    update(output)
+    *ignite.metrics.MetricGroup.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -16482,7 +16658,8 @@ class ignite.metrics.MetricsLambda(f, *args, skip_unrolling=False,
             assert metric.is_attached(engine, usage=BatchWise.usage_name)
 <
 
-    compute() *ignite.metrics.MetricsLambda.compute*
+    compute()
+    *ignite.metrics.MetricsLambda.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -16558,7 +16735,8 @@ class ignite.metrics.MetricsLambda(f, *args, skip_unrolling=False,
         Return type: ~
             bool
 
-    reset() *ignite.metrics.MetricsLambda.reset*
+    reset()
+    *ignite.metrics.MetricsLambda.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -16566,7 +16744,8 @@ class ignite.metrics.MetricsLambda(f, *args, skip_unrolling=False,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.MetricsLambda.update*
+    update(output)
+    *ignite.metrics.MetricsLambda.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -16720,7 +16899,8 @@ class ignite.metrics.MultiLabelConfusionMatrix(num_classes,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.MultiLabelConfusionMatrix.compute*
+    compute()
+    *ignite.metrics.MultiLabelConfusionMatrix.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -16738,7 +16918,8 @@ class ignite.metrics.MultiLabelConfusionMatrix(num_classes,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.MultiLabelConfusionMatrix.reset*
+    reset()
+    *ignite.metrics.MultiLabelConfusionMatrix.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -16746,7 +16927,8 @@ class ignite.metrics.MultiLabelConfusionMatrix(num_classes,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.MultiLabelConfusionMatrix.update*
+    update(output)
+    *ignite.metrics.MultiLabelConfusionMatrix.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -16890,7 +17072,8 @@ class ignite.metrics.MutualInformation(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.MutualInformation.compute*
+    compute()
+    *ignite.metrics.MutualInformation.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -16908,7 +17091,8 @@ class ignite.metrics.MutualInformation(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.MutualInformation.reset*
+    reset()
+    *ignite.metrics.MutualInformation.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -16988,7 +17172,8 @@ class ignite.metrics.ObjectDetectionAvgPrecisionRecall(iou_thresholds=None,
     reset    Resets the metric to its initial state.
     update   Metric update method using prediction and target.
 
-    compute() *ignite.metrics.ObjectDetectionAvgPrecisionRecall.compute*
+    compute()
+    *ignite.metrics.ObjectDetectionAvgPrecisionRecall.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -17006,7 +17191,8 @@ class ignite.metrics.ObjectDetectionAvgPrecisionRecall(iou_thresholds=None,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.ObjectDetectionAvgPrecisionRecall.reset*
+    reset()
+    *ignite.metrics.ObjectDetectionAvgPrecisionRecall.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -17014,7 +17200,8 @@ class ignite.metrics.ObjectDetectionAvgPrecisionRecall(iou_thresholds=None,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.ObjectDetectionAvgPrecisionRecall.update*
+    update(output)
+    *ignite.metrics.ObjectDetectionAvgPrecisionRecall.update*
         Metric update method using prediction and target.
 
         Parameters: ~
@@ -17030,24 +17217,28 @@ class ignite.metrics.ObjectDetectionAvgPrecisionRecall(iou_thresholds=None,
             sample respectively.
 
             y_pred items
-            ------------  -----------  ---------------------------------------------------
+            ------------  -----------  ---------------------------------------
             Key           Value shape  Description
-            ------------  -----------  ---------------------------------------------------
-            'bbox'        (Ndet, 4)    Bounding boxes of form (x1, y1, x2, y2) containing
-                                       top left and bottom right coordinates.
+            ------------  -----------  ---------------------------------------
+            'bbox'        (Ndet, 4)    Bounding boxes of form (x1, y1, x2, y2)
+                                       containing top left and bottom right
+                                       coordinates.
             'scores'      (Ndet,)      Confidence score of detections.
-            'labels'      (Ndet,)      Predicted category number of detections in
-                                       torch.long dtype.
+            'labels'      (Ndet,)      Predicted category number of detections
+                                       in torch.long dtype.
 
             y items
-            ---------  -----------  ------------------------------------------------------
+            ---------  -----------  ------------------------------------------
             Key        Value shape  Description
-            ---------  -----------  ------------------------------------------------------
-            'bbox'     (Ngt, 4)     Bounding boxes of form (x1, y1, x2, y2) containing top
-                                    left and bottom right coordinates.
-            'labels'   (Ngt,)       Category number of ground truths in torch.long dtype.
-            'iscrowd'  (Ngt,)       Whether ground truth boxes are crowd ones or not, in
-                                    torch.bool dtype. This key is optional.
+            ---------  -----------  ------------------------------------------
+            'bbox'     (Ngt, 4)     Bounding boxes of form (x1, y1, x2, y2)
+                                    containing top left and bottom right
+                                    coordinates.
+            'labels'   (Ngt,)       Category number of ground truths in
+                                    torch.long dtype.
+            'iscrowd'  (Ngt,)       Whether ground truth boxes are crowd ones
+                                    or not, in torch.bool dtype. This key is
+                                    optional.
 
         Return type: ~
             None
@@ -17191,7 +17382,8 @@ class ignite.metrics.PSNR(data_range, output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.PSNR.compute*
+    compute()
+    *ignite.metrics.PSNR.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -17209,7 +17401,8 @@ class ignite.metrics.PSNR(data_range, output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.PSNR.reset*
+    reset()
+    *ignite.metrics.PSNR.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -17217,7 +17410,8 @@ class ignite.metrics.PSNR(data_range, output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.PSNR.update*
+    update(output)
+    *ignite.metrics.PSNR.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -17308,7 +17502,8 @@ class ignite.metrics.Perplexity(output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.Perplexity.compute*
+    compute()
+    *ignite.metrics.Perplexity.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -17326,7 +17521,8 @@ class ignite.metrics.Perplexity(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.Perplexity.reset*
+    reset()
+    *ignite.metrics.Perplexity.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -17334,7 +17530,8 @@ class ignite.metrics.Perplexity(output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.Perplexity.update*
+    update(output)
+    *ignite.metrics.Perplexity.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -17627,7 +17824,8 @@ class ignite.metrics.Precision(output_transform=<function
 
     update  Update the metric state using prediction and target.
 
-    update(output) *ignite.metrics.Precision.update*
+    update(output)
+    *ignite.metrics.Precision.update*
         Update the metric state using prediction and target.
 
         Parameters: ~
@@ -17639,10 +17837,10 @@ class ignite.metrics.Precision(output_transform=<function
             table below. N stands for the batch dimension, ... for possible
             additional dimensions and C for class dimension.
 
-            Output member\Data type                         Binary  Multiclass  Multilabel
-            ----------------------------------------------  ------  ----------  ----------
-            y_pred                                          (N, ...)  (N, C, ...)   (N, C, ...)
-            y                                               (N, ...)  (N, ...)      (N, C, ...)
+            Output member\Data type             Binary  Multiclass  Multilabel
+            ----------------------------------  ------  ----------  ----------
+            y_pred                              (N, ...)  (N, C, ...)   (N, C, ...)
+            y                                   (N, ...)  (N, ...)      (N, C, ...)
 
             For binary and multilabel data, both y and y_pred should consist
             of 0's and 1's, but for multiclass data, y_pred and y should
@@ -17772,7 +17970,8 @@ class ignite.metrics.PrecisionRecallCurve(output_transform=<function
 
     compute  Computes the metric based on its accumulated state.
 
-    compute() *ignite.metrics.PrecisionRecallCurve.compute*
+    compute()
+    *ignite.metrics.PrecisionRecallCurve.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -17899,8 +18098,6 @@ class ignite.metrics.ROC_AUC(output_transform=<function ROC_AUC.<lambda>>,
       Changed in version 0.5.1: ~
 
       `skip_unrolling` argument is added.
-
-    Methods: ~
 
 ----------------------------------------------------------------------------
 Recall                                                 *ignite.metrics.Recall*
@@ -18171,7 +18368,8 @@ class ignite.metrics.Recall(output_transform=<function
 
     update  Updates the metric's state using the passed batch output.
 
-    update(output) *ignite.metrics.Recall.update*
+    update(output)
+    *ignite.metrics.Recall.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -18308,7 +18506,8 @@ class ignite.metrics.RocCurve(output_transform=<function RocCurve.<lambda>>,
 
     compute  Computes the metric based on its accumulated state.
 
-    compute() *ignite.metrics.RocCurve.compute*
+    compute()
+    *ignite.metrics.RocCurve.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -18449,7 +18648,8 @@ class ignite.metrics.RootMeanSquaredError(output_transform=<function
 
     compute  Computes the metric based on its accumulated state.
 
-    compute() *ignite.metrics.RootMeanSquaredError.compute*
+    compute()
+    *ignite.metrics.RootMeanSquaredError.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -18535,7 +18735,8 @@ class ignite.metrics.Rouge(variants=None, multiref='average', alpha=0,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.Rouge.compute*
+    compute()
+    *ignite.metrics.Rouge.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -18553,7 +18754,8 @@ class ignite.metrics.Rouge(variants=None, multiref='average', alpha=0,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.Rouge.reset*
+    reset()
+    *ignite.metrics.Rouge.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -18561,7 +18763,8 @@ class ignite.metrics.Rouge(variants=None, multiref='average', alpha=0,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.Rouge.update*
+    update(output)
+    *ignite.metrics.Rouge.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -18638,8 +18841,6 @@ class ignite.metrics.RougeL(multiref='average', alpha=0,
 <
       New in version 0.4.5.: ~
 
-    Methods: ~
-
 ----------------------------------------------------------------------------
 RougeN                                                 *ignite.metrics.RougeN*
 
@@ -18699,8 +18900,6 @@ class ignite.metrics.RougeN(ngram=4, multiref='average', alpha=0,
         {'Rouge-2-P': 0.5, 'Rouge-2-R': 0.4, 'Rouge-2-F': 0.4}
 <
       New in version 0.4.5.: ~
-
-    Methods: ~
 
 ----------------------------------------------------------------------------
 RunningAverage                                 *ignite.metrics.RunningAverage*
@@ -18841,16 +19040,17 @@ class ignite.metrics.RunningAverage(src=None, alpha=0.98,
 
     Methods: ~
 
-    attach   Attach the metric to the engine using the events determined by the
-             usage.
+    attach   Attach the metric to the engine using the events determined by
+             the usage.
     compute  Computes the metric based on its accumulated state.
-    detach   Detaches current metric from the engine and no metric's computation
-             is done during the run.
+    detach   Detaches current metric from the engine and no metric's
+             computation is done during the run.
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
     attach(engine, name, usage=<ignite.metrics.metric.RunningBatchWise
-    object>) *ignite.metrics.RunningAverage.attach*
+    object>)
+    *ignite.metrics.RunningAverage.attach*
         Attach the metric to the `engine` using the events determined by the
         `usage`.
 
@@ -18866,23 +19066,27 @@ class ignite.metrics.RunningAverage(src=None, alpha=0.98,
               |ignite.metrics.metric.MetricUsage|s in the following table.
 
               usage class                  Description
-              ---------------------------  -------------------------------------------------
+              ---------------------------  -------------------------------------
               RunningBatchWise             Running average of the src metric or
-                                           engine.state.output is computed across batches.
-                                           In the former case, on each batch, src is reset,
-                                           updated and computed then its value is retrieved.
-                                           Default.
-              SingleEpochRunningBatchWise  Same as above but the running average is computed
-                                           across batches in an epoch so it is reset at the
-                                           end of the epoch.
+                                           engine.state.output is computed
+                                           across batches. In the former case,
+                                           on each batch, src is reset, updated
+                                           and computed then its value is
+                                           retrieved. Default.
+              SingleEpochRunningBatchWise  Same as above but the running average
+                                           is computed across batches in an
+                                           epoch so it is reset at the end of
+                                           the epoch.
               RunningEpochWise             Running average of the src metric or
-                                           engine.state.output is computed across epochs. In
-                                           the former case, src works as if it was attached
-                                           in a EpochWise manner and its computed value is
-                                           retrieved at the end of the epoch. The latter
-                                           case doesn't make much sense for this usage as
-                                           the engine.state.output of the last batch is
-                                           retrieved then.
+                                           engine.state.output is computed
+                                           across epochs. In the former case,
+                                           src works as if it was attached in a
+                                           EpochWise manner and its computed
+                                           value is retrieved at the end of the
+                                           epoch. The latter case doesn't make
+                                           much sense for this usage as the
+                                           engine.state.output of the last batch
+                                           is retrieved then.
 
         Return type: ~
             None
@@ -18901,7 +19105,8 @@ class ignite.metrics.RunningAverage(src=None, alpha=0.98,
 
           usage argument
 
-    compute() *ignite.metrics.RunningAverage.compute*
+    compute()
+    *ignite.metrics.RunningAverage.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -18964,7 +19169,8 @@ class ignite.metrics.RunningAverage(src=None, alpha=0.98,
     required_output_keys : tuple | None = None
     *ignite.metrics.RunningAverage.required_output_keys*
 
-    reset() *ignite.metrics.RunningAverage.reset*
+    reset()
+    *ignite.metrics.RunningAverage.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -18972,7 +19178,8 @@ class ignite.metrics.RunningAverage(src=None, alpha=0.98,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.RunningAverage.update*
+    update(output)
+    *ignite.metrics.RunningAverage.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -19117,7 +19324,8 @@ class ignite.metrics.SSIM(data_range, kernel_size=11, sigma=1.5, k1=0.01,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.SSIM.compute*
+    compute()
+    *ignite.metrics.SSIM.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -19135,7 +19343,8 @@ class ignite.metrics.SSIM(data_range, kernel_size=11, sigma=1.5, k1=0.01,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.SSIM.reset*
+    reset()
+    *ignite.metrics.SSIM.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -19143,7 +19352,8 @@ class ignite.metrics.SSIM(data_range, kernel_size=11, sigma=1.5, k1=0.01,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.SSIM.update*
+    update(output)
+    *ignite.metrics.SSIM.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -19289,7 +19499,8 @@ class ignite.metrics.TopKCategoricalAccuracy(k=5, output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.TopKCategoricalAccuracy.compute*
+    compute()
+    *ignite.metrics.TopKCategoricalAccuracy.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -19307,7 +19518,8 @@ class ignite.metrics.TopKCategoricalAccuracy(k=5, output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.TopKCategoricalAccuracy.reset*
+    reset()
+    *ignite.metrics.TopKCategoricalAccuracy.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -19315,7 +19527,8 @@ class ignite.metrics.TopKCategoricalAccuracy(k=5, output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.TopKCategoricalAccuracy.update*
+    update(output)
+    *ignite.metrics.TopKCategoricalAccuracy.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -19380,7 +19593,8 @@ class ignite.metrics.VariableAccumulation(op, output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.VariableAccumulation.compute*
+    compute()
+    *ignite.metrics.VariableAccumulation.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -19401,7 +19615,8 @@ class ignite.metrics.VariableAccumulation(op, output_transform=<function
     required_output_keys : tuple | None = None
     *ignite.metrics.VariableAccumulation.required_output_keys*
 
-    reset() *ignite.metrics.VariableAccumulation.reset*
+    reset()
+    *ignite.metrics.VariableAccumulation.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -19409,7 +19624,8 @@ class ignite.metrics.VariableAccumulation(op, output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.VariableAccumulation.update*
+    update(output)
+    *ignite.metrics.VariableAccumulation.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -19555,8 +19771,6 @@ ignite.metrics.clustering.CalinskiHarabaszScore(output_transform=<function
 <
       New in version 0.5.2.: ~
 
-    Methods: ~
-
 ----------------------------------------------------------------------------
 DaviesBouldinScore              *ignite.metrics.clustering.DaviesBouldinScore*
 
@@ -19690,8 +19904,6 @@ ignite.metrics.clustering.DaviesBouldinScore(output_transform=<function
         1.3838673743829881
 <
       New in version 0.5.2.: ~
-
-    Methods: ~
 
 ----------------------------------------------------------------------------
 SilhouetteScore                    *ignite.metrics.clustering.SilhouetteScore*
@@ -19839,8 +20051,6 @@ class ignite.metrics.clustering.SilhouetteScore(output_transform=<function
       or if each sample belongs to its own cluster
       (`n_unique >= n_samples`), as the silhouette score is undefined in
       these cases.
-
-    Methods: ~
 
 ----------------------------------------------------------------------------
 coco_tensor_list_to_dict_list   *ignite.metrics.coco_tensor_list_to_dict_list*
@@ -20003,8 +20213,6 @@ class ignite.metrics.fairness.DemographicParityDifference(groups,
     - Verma & Rubin, Fairness Definitions Explained
       https://fairware.cs.umass.edu/papers/Verma.pdf, 2018.
 
-    Methods: ~
-
 ----------------------------------------------------------------------------
 SelectionRate                          *ignite.metrics.fairness.SelectionRate*
 
@@ -20097,7 +20305,8 @@ class ignite.metrics.fairness.SelectionRate(output_transform=<function
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.fairness.SelectionRate.compute*
+    compute()
+    *ignite.metrics.fairness.SelectionRate.compute*
         Computes the selection rate.
 
         Returns: ~
@@ -20107,7 +20316,8 @@ class ignite.metrics.fairness.SelectionRate(output_transform=<function
             Tensor
             https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor
 
-    reset() *ignite.metrics.fairness.SelectionRate.reset*
+    reset()
+    *ignite.metrics.fairness.SelectionRate.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -20115,7 +20325,8 @@ class ignite.metrics.fairness.SelectionRate(output_transform=<function
         Return type: ~
             None
 
-    update(output) *ignite.metrics.fairness.SelectionRate.update*
+    update(output)
+    *ignite.metrics.fairness.SelectionRate.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -20251,8 +20462,6 @@ class ignite.metrics.fairness.SubgroupAccuracyDifference(groups,
     - Verma & Rubin, Fairness Definitions Explained
       https://fairware.cs.umass.edu/papers/Verma.pdf, 2018.
 
-    Methods: ~
-
 ----------------------------------------------------------------------------
 SubgroupDifference                *ignite.metrics.fairness.SubgroupDifference*
 
@@ -20281,7 +20490,8 @@ class ignite.metrics.fairness.SubgroupDifference(base_metric, groups,
 
     compute  Computes the maximum disparity between any two subgroups.
 
-    compute() *ignite.metrics.fairness.SubgroupDifference.compute*
+    compute()
+    *ignite.metrics.fairness.SubgroupDifference.compute*
         Computes the maximum disparity between any two subgroups.
 
         Returns: ~
@@ -20327,7 +20537,8 @@ class ignite.metrics.fairness.SubgroupMetric(base_metric, groups,
 
     compute  Computes the metric for each subgroup.
 
-    compute() *ignite.metrics.fairness.SubgroupMetric.compute*
+    compute()
+    *ignite.metrics.fairness.SubgroupMetric.compute*
         Computes the metric for each subgroup.
 
         Returns: ~
@@ -20604,7 +20815,8 @@ class ignite.metrics.rec_sys.HitRate(top_k=1, ignore_zero_hits=True,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.rec_sys.HitRate.compute*
+    compute()
+    *ignite.metrics.rec_sys.HitRate.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -20622,7 +20834,8 @@ class ignite.metrics.rec_sys.HitRate(top_k=1, ignore_zero_hits=True,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.rec_sys.HitRate.reset*
+    reset()
+    *ignite.metrics.rec_sys.HitRate.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -20630,7 +20843,8 @@ class ignite.metrics.rec_sys.HitRate(top_k=1, ignore_zero_hits=True,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.rec_sys.HitRate.update*
+    update(output)
+    *ignite.metrics.rec_sys.HitRate.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -20826,7 +21040,8 @@ class ignite.metrics.rec_sys.NDCG(top_k, ignore_zero_hits=True,
     reset    Resets the metric to its initial state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.rec_sys.NDCG.compute*
+    compute()
+    *ignite.metrics.rec_sys.NDCG.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -20844,7 +21059,8 @@ class ignite.metrics.rec_sys.NDCG(top_k, ignore_zero_hits=True,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.rec_sys.NDCG.reset*
+    reset()
+    *ignite.metrics.rec_sys.NDCG.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -20852,7 +21068,8 @@ class ignite.metrics.rec_sys.NDCG(top_k, ignore_zero_hits=True,
         Return type: ~
             None
 
-    update(output) *ignite.metrics.rec_sys.NDCG.update*
+    update(output)
+    *ignite.metrics.rec_sys.NDCG.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -20982,7 +21199,8 @@ class ignite.metrics.regression.CanberraMetric(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.CanberraMetric.compute*
+    compute()
+    *ignite.metrics.regression.CanberraMetric.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -21000,7 +21218,8 @@ class ignite.metrics.regression.CanberraMetric(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.CanberraMetric.reset*
+    reset()
+    *ignite.metrics.regression.CanberraMetric.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -21120,7 +21339,8 @@ ignite.metrics.regression.FractionalAbsoluteError(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.FractionalAbsoluteError.compute*
+    compute()
+    *ignite.metrics.regression.FractionalAbsoluteError.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -21138,7 +21358,8 @@ ignite.metrics.regression.FractionalAbsoluteError(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.FractionalAbsoluteError.reset*
+    reset()
+    *ignite.metrics.regression.FractionalAbsoluteError.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -21257,7 +21478,8 @@ class ignite.metrics.regression.FractionalBias(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.FractionalBias.compute*
+    compute()
+    *ignite.metrics.regression.FractionalBias.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -21275,7 +21497,8 @@ class ignite.metrics.regression.FractionalBias(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.FractionalBias.reset*
+    reset()
+    *ignite.metrics.regression.FractionalBias.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -21396,7 +21619,8 @@ ignite.metrics.regression.GeometricMeanAbsoluteError(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.GeometricMeanAbsoluteError.compute*
+    compute()
+    *ignite.metrics.regression.GeometricMeanAbsoluteError.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -21414,7 +21638,8 @@ ignite.metrics.regression.GeometricMeanAbsoluteError(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.GeometricMeanAbsoluteError.reset*
+    reset()
+    *ignite.metrics.regression.GeometricMeanAbsoluteError.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -21702,7 +21927,8 @@ class ignite.metrics.regression.KendallRankCorrelation(variant='b',
     compute  Computes the metric based on its accumulated state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.regression.KendallRankCorrelation.compute*
+    compute()
+    *ignite.metrics.regression.KendallRankCorrelation.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -21720,7 +21946,8 @@ class ignite.metrics.regression.KendallRankCorrelation(variant='b',
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    update(output) *ignite.metrics.regression.KendallRankCorrelation.update*
+    update(output)
+    *ignite.metrics.regression.KendallRankCorrelation.update*
         Updates the metric's state using the passed batch output.
 
         By default, this is called once for each batch.
@@ -21849,7 +22076,8 @@ class ignite.metrics.regression.ManhattanDistance(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.ManhattanDistance.compute*
+    compute()
+    *ignite.metrics.regression.ManhattanDistance.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -21867,7 +22095,8 @@ class ignite.metrics.regression.ManhattanDistance(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.ManhattanDistance.reset*
+    reset()
+    *ignite.metrics.regression.ManhattanDistance.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -21987,7 +22216,8 @@ ignite.metrics.regression.MaximumAbsoluteError(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.MaximumAbsoluteError.compute*
+    compute()
+    *ignite.metrics.regression.MaximumAbsoluteError.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -22005,7 +22235,8 @@ ignite.metrics.regression.MaximumAbsoluteError(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.MaximumAbsoluteError.reset*
+    reset()
+    *ignite.metrics.regression.MaximumAbsoluteError.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -22127,7 +22358,8 @@ ignite.metrics.regression.MeanAbsoluteRelativeError(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.MeanAbsoluteRelativeError.compute*
+    compute()
+    *ignite.metrics.regression.MeanAbsoluteRelativeError.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -22145,7 +22377,8 @@ ignite.metrics.regression.MeanAbsoluteRelativeError(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.MeanAbsoluteRelativeError.reset*
+    reset()
+    *ignite.metrics.regression.MeanAbsoluteRelativeError.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -22262,7 +22495,8 @@ class ignite.metrics.regression.MeanError(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.MeanError.compute*
+    compute()
+    *ignite.metrics.regression.MeanError.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -22280,7 +22514,8 @@ class ignite.metrics.regression.MeanError(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.MeanError.reset*
+    reset()
+    *ignite.metrics.regression.MeanError.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -22400,7 +22635,8 @@ ignite.metrics.regression.MeanNormalizedBias(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.MeanNormalizedBias.compute*
+    compute()
+    *ignite.metrics.regression.MeanNormalizedBias.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -22418,7 +22654,8 @@ ignite.metrics.regression.MeanNormalizedBias(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.MeanNormalizedBias.reset*
+    reset()
+    *ignite.metrics.regression.MeanNormalizedBias.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -22529,7 +22766,6 @@ ignite.metrics.regression.MedianAbsoluteError(output_transform=<function
     >text
         0.625
 <
-    Methods: ~
 
 ----------------------------------------------------------------------------
                      *ignite.metrics.regression.MedianAbsolutePercentageError*
@@ -22635,7 +22871,6 @@ ignite.metrics.regression.MedianAbsolutePercentageError(output_transform=<functi
     >text
         25.0...
 <
-    Methods: ~
 
 ----------------------------------------------------------------------------
                        *ignite.metrics.regression.MedianRelativeAbsoluteError*
@@ -22741,7 +22976,6 @@ ignite.metrics.regression.MedianRelativeAbsoluteError(output_transform=<function
     >text
         0.5...
 <
-    Methods: ~
 
 ----------------------------------------------------------------------------
 PearsonCorrelation              *ignite.metrics.regression.PearsonCorrelation*
@@ -22848,7 +23082,8 @@ class ignite.metrics.regression.PearsonCorrelation(eps=1e-08,
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.PearsonCorrelation.compute*
+    compute()
+    *ignite.metrics.regression.PearsonCorrelation.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -22866,7 +23101,8 @@ class ignite.metrics.regression.PearsonCorrelation(eps=1e-08,
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.PearsonCorrelation.reset*
+    reset()
+    *ignite.metrics.regression.PearsonCorrelation.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -22985,7 +23221,8 @@ class ignite.metrics.regression.R2Score(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.R2Score.compute*
+    compute()
+    *ignite.metrics.regression.R2Score.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -23003,7 +23240,8 @@ class ignite.metrics.regression.R2Score(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.R2Score.reset*
+    reset()
+    *ignite.metrics.regression.R2Score.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.
@@ -23130,7 +23368,8 @@ ignite.metrics.regression.SpearmanRankCorrelation(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     update   Updates the metric's state using the passed batch output.
 
-    compute() *ignite.metrics.regression.SpearmanRankCorrelation.compute*
+    compute()
+    *ignite.metrics.regression.SpearmanRankCorrelation.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -23276,7 +23515,8 @@ ignite.metrics.regression.WaveHedgesDistance(output_transform=<function
     compute  Computes the metric based on its accumulated state.
     reset    Resets the metric to its initial state.
 
-    compute() *ignite.metrics.regression.WaveHedgesDistance.compute*
+    compute()
+    *ignite.metrics.regression.WaveHedgesDistance.compute*
         Computes the metric based on its accumulated state.
 
         By default, this is called at the end of each epoch.
@@ -23294,7 +23534,8 @@ ignite.metrics.regression.WaveHedgesDistance(output_transform=<function
             |ignite.exceptions.NotComputableError| -- raised when the metric
             cannot be computed.
 
-    reset() *ignite.metrics.regression.WaveHedgesDistance.reset*
+    reset()
+    *ignite.metrics.regression.WaveHedgesDistance.reset*
         Resets the metric to its initial state.
 
         By default, this is called at the start of each epoch.

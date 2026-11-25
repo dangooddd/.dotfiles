@@ -1256,7 +1256,7 @@ will be applied to all saved tensors that are created in that context.
   example moving a CUDA tensor to CPU) carries no `grad_fn`, and the
   original input is not retained.
 
-Example:
+Example: ~
 
 >python
     # Only save on disk tensors that have size >= 1000
@@ -3957,7 +3957,9 @@ Please only use |torch.autograd.function.FunctionCtx.save_for_backward| or
 collections of Tensors directly onto the ctx object - these Tensors will not
 get tracked
 
-TORCH.VMAP() SUPPORT  *notes-extending.func-torch-vmap-support*
+                                     *notes-extending.func-torch-vmap-support*
+
+TORCH.VMAP() SUPPORT
 
 To use an |torch.autograd.Function| with |torch.vmap|, you must either:
 
@@ -3985,7 +3987,7 @@ manually define a vmap staticmethod (see next section).
   transformable via |torch.vmap|. That is, they must consist of only PyTorch
   operations (as opposed to e.g. NumPy or custom CUDA kernels).
 
-Example:
+Example: ~
 
 >python
     class MyCube(torch.autograd.Function):
@@ -4071,7 +4073,7 @@ Here's how to define the |torch.autograd.Function.vmap| staticmethod:
   `output` and contain one `out_dim` per output that specifies if the output
   has the vmapped dimension and what index it is in.
 
-Example:
+Example: ~
 
 >python
     def to_numpy(tensor):
@@ -4211,7 +4213,9 @@ Example:
   via `generate_vmap_rule=True`. You may wish to do this if the generated
   vmap rule doesn't have the semantics you're looking for.
 
-TORCH.FUNC.JVP() SUPPORT  *notes-extending.func-torch-func-jvp-support*
+                                 *notes-extending.func-torch-func-jvp-support*
+
+TORCH.FUNC.JVP() SUPPORT
 
 To support forward-mode AD, a |torch.autograd.Function| must have a
 |torch.autograd.Function.jvp| staticmethod. Please see Forward mode AD
@@ -4419,15 +4423,15 @@ Intel Client GPU                        *notes-get_start_xpu-intel-client-gpu*
 Supported OS                        Validated Hardware
 ----------------------------------  ------------------------------------------
 Windows 11 & Ubuntu 24.04/26.04 &   Intel® Arc™ A-Series Graphics (CodeName:
-WSL2 Ubuntu 24.04/26.04             Alchemist)Intel® Arc™ B-Series Graphics
-                                    (CodeName: Battlemage)Intel® Core™ Ultra
+WSL2 Ubuntu 24.04/26.04             Alchemist) Intel® Arc™ B-Series Graphics
+                                    (CodeName: Battlemage) Intel® Core™ Ultra
                                     Processors with Intel® Arc™ Graphics
-                                    (CodeName: Meteor Lake-H)Intel® Core™
+                                    (CodeName: Meteor Lake-H) Intel® Core™
                                     Ultra Processors (Series 2) with Intel®
-                                    Arc™ Graphics (CodeName: Arrow
-                                    Lake-H)Intel® Core™ Ultra Mobile
-                                    Processors (Series 2) with Intel® Arc™
-                                    Graphics (CodeName: Lunar Lake)
+                                    Arc™ Graphics (CodeName: Arrow Lake-H)
+                                    Intel® Core™ Ultra Mobile Processors
+                                    (Series 2) with Intel® Arc™ Graphics
+                                    (CodeName: Lunar Lake)
 Windows 11 & Ubuntu 26.04 & WSL2    Intel® Core™ Ultra Mobile Processors
 Ubuntu 24.04/26.04                  (Series 3) with Intel® Arc™ Graphics
                                     (CodeName: Panther Lake)
@@ -6261,7 +6265,7 @@ to perform well historically for the module type. For certain use cases, it
 may be desired to initialize with a different dtype, device (e.g. GPU), or
 initialization technique.
 
-Examples:
+Examples: ~
 
 >python
     # Initialize module directly onto GPU.
@@ -7263,40 +7267,65 @@ CUDA Scaled Dot Product Attention
 multiple backends at runtime. Each backend has different determinism
 characteristics, summarized in the table below:
 
-Backend                         Forward        Backward           Notes
-------------------------------  -------------  -----------------  ------------------------------------
-SDPBackend.MATH                 Deterministic  Deterministic      Uses standard PyTorch operators
-                                                                  (matmul, softmax). Deterministic
-                                                                  when
-                                                                  torch.use_deterministic_algorithms()
-                                                                  is enabled.
-SDPBackend.FLASH_ATTENTION      Deterministic  Non-deterministic  The backward pass uses
-                                                                  non-deterministic atomic operations
-                                                                  by default. Setting
-                                                                  torch.use_deterministic_algorithms(True,
-                                                                  warn_only=False) enables a
-                                                                  deterministic backward
-                                                                  implementation.
-SDPBackend.EFFICIENT_ATTENTION  Deterministic  Non-deterministic  The backward pass may split work
-                                                                  across keys (num_splits_key > 1) for
-                                                                  performance, which is
-                                                                  non-deterministic. Setting
-                                                                  torch.use_deterministic_algorithms(True,
-                                                                  warn_only=False) forces
-                                                                  num_splits_key = 1, making the
-                                                                  backward pass deterministic.
-SDPBackend.CUDNN_ATTENTION      Deterministic  Non-deterministic  cuDNN provides an opt-in
-                                                                  deterministic backward for float16
-                                                                  starting in cuDNN 9.18 (via
-                                                                  set_deterministic_algorithm), but
-                                                                  this has not yet been integrated
-                                                                  into PyTorch. This backend is
-                                                                  disabled when
-                                                                  torch.use_deterministic_algorithms(True,
-                                                                  warn_only=False) is set, regardless
-                                                                  of whether inputs require gradients
-                                                                  or the call is inside a
-                                                                  torch.no_grad() context.
+Backend                Forward        Backward           Notes
+---------------------  -------------  -----------------  ---------------------
+SDPBackend.MATH        Deterministic  Deterministic      Uses standard PyTorch
+                                                         operators (matmul,
+                                                         softmax).
+                                                         Deterministic when
+                                                         torch.use_
+                                                         deterministic_
+                                                         algorithms()
+                                                         is enabled.
+SDPBackend.FLASH_      Deterministic  Non-deterministic  The backward pass
+ATTENTION                                                uses
+                                                         non-deterministic
+                                                         atomic operations by
+                                                         default. Setting
+                                                         torch.use_
+                                                         deterministic_
+                                                         algorithms(True,
+                                                         warn_only=False)
+                                                         enables a
+                                                         deterministic
+                                                         backward
+                                                         implementation.
+SDPBackend.EFFICIENT_  Deterministic  Non-deterministic  The backward pass may
+ATTENTION                                                split work across
+                                                         keys (num_splits_key
+                                                         > 1) for performance,
+                                                         which is
+                                                         non-deterministic.
+                                                         Setting
+                                                         torch.use_
+                                                         deterministic_
+                                                         algorithms(True,
+                                                         warn_only=False)
+                                                         forces num_splits_key
+                                                         = 1, making the
+                                                         backward pass
+                                                         deterministic.
+SDPBackend.CUDNN_      Deterministic  Non-deterministic  cuDNN provides an
+ATTENTION                                                opt-in deterministic
+                                                         backward for float16
+                                                         starting in cuDNN
+                                                         9.18 (via
+                                                         set_deterministic_
+                                                         algorithm),
+                                                         but this has not yet
+                                                         been integrated into
+                                                         PyTorch. This backend
+                                                         is disabled when
+                                                         torch.use_
+                                                         deterministic_
+                                                         algorithms(True,
+                                                         warn_only=False) is
+                                                         set, regardless of
+                                                         whether inputs
+                                                         require gradients or
+                                                         the call is inside a
+                                                         torch.no_grad()
+                                                         context.
 
 When `torch.use_deterministic_algorithms(True, warn_only=True)` is set, the
 fused backends (Flash, Efficient, and cuDNN) emit a one-time warning but
@@ -7801,8 +7830,9 @@ torch.serialization.register_package(priority, tagger, deserializer)
         >>> torch.serialization.register_package(11, ipu_tag, ipu_deserialize)
 <
 
+                                       *torch.serialization.get_crc32_options*
+
 torch.serialization.get_crc32_options()
-    *torch.serialization.get_crc32_options*
     Get whether |torch.save| computes and writes crc32 for each record.
 
     Defaults to `True`.
@@ -7810,8 +7840,9 @@ torch.serialization.get_crc32_options()
     Return type: ~
         bool
 
+                                       *torch.serialization.set_crc32_options*
+
 torch.serialization.set_crc32_options(compute_crc32)
-    *torch.serialization.set_crc32_options*
     Set whether |torch.save| computes and writes crc32 for each record.
 
       Note: ~
@@ -7823,8 +7854,9 @@ torch.serialization.set_crc32_options(compute_crc32)
     Parameters: ~
         compute_crc32 (bool) -- set crc32 computation flag
 
+                             *torch.serialization.get_default_load_endianness*
+
 torch.serialization.get_default_load_endianness()
-    *torch.serialization.get_default_load_endianness*
     Get fallback byte order for loading files
 
     If byteorder mark is not present in saved checkpoint, this byte order is
@@ -7836,8 +7868,9 @@ torch.serialization.get_default_load_endianness()
     Return type: ~
         default_load_endian
 
+                             *torch.serialization.set_default_load_endianness*
+
 torch.serialization.set_default_load_endianness(endianness)
-    *torch.serialization.set_default_load_endianness*
     Set fallback byte order for loading files
 
     If byteorder mark is not present in saved checkpoint, this byte order is
@@ -7846,8 +7879,9 @@ torch.serialization.set_default_load_endianness(endianness)
     Parameters: ~
         endianness -- the new fallback byte order
 
+                                *torch.serialization.get_default_mmap_options*
+
 torch.serialization.get_default_mmap_options()
-    *torch.serialization.get_default_mmap_options*
     Get default mmap options for |torch.load| with `mmap=True`.
 
     Defaults to `mmap.MAP_PRIVATE`.
@@ -7858,8 +7892,9 @@ torch.serialization.get_default_mmap_options()
     Return type: ~
         default_mmap_options
 
+                                *torch.serialization.set_default_mmap_options*
+
 torch.serialization.set_default_mmap_options(flags)
-    *torch.serialization.set_default_mmap_options*
     Context manager or function to set default mmap options for |torch.load|
     with `mmap=True` to flags.
 
@@ -7874,8 +7909,9 @@ torch.serialization.set_default_mmap_options(flags)
     Parameters: ~
         flags (int) -- `mmap.MAP_PRIVATE` or `mmap.MAP_SHARED`
 
+                                        *torch.serialization.add_safe_globals*
+
 torch.serialization.add_safe_globals(safe_globals)
-    *torch.serialization.add_safe_globals*
     Marks the given globals as safe for `weights_only` load. For example,
     functions added to this list can be called during unpickling, classes
     could be instantiated and have state set.
@@ -7911,20 +7947,23 @@ torch.serialization.add_safe_globals(safe_globals)
         #          [-0.8234,  2.0500, -0.3657]])
 <
 
+                                      *torch.serialization.clear_safe_globals*
+
 torch.serialization.clear_safe_globals()
-    *torch.serialization.clear_safe_globals*
     Clears the list of globals that are safe for `weights_only` load.
 
+                                        *torch.serialization.get_safe_globals*
+
 torch.serialization.get_safe_globals()
-    *torch.serialization.get_safe_globals*
     Returns the list of user-added globals that are safe for `weights_only`
     load.
 
     Return type: ~
         list[Callable | tuple[Callable, str]]
 
+                        *torch.serialization.get_unsafe_globals_in_checkpoint*
+
 torch.serialization.get_unsafe_globals_in_checkpoint(f)
-    *torch.serialization.get_unsafe_globals_in_checkpoint*
     Returns a list of strings of functions/classes in a `torch.save` object
     that are not safe for `weights_only`.
 
@@ -7957,8 +7996,9 @@ torch.serialization.get_unsafe_globals_in_checkpoint(f)
     Return type: ~
         list[str]
 
+                                            *torch.serialization.safe_globals*
+
 class torch.serialization.safe_globals(safe_globals)
-    *torch.serialization.safe_globals*
     Context-manager that adds certain globals as safe for `weights_only`
     load.
 
@@ -7985,8 +8025,9 @@ class torch.serialization.safe_globals(safe_globals)
         >>> assert torch.serialization.get_safe_globals() == []
 <
 
+                                               *torch.serialization.skip_data*
+
 class torch.serialization.skip_data(materialize_fake_tensors=False)
-    *torch.serialization.skip_data*
     Context-manager that skips writing/reading storage bytes for
     `torch.save` / `torch.load` calls.
 

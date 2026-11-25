@@ -13,30 +13,26 @@ BENCHMARK                  *developer_guide-benchmark_and_profiling-benchmark*
 SGLang provides four benchmark tools that operate at different levels of the
 stack. The table below summarizes their key differences:
 
-Tool                      HTTP Server       Scheduler         Use Case
-------------------------  ----------------  ----------------  ----------------
-bench_serving             Yes (async HTTP   Yes (indirectly,  Realistic online
-                          client to a       via server)       serving
-                          running server)                     benchmarks with
-                                                              latency metrics
-                                                              (TTFT, TPOT,
-                                                              ITL)
-bench_one_batch_server    Yes (sends HTTP   Yes (indirectly,  End-to-end
-                          requests to a     via server)       single-batch
-                          running server)                     latency
-                                                              including HTTP
-                                                              and scheduler
-                                                              overhead
-bench_offline_throughput  No                Yes (directly     Maximum
-                                            uses Engine       throughput
-                                            in-process)       measurement
-                                                              without HTTP
-                                                              overhead
-bench_one_batch           No                No (directly      Kernel-level
-                                            calls             latency
-                                            ModelRunner)      profiling of a
-                                                              single static
-                                                              batch
+Tool                HTTP Server         Scheduler           Use Case
+------------------  ------------------  ------------------  ------------------
+bench_serving       Yes (async HTTP     Yes (indirectly,    Realistic online
+                    client to a         via server)         serving benchmarks
+                    running server)                         with latency
+                                                            metrics (TTFT,
+                                                            TPOT, ITL)
+bench_one_batch_    Yes (sends HTTP     Yes (indirectly,    End-to-end
+server              requests to a       via server)         single-batch
+                    running server)                         latency including
+                                                            HTTP and scheduler
+                                                            overhead
+bench_offline_      No                  Yes (directly uses  Maximum throughput
+throughput                              Engine in-process)  measurement
+                                                            without HTTP
+                                                            overhead
+bench_one_batch     No                  No (directly calls  Kernel-level
+                                        ModelRunner)        latency profiling
+                                                            of a single static
+                                                            batch
 
 Use `bench_serving` by default unless there are specific needs.
 
@@ -51,7 +47,7 @@ performance. Launch a server with `sglang.launch_server` first.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving --backend sglang --max-concurrency 16 --num-prompts 80 --random-input-len 256 --random-output-len 32 --dataset-name random
 <
 `bench_one_batch_server` sends a single batch as one HTTP request to a
@@ -63,7 +59,7 @@ steady-state and metrics will be biased. Launch a server with
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.one_batch_server --base-url http://127.0.0.1:30000 --model-path meta-llama/Meta-Llama-3.1-8B-Instruct --batch-size 32 --input-len 256 --output-len 32
 <
 - Pass `--enable-multi-batch` and set `--batch-size` to a multiple of the
@@ -98,7 +94,7 @@ This measures maximum achievable throughput without any network overhead.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.offline_throughput --model-path meta-llama/Meta-Llama-3.1-8B-Instruct --num-prompts 10
 <
 `bench_one_batch` is the lowest-level tool. It directly instantiates a
@@ -114,7 +110,7 @@ performance.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.one_batch --model-path meta-llama/Meta-Llama-3.1-8B-Instruct --batch-size 32 --input-len 256 --output-len 32
 <
 
@@ -133,7 +129,7 @@ Profile a server with `sglang.benchmark.serving`
 
 [Command]Command
 
->sh
+>bash
     # set trace path
     export SGLANG_TORCH_PROFILER_DIR=/root/sglang/profile_log
 
@@ -175,7 +171,7 @@ Profile Prefill Workers
 
 [Command]Command
 
->sh
+>bash
     # set trace path
     export SGLANG_TORCH_PROFILER_DIR=/root/sglang/profile_log
 
@@ -198,7 +194,7 @@ Profile Decode Workers
 
 [Command]Command
 
->sh
+>bash
     # send profiling request targeting decode workers
     python -m sglang.benchmark.serving --backend sglang --model meta-llama/Llama-3.1-8B-Instruct --num-prompts 10 --sharegpt-output-len 100 --profile --pd-separated --profile-decode-url http://127.0.0.1:30001
 <
@@ -212,7 +208,7 @@ Important Notes      *developer_guide-benchmark_and_profiling-important-notes*
 
   [Command]Command
 
-  >sh
+  >bash
       # Profile multiple prefill workers
       python -m sglang.benchmark.serving --backend sglang --model meta-llama/Llama-3.1-8B-Instruct --num-prompts 10 --profile --pd-separated --profile-prefill-url http://127.0.0.1:30000 http://127.0.0.1:30002
 
@@ -231,7 +227,7 @@ Profile a server with `sglang.benchmark.offline_throughput`
 
 [Command]Command
 
->sh
+>bash
     export SGLANG_TORCH_PROFILER_DIR=/root/sglang/profile_log
 
     # profile one batch with bench_one_batch.py
@@ -299,7 +295,7 @@ Basic usage:
 
 [Command]Command
 
->sh
+>bash
     # Start profiling immediately for 10 steps
     curl -X POST http://127.0.0.1:30000/start_profile \
       -H "Authorization: Bearer ${SGLANG_ADMIN_API_KEY}" \
@@ -308,7 +304,7 @@ Basic usage:
         "num_steps": 10
       }'
 <
-Parameters:
+Parameters: ~
 
 - `output_dir` (optional): Directory where profile traces will be saved. If
   not specified, uses `SGLANG_TORCH_PROFILER_DIR` environment variable, or
@@ -337,7 +333,7 @@ Advanced usage with `start_step`:
 
 [Command]Command
 
->sh
+>bash
     # Wait 5 steps (warmup), then profile for 10 steps
     curl -X POST http://127.0.0.1:30000/start_profile \
       -H "Authorization: Bearer ${SGLANG_ADMIN_API_KEY}" \
@@ -355,7 +351,7 @@ Continuous profiling (manual stop):
 
 [Command]Command
 
->sh
+>bash
     # Start profiling without num_steps - must manually stop with /stop_profile
     curl -X POST http://127.0.0.1:30000/start_profile \
       -H "Authorization: Bearer ${SGLANG_ADMIN_API_KEY}"
@@ -403,7 +399,7 @@ For example, a verify step with 3 draft tokens across 2 requests
 
 [Command]Command
 
->sh
+>bash
     # Profile 10 steps with detailed annotations enabled
     curl -X POST http://127.0.0.1:30000/start_profile \
       -H "Authorization: Bearer ${SGLANG_ADMIN_API_KEY}" \
@@ -433,7 +429,7 @@ the trace file.
 
 [Command]Command
 
->sh
+>bash
     # Stop profiling and save traces
     curl -X POST http://127.0.0.1:30000/stop_profile \
       -H "Authorization: Bearer ${SGLANG_ADMIN_API_KEY}"
@@ -448,7 +444,7 @@ Example workflow    *developer_guide-benchmark_and_profiling-example-workflow*
 
 [Command]Command
 
->sh
+>bash
     # Terminal 1: Start the server
     export SGLANG_TORCH_PROFILER_DIR=/tmp/profiles
     export SGLANG_ADMIN_API_KEY=<your-admin-api-key>
@@ -494,7 +490,7 @@ HTTP API Usage        *developer_guide-benchmark_and_profiling-http-api-usage*
 
 [Command]Command
 
->sh
+>bash
     # Start profiling with automatic trace merging enabled
     curl -X POST <BASE_URL>/start_profile \
       -H "Authorization: Bearer ${SGLANG_ADMIN_API_KEY}" \
@@ -514,7 +510,7 @@ Command Line Usage
 
 [Command]Command
 
->sh
+>bash
     # Start profiling with merge enabled
     python -m sglang.profiler \
       --num-steps 10 \
@@ -564,7 +560,7 @@ single combined trace) takes precedence.
 
 [Command]Command
 
->sh
+>bash
     # set trace path
     export SGLANG_TORCH_PROFILER_DIR=/root/sglang/profile_log
 
@@ -600,7 +596,7 @@ If in any cases you encounter the following error (for example, using qwen
 
 [Command]Command
 
->sh
+>bash
     RuntimeError: !stack.empty() INTERNAL ASSERT FAILED at "/pytorch/torch/csrc/autograd/profiler_python.cpp":983, please report a bug to PyTorch. Python replay stack is empty.
 <
 This is likely a PyTorch Bug reported in Bug: vLLM Profiler
@@ -613,7 +609,7 @@ disable `with_stack` with an environment variable such as follows:
 
 [Command]Command
 
->sh
+>bash
     export SGLANG_PROFILE_WITH_STACK=False
     python -m sglang.benchmark.offline_throughput --model-path meta-llama/Llama-3.1-8B-Instruct --dataset-name random --num-prompts 10 --profile --mem-frac=0.8
 <
@@ -633,7 +629,7 @@ prompt outputs. For example, when profiling a server,
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving --backend sglang --model meta-llama/Llama-3.1-8B-Instruct --num-prompts 2 --sharegpt-output-len 100 --profile
 <
 This command sets the number of prompts to 2 with `--num-prompts` argument
@@ -665,7 +661,7 @@ usage, annotated code regions and low-level CUDA APIs and events.
 
    [Command]Command
 
-   >sh
+   >bash
        # install nsys
        # https://docs.nvidia.com/nsight-systems/InstallationGuide/index.html
        apt update
@@ -682,7 +678,7 @@ usage, annotated code regions and low-level CUDA APIs and events.
 
    [Command]Command
 
-   >sh
+   >bash
        nsys profile --trace-fork-before-exec=true --cuda-graph-trace=node python3 -m sglang.benchmark.one_batch --model meta-llama/Meta-Llama-3-8B --batch-size 64 --input-len 512
 <
 
@@ -692,7 +688,7 @@ usage, annotated code regions and low-level CUDA APIs and events.
 
    [Command]Command
 
-   >sh
+   >bash
        # launch the server, set the delay and duration times according to needs
        # after the duration time has been used up, server will be killed by nsys
 
@@ -708,7 +704,7 @@ usage, annotated code regions and low-level CUDA APIs and events.
 
    [Command]Command
 
-   >sh
+   >bash
        nsys sessions list
 <
    to get the session id in the form of `profile-XXXXX`, then run:
@@ -717,7 +713,7 @@ usage, annotated code regions and low-level CUDA APIs and events.
 
    [Command]Command
 
-   >sh
+   >bash
        nsys stop --session=profile-XXXXX
 <
    to manually kill the profiler and generate `nsys-rep` files instantly.
@@ -728,7 +724,7 @@ usage, annotated code regions and low-level CUDA APIs and events.
 
    [Command]Command
 
-   >sh
+   >bash
        # install nvtx
        pip install nvtx
 <
@@ -771,7 +767,7 @@ HTTP API while Nsight Systems is running.
 
    [Command]Command
 
-   >sh
+   >bash
        # Terminal 1: Start server with nsys and capture-range option
        export SGLANG_ADMIN_API_KEY=<your-admin-api-key>
        nsys profile --trace-fork-before-exec=true \
@@ -796,7 +792,7 @@ HTTP API while Nsight Systems is running.
 
    [Command]Command
 
-   >sh
+   >bash
        # Terminal 2: Wait for server to be ready, then start CUDA profiling
        # Wait 3 steps for warmup, then profile for 10 steps
        curl -X POST http://127.0.0.1:30000/start_profile \
@@ -815,7 +811,7 @@ HTTP API while Nsight Systems is running.
 
    [Command]Command
 
-   >sh
+   >bash
        # Terminal 3: Generate workload
        python -m sglang.benchmark.serving --backend sglang --num-prompts 100
 <
@@ -828,7 +824,7 @@ HTTP API while Nsight Systems is running.
 
    [Command]Command
 
-   >sh
+   >bash
        # Terminal 2: Only needed if num_steps was not specified
        curl -X POST http://127.0.0.1:30000/stop_profile \
          -H "Authorization: Bearer ${SGLANG_ADMIN_API_KEY}"
@@ -850,7 +846,7 @@ entire workload:
 
 [Command]Command
 
->sh
+>bash
     # Terminal 1: Start server with layerwise NVTX
     # Note: --disable-decode-cuda-graph --disable-prefill-cuda-graph ensures all NVTX markers are emitted
     python -m sglang.launch_server \
@@ -876,7 +872,7 @@ Open the generated `.qdrep` file with Nsight Systems:
 
 [Command]Command
 
->sh
+>bash
     nsys-ui layerwise_profile.qdrep
 <
 In the Nsight Systems GUI, you'll see:
@@ -915,7 +911,7 @@ OTHER TIPS                *developer_guide-benchmark_and_profiling-other-tips*
 
    [Command]Command
 
-   >sh
+   >bash
        python -m sglang.benchmark.one_batch --model-path meta-llama/Meta-Llama-3.1-8B-Instruct --batch 32 --input-len 256 --output-len 32 --load-format dummy --json-model-override-args '{"num_hidden_layers": 1, "num_key_value_heads": 1}'
 <
 

@@ -24,63 +24,65 @@ checkpoints. Below is the performance on the GSM8k dataset if not specified
 otherwise. More comprehensive benchmark results areavailable in the recipe
 folder.
 
-Hardware  Model                             Method      Test       Details
-                                                        score
---------  --------------------------------  ----------  ---------  -----------
-NVIDIA    google/gemma-2-2b-it              hf          23.9       Huggingface
-GPU                                         checkpoint
-NVIDIA    google/gemma-2-2b-it              SFT         52.06      command and
-GPU                                                                logs
-NVIDIA    google/gemma-2-2b-it              SFT + PPO   64.02      command and
-GPU                                                                logs, wandb
-NVIDIA    Qwen/Qwen2.5-0.5B-Instruct        hf          49.6       Qwen blog
-GPU                                         checkpoint
-NVIDIA    Qwen/Qwen2.5-0.5B-Instruct        PPO         56.7       command and
-GPU                                                                log
-NVIDIA    Qwen/Qwen2.5-0.5B-Instruct        PRIME       58.7       script,
-GPU                                                                wandb
-NVIDIA    Qwen/Qwen2.5-0.5B-Instruct        GRPO-LoRA   54.3       command and
-GPU                                                                logs
-NVIDIA    Qwen/Qwen2.5-1.5B-Instruct        GRPO-LoRA   77.9       command and
-GPU                                                                logs
-NVIDIA    Qwen/Qwen2.5-3B-Instruct          GRPO-LoRA   86.1       command and
-GPU                                                                logs
-NVIDIA    deepseek-ai/deepseek-llm-7b-chat  PPO         69.5 [1]   log, wandb
-GPU                                         (Megatron)
-NVIDIA    Qwen/Qwen2-7B-Instruct            GRPO        89         script
-GPU
-NVIDIA    Qwen/Qwen2-7B-Instruct            GRPO        89.8       log
-GPU                                         (FSDP2)
-NVIDIA    Qwen/Qwen2-7B-Instruct            GRPO        89.6       log
-GPU                                         (Megatron)
-NVIDIA    Qwen/Qwen2.5-7B-Instruct          ReMax       97         script,
-GPU                                                                wandb
-NVIDIA    Qwen/Qwen2.5-7B-Instruct          SPPO        65.6       SPPO script
-GPU                                                     (MATH)
-NVIDIA    Qwen/Qwen2.5-7B-Instruct          GRPO-LoRA   93.4       command and
-GPU                                                                logs
-NVIDIA    Mixtral-8x22B-Instruct-v0.1       Instruct    83.7       Qwen Blog
-GPU                                         model
-NVIDIA    Mixtral-8x22B-Instruct-v0.1       RLOO        92.3       wandb
-GPU                                         (Megatron)
-NVIDIA    Qwen/Qwen2.5-7B-Instruct          SPIN        92         script
-GPU
-NVIDIA    Qwen/Qwen2-7B-Instruct            GPG         88         log, wandb
-GPU
-NVIDIA    Qwen/Qwen2-7B-Instruct            GPG         88         log, wandb
-GPU                                         (Megatron)
-NVIDIA    Qwen/Qwen2.5-VL-7B-Instruct       GRPO        65.4       script,
-GPU                                         (Megatron)  (GEO3k)    wandb
-AMD       deepseek-ai/deepseek-llm-7b-chat  PPO         70.5 [1]   log
-MI300
-AMD       deepseek-ai/deepseek-llm-7b-chat  GRPO        71.4 [1]   log
-MI300
-NVIDIA    Qwen/Qwen2.5-14B-Instruct         GRPO-LoRA   94.6       command and
-GPU                                                                logs
-NVIDIA    Qwen/Qwen2.5-32B-Instruct         GRPO-LoRA   95.8       command and
-GPU                                                                logs
-NVIDIA    Qwen/Qwen2.5-72B-Instruct         GRPO-LoRA   96.0       command and
-GPU                                                                logs
+Hardware    Model             Method           Test score    Details
+----------  ----------------  ---------------  ------------  -----------------
+NVIDIA GPU  google/gemma-2-   hf checkpoint    23.9          Huggingface
+            2b-it
+NVIDIA GPU  google/gemma-2-   SFT              52.06         command and logs
+            2b-it
+NVIDIA GPU  google/gemma-2-   SFT + PPO        64.02         command and logs,
+            2b-it                                            wandb
+NVIDIA GPU  Qwen/Qwen2.5-0.   hf checkpoint    49.6          Qwen blog
+            5B-Instruct
+NVIDIA GPU  Qwen/Qwen2.5-0.   PPO              56.7          command and log
+            5B-Instruct
+NVIDIA GPU  Qwen/Qwen2.5-0.   PRIME            58.7          script, wandb
+            5B-Instruct
+NVIDIA GPU  Qwen/Qwen2.5-0.   GRPO-LoRA        54.3          command and logs
+            5B-Instruct
+NVIDIA GPU  Qwen/Qwen2.5-1.   GRPO-LoRA        77.9          command and logs
+            5B-Instruct
+NVIDIA GPU  Qwen/Qwen2.5-3B-  GRPO-LoRA        86.1          command and logs
+            Instruct
+NVIDIA GPU  deepseek-ai/      PPO (Megatron)   69.5 [1]      log, wandb
+            deepseek-llm-7b-
+            chat
+NVIDIA GPU  Qwen/Qwen2-7B-    GRPO             89            script
+            Instruct
+NVIDIA GPU  Qwen/Qwen2-7B-    GRPO (FSDP2)     89.8          log
+            Instruct
+NVIDIA GPU  Qwen/Qwen2-7B-    GRPO (Megatron)  89.6          log
+            Instruct
+NVIDIA GPU  Qwen/Qwen2.5-7B-  ReMax            97            script, wandb
+            Instruct
+NVIDIA GPU  Qwen/Qwen2.5-7B-  SPPO             65.6 (MATH)   SPPO script
+            Instruct
+NVIDIA GPU  Qwen/Qwen2.5-7B-  GRPO-LoRA        93.4          command and logs
+            Instruct
+NVIDIA GPU  Mixtral-8x22B-    Instruct model   83.7          Qwen Blog
+            Instruct-v0.1
+NVIDIA GPU  Mixtral-8x22B-    RLOO (Megatron)  92.3          wandb
+            Instruct-v0.1
+NVIDIA GPU  Qwen/Qwen2.5-7B-  SPIN             92            script
+            Instruct
+NVIDIA GPU  Qwen/Qwen2-7B-    GPG              88            log, wandb
+            Instruct
+NVIDIA GPU  Qwen/Qwen2-7B-    GPG (Megatron)   88            log, wandb
+            Instruct
+NVIDIA GPU  Qwen/Qwen2.5-VL-  GRPO (Megatron)  65.4 (GEO3k)  script, wandb
+            7B-Instruct
+AMD MI300   deepseek-ai/      PPO              70.5 [1]      log
+            deepseek-llm-7b-
+            chat
+AMD MI300   deepseek-ai/      GRPO             71.4 [1]      log
+            deepseek-llm-7b-
+            chat
+NVIDIA GPU  Qwen/Qwen2.5-     GRPO-LoRA        94.6          command and logs
+            14B-Instruct
+NVIDIA GPU  Qwen/Qwen2.5-     GRPO-LoRA        95.8          command and logs
+            32B-Instruct
+NVIDIA GPU  Qwen/Qwen2.5-     GRPO-LoRA        96.0          command and logs
+            72B-Instruct
 
 DAPO math-17k                                    *algo-baseline-dapo-math-17k*
 
@@ -89,18 +91,19 @@ DAPO math-17k                                    *algo-baseline-dapo-math-17k*
 - Testing: AIME'24:
   https://huggingface.co/datasets/BytedTsinghua-SIA/AIME-2024
 
-Note:
+Note: ~
 
 - For Qwen/Qwen2.5-Math-7B, we directly modify the max_position_embeddings
   to 32768 without observing performance degradation in order to train
   longer response length.
 
-Hardware    Model                     Method         Test score  Details
-----------  ------------------------  -------------  ----------  -------------
-NVIDIA GPU  Qwen/Qwen2.5-Math-7B      DAPO           36.3        command, logs
+Hardware    Model               Method               Test score  Details
+----------  ------------------  -------------------  ----------  -------------
+NVIDIA GPU  Qwen/Qwen2.5-Math-  DAPO                 36.3        command, logs
+            7B
             (32k)
-NVIDIA GPU  Qwen/Qwen2.5-7B-Instruct  DAPO + Code    40.0        command
-                                      Interpreter
+NVIDIA GPU  Qwen/Qwen2.5-7B-    DAPO + Code          40.0        command
+            Instruct            Interpreter
 
 CODING RELATED DATASETS                *algo-baseline-coding-related-datasets*
 
@@ -166,19 +169,31 @@ QUICKSTART                                              *algo-dapo-quickstart*
 
 REPRODUCTION RUNS                                *algo-dapo-reproduction-runs*
 
-Setup        AIME  Hardware   Image                                 Commit  Environment       Training Script                Training
-             2024                                                           Variables                                        Record
+Setup        AIME  Hardware   Image         Commit  Environment       Training  Training
+             2024                                   Variables         Script    Record
              Acc.
------------  ----  ---------  ------------------------------------  ------  ----------------  -----------------------------  --------
-DAPO         52%   16x8xH800  hiyouga/verl:ngc-th2.6.0-cu126-vllm0.8.3-flashinfer0.2.2-cxx11abi0  4f80e4  runtime_env.yaml  run_dapo_qwen2.5_32b.sh        W&B
-DAPO w/o     50%   16x8xH800  hiyouga/verl:ngc-th2.6.0-cu126-vllm0.8.3-flashinfer0.2.2-cxx11abi0  4f80e4  runtime_env.yaml  run_dapo_wo_ds_qwen2.5_32b.sh  W&B
-Dynamic
-Sampling
-DAPO w/o     44%   16x8xH20   hiyouga/verl:ngc-th2.5.1-cu120-vllm0.7.4-hotfix  4f80e4  runtime_env.yaml  run_dapo_early_qwen2.5_32b.sh  W&B
-Token-level
-Loss &
-Dynamic
-Sampling
+-----------  ----  ---------  ------------  ------  ----------------  --------  --------
+DAPO         52%   16x8xH800  hiyouga/      4f80e4  runtime_env.yaml  run_      W&B
+                              verl:ngc-                               dapo_
+                              th2.6.0-                                qwen2.5_
+                              cu126-vllm0.                            32b.sh
+                              8.3-
+                              flashinfer0.
+                              2.2-
+                              cxx11abi0
+DAPO w/o     50%   16x8xH800  hiyouga/      4f80e4  runtime_env.yaml  run_      W&B
+Dynamic                       verl:ngc-                               dapo_wo_
+Sampling                      th2.6.0-                                ds_
+                              cu126-vllm0.                            qwen2.5_
+                              8.3-                                    32b.sh
+                              flashinfer0.
+                              2.2-
+                              cxx11abi0
+DAPO w/o     44%   16x8xH20   hiyouga/      4f80e4  runtime_env.yaml  run_      W&B
+Token-level                   verl:ngc-                               dapo_
+Loss &                        th2.5.1-                                early_
+Dynamic                       cu120-vllm0.                            qwen2.5_
+Sampling                      7.4-hotfix                              32b.sh
 
   [!IMPORTANT]
 
@@ -610,7 +625,7 @@ To configure GPG within the framework, use the following YAML settings.
 
 >yaml
     algorithm:
-      adv_estimator: gpg 
+      adv_estimator: gpg
     actor_rollout_ref:
       actor:
         policy_loss:
@@ -1729,7 +1744,7 @@ activating the optimal reward baseline.
 
 >yaml
     algorithm:
-      adv_estimator: opo  # Use OPO for optimal reward baseline 
+      adv_estimator: opo  # Use OPO for optimal reward baseline
     data:
       train_batch_size: 1024
     actor_rollout_ref:
@@ -1737,7 +1752,7 @@ activating the optimal reward baseline.
         ppo_mini_batch_size: 1024 # ppo_mini_batch_size should equal to train_batch_size to enable exact on-policy training
         entropy_coeff: 0 # disable entropy regularization
         use_kl_loss: False # disable kl regularization
-        kl_loss_coef: 0 
+        kl_loss_coef: 0
 <
 
 ADVANCED EXTENSIONS                             *algo-opo-advanced-extensions*
@@ -2496,50 +2511,56 @@ Understanding the Presets        *algo-rollout_corr-understanding-the-presets*
 
 Available Preset Methods          *algo-rollout_corr-available-preset-methods*
 
-Preset Method                 Estimator         Mode         IS Level  RS Level  Properties
-----------------------------  ----------------  -----------  --------  --------  --------------
-Decoupled PPO Mode (3
-policies: π_rollout, π_old,
+Preset Method       Estimator         Mode         IS Level  RS Level  Properties
+------------------  ----------------  -----------  --------  --------  --------------
+Decoupled PPO Mode
+(3 policies:
+π_rollout, π_old,
 π_θ)
-decoupled_token_is()          Token-TIS         Decoupled    token     -         Token-level IS
-                                                                                 weights
-decoupled_seq_is()            Seq-TIS           Decoupled    sequence  -         Sequence-level
-                                                                                 IS weights
-decoupled_seq_is_rs()         Seq-MIS           Decoupled    sequence  sequence  Sequence IS +
-                                                                                 seq_sum_k1 RS
-decoupled_geo_rs()            Geo-RS            Decoupled    -         sequence  Geometric RS
-                                                                                 (seq_mean_k1)
-decoupled_geo_rs_token_tis()  Geo-RS-Token-TIS  Decoupled    token     sequence  Geometric RS +
-                                                                                 token IS
-K3 KL Estimator (more stable
-for small KL values)
-decoupled_k3_rs()             K3-RS             Decoupled    -         sequence  seq_mean_k3 RS
-    decoupled_k3_rs_token_tis()   K3-RS-Token-TIS   Decoupled    token     sequence  seq_mean_k3 RS
-                                                                                 + token IS
-Bypass Mode (PPO-clip) (2
-policies; ratio handles IS,
-RS masks outliers)
-bypass_ppo_clip()             -                 Bypass       -         -         PPO-clip only
-                                                (PPO-clip)
-bypass_ppo_clip_geo_rs()      Geo-RS            Bypass       -         sequence  PPO-clip +
-                                                (PPO-clip)                       Geo-RS
-bypass_ppo_clip_k3_rs()       K3-RS             Bypass       -         sequence  PPO-clip +
-                                                (PPO-clip)                       K3-RS
-Bypass Mode (REINFORCE) (2
-policies; explicit IS
-weights, no PPO clipping)
-bypass_pg_is()                Seq-TIS           Bypass       sequence  -         REINFORCE with
-                                                (REINFORCE)                      explicit IS
-bypass_pg_geo_rs()            Geo-RS            Bypass       -         sequence  REINFORCE with
-                                                (REINFORCE)                      Geo-RS
-bypass_pg_geo_rs_token_tis()  Geo-RS-Token-TIS  Bypass       token     sequence  REINFORCE +
-                                                (REINFORCE)                      Geo-RS + token
-                                                                                 IS
+decoupled_token_    Token-TIS         Decoupled    token     -         Token-level IS
+is()                                                                   weights
+    decoupled_seq_is()  Seq-TIS           Decoupled    sequence  -         Sequence-level
+                                                                       IS weights
+decoupled_seq_is_   Seq-MIS           Decoupled    sequence  sequence  Sequence IS +
+rs()                                                                   seq_sum_k1 RS
+    decoupled_geo_rs()  Geo-RS            Decoupled    -         sequence  Geometric RS
+                                                                       (seq_mean_k1)
+decoupled_geo_rs_   Geo-RS-Token-TIS  Decoupled    token     sequence  Geometric RS +
+token_tis()                                                            token IS
+    K3 KL Estimator
+    (more stable for
+    small KL values)
+    decoupled_k3_rs()   K3-RS             Decoupled    -         sequence  seq_mean_k3 RS
+    decoupled_k3_rs_    K3-RS-Token-TIS   Decoupled    token     sequence  seq_mean_k3 RS
+    token_tis()                                                            + token IS
+    Bypass Mode
+    (PPO-clip) (2
+    policies; ratio
+    handles IS, RS
+    masks outliers)
+    bypass_ppo_clip()   -                 Bypass       -         -         PPO-clip only
+                                      (PPO-clip)
+bypass_ppo_clip_    Geo-RS            Bypass       -         sequence  PPO-clip +
+geo_rs()                              (PPO-clip)                       Geo-RS
+    bypass_ppo_clip_    K3-RS             Bypass       -         sequence  PPO-clip +
+    k3_rs()                               (PPO-clip)                       K3-RS
+    Bypass Mode
+    (REINFORCE) (2
+    policies; explicit
+    IS weights, no PPO
+    clipping)
+    bypass_pg_is()      Seq-TIS           Bypass       sequence  -         REINFORCE with
+                                      (REINFORCE)                      explicit IS
+bypass_pg_geo_rs()  Geo-RS            Bypass       -         sequence  REINFORCE with
+                                      (REINFORCE)                      Geo-RS
+bypass_pg_geo_rs_   Geo-RS-Token-TIS  Bypass       token     sequence  REINFORCE +
+token_tis()                           (REINFORCE)                      Geo-RS + token
+                                                                       IS
 Other
-disabled()                    -                 -            -         -         Metrics only,
-                                                                                 no correction
+disabled()          -                 -            -         -         Metrics only,
+                                                                       no correction
 
-Note:
+Note: ~
 
 - Bypass mode sets π_old = π_rollout and uses `loss_type` to select the loss
   function:
@@ -3004,17 +3025,27 @@ combined with different loss functions.
                          *algo-rollout_corr-operating-modes-and-configuration*
 Operating Modes and Configuration
 
-Configuration  bypass_mode  loss_type    Operating  Loss       Description
-                                         Mode       Function
--------------  -----------  -----------  ---------  ---------  ------------------------
-Decoupled      false        N/A          Decoupled  PPO        Computes old_log_prob
-                                                               separately via
-                                                               actor.compute_log_prob()
-Bypass +       true         "ppo_clip"   Bypass     PPO-clip   PPO clipped objective
-PPO-clip                    (default)                          (IS handled by ratio)
-Bypass +       true         "reinforce"  Bypass     REINFORCE  Policy gradient with
-REINFORCE                                                      explicit IS weights (no
-                                                               PPO clipping)
+Configuration  bypass_mode  loss_type    Operating   Loss         Description
+                                         Mode        Function
+-------------  -----------  -----------  ----------  -----------  ------------
+Decoupled      false        N/A          Decoupled   PPO          Computes
+                                                                  old_log_prob
+                                                                  separately
+                                                                  via
+                                                                  actor.
+                                                                  compute_log_
+                                                                  prob()
+Bypass +       true         "ppo_clip"   Bypass      PPO-clip     PPO clipped
+PPO-clip                    (default)                             objective
+                                                                  (IS handled
+                                                                  by ratio)
+Bypass +       true         "reinforce"  Bypass      REINFORCE    Policy
+REINFORCE                                                         gradient
+                                                                  with
+                                                                  explicit IS
+                                                                  weights (no
+                                                                  PPO
+                                                                  clipping)
 
 Operating Mode Details              *algo-rollout_corr-operating-mode-details*
 

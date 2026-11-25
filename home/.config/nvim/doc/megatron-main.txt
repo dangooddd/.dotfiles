@@ -824,14 +824,14 @@ Data sharding             You handle it              Coordinator routes across
                                                      DP
 generate callable on      Every rank                 Primary rank (rank 0)
                                                      only
-HTTP serve()              ❌                          ✅
-Expert parallelism (EP >  ❌                          ✅
+HTTP serve()              ❌                         ✅
+Expert parallelism (EP >  ❌                         ✅
 1)
-pause/suspend/resume      ❌                          ✅
-submit / run_sync         ❌                          ✅
-Streaming                 ❌                          ✅
-multi_modal_data          ❌                          ✅
-MegatronAsyncLLM          ❌                          ✅
+pause/suspend/resume      ❌                         ✅
+submit / run_sync         ❌                         ✅
+Streaming                 ❌                         ✅
+multi_modal_data          ❌                         ✅
+MegatronAsyncLLM          ❌                         ✅
 
   `serve()` is not async-only. Both `MegatronLLM.serve(...)` and
   `MegatronAsyncLLM.serve(...)` start the HTTP frontend; what serving
@@ -1530,24 +1530,23 @@ EXAMPLES DIRECTORY             *mcore-inference-user-guide-examples-directory*
 Everything above is runnable from `examples/inference/`
 https://github.com/NVIDIA/Megatron-LM/tree/main/examples/inference:
 
-Path                                  Description
-------------------------------------  ----------------------------------------
-offline_inference.py                  Batched offline generation through the
-                                      high-level API. Covers all three
-                                      supported mode combinations using `--mode
-                                      sync
-run_offline_inference.sh              Shell wrapper for a Qwen 2.5-1.5B
-                                      offline-inference config.
-launch_inference_server.py            OpenAI-compatible HTTP server using
-                                      MegatronAsyncLLM.serve(...).
-run_inference_server.sh               Shell wrapper for a Nemotron-6 3B
-                                      hybrid-MoE server config.
-utils.py                              Shared helpers including Request,
-                                      build_requests, output formatting, and
-                                      JSON dump.
-advanced/gpt_dynamic_inference.py     Manual add_request/step_modern stepping.
-advanced/gpt_dynamic_inference_with_coordinator.py  Explicit coordinator and InferenceClient
-                                      lifecycle.
+Path                                Description
+----------------------------------  ------------------------------------------
+offline_inference.py                Batched offline generation through the
+                                    high-level API. Covers all three supported
+                                    mode combinations using `--mode sync
+run_offline_inference.sh            Shell wrapper for a Qwen 2.5-1.5B
+                                    offline-inference config.
+launch_inference_server.py          OpenAI-compatible HTTP server using
+                                    MegatronAsyncLLM.serve(...).
+run_inference_server.sh             Shell wrapper for a Nemotron-6 3B
+                                    hybrid-MoE server config.
+utils.py                            Shared helpers including Request,
+                                    build_requests, output formatting, and
+                                    JSON dump.
+advanced/gpt_dynamic_inference.py   Manual add_request/step_modern stepping.
+advanced/gpt_dynamic_inference_     Explicit coordinator and InferenceClient
+with_coordinator.py                 lifecycle.
 
 Run the offline example across modes:
 

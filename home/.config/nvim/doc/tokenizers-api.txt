@@ -1,0 +1,2998 @@
+*tokenizers-api.txt*	Tokenizers documentation: api
+Version v0.23.3 — https://huggingface.co/docs/tokenizers/v0.23.3/en/
+
+==============================================================================
+API                                                   *tokenizers-section-api*
+
+
+----------------------------------------------------------------------------
+Added Tokens                                     *tokenizers-api-added-tokens*
+
+                                                       *tokenizers.AddedToken*
+
+class tokenizers.AddedToken(content=None, single_word=False,
+    lstrip=False, rstrip=False, normalized=True, special=False)
+    Represents a token that can be be added to a |tokenizers.Tokenizer|.
+    It can have special options that defines the way it should behave.
+
+    Parameters: ~
+        content (str)
+            The content of the token
+
+        single_word (bool, defaults to False)
+            Defines whether this token should only match single words.
+            If `True`, this token will never match inside of a word. For
+            example the token `ing` would match on `tokenizing` if this
+            option is `False`, but not if it is `True`. The notion of
+            ”inside of a word” is defined by the word boundaries pattern
+            in regular expressions (ie. the token should start and end
+            with word boundaries).
+
+        lstrip (bool, defaults to False)
+            Defines whether this token should strip all potential
+            whitespaces on its left side. If `True`, this token will
+            greedily match any whitespace on its left. For example if we
+            try to match the token `[MASK]` with `lstrip=True`, in the
+            text `"I saw a [MASK]"`, we would match on `" [MASK]"`.
+            (Note the space on the left).
+
+        rstrip (bool, defaults to False)
+            Defines whether this token should strip all potential
+            whitespaces on its right side. If `True`, this token will
+            greedily match any whitespace on its right. It works just
+            like `lstrip` but on the right.
+
+        normalized (bool, defaults to True with
+        tokenizers.Tokenizer.add_tokens and False with
+        add_special_tokens())
+            Defines whether this token should match against the
+            normalized version of the input text. For example, with the
+            added token "yesterday", and a normalizer in charge of
+            lowercasing the text, the token could be extract from the
+            input "I saw a lion Yesterday".
+
+        special (bool, defaults to False with
+        tokenizers.Tokenizer.add_tokens and False with
+        add_special_tokens())
+            Defines whether this token should be skipped when decoding.
+
+    property AddedToken.content
+    *tokenizers.AddedToken.content*
+        Get the content of this `AddedToken`
+
+    property AddedToken.lstrip
+    *tokenizers.AddedToken.lstrip*
+        Get the value of the `lstrip` option
+
+    property AddedToken.normalized
+    *tokenizers.AddedToken.normalized*
+        Get the value of the `normalized` option
+
+    property AddedToken.rstrip
+    *tokenizers.AddedToken.rstrip*
+        Get the value of the `rstrip` option
+
+    property AddedToken.single_word
+    *tokenizers.AddedToken.single_word*
+        Get the value of the `single_word` option
+
+----------------------------------------------------------------------------
+Decoders                                             *tokenizers-api-decoders*
+
+                                            *tokenizers.decoders.DecodeStream*
+class tokenizers.decoders.DecodeStream(ids=None,
+    skip_special_tokens=False)
+    Provides incremental decoding of token IDs as they are generated,
+    yielding decoded text chunks as soon as they are available.
+
+    Unlike batch decoding, streaming decode is designed for use with
+    autoregressive generation --- tokens arrive one at a time and the
+    decoder needs to handle multi-byte sequences (e.g., UTF-8 characters
+    split across token boundaries) and byte-fallback tokens gracefully.
+
+    The decoder internally buffers tokens until it can produce a valid
+    UTF-8 string chunk, then yields that chunk and advances its internal
+    state. This means individual calls to `step()` may return `None`
+    when the current token completes a partial sequence that cannot yet
+    be decoded.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers import Tokenizer
+        >>> from tokenizers.decoders import DecodeStream
+        >>> tokenizer = Tokenizer.from_pretrained("gpt2")
+        >>> stream = DecodeStream(skip_special_tokens=True)
+        >>> # Simulate streaming token-by-token generation
+        >>> token_ids = tokenizer.encode("Hello, streaming world!").ids
+        >>> for token_id in token_ids:
+        ...     chunk = stream.step(tokenizer, token_id)
+        ...     if chunk is not None:
+        ...         print(chunk, end="", flush=True)
+<
+    Parameters: ~
+        skip_special_tokens (bool, defaults to False)
+            Whether to skip special tokens (e.g. `[CLS]`, `[SEP]`,
+            `<s>`) when decoding.
+
+    DecodeStream.step(tokenizer, id)
+    *tokenizers.decoders.DecodeStream.step*
+        Add the next token ID (or list of IDs) to the stream and return
+        the next decoded text chunk if one is available.
+
+        Because some characters span multiple tokens (e.g. multi-byte
+        UTF-8 sequences or byte-fallback tokens), this method may return
+        `None` when the provided token does not yet complete a decodable
+        unit. Callers should simply continue feeding tokens until a
+        non-`None` value is returned.
+
+        Parameters: ~
+            tokenizer (Tokenizer)
+                The tokenizer whose decoder pipeline will be used.
+
+            id (int or List[int])
+                The next token ID, or a list of token IDs to append to
+                the stream.
+
+        Returns: ~
+            Optional[str]
+                The next decoded text chunk if enough tokens have
+                accumulated, or `None` if more tokens are still needed.
+
+                                              *tokenizers.decoders.BPEDecoder*
+
+class tokenizers.decoders.BPEDecoder(suffix='</w>')
+    BPEDecoder Decoder
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import BPEDecoder
+        >>> decoder = BPEDecoder()
+        >>> decoder.decode(["Hello</w>", "world</w>"])
+        'Hello world'
+<
+    Parameters: ~
+        suffix (str, optional, defaults to </w>)
+            The suffix that was used to characterize an end-of-word.
+            This suffix will be replaced by whitespaces during the
+            decoding
+
+                                            *tokenizers.decoders.ByteFallback*
+
+class tokenizers.decoders.ByteFallback
+    ByteFallback Decoder
+
+    ByteFallback is a decoder that handles tokens representing raw bytes
+    in the `<0xNN>` format (e.g., `<0x61>` for the byte `0x61` = `'a'`).
+    It converts such tokens to their corresponding bytes and attempts to
+    decode the resulting byte sequence as UTF-8. This is used in
+    LLaMA/SentencePiece models that use byte fallback for unknown
+    characters. Inconvertible byte tokens are replaced with the Unicode
+    replacement character (U+FFFD).
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import ByteFallback, Fuse, Sequence
+        >>> decoder = Sequence([ByteFallback(), Fuse()])
+        >>> decoder.decode(["<0x48>", "<0x65>", "<0x6C>", "<0x6C>", "<0x6F>"])
+        'Hello'
+<
+
+                                               *tokenizers.decoders.ByteLevel*
+
+class tokenizers.decoders.ByteLevel
+    ByteLevel Decoder
+
+    This decoder is to be used in tandem with the
+    |tokenizers.pre_tokenizers.ByteLevel| pre-tokenizer. It reverses the
+    byte-to-unicode mapping applied during pre-tokenization, converting
+    the special Unicode characters back into the original bytes to
+    reconstruct the original string.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import ByteLevel
+        >>> decoder = ByteLevel()
+        >>> decoder.decode(["ĠHello", "Ġworld"])
+        ' Hello world'
+<
+
+                                                     *tokenizers.decoders.CTC*
+class tokenizers.decoders.CTC(pad_token='<pad>',
+    word_delimiter_token='|', cleanup=True)
+    CTC Decoder
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import CTC
+        >>> decoder = CTC()
+        >>> decoder.decode(["h", "e", "e", "<pad>", "l", "l", "o", "|", "w", "o", "r", "l", "d"])
+        'hello world'
+<
+    Parameters: ~
+        pad_token (str, optional, defaults to <pad>)
+            The pad token used by CTC to delimit a new token.
+
+        word_delimiter_token (str, optional, defaults to |)
+            The word delimiter token. It will be replaced by a
+
+        cleanup (bool, optional, defaults to True)
+            Whether to cleanup some tokenization artifacts. Mainly
+            spaces before punctuation, and some abbreviated english
+            forms.
+
+                                                    *tokenizers.decoders.Fuse*
+
+class tokenizers.decoders.Fuse
+    Fuse Decoder
+
+    Fuse simply concatenates every token into a single string without
+    any separator. This is typically the last step in a decoder chain
+    when other decoders need to operate on individual tokens before they
+    are joined together.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import Fuse
+        >>> decoder = Fuse()
+        >>> decoder.decode(["Hello", ",", " ", "world", "!"])
+        'Hello, world!'
+<
+
+                                               *tokenizers.decoders.Metaspace*
+
+class tokenizers.decoders.Metaspace
+    Metaspace Decoder
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import Metaspace
+        >>> decoder = Metaspace()
+        >>> decoder.decode(["▁Hello", "▁my", "▁friend"])
+        'Hello my friend'
+<
+    Parameters: ~
+        replacement (str, optional, defaults to ▁)
+            The replacement character. Must be exactly one character. By
+            default we use the ▁ (U+2581) meta symbol (Same as in
+            SentencePiece).
+
+        prepend_scheme (str, optional, defaults to "always")
+            Whether to add a space to the first word if there isn't
+            already one. This lets us treat hello exactly like say
+            hello. Choices: “always”, “never”, “first”. First means the
+            space is only added on the first token (relevant when
+            special tokens are used or other pre_tokenizer are used).
+
+                                                 *tokenizers.decoders.Replace*
+
+class tokenizers.decoders.Replace(pattern, content)
+    Replace Decoder
+
+    This decoder is to be used in tandem with the
+    |tokenizers.normalizers.Replace| normalizer or a similar replace
+    operation. It reverses a string replacement by substituting the
+    replacement content back with the original pattern.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import Replace
+        >>> decoder = Replace("▁", " ")
+        >>> decoder.decode(["▁Hello", "▁world"])
+        ' Hello world'
+<
+    Parameters: ~
+        pattern (str or Regex)
+            The pattern that was used as the replacement target during
+            encoding.
+
+        content (str)
+            The string to replace each match of the pattern with during
+            decoding.
+
+                                                *tokenizers.decoders.Sequence*
+
+class tokenizers.decoders.Sequence(decoders)
+    Sequence Decoder
+
+    Chains multiple decoders together, applying them in order. Each
+    decoder in the sequence processes the output of the previous one,
+    allowing complex decoding pipelines to be built from simpler
+    components.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import ByteFallback, Fuse, Metaspace, Sequence
+        >>> decoder = Sequence([ByteFallback(), Fuse(), Metaspace()])
+        >>> decoder.decode(["▁Hello", "▁world"])
+        'Hello world'
+<
+    Parameters: ~
+        decoders (List[Decoder])
+            The list of decoders to chain together.
+
+                                                   *tokenizers.decoders.Strip*
+
+class tokenizers.decoders.Strip(content=' ', left=0, right=0)
+    Strip Decoder
+
+    Strips a given number of occurrences of a character from the left
+    and/or right side of each token. This is useful for removing padding
+    characters or special prefix/suffix markers added during
+    tokenization.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import Strip
+        >>> decoder = Strip(content="▁", left=1)
+        >>> decoder.decode(["▁Hello", "▁world"])
+        'Hello world'
+<
+    Parameters: ~
+        content (str, defaults to " ")
+            The character to strip from each token.
+
+        left (int, defaults to 0)
+            The number of occurrences of `content` to remove from the
+            left side of each token.
+
+        right (int, defaults to 0)
+            The number of occurrences of `content` to remove from the
+            right side of each token.
+
+                                               *tokenizers.decoders.WordPiece*
+
+class tokenizers.decoders.WordPiece(prefix='##', cleanup=True)
+    WordPiece Decoder
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.decoders import WordPiece
+        >>> decoder = WordPiece()
+        >>> decoder.decode(["Hello", ",", "##world", "!"])
+        'Hello, world!'
+<
+    Parameters: ~
+        prefix (str, optional, defaults to ##)
+            The prefix to use for subwords that are not a
+            beginning-of-word
+
+        cleanup (bool, optional, defaults to True)
+            Whether to cleanup some tokenization artifacts. Mainly
+            spaces before punctuation, and some abbreviated english
+            forms.
+
+----------------------------------------------------------------------------
+Encode Inputs                                   *tokenizers-api-encode-inputs*
+
+These types represent all the different kinds of input that a
+|tokenizers.Tokenizer| accepts when using `encode_batch()`.
+
+TEXTENCODEINPUT                                   *tokenizers.TextEncodeInput*
+
+`tokenizers.TextEncodeInput`
+Represents a textual input for encoding. Can be either:
+
+- A single sequence: |tokenizers.TextInputSequence|
+- A pair of sequences:
+  - A Tuple of |tokenizers.TextInputSequence|
+  - Or a List of |tokenizers.TextInputSequence| of size 2
+
+alias of `Union[str, Tuple[str, str], List[str]]`.
+
+PRETOKENIZEDENCODEINPUT                   *tokenizers.PreTokenizedEncodeInput*
+
+`tokenizers.PreTokenizedEncodeInput`
+Represents a pre-tokenized input for encoding. Can be either:
+
+- A single sequence: |tokenizers.PreTokenizedInputSequence|
+- A pair of sequences:
+  - A Tuple of |tokenizers.PreTokenizedInputSequence|
+  - Or a List of |tokenizers.PreTokenizedInputSequence| of size 2
+
+alias of
+`Union[List[str], Tuple[str], Tuple[Union[List[str], Tuple[str]], Union[List[str], Tuple[str]]], List[Union[List[str], Tuple[str]]]]`.
+
+ENCODEINPUT                                           *tokenizers.EncodeInput*
+
+`tokenizers.EncodeInput`
+Represents all the possible types of input for encoding. Can be:
+
+- When `is_pretokenized=False`: |tokenizers.TextEncodeInput|
+- When `is_pretokenized=True`: |tokenizers.PreTokenizedEncodeInput|
+
+alias of
+`Union[str, Tuple[str, str], List[str], Tuple[str], Tuple[Union[List[str], Tuple[str]], Union[List[str], Tuple[str]]], List[Union[List[str], Tuple[str]]]]`.
+
+----------------------------------------------------------------------------
+Encoding                                             *tokenizers-api-encoding*
+
+                                                         *tokenizers.Encoding*
+
+class tokenizers.Encoding
+    The |tokenizers.Encoding| represents the output of a
+    |tokenizers.Tokenizer|.
+
+    It holds all the information about the tokenized input, including
+    the token IDs, token strings, attention masks, offsets, and more.
+    This is the main data structure returned by `encode()` and
+    `encode_batch()`.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers import Tokenizer
+        >>> tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+        >>> encoding = tokenizer.encode("Hello, world!")
+        >>> encoding.ids
+        [101, 7592, 1010, 2088, 999, 102]
+        >>> encoding.tokens
+        ['[CLS]', 'hello', ',', 'world', '!', '[SEP]']
+        >>> encoding.offsets
+        [(0, 0), (0, 5), (5, 6), (7, 12), (12, 13), (0, 0)]
+<
+    property Encoding.attention_mask
+    *tokenizers.Encoding.attention_mask*
+        The attention mask
+
+        This indicates to the LM which tokens should be attended to, and
+        which should not. This is especially important when batching
+        sequences, where we need to applying padding.
+
+        Returns: ~
+            List[int]
+                The attention mask
+
+    property Encoding.ids
+    *tokenizers.Encoding.ids*
+        The generated IDs
+
+        The IDs are the main input to a Language Model. They are the
+        token indices, the numerical representations that a LM
+        understands.
+
+        Returns: ~
+            List[int]
+                The list of IDs
+
+    property Encoding.n_sequences
+    *tokenizers.Encoding.n_sequences*
+        The number of sequences represented
+
+        Returns: ~
+            int
+                The number of sequences in this |tokenizers.Encoding|
+
+    property Encoding.offsets
+    *tokenizers.Encoding.offsets*
+        The offsets associated to each token
+
+        These offsets let's you slice the input string, and thus
+        retrieve the original part that led to producing the
+        corresponding token.
+
+        Returns: ~
+            A List of Tuple[int, int]
+                The list of offsets
+
+    property Encoding.overflowing
+    *tokenizers.Encoding.overflowing*
+        A `List` of overflowing |tokenizers.Encoding|
+
+        When using truncation, the |tokenizers.Tokenizer| takes care of
+        splitting the output into as many pieces as required to match
+        the specified maximum length. This field lets you retrieve all
+        the subsequent pieces.
+
+        When you use pairs of sequences, the overflowing pieces will
+        contain enough variations to cover all the possible
+        combinations, while respecting the provided maximum length.
+
+    property Encoding.sequence_ids
+    *tokenizers.Encoding.sequence_ids*
+        The generated sequence indices.
+
+        They represent the index of the input sequence associated to
+        each token. The sequence id can be None if the token is not
+        related to any input sequence, like for example with special
+        tokens.
+
+        Returns: ~
+            A List of Optional[int]
+                A list of optional sequence index.
+
+    property Encoding.special_tokens_mask
+    *tokenizers.Encoding.special_tokens_mask*
+        The special token mask
+
+        This indicates which tokens are special tokens, and which are
+        not.
+
+        Returns: ~
+            List[int]
+                The special tokens mask
+
+    property Encoding.tokens
+    *tokenizers.Encoding.tokens*
+        The generated tokens
+
+        They are the string representation of the IDs.
+
+        Returns: ~
+            List[str]
+                The list of tokens
+
+    property Encoding.type_ids
+    *tokenizers.Encoding.type_ids*
+        The generated type IDs
+
+        Generally used for tasks like sequence classification or
+        question answering, these tokens let the LM know which input
+        sequence corresponds to each tokens.
+
+        Returns: ~
+            List[int]
+                The list of type ids
+
+    property Encoding.word_ids
+    *tokenizers.Encoding.word_ids*
+        The generated word indices.
+
+        They represent the index of the word associated to each token.
+        When the input is pre-tokenized, they correspond to the ID of
+        the given input label, otherwise they correspond to the words
+        indices as defined by the
+        |tokenizers.pre_tokenizers.PreTokenizer| that was used.
+
+        For special tokens and such (any token that was generated from
+        something that was not part of the input), the output is `None`
+
+        Returns: ~
+            A List of Optional[int]
+                A list of optional word index.
+
+    property Encoding.words
+    *tokenizers.Encoding.words*
+        The generated word indices.
+
+          Warning: ~
+
+          This is deprecated and will be removed in a future version.
+          Please use `~tokenizers.Encoding.word_ids` instead.
+
+        They represent the index of the word associated to each token.
+        When the input is pre-tokenized, they correspond to the ID of
+        the given input label, otherwise they correspond to the words
+        indices as defined by the
+        |tokenizers.pre_tokenizers.PreTokenizer| that was used.
+
+        For special tokens and such (any token that was generated from
+        something that was not part of the input), the output is `None`
+
+        Returns: ~
+            A List of Optional[int]
+                A list of optional word index.
+
+    Encoding.char_to_token(char_pos, sequence_index=0)
+    *tokenizers.Encoding.char_to_token*
+        Get the token that contains the char at the given position in
+        the input sequence.
+
+        Parameters: ~
+            char_pos (int)
+                The position of a char in the input string
+
+            sequence_index (int, defaults to 0)
+                The index of the sequence that contains the target char
+
+        Returns: ~
+            int
+                The index of the token that contains this char in the
+                encoded sequence
+
+    Encoding.char_to_word(char_pos, sequence_index=0)
+    *tokenizers.Encoding.char_to_word*
+        Get the word that contains the char at the given position in the
+        input sequence.
+
+        Parameters: ~
+            char_pos (int)
+                The position of a char in the input string
+
+            sequence_index (int, defaults to 0)
+                The index of the sequence that contains the target char
+
+        Returns: ~
+            int
+                The index of the word that contains this char in the
+                input sequence
+
+    Encoding.merge(encodings, growing_offsets=True)
+    *tokenizers.Encoding.merge*
+        Merge the list of encodings into one final |tokenizers.Encoding|
+
+        Parameters: ~
+            encodings (A List of Encoding)
+                The list of encodings that should be merged in one
+
+            growing_offsets (bool, defaults to True)
+                Whether the offsets should accumulate while merging
+
+        Returns: ~
+            Encoding
+                The resulting Encoding
+
+    Encoding.pad(length, direction='right', pad_id=0, pad_type_id=0,
+    pad_token='[PAD]')
+    *tokenizers.Encoding.pad*
+        Pad the |tokenizers.Encoding| at the given length
+
+        Parameters: ~
+            length (int)
+                The desired length
+
+            direction
+                (`str`, defaults to `right`): The expected padding
+                direction. Can be either `right` or `left`
+
+            pad_id (int, defaults to 0)
+                The ID corresponding to the padding token
+
+            pad_type_id (int, defaults to 0)
+                The type ID corresponding to the padding token
+
+            pad_token (str, defaults to [PAD])
+                The pad token to use
+
+    Encoding.set_sequence_id(sequence_id)
+    *tokenizers.Encoding.set_sequence_id*
+        Set the given sequence index
+
+        Set the given sequence index for the whole range of tokens
+        contained in this |tokenizers.Encoding|.
+
+    Encoding.token_to_chars(token_index)
+    *tokenizers.Encoding.token_to_chars*
+        Get the offsets of the token at the given index.
+
+        The returned offsets are related to the input sequence that
+        contains the token. In order to determine in which input
+        sequence it belongs, you must call
+        `~tokenizers.Encoding.token_to_sequence()`.
+
+        Parameters: ~
+            token_index (int)
+                The index of a token in the encoded sequence.
+
+        Returns: ~
+            Tuple[int, int]
+                The token offsets `(first, last + 1)`
+
+    Encoding.token_to_sequence(token_index)
+    *tokenizers.Encoding.token_to_sequence*
+        Get the index of the sequence represented by the given token.
+
+        In the general use case, this method returns `0` for a single
+        sequence or the first sequence of a pair, and `1` for the second
+        sequence of a pair
+
+        Parameters: ~
+            token_index (int)
+                The index of a token in the encoded sequence.
+
+        Returns: ~
+            int
+                The sequence id of the given token
+
+    Encoding.token_to_word(token_index)
+    *tokenizers.Encoding.token_to_word*
+        Get the index of the word that contains the token in one of the
+        input sequences.
+
+        The returned word index is related to the input sequence that
+        contains the token. In order to determine in which input
+        sequence it belongs, you must call
+        `~tokenizers.Encoding.token_to_sequence()`.
+
+        Parameters: ~
+            token_index (int)
+                The index of a token in the encoded sequence.
+
+        Returns: ~
+            int
+                The index of the word in the relevant input sequence.
+
+    Encoding.truncate(max_length, stride=0, direction='right')
+    *tokenizers.Encoding.truncate*
+        Truncate the |tokenizers.Encoding| at the given length
+
+        If this |tokenizers.Encoding| represents multiple sequences,
+        when truncating this information is lost. It will be considered
+        as representing a single sequence.
+
+        Parameters: ~
+            max_length (int)
+                The desired length
+
+            stride (int, defaults to 0)
+                The length of previous content to be included in each
+                overflowing piece
+
+            direction (str, defaults to right)
+                Truncate direction
+
+    Encoding.word_to_chars(word_index, sequence_index=0)
+    *tokenizers.Encoding.word_to_chars*
+        Get the offsets of the word at the given index in one of the
+        input sequences.
+
+        Parameters: ~
+            word_index (int)
+                The index of a word in one of the input sequences.
+
+            sequence_index (int, defaults to 0)
+                The index of the sequence that contains the target word
+
+        Returns: ~
+            Tuple[int, int]
+                The range of characters (span) `(first, last + 1)`
+
+    Encoding.word_to_tokens(word_index, sequence_index=0)
+    *tokenizers.Encoding.word_to_tokens*
+        Get the encoded tokens corresponding to the word at the given
+        index in one of the input sequences.
+
+        Parameters: ~
+            word_index (int)
+                The index of a word in one of the input sequences.
+
+            sequence_index (int, defaults to 0)
+                The index of the sequence that contains the target word
+
+        Returns: ~
+            Tuple[int, int]
+                The range of tokens: `(first, last + 1)`
+
+----------------------------------------------------------------------------
+Input Sequences                               *tokenizers-api-input-sequences*
+
+These types represent all the different kinds of sequence that can be
+used as input of a Tokenizer. Globally, any sequence can be either a
+string or a list of strings, according to the operating mode of the
+tokenizer: `raw text` vs `pre-tokenized`.
+
+TEXTINPUTSEQUENCE                               *tokenizers.TextInputSequence*
+
+`tokenizers.TextInputSequence`
+A `str` that represents an input sequence
+
+PRETOKENIZEDINPUTSEQUENCE               *tokenizers.PreTokenizedInputSequence*
+
+`tokenizers.PreTokenizedInputSequence`
+A pre-tokenized input sequence. Can be one of:
+
+- A `List` of `str`
+- A `Tuple` of `str`
+
+alias of `Union[List[str], Tuple[str]]`.
+
+INPUTSEQUENCE                                       *tokenizers.InputSequence*
+
+`tokenizers.InputSequence`
+Represents all the possible types of input sequences for encoding. Can
+be:
+
+- When `is_pretokenized=False`: |tokenizers.TextInputSequence|
+- When `is_pretokenized=True`: |tokenizers.PreTokenizedInputSequence|
+
+alias of `Union[str, List[str], Tuple[str]]`.
+
+----------------------------------------------------------------------------
+Models                                                 *tokenizers-api-models*
+
+                                                       *tokenizers.models.BPE*
+class tokenizers.models.BPE(vocab=None, merges=None,
+    cache_capacity=None, dropout=None, unk_token=None,
+    continuing_subword_prefix=None, end_of_word_suffix=None, fuse_unk=None,
+    byte_fallback=False, ignore_merges=False)
+    An implementation of the BPE (Byte-Pair Encoding) algorithm
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.models import BPE
+        >>> # Build an empty model (to be trained)
+        >>> model = BPE(unk_token="<unk>")
+        >>> # Load from vocabulary and merges files
+        >>> model = BPE.from_file("vocab.json", "merges.txt")
+<
+    Parameters: ~
+        vocab (Dict[str, int], optional)
+            A dictionary of string keys and their ids `{"am": 0,...}`
+
+        merges (List[Tuple[str, str]], optional)
+            A list of pairs of tokens (`Tuple[str, str]`)
+            `[("a", "b"),...]`
+
+        cache_capacity (int, optional)
+            The number of words that the BPE cache can contain. The
+            cache allows to speed-up the process by keeping the result
+            of the merge operations for a number of words.
+
+        dropout (float, optional)
+            A float between 0 and 1 that represents the BPE dropout to
+            use.
+
+        unk_token (str, optional)
+            The unknown token to be used by the model.
+
+        continuing_subword_prefix (str, optional)
+            The prefix to attach to subword units that don't represent a
+            beginning of word.
+
+        end_of_word_suffix (str, optional)
+            The suffix to attach to subword units that represent an end
+            of word.
+
+        fuse_unk (bool, optional)
+            Whether to fuse any subsequent unknown tokens into a single
+            one
+
+        byte_fallback (bool, optional)
+            Whether to use spm byte-fallback trick (defaults to False)
+
+        ignore_merges (bool, optional)
+            Whether or not to match tokens with the vocab before using
+            merges.
+
+    BPE.from_file(vocab, merges, **kwargs)
+    *tokenizers.models.BPE.from_file*
+        Instantiate a BPE model from the given files.
+
+        This method is roughly equivalent to doing:
+
+        >python
+            vocab, merges = BPE.read_file(vocab_filename, merges_filename)
+            bpe = BPE(vocab, merges)
+<
+        If you don't need to keep the `vocab, merges` values lying
+        around, this method is more optimized than manually calling
+        `read_file()` to initialize a |tokenizers.models.BPE|
+
+        Parameters: ~
+            vocab (str)
+                The path to a `vocab.json` file
+
+            merges (str)
+                The path to a `merges.txt` file
+
+        Returns: ~
+            BPE
+                An instance of BPE loaded from these files
+
+    BPE.read_file(vocab, merges)
+    *tokenizers.models.BPE.read_file*
+        Read a `vocab.json` and a `merges.txt` files
+
+        This method provides a way to read and parse the content of
+        these files, returning the relevant data structures. If you want
+        to instantiate some BPE models from memory, this method gives
+        you the expected input from the standard files.
+
+        Parameters: ~
+            vocab (str)
+                The path to a `vocab.json` file
+
+            merges (str)
+                The path to a `merges.txt` file
+
+        Returns: ~
+            A Tuple with the vocab and the merges
+                The vocabulary and merges loaded into memory
+
+                                                     *tokenizers.models.Model*
+
+class tokenizers.models.Model
+    Base class for all models
+
+    The model represents the actual tokenization algorithm. This is the
+    part that will contain and manage the learned vocabulary.
+
+    This class cannot be constructed directly. Please use one of the
+    concrete models.
+
+    Model.get_trainer()
+    *tokenizers.models.Model.get_trainer*
+        Get the associated `Trainer`
+
+        Retrieve the `Trainer` associated to this
+        |tokenizers.models.Model|.
+
+        Returns: ~
+            Trainer
+                The Trainer used to train this model
+
+    Model.id_to_token(id)
+    *tokenizers.models.Model.id_to_token*
+        Get the token associated to an ID
+
+        Parameters: ~
+            id (int)
+                An ID to convert to a token
+
+        Returns: ~
+            str
+                The token associated to the ID
+
+    Model.save(folder, prefix)
+    *tokenizers.models.Model.save*
+        Save the current model
+
+        Save the current model in the given folder, using the given
+        prefix for the various files that will get created. Any file
+        with the same name that already exists in this folder will be
+        overwritten.
+
+        Parameters: ~
+            folder (str)
+                The path to the target folder in which to save the
+                various files
+
+            prefix (str, optional)
+                An optional prefix, used to prefix each file name
+
+        Returns: ~
+            List[str]
+                The list of saved files
+
+    Model.token_to_id(tokens)
+    *tokenizers.models.Model.token_to_id*
+        Get the ID associated to a token
+
+        Parameters: ~
+            token (str)
+                A token to convert to an ID
+
+        Returns: ~
+            int
+                The ID associated to the token
+
+    Model.tokenize(sequence)
+    *tokenizers.models.Model.tokenize*
+        Tokenize a sequence
+
+        Parameters: ~
+            sequence (str)
+                A sequence to tokenize
+
+        Returns: ~
+            A List of Token
+                The generated tokens
+
+                                                   *tokenizers.models.Unigram*
+
+class tokenizers.models.Unigram(vocab=None, unk_id=None,
+    byte_fallback=None, alpha=None, nbest_size=None)
+    An implementation of the Unigram algorithm
+
+    The Unigram algorithm is a subword tokenization algorithm based on
+    unigram language models, as used in SentencePiece. It learns a
+    vocabulary by starting with a large initial vocabulary and
+    iteratively pruning it using the EM algorithm.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.models import Unigram
+        >>> # Build an empty model (to be trained)
+        >>> model = Unigram()
+        >>> # Build from a vocabulary list
+        >>> vocab = [("<unk>", 0.0), ("hello", -1.0), ("world", -1.5)]
+        >>> model = Unigram(vocab=vocab, unk_id=0)
+<
+    Parameters: ~
+        vocab (List[Tuple[str, float]], optional)
+            A list of vocabulary items and their log-probability scores,
+            e.g. `[("am", -0.2442), ...]`. If not provided, an empty
+            model is created.
+
+        unk_id (int, optional)
+            The index of the unknown token in the vocabulary list.
+
+        byte_fallback (bool, optional, defaults to False)
+            Whether to use SentencePiece byte fallback for characters
+            not in the vocabulary.
+
+        alpha (float, optional)
+            A float between 0 and 1 that represents the smoothing
+            parameter (temperature) to use.
+
+        nbest_size (int, optional)
+            An integer greater than 0 that represents the maximum number
+            of best paths to consider. If not set, it samples from the
+            full lattice (i.e. all valid subword segmentations).
+
+                                                 *tokenizers.models.WordLevel*
+
+class tokenizers.models.WordLevel(vocab=None, unk_token=None)
+    An implementation of the WordLevel algorithm
+
+    Most simple tokenizer model based on mapping tokens to their
+    corresponding id.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.models import WordLevel
+        >>> # Build from a vocabulary dictionary
+        >>> vocab = {"hello": 0, "world": 1, "<unk>": 2}
+        >>> model = WordLevel(vocab=vocab, unk_token="<unk>")
+        >>> # Load from file
+        >>> model = WordLevel.from_file("vocab.json", unk_token="<unk>")
+<
+    Parameters: ~
+        vocab (str, optional)
+            A dictionary of string keys and their ids `{"am": 0,...}`
+
+        unk_token (str, optional)
+            The unknown token to be used by the model.
+
+    WordLevel.from_file(vocab, unk_token=None)
+    *tokenizers.models.WordLevel.from_file*
+        Instantiate a WordLevel model from the given file
+
+        This method is roughly equivalent to doing:
+
+        >python
+            vocab = WordLevel.read_file(vocab_filename)
+            wordlevel = WordLevel(vocab)
+<
+        If you don't need to keep the `vocab` values lying around, this
+        method is more optimized than manually calling `read_file()` to
+        initialize a |tokenizers.models.WordLevel|
+
+        Parameters: ~
+            vocab (str)
+                The path to a `vocab.json` file
+
+        Returns: ~
+            WordLevel
+                An instance of WordLevel loaded from file
+
+    WordLevel.read_file(vocab)
+    *tokenizers.models.WordLevel.read_file*
+        Read a `vocab.json`
+
+        This method provides a way to read and parse the content of a
+        vocabulary file, returning the relevant data structures. If you
+        want to instantiate some WordLevel models from memory, this
+        method gives you the expected input from the standard files.
+
+        Parameters: ~
+            vocab (str)
+                The path to a `vocab.json` file
+
+        Returns: ~
+            Dict[str, int]
+                The vocabulary as a `dict`
+
+                                                 *tokenizers.models.WordPiece*
+
+class tokenizers.models.WordPiece(vocab=None, unk_token='[UNK]',
+    max_input_chars_per_word=100, continuing_subword_prefix='##')
+    An implementation of the WordPiece algorithm
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.models import WordPiece
+        >>> # Build an empty model (to be trained)
+        >>> model = WordPiece(unk_token="[UNK]")
+        >>> # Load from a vocabulary file
+        >>> model = WordPiece.from_file("vocab.txt")
+<
+    Parameters: ~
+        vocab (Dict[str, int], optional)
+            A dictionary of string keys and their ids `{"am": 0,...}`
+
+        unk_token (str, optional)
+            The unknown token to be used by the model.
+
+        max_input_chars_per_word (int, optional)
+            The maximum number of characters to authorize in a single
+            word.
+
+    WordPiece.from_file(vocab, **kwargs)
+    *tokenizers.models.WordPiece.from_file*
+        Instantiate a WordPiece model from the given file
+
+        This method is roughly equivalent to doing:
+
+        >python
+            vocab = WordPiece.read_file(vocab_filename)
+            wordpiece = WordPiece(vocab)
+<
+        If you don't need to keep the `vocab` values lying around, this
+        method is more optimized than manually calling `read_file()` to
+        initialize a |tokenizers.models.WordPiece|
+
+        Parameters: ~
+            vocab (str)
+                The path to a `vocab.txt` file
+
+        Returns: ~
+            WordPiece
+                An instance of WordPiece loaded from file
+
+    WordPiece.read_file(vocab)
+    *tokenizers.models.WordPiece.read_file*
+        Read a `vocab.txt` file
+
+        This method provides a way to read and parse the content of a
+        standard vocab.txt file as used by the WordPiece Model,
+        returning the relevant data structures. If you want to
+        instantiate some WordPiece models from memory, this method gives
+        you the expected input from the standard files.
+
+        Parameters: ~
+            vocab (str)
+                The path to a `vocab.txt` file
+
+        Returns: ~
+            Dict[str, int]
+                The vocabulary as a `dict`
+
+----------------------------------------------------------------------------
+Normalizers                                       *tokenizers-api-normalizers*
+
+                                            *tokenizers.normalizers.ByteLevel*
+
+class tokenizers.normalizers.ByteLevel
+    Bytelevel Normalizer
+
+    Converts all bytes in the input to their Unicode representation
+    using the GPT-2 byte-to-unicode mapping. Every byte value (0--255)
+    is mapped to a unique visible character so that any arbitrary binary
+    input can be tokenized without needing a special unknown token.
+
+    This normalizer is used together with the
+    |tokenizers.pre_tokenizers.ByteLevel| pre-tokenizer and
+    |tokenizers.decoders.ByteLevel| decoder.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import ByteLevel
+        >>> normalizer = ByteLevel()
+        >>> normalizer.normalize_str("hello\nworld")
+        'helloĊworld'
+<
+
+                                            *tokenizers.normalizers.Lowercase*
+
+class tokenizers.normalizers.Lowercase
+    Lowercase Normalizer
+
+    Converts all text to lowercase using Unicode-aware lowercasing. This
+    is equivalent to calling `str.lower` on the input.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import Lowercase
+        >>> normalizer = Lowercase()
+        >>> normalizer.normalize_str("Hello World")
+        'hello world'
+<
+
+                                                  *tokenizers.normalizers.NFC*
+
+class tokenizers.normalizers.NFC
+    NFC Unicode Normalizer
+
+    Applies Unicode NFC (Canonical Decomposition, followed by Canonical
+    Composition) normalization. First decomposes characters, then
+    recomposes them using canonical composition rules. This produces the
+    canonical composed form.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import NFC
+        >>> normalizer = NFC()
+        >>> normalizer.normalize_str("e\u0301")  # 'e' + combining accent
+        'é'
+<
+
+                                                  *tokenizers.normalizers.NFD*
+
+class tokenizers.normalizers.NFD
+    NFD Unicode Normalizer
+
+    Applies Unicode NFD (Canonical Decomposition) normalization.
+    Decomposes characters into their canonical components. For example,
+    accented characters like `é` (U+00E9) are decomposed into `e`
+    (U+0065) + combining accent (U+0301).
+
+    This is often used as a first step before stripping accents with
+    |tokenizers.normalizers.StripAccents|.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import NFD
+        >>> normalizer = NFD()
+        >>> normalizer.normalize_str("Héllo")
+        'He\u0301llo'
+<
+
+                                                 *tokenizers.normalizers.NFKC*
+
+class tokenizers.normalizers.NFKC
+    NFKC Unicode Normalizer
+
+    Applies Unicode NFKC (Compatibility Decomposition, followed by
+    Canonical Composition) normalization. Like NFC but also maps
+    compatibility characters to their canonical equivalents. This is the
+    normalization used by Python's `str.casefold` and by many NLP
+    pipelines.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import NFKC
+        >>> normalizer = NFKC()
+        >>> normalizer.normalize_str("ﬁne caf\u00e9")
+        'fine café'
+<
+
+                                                 *tokenizers.normalizers.NFKD*
+
+class tokenizers.normalizers.NFKD
+    NFKD Unicode Normalizer
+
+    Applies Unicode NFKD (Compatibility Decomposition) normalization.
+    Like NFD but also decomposes compatibility characters. For example,
+    the ligature `ﬁ` (U+FB01) is decomposed into `f` + `i`.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import NFKD
+        >>> normalizer = NFKD()
+        >>> normalizer.normalize_str("ﬁne")
+        'fine'
+<
+
+                                                  *tokenizers.normalizers.Nmt*
+
+class tokenizers.normalizers.Nmt
+    Nmt normalizer
+
+    Normalizer used in the Google NMT pipeline. It handles various text
+    cleaning tasks including removing control characters, normalizing
+    whitespace, and replacing certain Unicode characters. This is
+    equivalent to the normalization done in the original SentencePiece
+    NMT preprocessing.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import Nmt
+        >>> normalizer = Nmt()
+        >>> normalizer.normalize_str("Hello\x00World")
+        'Hello World'
+<
+
+                                           *tokenizers.normalizers.Normalizer*
+
+class tokenizers.normalizers.Normalizer
+    Base class for all normalizers
+
+    This class is not supposed to be instantiated directly. Instead, any
+    implementation of a Normalizer will return an instance of this class
+    when instantiated.
+
+    Normalizer.normalize(normalized)
+    *tokenizers.normalizers.Normalizer.normalize*
+        Normalize a `NormalizedString` in-place
+
+        This method allows to modify a `NormalizedString` to keep track
+        of the alignment information. If you just want to see the result
+        of the normalization on a raw string, you can use
+        `normalize_str()`
+
+        Parameters: ~
+            normalized (NormalizedString)
+                The normalized string on which to apply this
+                |tokenizers.normalizers.Normalizer|
+
+    Normalizer.normalize_str(sequence)
+    *tokenizers.normalizers.Normalizer.normalize_str*
+        Normalize the given string
+
+        This method provides a way to visualize the effect of a
+        |tokenizers.normalizers.Normalizer| but it does not keep track
+        of the alignment information. If you need to get/convert
+        offsets, you can use `normalize()`
+
+        Parameters: ~
+            sequence (str)
+                A string to normalize
+
+        Returns: ~
+            str
+                A string after normalization
+
+                                          *tokenizers.normalizers.Precompiled*
+
+class tokenizers.normalizers.Precompiled(precompiled_charsmap)
+    Precompiled normalizer
+
+    A normalizer that uses a precompiled character map built from a
+    SentencePiece model. This normalizer is automatically extracted from
+    SentencePiece `.model` files and should not be constructed manually
+    --- it is used internally for full compatibility with
+    SentencePiece-based tokenizers.
+
+    Parameters: ~
+        precompiled_charsmap (bytes)
+            The raw bytes of the precompiled character map, as found
+            inside a SentencePiece `.model` file.
+
+                                              *tokenizers.normalizers.Replace*
+
+class tokenizers.normalizers.Replace(pattern, content)
+    Replace normalizer
+
+    Replaces occurrences of a pattern in the input string with the given
+    content. The pattern can be either a plain string or a regular
+    expression wrapped in `Regex`.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers import Regex
+        >>> from tokenizers.normalizers import Replace
+        >>> # Replace a literal string
+        >>> Replace(".", " ").normalize_str("hello.world")
+        'hello world'
+        >>> # Replace using a regex
+        >>> Replace(Regex(r"\s+"), " ").normalize_str("hello   world")
+        'hello world'
+<
+    Parameters: ~
+        pattern (str or Regex)
+            The pattern to search for. Use a plain string for literal
+            replacement, or wrap a regex pattern in `Regex` for regex
+            replacement.
+
+        content (str)
+            The string to replace each match with.
+
+                                             *tokenizers.normalizers.Sequence*
+
+class tokenizers.normalizers.Sequence(normalizers)
+    Allows concatenating multiple other Normalizer as a Sequence. All
+    the normalizers run in sequence in the given order
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import NFD, Lowercase, StripAccents, Sequence
+        >>> normalizer = Sequence([NFD(), Lowercase(), StripAccents()])
+        >>> normalizer.normalize_str("Héllo Wörld")
+        'hello world'
+<
+    Parameters: ~
+        normalizers (List[Normalizer])
+            A list of Normalizer to be run as a sequence
+
+                                                *tokenizers.normalizers.Strip*
+
+class tokenizers.normalizers.Strip(left=True, right=True)
+    Strip normalizer
+
+    Removes leading and/or trailing whitespace from the input string.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import Strip
+        >>> normalizer = Strip()
+        >>> normalizer.normalize_str("  hello world  ")
+        'hello world'
+        >>> Strip(right=False).normalize_str("  hello  ")
+        'hello  '
+<
+    Parameters: ~
+        left (bool, defaults to True)
+            Whether to strip leading (left) whitespace.
+
+        right (bool, defaults to True)
+            Whether to strip trailing (right) whitespace.
+
+                                         *tokenizers.normalizers.StripAccents*
+
+class tokenizers.normalizers.StripAccents
+    StripAccents normalizer
+
+    Strips all accent marks (combining diacritical characters) from the
+    input. This normalizer should typically be used after applying
+    |tokenizers.normalizers.NFD| or |tokenizers.normalizers.NFKD|
+    decomposition, which separates base characters from their combining
+    accents.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import NFD, StripAccents, Sequence
+        >>> normalizer = Sequence([NFD(), StripAccents()])
+        >>> normalizer.normalize_str("café")
+        'cafe'
+<
+
+                                       *tokenizers.normalizers.BertNormalizer*
+
+class tokenizers.normalizers.BertNormalizer(clean_text=True,
+    handle_chinese_chars=True, strip_accents=None, lowercase=True)
+    BertNormalizer
+
+    Takes care of normalizing raw text before giving it to a Bert model.
+    This includes cleaning the text, handling accents, chinese chars and
+    lowercasing
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.normalizers import BertNormalizer
+        >>> normalizer = BertNormalizer(lowercase=True)
+        >>> normalizer.normalize_str("Héllo WORLD")
+        'hello world'
+<
+    Parameters: ~
+        clean_text (bool, optional, defaults to True)
+            Whether to clean the text, by removing any control
+            characters and replacing all whitespaces by the classic one.
+
+        handle_chinese_chars (bool, optional, defaults to True)
+            Whether to handle chinese chars by putting spaces around
+            them.
+
+        strip_accents (bool, optional)
+            Whether to strip all accents. If this option is not
+            specified (ie == None), then it will be determined by the
+            value for lowercase (as in the original Bert).
+
+        lowercase (bool, optional, defaults to True)
+            Whether to lowercase.
+
+----------------------------------------------------------------------------
+Post-processors                               *tokenizers-api-post-processors*
+
+                                        *tokenizers.processors.BertProcessing*
+
+class tokenizers.processors.BertProcessing
+    This post-processor takes care of adding the special tokens needed
+    by a Bert model:
+
+    - a SEP token
+    - a CLS token
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.processors import BertProcessing
+        >>> processor = BertProcessing(("[SEP]", 102), ("[CLS]", 101))
+        >>> processor.process(encoding)
+        # Encoding with [CLS] at start and [SEP] at end
+<
+    Parameters: ~
+        sep (Tuple[str, int])
+            A tuple with the string representation of the SEP token, and
+            its id
+
+        cls (Tuple[str, int])
+            A tuple with the string representation of the CLS token, and
+            its id
+
+                                             *tokenizers.processors.ByteLevel*
+class tokenizers.processors.ByteLevel(add_prefix_space=None,
+    trim_offsets=None, use_regex=None)
+    This post-processor takes care of trimming the offsets.
+
+    By default, the ByteLevel BPE might include whitespaces in the
+    produced tokens. If you don't want the offsets to include these
+    whitespaces, then this PostProcessor must be used.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.processors import ByteLevel
+        >>> processor = ByteLevel(trim_offsets=True)
+        >>> # Offsets will be trimmed to exclude leading whitespace bytes
+<
+    Parameters: ~
+        trim_offsets (bool)
+            Whether to trim the whitespaces from the produced offsets.
+
+        add_prefix_space (bool, optional, defaults to True)
+            If `True`, keeps the first token's offset as is. If `False`,
+            increments the start of the first token's offset by 1. Only
+            has an effect if `trim_offsets` is set to `True`.
+
+                                     *tokenizers.processors.RobertaProcessing*
+
+class tokenizers.processors.RobertaProcessing(sep, cls_token,
+    trim_offsets=True, add_prefix_space=True)
+    This post-processor takes care of adding the special tokens needed
+    by a Roberta model:
+
+    - a SEP token
+    - a CLS token
+
+    It also takes care of trimming the offsets. By default, the
+    ByteLevel BPE might include whitespaces in the produced tokens. If
+    you don't want the offsets to include these whitespaces, then this
+    PostProcessor should be initialized with `trim_offsets=True`
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.processors import RobertaProcessing
+        >>> processor = RobertaProcessing(("</s>", 2), ("<s>", 0))
+        >>> processor.process(encoding)
+        # Encoding with <s> at start and </s> at end
+<
+    Parameters: ~
+        sep (Tuple[str, int])
+            A tuple with the string representation of the SEP token, and
+            its id
+
+        cls (Tuple[str, int])
+            A tuple with the string representation of the CLS token, and
+            its id
+
+        trim_offsets (bool, optional, defaults to True)
+            Whether to trim the whitespaces from the produced offsets.
+
+        add_prefix_space (bool, optional, defaults to True)
+            Whether the add_prefix_space option was enabled during
+            pre-tokenization. This is relevant because it defines the
+            way the offsets are trimmed out.
+
+                                    *tokenizers.processors.TemplateProcessing*
+class tokenizers.processors.TemplateProcessing(single=None, pair=None,
+    special_tokens=None)
+    Provides a way to specify templates in order to add the special
+    tokens to each input sequence as relevant.
+
+    Let's take `BERT` tokenizer as an example. It uses two special
+    tokens, used to delimitate each sequence. `[CLS]` is always used at
+    the beginning of the first sequence, and `[SEP]` is added at the end
+    of both the first, and the pair sequences. The final result looks
+    like this:
+
+    - Single sequence: `[CLS] Hello there [SEP]`
+    - Pair sequences:
+      `[CLS] My name is Anthony [SEP] What is my name? [SEP]`
+
+    With the type ids as following:
+
+    >python
+        [CLS]   ...   [SEP]   ...   [SEP]
+        0      0      0      1      1
+<
+    You can achieve such behavior using a TemplateProcessing:
+
+    >python
+        TemplateProcessing(
+            single="[CLS] $0 [SEP]",
+            pair="[CLS] $A [SEP] $B:1 [SEP]:1",
+            special_tokens=[("[CLS]", 1), ("[SEP]", 0)],
+        )
+<
+    In this example, each input sequence is identified using a `$`
+    construct. This identifier lets us specify each input sequence, and
+    the type_id to use. When nothing is specified, it uses the default
+    values. Here are the different ways to specify it:
+
+    - Specifying the sequence, with default `type_id == 0`: `$A` or `$B`
+    - Specifying the type_id with default `sequence == A`: `$0`, `$1`,
+      `$2`, ...
+    - Specifying both: `$A:0`, `$B:1`, ...
+
+    The same construct is used for special tokens:
+    `<identifier>(:<type_id>)?`.
+
+    Warning: You must ensure that you are giving the correct tokens/ids
+    as these will be added to the Encoding without any further check. If
+    the given ids correspond to something totally different in a
+    Tokenizer using this PostProcessor, it might lead to unexpected
+    results.
+
+    Types:
+
+    Template (`str` or `List`):
+    - If a `str` is provided, the whitespace is used as delimiter
+      between tokens
+    - If a `List[str]` is provided, a list of tokens
+
+    Tokens (`List[Union[Tuple[int, str], Tuple[str, int], dict]]`):
+    - A `Tuple` with both a token and its associated ID, in any order
+    - A `dict` with the following keys:
+
+      - “id”: `str` => The special token id, as specified in the
+        Template
+      - “ids”: `List[int]` => The associated IDs
+      - “tokens”: `List[str]` => The associated tokens
+
+      The given dict expects the provided `ids` and `tokens` lists to
+      have the same length.
+
+    Parameters: ~
+        single (Template)
+            The template used for single sequences
+
+        pair (Template)
+            The template used when both sequences are specified
+
+        special_tokens (Tokens)
+            The list of special tokens used in each sequences
+
+----------------------------------------------------------------------------
+Pre-tokenizers                                 *tokenizers-api-pre-tokenizers*
+
+                                  *tokenizers.pre_tokenizers.BertPreTokenizer*
+
+class tokenizers.pre_tokenizers.BertPreTokenizer
+    BertPreTokenizer
+
+    This pre-tokenizer splits tokens on whitespace and punctuation. Each
+    occurrence of a punctuation character will be treated as a separate
+    token. This is the pre-tokenizer used by the original BERT model.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.pre_tokenizers import BertPreTokenizer
+        >>> pre_tokenizer = BertPreTokenizer()
+        >>> pre_tokenizer.pre_tokenize_str("Hello, I'm a single sentence!")
+        [('Hello', (0, 5)), (',', (5, 6)), ('I', (7, 8)), ("'", (8, 9)), ('m', (9, 10)), ('a', (11, 12)), ('single', (13, 19)), ('sentence', (20, 28)), ('!', (28, 29))]
+<
+
+                                         *tokenizers.pre_tokenizers.ByteLevel*
+class tokenizers.pre_tokenizers.ByteLevel(add_prefix_space=True,
+    trim_offsets=True, use_regex=True)
+    ByteLevel PreTokenizer
+
+    This pre-tokenizer takes care of replacing all bytes of the given
+    string with a corresponding representation, as well as splitting
+    into words.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.pre_tokenizers import ByteLevel
+        >>> pre_tokenizer = ByteLevel()
+        >>> pre_tokenizer.pre_tokenize_str("Hello my friend, how is it going?")
+        [('ĠHello', (0, 5)), ('Ġmy', (5, 8)), ('Ġfriend,', (8, 15)), ('Ġhow', (15, 19)), ('Ġis', (19, 22)), ('Ġit', (22, 25)), ('Ġgoing?', (25, 32))]
+<
+    Parameters: ~
+        add_prefix_space (bool, optional, defaults to True)
+            Whether to add a space to the first word if there isn't
+            already one. This lets us treat hello exactly like say
+            hello.
+
+        use_regex (bool, optional, defaults to True)
+            Set this to `False` to prevent this pre_tokenizer from using
+            the GPT2 specific regexp for spliting on whitespace.
+
+    ByteLevel.alphabet()
+    *tokenizers.pre_tokenizers.ByteLevel.alphabet*
+        Returns the alphabet used by this PreTokenizer.
+
+        Since the ByteLevel works as its name suggests, at the byte
+        level, it encodes each byte value to a unique visible character.
+        This means that there is a total of 256 different characters
+        composing this alphabet.
+
+        Returns: ~
+            List[str]
+                A list of characters that compose the alphabet
+
+                                *tokenizers.pre_tokenizers.CharDelimiterSplit*
+
+class tokenizers.pre_tokenizers.CharDelimiterSplit(delimiter)
+    This pre-tokenizer simply splits on the provided char. Works like
+    `str.split` with a single-character delimiter.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.pre_tokenizers import CharDelimiterSplit
+        >>> pre_tokenizer = CharDelimiterSplit("x")
+        >>> pre_tokenizer.pre_tokenize_str("helloxthere")
+        [('hello', (0, 5)), ('there', (6, 11))]
+<
+    Parameters: ~
+        delimiter (str)
+            The single character that will be used to split the input.
+            The delimiter is removed from the output.
+
+                                            *tokenizers.pre_tokenizers.Digits*
+
+class tokenizers.pre_tokenizers.Digits(individual_digits=False)
+    This pre-tokenizer simply splits using the digits in separate tokens
+
+    If set to True, digits will each be separated as follows:
+
+    >python
+        "Call 123 please" -> "Call ", "1", "2", "3", " please"
+<
+    If set to False, digits will grouped as follows:
+
+    >python
+        "Call 123 please" -> "Call ", "123", " please"
+<
+    Parameters: ~
+        individual_digits (bool, optional, defaults to False)
+
+                                         *tokenizers.pre_tokenizers.Metaspace*
+
+class tokenizers.pre_tokenizers.Metaspace(replacement='_',
+    prepend_scheme='always', split=True)
+    Metaspace pre-tokenizer
+
+    This pre-tokenizer replaces any whitespace by the provided
+    replacement character. It then tries to split on these spaces.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.pre_tokenizers import Metaspace
+        >>> pre_tokenizer = Metaspace()
+        >>> pre_tokenizer.pre_tokenize_str("Hello my friend")
+        [('▁Hello', (0, 5)), ('▁my', (6, 8)), ('▁friend', (9, 15))]
+<
+    Parameters: ~
+        replacement (str, optional, defaults to ▁)
+            The replacement character. Must be exactly one character. By
+            default we use the ▁ (U+2581) meta symbol (Same as in
+            SentencePiece).
+
+        prepend_scheme (str, optional, defaults to "always")
+            Whether to add a space to the first word if there isn't
+            already one. This lets us treat hello exactly like say
+            hello. Choices: “always”, “never”, “first”. First means the
+            space is only added on the first token (relevant when
+            special tokens are used or other pre_tokenizer are used).
+
+                                      *tokenizers.pre_tokenizers.PreTokenizer*
+
+class tokenizers.pre_tokenizers.PreTokenizer
+    Base class for all pre-tokenizers
+
+    This class is not supposed to be instantiated directly. Instead, any
+    implementation of a PreTokenizer will return an instance of this
+    class when instantiated.
+
+    PreTokenizer.pre_tokenize(pretok)
+    *tokenizers.pre_tokenizers.PreTokenizer.pre_tokenize*
+        Pre-tokenize a `~tokenizers.PyPreTokenizedString` in-place
+
+        This method allows to modify a `PreTokenizedString` to keep
+        track of the pre-tokenization, and leverage the capabilities of
+        the `PreTokenizedString`. If you just want to see the result of
+        the pre-tokenization of a raw string, you can use
+        `pre_tokenize_str()`
+
+        Parameters: ~
+            pretok (tokenizers.PreTokenizedString)
+                -- The pre-tokenized string on which to apply this
+                :class:~tokenizers.pre_tokenizers.PreTokenizer`
+
+    PreTokenizer.pre_tokenize_str(sequence)
+    *tokenizers.pre_tokenizers.PreTokenizer.pre_tokenize_str*
+        Pre tokenize the given string
+
+        This method provides a way to visualize the effect of a
+        |tokenizers.pre_tokenizers.PreTokenizer| but it does not keep
+        track of the alignment, nor does it provide all the capabilities
+        of the `PreTokenizedString`. If you need some of these, you can
+        use `pre_tokenize()`
+
+        Parameters: ~
+            sequence (str)
+                A string to pre-tokeize
+
+        Returns: ~
+            List[Tuple[str, Offsets]]
+                A list of tuple with the pre-tokenized parts and their
+                offsets
+
+                                       *tokenizers.pre_tokenizers.Punctuation*
+
+class tokenizers.pre_tokenizers.Punctuation(behavior='isolated')
+    This pre-tokenizer simply splits on punctuation as individual
+    characters.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.pre_tokenizers import Punctuation
+        >>> pre_tokenizer = Punctuation()
+        >>> pre_tokenizer.pre_tokenize_str("Hello, how are you?")
+        [('Hello', (0, 5)), (',', (5, 6)), ('how', (7, 10)), ('are', (11, 14)), ('you', (15, 18)), ('?', (18, 19))]
+<
+    Parameters: ~
+        behavior (SplitDelimiterBehavior)
+            The behavior to use when splitting. Choices: “removed”,
+            “isolated” (default), “merged_with_previous”,
+            “merged_with_next”, “contiguous”
+
+                                          *tokenizers.pre_tokenizers.Sequence*
+
+class tokenizers.pre_tokenizers.Sequence(pretokenizers)
+    This pre-tokenizer composes other pre-tokenizers and applies them in
+    sequence. Each pre-tokenizer in the list is applied to the output of
+    the previous one, allowing complex tokenization strategies to be
+    built by chaining simpler components.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.pre_tokenizers import Punctuation, Whitespace, Sequence
+        >>> pre_tokenizer = Sequence([Whitespace(), Punctuation()])
+        >>> pre_tokenizer.pre_tokenize_str("Hello, world!")
+        [('Hello', (0, 5)), (',', (5, 6)), ('world', (7, 12)), ('!', (12, 13))]
+<
+    Parameters: ~
+        pretokenizers (List[PreTokenizer])
+            A list of |tokenizers.pre_tokenizers.PreTokenizer| to be
+            applied in sequence.
+
+                                             *tokenizers.pre_tokenizers.Split*
+
+class tokenizers.pre_tokenizers.Split(pattern, behavior, invert=False)
+    Split PreTokenizer
+
+    This versatile pre-tokenizer splits using the provided pattern and
+    according to the provided behavior. The pattern can be inverted by
+    making use of the invert flag.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers import Regex
+        >>> from tokenizers.pre_tokenizers import Split
+        >>> # Split on commas, removing them
+        >>> pre_tokenizer = Split(",", behavior="removed")
+        >>> pre_tokenizer.pre_tokenize_str("one,two,three")
+        [('one', (0, 3)), ('two', (4, 7)), ('three', (8, 13))]
+        >>> # Split using a regex, keeping the delimiter isolated
+        >>> Split(Regex(r"\s+"), behavior="isolated").pre_tokenize_str("hello   world")
+        [('hello', (0, 5)), ('   ', (5, 8)), ('world', (8, 13))]
+<
+    Parameters: ~
+        pattern (str or Regex)
+            A pattern used to split the string. Usually a string or a
+            regex built with tokenizers.Regex. If you want to use a
+            regex pattern, it has to be wrapped around a
+            tokenizers.Regex, otherwise we consider is as a string
+            pattern. For example pattern=”|” means you want to split on
+            | (imagine a csv file for example), while
+            pattern=tokenizers.Regex(“1|2”) means you split on either
+            ‘1' or ‘2'.
+
+        behavior (SplitDelimiterBehavior)
+            The behavior to use when splitting. Choices: “removed”,
+            “isolated”, “merged_with_previous”, “merged_with_next”,
+            “contiguous”
+
+        invert (bool, optional, defaults to False)
+            Whether to invert the pattern.
+
+                                    *tokenizers.pre_tokenizers.UnicodeScripts*
+
+class tokenizers.pre_tokenizers.UnicodeScripts
+    This pre-tokenizer splits on characters that belong to different
+    language families. It roughly follows the SentencePiece script
+    boundaries, with Hiragana and Katakana fused into the Han script
+    category. This mimics the SentencePiece Unigram implementation and
+    is useful for multilingual models that need to handle CJK text.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.pre_tokenizers import UnicodeScripts
+        >>> pre_tokenizer = UnicodeScripts()
+        >>> pre_tokenizer.pre_tokenize_str("どこ Where")
+        [('どこ', (0, 2)), ('Where', (3, 8))]
+<
+
+                                        *tokenizers.pre_tokenizers.Whitespace*
+
+class tokenizers.pre_tokenizers.Whitespace
+    This pre-tokenizer splits on word boundaries according to the
+    `\w+|[^\w\s]+` regex pattern. It splits on word characters or
+    characters that aren't words or whitespaces (punctuation such as
+    hyphens, apostrophes, commas, etc.).
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.pre_tokenizers import Whitespace
+        >>> pre_tokenizer = Whitespace()
+        >>> pre_tokenizer.pre_tokenize_str("Hello, world! Let's tokenize.")
+        [('Hello', (0, 5)), (',', (5, 6)), ('world', (7, 12)), ('!', (12, 13)), ('Let', (14, 17)), ("'", (17, 18)), ('s', (18, 19)), ('tokenize', (20, 28)), ('.', (28, 29))]
+<
+
+                                   *tokenizers.pre_tokenizers.WhitespaceSplit*
+
+class tokenizers.pre_tokenizers.WhitespaceSplit
+    This pre-tokenizer simply splits on whitespace. Works like
+    `str.split` with no arguments --- it splits on any whitespace and
+    discards the whitespace tokens. Unlike
+    |tokenizers.pre_tokenizers.Whitespace|, it does not split on
+    punctuation.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.pre_tokenizers import WhitespaceSplit
+        >>> pre_tokenizer = WhitespaceSplit()
+        >>> pre_tokenizer.pre_tokenize_str("Hello, world! How are you?")
+        [('Hello,', (0, 6)), ('world!', (7, 13)), ('How', (14, 17)), ('are', (18, 21)), ('you?', (22, 26))]
+<
+
+----------------------------------------------------------------------------
+Tokenizer                                           *tokenizers-api-tokenizer*
+
+                                                        *tokenizers.Tokenizer*
+
+class tokenizers.Tokenizer(model)
+    A `Tokenizer` works as a pipeline. It processes some raw text as
+    input and outputs an |tokenizers.Encoding|.
+
+    The pipeline is structured as follows:
+
+    1. The |tokenizers.normalizers.Normalizer| normalizes the raw input
+       text.
+    2. The |tokenizers.pre_tokenizers.PreTokenizer| splits the
+       normalized text into word-level tokens.
+    3. The |tokenizers.models.Model| tokenizes each word into subword
+       tokens and maps them to IDs.
+    4. The `PostProcessor` applies any final transformations (e.g.,
+       adding special tokens like `[CLS]` and `[SEP]`).
+
+    Example: ~
+
+    >python
+        >>> from tokenizers import Tokenizer
+        >>> from tokenizers.models import BPE
+        >>> from tokenizers.normalizers import Lowercase
+        >>> from tokenizers.pre_tokenizers import Whitespace
+        >>> tokenizer = Tokenizer(BPE(unk_token="<unk>"))
+        >>> tokenizer.normalizer = Lowercase()
+        >>> tokenizer.pre_tokenizer = Whitespace()
+        >>> # Load a pre-built tokenizer from HuggingFace Hub
+        >>> tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+<
+    Parameters: ~
+        model (Model)
+            The core algorithm that this `Tokenizer` should be using.
+
+    property Tokenizer.decoder
+    *tokenizers.Tokenizer.decoder*
+        The optional `Decoder` in use by the Tokenizer
+
+    property Tokenizer.model
+    *tokenizers.Tokenizer.model*
+        The |tokenizers.models.Model| in use by the Tokenizer
+
+    property Tokenizer.normalizer
+    *tokenizers.Tokenizer.normalizer*
+        The optional |tokenizers.normalizers.Normalizer| in use by the
+        Tokenizer
+
+    property Tokenizer.padding
+    *tokenizers.Tokenizer.padding*
+        Get the current padding parameters
+
+        Cannot be set, use `enable_padding()` instead
+
+        Returns: ~
+            (dict, optional)
+                A dict with the current padding parameters if padding is
+                enabled
+
+    property Tokenizer.post_processor
+    *tokenizers.Tokenizer.post_processor*
+        The optional `PostProcessor` in use by the Tokenizer
+
+    property Tokenizer.pre_tokenizer
+    *tokenizers.Tokenizer.pre_tokenizer*
+        The optional |tokenizers.pre_tokenizers.PreTokenizer| in use by
+        the Tokenizer
+
+    property Tokenizer.truncation
+    *tokenizers.Tokenizer.truncation*
+        Get the currently set truncation parameters
+
+        Cannot set, use `enable_truncation()` instead
+
+        Returns: ~
+            (dict, optional)
+                A dict with the current truncation parameters if
+                truncation is enabled
+
+    Tokenizer.add_special_tokens(tokens)
+    *tokenizers.Tokenizer.add_special_tokens*
+        Add the given special tokens to the Tokenizer.
+
+        If these tokens are already part of the vocabulary, it just let
+        the Tokenizer know about them. If they don't exist, the
+        Tokenizer creates them, giving them a new id.
+
+        These special tokens will never be processed by the model (ie
+        won't be split into multiple tokens), and they can be removed
+        from the output when decoding.
+
+        Parameters: ~
+            tokens (A List of AddedToken or str)
+                The list of special tokens we want to add to the
+                vocabulary. Each token can either be a string or an
+                instance of |tokenizers.AddedToken| for more
+                customization.
+
+        Returns: ~
+            int
+                The number of tokens that were created in the vocabulary
+
+    Tokenizer.add_tokens(tokens)
+    *tokenizers.Tokenizer.add_tokens*
+        Add the given tokens to the vocabulary
+
+        The given tokens are added only if they don't already exist in
+        the vocabulary. Each token then gets a new attributed id.
+
+        Parameters: ~
+            tokens (A List of AddedToken or str)
+                The list of tokens we want to add to the vocabulary.
+                Each token can be either a string or an instance of
+                |tokenizers.AddedToken| for more customization.
+
+        Returns: ~
+            int
+                The number of tokens that were created in the vocabulary
+
+    Tokenizer.async_decode_batch(sequences, skip_special_tokens=True)
+    *tokenizers.Tokenizer.async_decode_batch*
+        Decode a batch of ids back to their corresponding string
+
+        Parameters: ~
+            sequences (List of List[int])
+                The batch of sequences we want to decode
+
+            skip_special_tokens (bool, defaults to True)
+                Whether the special tokens should be removed from the
+                decoded strings
+
+        Returns: ~
+            List[str]
+                A list of decoded strings
+
+    Tokenizer.async_encode(sequence, pair=None, is_pretokenized=False,
+    add_special_tokens=True)
+    *tokenizers.Tokenizer.async_encode*
+        Asynchronously encode the given input with character offsets.
+
+        This is an async version of encode that can be awaited in async
+        Python code.
+
+        Example: ~
+
+        Here are some examples of the inputs that are accepted:
+
+        >python
+            await async_encode("A single sequence")
+<
+        Parameters: ~
+            sequence (tokenizers.InputSequence)
+                The main input sequence we want to encode. This sequence
+                can be either raw text or pre-tokenized, according to
+                the `is_pretokenized` argument:
+                - If `is_pretokenized=False`: `TextInputSequence`
+                - If `is_pretokenized=True`:
+                  `PreTokenizedInputSequence()`
+
+            pair (tokenizers.InputSequence, optional)
+                An optional input sequence. The expected format is the
+                same that for `sequence`.
+
+            is_pretokenized (bool, defaults to False)
+                Whether the input is already pre-tokenized
+
+            add_special_tokens (bool, defaults to True)
+                Whether to add the special tokens
+
+        Returns: ~
+            Encoding
+                The encoded result
+
+    Tokenizer.async_encode_batch(input, is_pretokenized=False,
+    add_special_tokens=True)
+    *tokenizers.Tokenizer.async_encode_batch*
+        Asynchronously encode the given batch of inputs with character
+        offsets.
+
+        This is an async version of encode_batch that can be awaited in
+        async Python code.
+
+        Example: ~
+
+        Here are some examples of the inputs that are accepted:
+
+        >python
+            await async_encode_batch([
+            "A single sequence",
+            ("A tuple with a sequence", "And its pair"),
+            [ "A", "pre", "tokenized", "sequence" ],
+            ([ "A", "pre", "tokenized", "sequence" ], "And its pair")
+            ])
+<
+        Parameters: ~
+            input (A List/`Tuple of tokenizers.EncodeInput)
+                A list of single sequences or pair sequences to encode.
+                Each sequence can be either raw text or pre-tokenized,
+                according to the `is_pretokenized` argument:
+                - If `is_pretokenized=False`: `TextEncodeInput()`
+                - If `is_pretokenized=True`: `PreTokenizedEncodeInput()`
+
+            is_pretokenized (bool, defaults to False)
+                Whether the input is already pre-tokenized
+
+            add_special_tokens (bool, defaults to True)
+                Whether to add the special tokens
+
+        Returns: ~
+            A List of [`~tokenizers.Encoding“]
+                The encoded batch
+
+    Tokenizer.async_encode_batch_fast(input, is_pretokenized=False,
+    add_special_tokens=True)
+    *tokenizers.Tokenizer.async_encode_batch_fast*
+        Asynchronously encode the given batch of inputs without tracking
+        character offsets.
+
+        This is an async version of encode_batch_fast that can be
+        awaited in async Python code.
+
+        Example: ~
+
+        Here are some examples of the inputs that are accepted:
+
+        >python
+            await async_encode_batch_fast([
+            "A single sequence",
+            ("A tuple with a sequence", "And its pair"),
+            [ "A", "pre", "tokenized", "sequence" ],
+            ([ "A", "pre", "tokenized", "sequence" ], "And its pair")
+            ])
+<
+        Parameters: ~
+            input (A List/`Tuple of tokenizers.EncodeInput)
+                A list of single sequences or pair sequences to encode.
+                Each sequence can be either raw text or pre-tokenized,
+                according to the `is_pretokenized` argument:
+                - If `is_pretokenized=False`: `TextEncodeInput()`
+                - If `is_pretokenized=True`: `PreTokenizedEncodeInput()`
+
+            is_pretokenized (bool, defaults to False)
+                Whether the input is already pre-tokenized
+
+            add_special_tokens (bool, defaults to True)
+                Whether to add the special tokens
+
+        Returns: ~
+            A List of [`~tokenizers.Encoding“]
+                The encoded batch
+
+    Tokenizer.decode(ids, skip_special_tokens=True)
+    *tokenizers.Tokenizer.decode*
+        Decode the given list of ids back to a string
+
+        This is used to decode anything coming back from a Language
+        Model
+
+        Parameters: ~
+            ids (A List/Tuple of int)
+                The list of ids that we want to decode
+
+            skip_special_tokens (bool, defaults to True)
+                Whether the special tokens should be removed from the
+                decoded string
+
+        Returns: ~
+            str
+                The decoded string
+
+    Tokenizer.decode_batch(sequences, skip_special_tokens=True)
+    *tokenizers.Tokenizer.decode_batch*
+        Decode a batch of ids back to their corresponding string
+
+        Parameters: ~
+            sequences (List of List[int])
+                The batch of sequences we want to decode
+
+            skip_special_tokens (bool, defaults to True)
+                Whether the special tokens should be removed from the
+                decoded strings
+
+        Returns: ~
+            List[str]
+                A list of decoded strings
+
+    Tokenizer.enable_padding(direction='right', pad_id=0, pad_type_id=0,
+    pad_token='[PAD]', length=None, pad_to_multiple_of=None)
+    *tokenizers.Tokenizer.enable_padding*
+        Enable the padding
+
+        Parameters: ~
+            direction (str, optional, defaults to right)
+                The direction in which to pad. Can be either `right` or
+                `left`
+
+            pad_to_multiple_of (int, optional)
+                If specified, the padding length should always snap to
+                the next multiple of the given value. For example if we
+                were going to pad witha length of 250 but
+                `pad_to_multiple_of=8` then we will pad to 256.
+
+            pad_id (int, defaults to 0)
+                The id to be used when padding
+
+            pad_type_id (int, defaults to 0)
+                The type id to be used when padding
+
+            pad_token (str, defaults to [PAD])
+                The pad token to be used when padding
+
+            length (int, optional)
+                If specified, the length at which to pad. If not
+                specified we pad using the size of the longest sequence
+                in a batch.
+
+    Tokenizer.enable_truncation(max_length, stride=0,
+    strategy='longest_first', direction='right')
+    *tokenizers.Tokenizer.enable_truncation*
+        Enable truncation
+
+        Parameters: ~
+            max_length (int)
+                The max length at which to truncate
+
+            stride (int, optional)
+                The length of the previous first sequence to be included
+                in the overflowing sequence
+
+            strategy (str, optional, defaults to longest_first)
+                The strategy used to truncation. Can be one of
+                `longest_first`, `only_first` or `only_second`.
+
+            direction (str, defaults to right)
+                Truncate direction
+
+    Tokenizer.encode(sequence, pair=None, is_pretokenized=False,
+    add_special_tokens=True)
+    *tokenizers.Tokenizer.encode*
+        Encode the given sequence and pair. This method can process raw
+        text sequences as well as already pre-tokenized sequences.
+
+        Example: ~
+
+        Here are some examples of the inputs that are accepted:
+
+        >python
+            encode("A single sequence")*
+            encode("A sequence", "And its pair")*
+            encode([ "A", "pre", "tokenized", "sequence" ], is_pretokenized=True)`
+            encode(
+            [ "A", "pre", "tokenized", "sequence" ], [ "And", "its", "pair" ],
+            is_pretokenized=True
+            )
+<
+        Parameters: ~
+            sequence (tokenizers.InputSequence)
+                The main input sequence we want to encode. This sequence
+                can be either raw text or pre-tokenized, according to
+                the `is_pretokenized` argument:
+                - If `is_pretokenized=False`: `TextInputSequence`
+                - If `is_pretokenized=True`:
+                  `PreTokenizedInputSequence()`
+
+            pair (tokenizers.InputSequence, optional)
+                An optional input sequence. The expected format is the
+                same that for `sequence`.
+
+            is_pretokenized (bool, defaults to False)
+                Whether the input is already pre-tokenized
+
+            add_special_tokens (bool, defaults to True)
+                Whether to add the special tokens
+
+        Returns: ~
+            Encoding
+                The encoded result
+
+    Tokenizer.encode_batch(input, is_pretokenized=False,
+    add_special_tokens=True)
+    *tokenizers.Tokenizer.encode_batch*
+        Encode the given batch of inputs. This method accept both raw
+        text sequences as well as already pre-tokenized sequences. The
+        reason we use PySequence is because it allows type checking with
+        zero-cost (according to PyO3) as we don't have to convert to
+        check.
+
+        Example: ~
+
+        Here are some examples of the inputs that are accepted:
+
+        >python
+            encode_batch([
+            "A single sequence",
+            ("A tuple with a sequence", "And its pair"),
+            [ "A", "pre", "tokenized", "sequence" ],
+            ([ "A", "pre", "tokenized", "sequence" ], "And its pair")
+            ])
+<
+        Parameters: ~
+            input (A List/`Tuple of tokenizers.EncodeInput)
+                A list of single sequences or pair sequences to encode.
+                Each sequence can be either raw text or pre-tokenized,
+                according to the `is_pretokenized` argument:
+                - If `is_pretokenized=False`: `TextEncodeInput()`
+                - If `is_pretokenized=True`: `PreTokenizedEncodeInput()`
+
+            is_pretokenized (bool, defaults to False)
+                Whether the input is already pre-tokenized
+
+            add_special_tokens (bool, defaults to True)
+                Whether to add the special tokens
+
+        Returns: ~
+            A List of [`~tokenizers.Encoding“]
+                The encoded batch
+
+    Tokenizer.encode_batch_fast(input, is_pretokenized=False,
+    add_special_tokens=True)
+    *tokenizers.Tokenizer.encode_batch_fast*
+        Encode the given batch of inputs. This method is faster than
+        encode_batch because it doesn't keep track of offsets, they will
+        be all zeros.
+
+        Example: ~
+
+        Here are some examples of the inputs that are accepted:
+
+        >python
+            encode_batch_fast([
+            "A single sequence",
+            ("A tuple with a sequence", "And its pair"),
+            [ "A", "pre", "tokenized", "sequence" ],
+            ([ "A", "pre", "tokenized", "sequence" ], "And its pair")
+            ])
+<
+        Parameters: ~
+            input (A List/`Tuple of tokenizers.EncodeInput)
+                A list of single sequences or pair sequences to encode.
+                Each sequence can be either raw text or pre-tokenized,
+                according to the `is_pretokenized` argument:
+                - If `is_pretokenized=False`: `TextEncodeInput()`
+                - If `is_pretokenized=True`: `PreTokenizedEncodeInput()`
+
+            is_pretokenized (bool, defaults to False)
+                Whether the input is already pre-tokenized
+
+            add_special_tokens (bool, defaults to True)
+                Whether to add the special tokens
+
+        Returns: ~
+            A List of [`~tokenizers.Encoding“]
+                The encoded batch
+
+    Tokenizer.from_buffer(buffer)
+    *tokenizers.Tokenizer.from_buffer*
+        Instantiate a new |tokenizers.Tokenizer| from the given buffer.
+
+        Parameters: ~
+            buffer (bytes)
+                A buffer containing a previously serialized
+                |tokenizers.Tokenizer|
+
+        Returns: ~
+            Tokenizer
+                The new tokenizer
+
+    Tokenizer.from_file(path)
+    *tokenizers.Tokenizer.from_file*
+        Instantiate a new |tokenizers.Tokenizer| from the file at the
+        given path.
+
+        Parameters: ~
+            path (str)
+                A path to a local JSON file representing a previously
+                serialized |tokenizers.Tokenizer|
+
+        Returns: ~
+            Tokenizer
+                The new tokenizer
+
+    Tokenizer.from_pretrained(identifier, revision='main', token=None)
+    *tokenizers.Tokenizer.from_pretrained*
+        Instantiate a new |tokenizers.Tokenizer| from an existing file
+        on the Hugging Face Hub.
+
+        Parameters: ~
+            identifier (str)
+                The identifier of a Model on the Hugging Face Hub, that
+                contains a tokenizer.json file
+
+            revision (str, defaults to main)
+                A branch or commit id
+
+            token (str, optional, defaults to None)
+                An optional auth token used to access private
+                repositories on the Hugging Face Hub
+
+        Returns: ~
+            Tokenizer
+                The new tokenizer
+
+    Tokenizer.from_str(json)
+    *tokenizers.Tokenizer.from_str*
+        Instantiate a new |tokenizers.Tokenizer| from the given JSON
+        string.
+
+        Parameters: ~
+            json (str)
+                A valid JSON string representing a previously serialized
+                |tokenizers.Tokenizer|
+
+        Returns: ~
+            Tokenizer
+                The new tokenizer
+
+    Tokenizer.get_added_tokens_decoder()
+    *tokenizers.Tokenizer.get_added_tokens_decoder*
+        Get the underlying vocabulary
+
+        Returns: ~
+            Dict[int, AddedToken]
+                The vocabulary
+
+    Tokenizer.get_vocab(with_added_tokens=True)
+    *tokenizers.Tokenizer.get_vocab*
+        Get the underlying vocabulary
+
+        Parameters: ~
+            with_added_tokens (bool, defaults to True)
+                Whether to include the added tokens
+
+        Returns: ~
+            Dict[str, int]
+                The vocabulary
+
+    Tokenizer.get_vocab_size(with_added_tokens=True)
+    *tokenizers.Tokenizer.get_vocab_size*
+        Get the size of the underlying vocabulary
+
+        Parameters: ~
+            with_added_tokens (bool, defaults to True)
+                Whether to include the added tokens
+
+        Returns: ~
+            int
+                The size of the vocabulary
+
+    Tokenizer.id_to_token(id)
+    *tokenizers.Tokenizer.id_to_token*
+        Convert the given id to its corresponding token if it exists
+
+        Parameters: ~
+            id (int)
+                The id to convert
+
+        Returns: ~
+            Optional[str]
+                An optional token, `None` if out of vocabulary
+
+    Tokenizer.no_padding()
+    *tokenizers.Tokenizer.no_padding*
+        Disable padding
+
+    Tokenizer.no_truncation()
+    *tokenizers.Tokenizer.no_truncation*
+        Disable truncation
+
+    Tokenizer.num_special_tokens_to_add(is_pair)
+    *tokenizers.Tokenizer.num_special_tokens_to_add*
+        Return the number of special tokens that would be added for
+        single/pair sentences. :param is_pair: Boolean indicating if the
+        input would be a single sentence or a pair :return:
+
+    Tokenizer.post_process(encoding, pair=None, add_special_tokens=True)
+    *tokenizers.Tokenizer.post_process*
+        Apply all the post-processing steps to the given encodings.
+
+        The various steps are:
+
+        1. Truncate according to the set truncation params (provided
+           with `enable_truncation()`)
+        2. Apply the `PostProcessor`
+        3. Pad according to the set padding params (provided with
+           `enable_padding()`)
+
+        Parameters: ~
+            encoding (Encoding)
+                The |tokenizers.Encoding| corresponding to the main
+                sequence.
+
+            pair (Encoding, optional)
+                An optional |tokenizers.Encoding| corresponding to the
+                pair sequence.
+
+            add_special_tokens (bool)
+                Whether to add the special tokens
+
+        Returns: ~
+            Encoding
+                The final post-processed encoding
+
+    Tokenizer.save(path, pretty=True)
+    *tokenizers.Tokenizer.save*
+        Save the |tokenizers.Tokenizer| to the file at the given path.
+
+        Parameters: ~
+            path (str)
+                A path to a file in which to save the serialized
+                tokenizer.
+
+            pretty (bool, defaults to True)
+                Whether the JSON file should be pretty formatted.
+
+    Tokenizer.to_str(pretty=False)
+    *tokenizers.Tokenizer.to_str*
+        Gets a serialized string representing this
+        |tokenizers.Tokenizer|.
+
+        Parameters: ~
+            pretty (bool, defaults to False)
+                Whether the JSON string should be pretty formatted.
+
+        Returns: ~
+            str
+                A string representing the serialized Tokenizer
+
+    Tokenizer.token_to_id(token)
+    *tokenizers.Tokenizer.token_to_id*
+        Convert the given token to its corresponding id if it exists
+
+        Parameters: ~
+            token (str)
+                The token to convert
+
+        Returns: ~
+            Optional[int]
+                An optional id, `None` if out of vocabulary
+
+    Tokenizer.train(files, trainer=None)
+    *tokenizers.Tokenizer.train*
+        Train the Tokenizer using the given files.
+
+        Reads the files line by line, while keeping all the whitespace,
+        even new lines. If you want to train from data store in-memory,
+        you can check `train_from_iterator()`
+
+        Parameters: ~
+            files (List[str])
+                A list of path to the files that we should use for
+                training
+
+            trainer (tokenizers.trainers.Trainer, optional)
+                An optional trainer that should be used to train our
+                Model
+
+    Tokenizer.train_from_iterator(iterator, trainer=None, length=None)
+    *tokenizers.Tokenizer.train_from_iterator*
+        Train the Tokenizer using the provided iterator.
+
+        You can provide anything that is a Python Iterator
+
+        - A list of sequences `List[str]`
+        - A generator that yields `str` or `List[str]`
+        - A Numpy array of strings
+        - ...
+
+        Parameters: ~
+            iterator (Iterator)
+                Any iterator over strings or list of strings
+
+            trainer (tokenizers.trainers.Trainer, optional)
+                An optional trainer that should be used to train our
+                Model
+
+            length (int, optional)
+                The total number of sequences in the iterator. This is
+                used to provide meaningful progress tracking
+
+----------------------------------------------------------------------------
+Trainers                                             *tokenizers-api-trainers*
+
+                                              *tokenizers.trainers.BpeTrainer*
+class tokenizers.trainers.BpeTrainer(vocab_size=30000, min_frequency=0,
+    show_progress=True, progress_format='indicatif', special_tokens=[],
+    limit_alphabet=None, initial_alphabet=[],
+    continuing_subword_prefix=None, end_of_word_suffix=None,
+    max_token_length=None)
+    Trainer capable of training a BPE model
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.models import BPE
+        >>> from tokenizers.trainers import BpeTrainer
+        >>> trainer = BpeTrainer(
+        ...     vocab_size=30000,
+        ...     special_tokens=["<unk>", "<s>", "</s>"],
+        ...     min_frequency=2,
+        ... )
+        >>> tokenizer = Tokenizer(BPE())
+        >>> tokenizer.train(["path/to/corpus.txt"], trainer)
+<
+    Parameters: ~
+        vocab_size (int, optional)
+            The size of the final vocabulary, including all tokens and
+            alphabet.
+
+        min_frequency (int, optional)
+            The minimum frequency a pair should have in order to be
+            merged.
+
+        show_progress (bool, optional)
+            Whether to show progress bars while training.
+
+        special_tokens (List[Union[str, AddedToken]], optional)
+            A list of special tokens the model should know of.
+
+        limit_alphabet (int, optional)
+            The maximum different characters to keep in the alphabet.
+
+        initial_alphabet (List[str], optional)
+            A list of characters to include in the initial alphabet,
+            even if not seen in the training dataset. If the strings
+            contain more than one character, only the first one is kept.
+
+        continuing_subword_prefix (str, optional)
+            A prefix to be used for every subword that is not a
+            beginning-of-word.
+
+        end_of_word_suffix (str, optional)
+            A suffix to be used for every subword that is a end-of-word.
+
+        max_token_length (int, optional)
+            Prevents creating tokens longer than the specified size.
+            This can help with reducing polluting your vocabulary with
+            highly repetitive tokens like ====== for wikipedia
+
+    BpeTrainer.get_word_count()
+    *tokenizers.trainers.BpeTrainer.get_word_count*
+        Get the number of unique words after feeding the corpus
+
+                                        *tokenizers.trainers.ParityBpeTrainer*
+class tokenizers.trainers.ParityBpeTrainer(num_merges=32000,
+    variant='base', min_frequency=0, ratio=None, global_merges=0,
+    window_size=100, alpha=2.0, total_symbols=False, special_tokens=None,
+    show_progress=True, limit_alphabet=None, initial_alphabet=None,
+    continuing_subword_prefix=None, end_of_word_suffix=None,
+    max_token_length=None)
+    Trainer for parity-aware BPE that ensures cross-lingual fairness in
+    tokenization.
+
+    Unlike standard BPE, this trainer takes one Python iterator per
+    language and balances merge operations across languages using a
+    development set or target compression ratios. The single training
+    entry point is `train_from_iterator`, the multi-corpus analogue of
+    `tokenizers.Tokenizer.train_from_iterator()`. Balancing requires
+    either `dev_iterators` (ideally parallel across languages) or
+    `ratio`; given neither, selection follows the per-language training
+    totals, which the highest-data language dominates, so the result
+    stays close to plain BPE. When both are given the dev set takes
+    precedence. A runnable version that obtains per-language corpora and
+    a parallel dev set is in `examples/train_parity_bpe.py`.
+
+    Example: ~
+
+    >python
+        >>> from tokenizers import Tokenizer, pre_tokenizers
+        >>> from tokenizers.models import BPE
+        >>> from tokenizers.trainers import ParityBpeTrainer
+        >>> tokenizer = Tokenizer(BPE())
+        >>> tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel()
+        >>> trainer = ParityBpeTrainer(num_merges=32000, variant="base")
+        >>> # balance against a parallel dev set, the same sentences in every language
+        >>> trainer.train_from_iterator(
+        ...     tokenizer,
+        ...     train_iterators=[english_lines, hindi_lines],
+        ...     dev_iterators=[english_dev, hindi_dev],
+        ... )
+        >>> # or against target rates, which need no dev data
+        >>> trainer.train_from_iterator(
+        ...     tokenizer,
+        ...     train_iterators=[english_lines, hindi_lines],
+        ...     ratio=[1.0, 2.57],
+        ... )
+<
+    Parameters: ~
+        num_merges (int, optional)
+            Number of BPE merge operations to perform. Defaults to
+            `32000`.
+
+        variant (str, optional)
+            Algorithm variant: `"base"` (default) or `"window"`
+            (moving-window balancing).
+
+        min_frequency (int, optional)
+            Minimum pair frequency to merge. Defaults to `0`.
+
+        ratio (List[float], optional)
+            Target compression rate per language, one entry per training
+            iterator. The trainer selects the language with the lowest
+            `compression_rate / ratio`, so raising one language's ratio
+            gives it more merges; only the values relative to each other
+            matter. Rates are counted in the units the pre-tokenizer
+            emits, bytes under |tokenizers.pre_tokenizers.ByteLevel|, so
+            equal ratios do not give equal tokenization across scripts:
+            Devanagari takes about 2.5x the bytes of Latin script for
+            the same content. Set each ratio proportional to the
+            language's average length on parallel text instead. Defaults
+            to `None`.
+
+        global_merges (int, optional)
+            Number of initial standard BPE merges before switching to
+            parity mode. Defaults to `0`.
+
+        window_size (int, optional)
+            Window size for the `"window"` variant. Defaults to `100`.
+
+        alpha (float, optional)
+            Alpha parameter for the `"window"` variant. Defaults to
+            `2.0`.
+
+        total_symbols (bool, optional)
+            If True, subtract unique character count from `num_merges`.
+            Defaults to `False`.
+
+    ParityBpeTrainer.train_from_iterator(tokenizer, train_iterators,
+    dev_iterators=None, ratio=None)
+    *tokenizers.trainers.ParityBpeTrainer.train_from_iterator*
+        Train a user-configured tokenizer with parity-aware BPE from
+        per-language Python iterators.
+
+        Each entry of `train_iterators` (and optionally `dev_iterators`)
+        is a Python iterator yielding strings (or batches / lists of
+        strings) for one language. This is the multi-corpus analogue of
+        `train_from_iterator()`: file I/O happens in Python, so users
+        can pull data from plain text, parquet (via `pyarrow`),
+        `datasets`, etc.
+
+        Parameters: ~
+            tokenizer (Tokenizer)
+                A tokenizer instance to train. Its pre-tokenizer (and
+                optionally normalizer) should already be configured.
+
+            train_iterators (List[Iterator])
+                One Python iterator per language, each yielding `str` or
+                `List[str]`.
+
+            dev_iterators (List[Iterator], optional)
+                One Python iterator per language, used to drive
+                parity-aware language selection. Must have the same
+                length as `train_iterators`.
+
+            ratio (List[float], optional)
+                Target compression rates per language, an alternative to
+                `dev_iterators` and ignored when one is supplied. See
+                the class docstring for how to choose the values.
+
+                                          *tokenizers.trainers.UnigramTrainer*
+class tokenizers.trainers.UnigramTrainer(vocab_size=8000,
+    show_progress=True, special_tokens=[], initial_alphabet=[],
+    shrinking_factor=0.75, unk_token=None, max_piece_length=16,
+    n_sub_iterations=2)
+    Trainer capable of training a Unigram model
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.models import Unigram
+        >>> from tokenizers.trainers import UnigramTrainer
+        >>> trainer = UnigramTrainer(
+        ...     vocab_size=8000,
+        ...     special_tokens=["<unk>", "<s>", "</s>"],
+        ...     unk_token="<unk>",
+        ... )
+        >>> tokenizer = Tokenizer(Unigram())
+        >>> tokenizer.train(["path/to/corpus.txt"], trainer)
+<
+    Parameters: ~
+        vocab_size (int)
+            The size of the final vocabulary, including all tokens and
+            alphabet.
+
+        show_progress (bool)
+            Whether to show progress bars while training.
+
+        special_tokens (List[Union[str, AddedToken]])
+            A list of special tokens the model should know of.
+
+        initial_alphabet (List[str])
+            A list of characters to include in the initial alphabet,
+            even if not seen in the training dataset. If the strings
+            contain more than one character, only the first one is kept.
+
+        shrinking_factor (float)
+            The shrinking factor used at each step of the training to
+            prune the vocabulary.
+
+        unk_token (str)
+            The token used for out-of-vocabulary tokens.
+
+        max_piece_length (int)
+            The maximum length of a given token.
+
+        n_sub_iterations (int)
+            The number of iterations of the EM algorithm to perform
+            before pruning the vocabulary.
+
+                                        *tokenizers.trainers.WordLevelTrainer*
+
+class tokenizers.trainers.WordLevelTrainer(vocab_size=30000,
+    min_frequency=0, show_progress=True, special_tokens=[])
+    Trainer capable of training a WordLevel model
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.models import WordLevel
+        >>> from tokenizers.trainers import WordLevelTrainer
+        >>> trainer = WordLevelTrainer(
+        ...     vocab_size=10000,
+        ...     special_tokens=["<unk>"],
+        ...     min_frequency=1,
+        ... )
+        >>> tokenizer = Tokenizer(WordLevel(unk_token="<unk>"))
+        >>> tokenizer.train(["path/to/corpus.txt"], trainer)
+<
+    Parameters: ~
+        vocab_size (int, optional)
+            The size of the final vocabulary, including all tokens and
+            alphabet.
+
+        min_frequency (int, optional)
+            The minimum frequency a pair should have in order to be
+            merged.
+
+        show_progress (bool, optional)
+            Whether to show progress bars while training.
+
+        special_tokens (List[Union[str, AddedToken]])
+            A list of special tokens the model should know of.
+
+                                        *tokenizers.trainers.WordPieceTrainer*
+
+class tokenizers.trainers.WordPieceTrainer(vocab_size=30000,
+    min_frequency=0, show_progress=True, special_tokens=[],
+    limit_alphabet=None, initial_alphabet=[],
+    continuing_subword_prefix='##', end_of_word_suffix=None)
+    Trainer capable of training a WordPiece model
+
+    Example: ~
+
+    >python
+        >>> from tokenizers.models import WordPiece
+        >>> from tokenizers.trainers import WordPieceTrainer
+        >>> trainer = WordPieceTrainer(
+        ...     vocab_size=30000,
+        ...     special_tokens=["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"],
+        ... )
+        >>> tokenizer = Tokenizer(WordPiece(unk_token="[UNK]"))
+        >>> tokenizer.train(["path/to/corpus.txt"], trainer)
+<
+    Parameters: ~
+        vocab_size (int, optional)
+            The size of the final vocabulary, including all tokens and
+            alphabet.
+
+        min_frequency (int, optional)
+            The minimum frequency a pair should have in order to be
+            merged.
+
+        show_progress (bool, optional)
+            Whether to show progress bars while training.
+
+        special_tokens (List[Union[str, AddedToken]], optional)
+            A list of special tokens the model should know of.
+
+        limit_alphabet (int, optional)
+            The maximum different characters to keep in the alphabet.
+
+        initial_alphabet (List[str], optional)
+            A list of characters to include in the initial alphabet,
+            even if not seen in the training dataset. If the strings
+            contain more than one character, only the first one is kept.
+
+        continuing_subword_prefix (str, optional)
+            A prefix to be used for every subword that is not a
+            beginning-of-word.
+
+        end_of_word_suffix (str, optional)
+            A suffix to be used for every subword that is a end-of-word.
+
+----------------------------------------------------------------------------
+Visualizer                                         *tokenizers-api-visualizer*
+
+                                                 *tokenizers.tools.Annotation*
+
+class tokenizers.tools.Annotation(start: int, end: int, label: str)
+
+                                         *tokenizers.tools.EncodingVisualizer*
+
+class tokenizers.tools.EncodingVisualizer(tokenizer: Tokenizer,
+    default_to_notebook: bool=True, annotation_converter:
+    typing.Optional[typing.Callable[[typing.Any],
+    tokenizers.tools.visualizer.Annotation]]=None)
+    Build an EncodingVisualizer
+
+    Parameters: ~
+        tokenizer (Tokenizer)
+            A tokenizer instance
+
+        default_to_notebook (bool)
+            Whether to render html output in a notebook by default
+
+        annotation_converter (Callable, optional)
+            An optional (lambda) function that takes an annotation in
+            any format and returns an Annotation object
+
+    EncodingVisualizer.__call__(text: str, annotations:
+    typing.Optional[typing.List[typing.Any]]=None, default_to_notebook:
+    typing.Optional[bool]=None)
+    *tokenizers.tools.EncodingVisualizer.__call__*
+        Build a visualization of the given text
+
+        Parameters: ~
+            text (str)
+                The text to tokenize
+
+            annotations (List[Annotation], optional)
+                An optional list of annotations of the text. The can
+                either be an annotation class or anything else if you
+                instantiated the visualizer with a converter function
+
+            default_to_notebook (bool, optional, defaults to False)
+                If True, will render the html in a notebook. Otherwise
+                returns an html string.
+
+ vim:tw=78:ts=8:ft=help:norl:

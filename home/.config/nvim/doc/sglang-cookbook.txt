@@ -89,7 +89,7 @@ Deploy the model using the command generated above. Example for B200:
 
 [Command]Command
 
->sh
+>bash
     sglang serve --model-path deepseek-ai/DeepSeek-Math-V2 \
       --tp 8 \
       --ep 8 \
@@ -438,7 +438,7 @@ Benchmark Command:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -479,7 +479,7 @@ Benchmark Command:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -545,7 +545,7 @@ Benchmark Command:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -788,7 +788,7 @@ https://docs.sglang.io/docs/developer_guide/evaluating_new_models.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path deepseek-ai/DeepSeek-OCR-2 \
       --enable-multimodal \
@@ -801,7 +801,7 @@ https://docs.sglang.io/docs/developer_guide/evaluating_new_models.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 0.0.0.0 \
@@ -867,7 +867,7 @@ https://docs.sglang.io/docs/developer_guide/evaluating_new_models.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path deepseek-ai/DeepSeek-OCR-2 \
       --enable-multimodal \
@@ -882,7 +882,7 @@ https://docs.sglang.io/docs/developer_guide/evaluating_new_models.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 0.0.0.0 \
@@ -1071,7 +1071,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-OCR \
       --tp 1 \
@@ -1086,7 +1086,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -1151,7 +1151,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-OCR \
       --tp 1 \
@@ -1166,7 +1166,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -1318,7 +1318,7 @@ W4A8 / AWQ / MXFP4 / NVFP4  8× H20/H100, 4× H200; 8× H100/A100; 8/4×
 DeepGEMM precompilation (NVIDIA Hopper / Blackwell): Precompile GEMM kernels
 to avoid JIT overhead (~10 min):
 
->sh
+>bash
     python3 -m sglang.compile_deep_gemm --model deepseek-ai/DeepSeek-R1 --tp 8 --trust-remote-code
 <
 Data Parallelism Attention (`--attn-dp-size`): Recommended for
@@ -1354,7 +1354,7 @@ thinking and content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-R1-0528 \
       --reasoning-parser deepseek-r1 \
@@ -1439,7 +1439,7 @@ DeepSeek-R1 supports tool calling capabilities. Enable the tool call parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-R1-0528 \
       --reasoning-parser deepseek-r1 \
@@ -1549,7 +1549,7 @@ Output Example:
     🔧 Tool Call: None
        Arguments: {"location": "Beijing"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -1621,7 +1621,7 @@ with `--enable-custom-logit-processor`:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model deepseek-ai/DeepSeek-R1 \
       --tp 8 \
@@ -1716,7 +1716,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-R1-0528 \
       --tp 8
@@ -1727,7 +1727,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-R1-0528 \
@@ -1786,7 +1786,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-R1-0528 \
@@ -1845,7 +1845,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-R1-0528 \
@@ -1906,7 +1906,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-R1-0528 \
@@ -1965,7 +1965,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-R1-0528 \
@@ -2024,7 +2024,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-R1-0528 \
@@ -2085,7 +2085,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-R1-0528 \
@@ -2144,7 +2144,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-R1-0528 \
@@ -2203,7 +2203,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-R1-0528 \
@@ -2301,7 +2301,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 1319 \
@@ -2398,7 +2398,7 @@ W4A8 / AWQ / MXFP4 / NVFP4  8× H20/H100, 4× H200; 8× H100/A100; 8/4×
 DeepGEMM precompilation (NVIDIA Hopper / Blackwell): Precompile GEMM kernels
 before the first server run to avoid JIT overhead (~10 min):
 
->sh
+>bash
     python3 -m sglang.compile_deep_gemm --model deepseek-ai/DeepSeek-V3 --tp 8 --trust-remote-code
 <
 DeepGEMM is enabled by default on Hopper/Blackwell and can be disabled with
@@ -2438,7 +2438,7 @@ deployment to separate the thinking and content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model deepseek-ai/DeepSeek-V3 \
       --reasoning-parser deepseek-v3 \
@@ -2545,7 +2545,7 @@ Deployment Command:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model deepseek-ai/DeepSeek-V3 \
       --tool-call-parser deepseekv3 \
@@ -2561,7 +2561,7 @@ Quick Test (curl):
 
 [Command]Command
 
->sh
+>bash
     curl "http://127.0.0.1:30000/v1/chat/completions" \
       -H "Content-Type: application/json" \
       -d '{
@@ -2689,7 +2689,7 @@ Output Example:
     🔧 Tool Call: get_weather
        Arguments: {"location": "Beijing", "unit": "celsius"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -2756,7 +2756,7 @@ Enable with:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-V3-0324 \
       --speculative-algorithm EAGLE \
@@ -2869,7 +2869,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-V3 \
       --tp 8 \
@@ -2887,7 +2887,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -2953,7 +2953,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-V3 \
       --tp 8 \
@@ -2968,7 +2968,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -3036,7 +3036,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:8000/v1 \
       --num-examples 200
@@ -3066,7 +3066,7 @@ not directly comparable; rerun this command for a matching result.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run mmlu \
       --base-url http://127.0.0.1:8000/v1 \
       --num-threads 64 --max-tokens 2048
@@ -3171,7 +3171,7 @@ W4A8 / AWQ / MXFP4 / NVFP4  8× H20/H100, 4× H200; 8× H100/A100; 8/4×
 DeepGEMM precompilation (NVIDIA Hopper / Blackwell): Precompile GEMM kernels
 before the first server run to avoid JIT overhead (~10 min):
 
->sh
+>bash
     python3 -m sglang.compile_deep_gemm --model deepseek-ai/DeepSeek-V3.1 --tp 8 --trust-remote-code
 <
 DeepGEMM is enabled by default on Hopper/Blackwell and can be disabled with
@@ -3211,7 +3211,7 @@ deployment to separate the thinking and content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model deepseek-ai/DeepSeek-V3.1-Terminus \
       --reasoning-parser deepseek-v3 \
@@ -3325,7 +3325,7 @@ Deployment Command:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model deepseek-ai/DeepSeek-V3.1-Terminus \
       --tool-call-parser deepseekv31 \
@@ -3456,7 +3456,7 @@ Output Example:
     🔧 Tool Call: get_weather
        Arguments: {"location": "Beijing", "unit": "celsius"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -3583,7 +3583,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-V3.1 \
       --tp 8
@@ -3594,7 +3594,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-V3.1 \
@@ -3653,7 +3653,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-V3.1 \
@@ -3712,7 +3712,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-V3.1 \
@@ -3773,7 +3773,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-V3.1 \
@@ -3832,7 +3832,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-V3.1 \
@@ -3891,7 +3891,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-V3.1 \
@@ -3952,7 +3952,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-V3.1 \
@@ -4011,7 +4011,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-V3.1 \
@@ -4070,7 +4070,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model deepseek-ai/DeepSeek-V3.1 \
@@ -4167,7 +4167,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 1319 \
@@ -4255,7 +4255,7 @@ Pre-built Docker images are available for different hardware platforms:
 
 [Command]Command
 
->sh
+>bash
     # NVIDIA H200 / B200
     docker pull lmsysorg/sglang:latest
 
@@ -4322,7 +4322,7 @@ MI300X/MI355X GPUs.
 - NVFP4 on Blackwell: Specify `--quantization modelopt_fp4` and
   `--moe-runner-backend flashinfer_trtllm` (recommended) /
   `flashinfer_cutlass` / `flashinfer_cutedsl`. Full example:
-  >sh
+  >bash
       python -m sglang.launch_server --model nvidia/DeepSeek-V3.2-NVFP4 --tp 4 \
         --quantization modelopt_fp4 --moe-runner-backend flashinfer_trtllm \
         --tool-call-parser deepseekv32 --reasoning-parser deepseek-v3
@@ -4349,7 +4349,7 @@ deployment to separate the thinking and content sections:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path deepseek-ai/DeepSeek-V3.2-Exp \
       --reasoning-parser deepseek-v3 \
@@ -4441,7 +4441,7 @@ reasoning parser only:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-V3.2-Speciale \
       --trust-remote-code \
@@ -4456,7 +4456,7 @@ For DeepSeek-V3.2-Exp:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path deepseek-ai/DeepSeek-V3.2-Exp \
       --tool-call-parser deepseekv31 \
@@ -4585,7 +4585,7 @@ Output Example:
     Tool Call: get_weather
        Arguments: {"location": "Beijing", "unit": "celsius"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -4649,7 +4649,7 @@ With DP Attention:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server --model deepseek-ai/DeepSeek-V3.2-Exp --tp 8 --attn-dp-size 8 \
       --speculative-algorithm EAGLE \
       --speculative-num-steps 3 --speculative-eagle-topk 1 --speculative-num-draft-tokens 4
@@ -4660,7 +4660,7 @@ With Pure TP:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server --model deepseek-ai/DeepSeek-V3.2-Exp --tp 8 \
       --speculative-algorithm EAGLE \
       --speculative-num-steps 3 --speculative-eagle-topk 1 --speculative-num-draft-tokens 4
@@ -4692,7 +4692,7 @@ Prefill command:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-V3.2-Exp \
       --disaggregation-mode prefill \
@@ -4711,7 +4711,7 @@ Decode command:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path deepseek-ai/DeepSeek-V3.2-Exp \
       --disaggregation-mode decode \
@@ -4729,7 +4729,7 @@ Router command:
 
 [Command]Command
 
->sh
+>bash
     sgl-router \
       --model-id deepseek-ai/DeepSeek-V3.2-Exp \
       --no-tokenizer \
@@ -4763,7 +4763,7 @@ prefill.
 
 [Command]Command
 
->sh
+>bash
     # Interleave — FusedMoE + CP8
     python -m sglang.launch_server --model deepseek-ai/DeepSeek-V3.2-Exp \
       --tp 8 --enable-prefill-cp --attn-cp-size 8 \
@@ -4780,7 +4780,7 @@ DeepSeek V3.2 on Hopper platform:
 
 [Command]Command
 
->sh
+>bash
     export SGLANG_DEEPEP_LL_COMBINE_SEND_NUM_SMS=32
     export SGLANG_SET_CPU_AFFINITY=1
 
@@ -4906,7 +4906,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path deepseek-ai/DeepSeek-V3.2-Exp \
       --tp 8 \
@@ -4923,7 +4923,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -4991,7 +4991,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path deepseek-ai/DeepSeek-V3.2-Exp \
       --tp 8 \
@@ -5006,7 +5006,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -5074,7 +5074,7 @@ representing typical medium-length conversations with detailed responses.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -5099,7 +5099,7 @@ not directly comparable; rerun this command for a matching result.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 1319 \
@@ -5132,7 +5132,7 @@ the sgl-eval command above.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run mmlu \
       --base-url http://127.0.0.1:30000/v1 \
       --num-threads 64 --max-tokens 2048
@@ -5167,7 +5167,7 @@ above.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gpqa --base-url http://127.0.0.1:30000/v1 --num-examples 198 --max-tokens 128000 --n-repeats 8 --thinking
 <
 - Historical Test Results (model: `deepseek-ai/DeepSeek-V3.2-Exp`, 8×B200;
@@ -5181,7 +5181,7 @@ above.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gpqa --base-url http://127.0.0.1:30000/v1 --num-examples 198 --max-tokens 128000 --n-repeats 8 --top-p 0.95 --temperature 1.0 --thinking
 <
 >text
@@ -5210,7 +5210,7 @@ on by default for it:
 
 [Command]Command
 
->sh
+>bash
     pip install sgl-eval
 
     sgl-eval run aime25 \
@@ -5242,7 +5242,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     export SGLANG_DEEPEP_LL_COMBINE_SEND_NUM_SMS=32
     export SGLANG_SET_CPU_AFFINITY=1
 
@@ -5274,7 +5274,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host $MASTER_ADDR \
@@ -5342,7 +5342,7 @@ maximizing concurrencies:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host $MASTER_ADDR \
@@ -5471,7 +5471,7 @@ Install SGLang            *autoregressive-DeepSeek-DeepSeek-V4-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       pip install --upgrade pip
       pip install uv
       uv pip install --prerelease=allow sglang
@@ -5505,7 +5505,7 @@ Install SGLang            *autoregressive-DeepSeek-DeepSeek-V4-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:latest
 
       docker run --gpus all \
@@ -5533,7 +5533,7 @@ Install SGLang            *autoregressive-DeepSeek-DeepSeek-V4-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang-rocm:v0.5.22-rocm720-{mi35x,mi30x}-20261028
 
       docker run \
@@ -5677,46 +5677,40 @@ refreshes add checkpoints with a bundled DSpark draft head, and the
 experimental Flash Vision checkpoint builds image understanding on top of
 the 0731 Flash base:
 
-Variant                       Total        Active (MoE)  Use
-                              params
-----------------------------  -----------  ------------  ---------------------
-DeepSeek-V4-Flash             284B         13B           single-node serving
-                                                         on B200 / B300 /
-                                                         GB200 / GB300 / H200
-                                                         (TP=4); RTX PRO 6000
-                                                         (TP=2); H100 (TP=8)
-DeepSeek-V4-Flash-0731        304          13B           Flash Official
-                                                         (0731), with a
-                                                         bundled DSpark draft
-                                                         head; verified on
-                                                         8×B200, 4×GB300, and
-                                                         4×H200
-DeepSeek-V4-Flash-Vision-Exp  305B         13B           Flash Vision (Exp) ---
-                                                         experimental
-                                                         multimodal
-                                                         (image-text-to-text):
-                                                         the 0731 Flash base +
-                                                         vision encoder &
-                                                         aligner; verified on
-                                                         4×B200 (TP=4),
-                                                         requires the preview
-                                                         build
-DeepSeek-V4-Pro               1.6T         49B           high-capacity: B200 /
-                                                         B300 (TP=8) · GB300
-                                                         (TP=4) · H200 FP4
-                                                         (TP=8) · GB200
-                                                         (2-node, TP=8) · H200
-                                                         FP8 (2-node, TP=16) ·
-                                                         H100 (2-node, TP=16)
-DeepSeek-V4-Pro-0813          1.65T        49B           Pro Official (0813),
-                                                         with a bundled DSpark
-                                                         draft head; verified
-                                                         on 4×GB300 (TP=4) ·
-                                                         B200 / B300 / H200
-                                                         FP4 (TP=8) · GB200
-                                                         (2-node, TP=8) · H100
-                                                         (2-node, TP=16) ·
-                                                         MI355X
+Variant                   Total params  Active (MoE)  Use
+------------------------  ------------  ------------  ------------------------
+DeepSeek-V4-Flash         284B          13B           single-node serving on
+                                                      B200 / B300 / GB200 /
+                                                      GB300 / H200 (TP=4); RTX
+                                                      PRO 6000 (TP=2); H100
+                                                      (TP=8)
+DeepSeek-V4-Flash-0731    304           13B           Flash Official (0731),
+                                                      with a bundled DSpark
+                                                      draft head; verified on
+                                                      8×B200, 4×GB300, and
+                                                      4×H200
+DeepSeek-V4-Flash-        305B          13B           Flash Vision (Exp) ---
+Vision-Exp                                            experimental multimodal
+                                                      (image-text-to-text):
+                                                      the 0731 Flash base +
+                                                      vision encoder &
+                                                      aligner; verified on
+                                                      4×B200 (TP=4), requires
+                                                      the preview build
+DeepSeek-V4-Pro           1.6T          49B           high-capacity: B200 /
+                                                      B300 (TP=8) · GB300
+                                                      (TP=4) · H200 FP4 (TP=8)
+                                                      · GB200 (2-node, TP=8) ·
+                                                      H200 FP8 (2-node, TP=16)
+                                                      · H100 (2-node, TP=16)
+DeepSeek-V4-Pro-0813      1.65T         49B           Pro Official (0813),
+                                                      with a bundled DSpark
+                                                      draft head; verified on
+                                                      4×GB300 (TP=4) · B200 /
+                                                      B300 / H200 FP4 (TP=8) ·
+                                                      GB200 (2-node, TP=8) ·
+                                                      H100 (2-node, TP=16) ·
+                                                      MI355X
 
 The Instruct checkpoints ship as FP4 MoE experts + FP8 attention / dense
 (one mixed-precision checkpoint covers every FP4-capable GPU). Matching
@@ -5881,7 +5875,7 @@ Adding:
 
 [Command]Command
 
->sh
+>bash
     --enforce-shared-experts-fusion
 <
 routes it as one extra MXFP4 expert through the same trtllm-gen MoE kernel,
@@ -5909,7 +5903,7 @@ compression path:
 
 [Command]Command
 
->sh
+>bash
     SGLANG_DSV4_COMPRESS_STATE_DTYPE=bf16 \
     sglang serve \
       --model-path deepseek-ai/DeepSeek-V4-Flash
@@ -5937,7 +5931,7 @@ For non-PD reproduction, use:
 
 [Command]Command
 
->sh
+>bash
     --moe-a2a-backend deepep \
     --deepep-mode auto \
     --init-expert-location /path/to/expert_distribution_recorder_*.pt \
@@ -5951,7 +5945,7 @@ For PD-Disagg reproduction, use `normal` mode on the prefill server and
 
 [Command]Command
 
->sh
+>bash
     # prefill
     --moe-a2a-backend deepep \
     --deepep-mode normal \
@@ -5985,7 +5979,7 @@ and the FlashInfer MXFP4 MoE runner:
 
 [Command]Command
 
->sh
+>bash
     # Please use the latest main branch for this feature.
     sglang serve \
       --model-path deepseek-ai/DeepSeek-V4-Flash \
@@ -6001,7 +5995,7 @@ pass `--moe-runner-backend flashinfer_mxfp4`:
 
 [Command]Command
 
->sh
+>bash
     # Please use the latest ROCm image for this feature.
     sglang serve \
       --model-path deepseek-ai/DeepSeek-V4-Pro \
@@ -6029,7 +6023,7 @@ automatically selected if not provided.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path nvidia/DeepSeek-V4-Pro-NVFP4 \
       --tp 8
@@ -6040,7 +6034,7 @@ or
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path nvidia/DeepSeek-V4-Flash-NVFP4 \
       --tp 8
@@ -6085,7 +6079,7 @@ on SM90 when tensor parallelism leaves exactly 16 query heads per rank:
 
 [Command]Command
 
->sh
+>bash
     MODEL_PATH=deepseek-ai/DeepSeek-V4-Pro
 
     sglang serve \
@@ -6169,7 +6163,7 @@ Two optional env vars improve MoRI throughput (both off by default):
 
 [Command]Command
 
->sh
+>bash
     export SGLANG_MORI_DISPATCH_DTYPE=mxfp8
     export SGLANG_MORI_RECV_BOUND=1
 
@@ -6198,7 +6192,7 @@ Two variants are exposed:
   (FP4 activations). The flag configures the required DeepGEMM settings.
   Higher throughput with negligible accuracy drop (~89.5 GPQA on Pro).
 
-Notes:
+Notes: ~
 
 - The W4A8 / W4A4 variants above are Blackwell-only (B200 / B300 / GB200 /
   GB300). On Hopper (SM90, H100 / H200) use the all-FP8 MegaMoE path
@@ -6227,7 +6221,7 @@ Enable the MegaMoE path with `--moe-a2a-backend megamoe`
 
 [Command]Command
 
->sh
+>bash
     SGLANG_OPT_DEEPGEMM_MEGA_MOE_NUM_MAX_TOKENS_PER_RANK=4096 \
     SGLANG_DSV4_FP4_EXPERTS=0 \
     sglang serve \
@@ -6509,7 +6503,7 @@ The verified 4×GB300 FP4 low-latency command is:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --trust-remote-code \
       --model-path deepseek-ai/DeepSeek-V4-Flash-0731 \
@@ -6663,7 +6657,7 @@ TP8, concurrency 1--16:
 
 [Command]Command
 
->sh
+>bash
     SGLANG_OPT_UNIFIED_CACHE_FREE_OUT_OF_WINDOW_SLOTS=1 \
     SGLANG_DSV4_UNIFIED_KV_FP8=1 \
     SGLANG_USE_ROCM700A=0 \
@@ -6698,7 +6692,7 @@ appear in the two DP commands below.
 
 [Command]Command
 
->sh
+>bash
       --enable-hierarchical-cache \
       --hicache-ratio 1.5 \
       --hicache-write-policy write_through \
@@ -6711,7 +6705,7 @@ DP8 (DP Attention), concurrency 128:
 
 [Command]Command
 
->sh
+>bash
     SGLANG_OPT_UNIFIED_CACHE_FREE_OUT_OF_WINDOW_SLOTS=1 \
     SGLANG_DSV4_UNIFIED_KV_FP8=1 \
     SGLANG_USE_ROCM700A=0 \
@@ -6770,7 +6764,7 @@ DP8 EP8 MegaMoE, concurrency 128--384:
 
 [Command]Command
 
->sh
+>bash
     SGLANG_OPT_UNIFIED_CACHE_FREE_OUT_OF_WINDOW_SLOTS=1 \
     SGLANG_DSV4_UNIFIED_KV_FP8=1 \
     SGLANG_USE_ROCM700A=0 \
@@ -6865,7 +6859,7 @@ with the NICs:
 
 [Command]Command
 
->sh
+>bash
     docker run \
         --device=/dev/kfd --device=/dev/dri --device /dev/infiniband \
         --group-add video --cap-add IPC_LOCK \
@@ -6897,13 +6891,13 @@ Replace the host and model-path placeholders with your deployment's values.
 The Pro Official commands use the kernel and routing settings described
 below.
 
-Strategy         Concurrency  Prefill →    --max-running-requests  DSpark
-                              Decode                               block size
----------------  -----------  -----------  ----------------------  -----------
-Low-Latency      16           TP4 → TP8    32                      6
-Balanced         48           TP4 → TP8    96                      3
-High-Throughput  256          TP8+DP8+EP8  512                     3
-                              → TP8+DP8
+Strategy         Concurrency  Prefill →       --max-running-   DSpark block
+                              Decode          requests         size
+---------------  -----------  --------------  ---------------  ---------------
+Low-Latency      16           TP4 → TP8       32               6
+Balanced         48           TP4 → TP8       96               3
+High-Throughput  256          TP8+DP8+EP8 →   512              3
+                              TP8+DP8
 
 These are two separate workers: neither receives `--nnodes 2` or a
 cross-node TP rendezvous address. Prefill listens on `30000`, decode on
@@ -6986,7 +6980,7 @@ Prefill, EP8:
 
 [Command]Command
 
->sh
+>bash
     GPU_MAX_HW_QUEUES=5 \
     SGLANG_AMD_FLYDSL_MEGA_QUANT=a8w4 \
     MORI_SHMEM_HEAP_SIZE=8G \
@@ -7040,7 +7034,7 @@ Decode, TP8:
 
 [Command]Command
 
->sh
+>bash
     GPU_MAX_HW_QUEUES=5 \
     SGLANG_DSV4_UNIFIED_KV_FP8=1 \
     SGLANG_DSV4_DENSE_MXSCALE=1 \
@@ -7154,7 +7148,7 @@ rank. `cache_aware` also needs a tokenizer, so this router runs without
 
 [Router settings]Router settings
 
->sh
+>bash
     sgl-router \
       --model-id deepseek-ai/DeepSeek-V4-Pro-0813 \
       --worker-urls http://<prefill-host>:30000 http://<decode-host>:30100 \
@@ -7218,7 +7212,7 @@ prefill worker:
 
 [Prefill environment]Prefill environment
 
->sh
+>bash
     export SGLANG_AITER_MEGA_RANK_SYNC=1
     export SGLANG_AITER_MEGA_EPLB_PREFILL_ONLY=1
     export SGLANG_AITER_MEGA_EPLB_FUSED_MAP_RECORD=1
@@ -7265,7 +7259,7 @@ flag family from the command:
 
 [Command]Command
 
->sh
+>bash
     --enable-unified-cache-external-linker \
     --unified-cache-external-linker-backend mori
 <
@@ -7307,7 +7301,7 @@ the verified runs used:
 
 [Command]Command
 
->sh
+>bash
     mkdir -p /tmp/umbp
     UMBP_DRAM_CAPACITY=1500000000000 \
     UMBP_DRAM_USE_HUGEPAGES=1 \
@@ -7349,7 +7343,7 @@ Deployment panel and Playground include this address and use the default
 
 [Command]Command
 
->sh
+>bash
     UMBP_STANDALONE_ADDRESS=unix:///tmp/umbp/standalone.grpc.sock \
     sglang serve ...
 <
@@ -7396,7 +7390,7 @@ Install SGLang          *autoregressive-DeepSeek-DeepSeek-V4_1-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:latest
 
       docker run --gpus all \
@@ -7417,7 +7411,7 @@ Install SGLang          *autoregressive-DeepSeek-DeepSeek-V4_1-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang-rocm:v0.5.23-rocm10-mi35x-20261111
 
       docker run \
@@ -7831,7 +7825,7 @@ Concurrency                                 1     2     4     8     16    32
 
 [Command]Command
 
->sh
+>bash
     SGLANG_DEFAULT_THINKING=1 \
     SGLANG_DSV41_REASONING_EFFORT=high \
     SGLANG_USE_AITER=1 \
@@ -7884,7 +7878,7 @@ Concurrency                                                         32    64
 
 [Command]Command
 
->sh
+>bash
     SGLANG_DEFAULT_THINKING=1 \
     SGLANG_DSV41_REASONING_EFFORT=high \
     SGLANG_USE_AITER=1 \
@@ -7944,18 +7938,26 @@ node, and with EP, `SGLANG_DP_SHARED_EXPERT_LOCAL=1` runs the shared expert
 on each rank's local rows before the DP gather. Start from the DP2 command
 and change:
 
-Deployment                            DP2,      DP2 +     DP4 +      DP4 +
-                                      c128      EP2,      EP4, c128  EP4, c256
-                                                c128
-------------------------------------  --------  --------  ---------  ---------
---tp, --attn-dp-size                  2         2         4          4
---ep-size                             1         2         4          4
-SGLANG_DP_SHARED_EXPERT_LOCAL         unset     1         1          1
---prefill-decode-interval             24        32        32         40
---chunked-prefill-size                32768     32768     32768      65536
---max-running-requests                128       128       128        256
---cuda-graph-max-bs-decode            64        64        64         128
---prefill-delayer-token-usage-low-watermark  0.7       0.7       0.7        0.85
+Deployment        DP2, c128  DP2 + EP2, c128  DP4 + EP4, c128  DP4 + EP4, c256
+----------------  ---------  ---------------  ---------------  ---------------
+--tp,             2          2                4                4
+--attn-dp-size
+--ep-size         1          2                4                4
+SGLANG_DP_        unset      1                1                1
+SHARED_EXPERT_
+LOCAL
+--prefill-        24         32               32               40
+decode-interval
+--chunked-        32768      32768            32768            65536
+prefill-size
+--max-running-    128        128              128              256
+requests
+--cuda-graph-     64         64               64               128
+max-bs-decode
+--prefill-        0.7        0.7              0.7              0.85
+delayer-token-
+usage-low-
+watermark
 
 In every column, also set `--mem-fraction-static 0.85`,
 `--swa-prefix-tails 4096`, `--schedule-policy shortest-prefill-first` and
@@ -7969,7 +7971,7 @@ Mega-mHC is an experimental, opt-in prefill path for the model's
 manifold-constrained hyper-connections. On MI355X (`gfx950`), enable it
 with:
 
->sh
+>bash
     SGLANG_OPT_DSV41_MEGA_MHC_PREFILL=1 \
     sglang serve \
       --model-path deepseek-ai/DeepSeek-V4.1-Flash \
@@ -8068,7 +8070,7 @@ during deployment to separate the thinking and the content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.5 \
       --reasoning-parser glm45 \
@@ -8161,7 +8163,7 @@ GLM-4.5 supports tool calling capabilities. Enable the tool call parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.5 \
       --reasoning-parser glm45 \
@@ -8360,7 +8362,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.5 \
       --tp 8
@@ -8371,7 +8373,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.5 \
@@ -8388,7 +8390,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.5 \
@@ -8405,7 +8407,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.5 \
@@ -8424,7 +8426,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.5 \
@@ -8441,7 +8443,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.5 \
@@ -8458,7 +8460,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.5 \
@@ -8477,7 +8479,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.5 \
@@ -8494,7 +8496,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.5 \
@@ -8511,7 +8513,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.5 \
@@ -8565,7 +8567,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -8665,7 +8667,7 @@ Example with full multimodal optimizations:
 
 [Command]Command
 
->sh
+>bash
     SGLANG_VLM_CACHE_SIZE_MB=0 \
     python -m sglang.launch_server \
       --mm-feature-transport cuda_ipc \
@@ -8871,7 +8873,7 @@ GLM-4.5V supports video understanding by processing video URLs:
     print(f"Response costs: {time.time() - start:.2f}s")
     print(f"Generated text: {response.choices[0].message.content}")
 <
-Note:
+Note: ~
 
 - For video processing, ensure you have sufficient context length configured
   (up to 64K tokens)
@@ -8899,7 +8901,7 @@ during deployment:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path zai-org/GLM-4.5V \
       --reasoning-parser glm45 \
@@ -8986,7 +8988,7 @@ GLM-4.5V supports tool calling capabilities. Enable the tool call parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path zai-org/GLM-4.5V \
       --reasoning-parser glm45 \
@@ -9110,7 +9112,7 @@ Output Example:
     🔧 Tool Call: get_weather
        Arguments: {"location": "Beijing", "unit": "celsius"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -9203,7 +9205,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     python3 benchmark/mmmu/bench_sglang.py --response-answer-regex "<\|begin_of_box\|>(.*)<\|end_of_box\|>" --port 30000 --concurrency 64
 <
 - Test Result
@@ -9340,7 +9342,7 @@ during deployment to separate the thinking and the content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.6 \
       --reasoning-parser glm45 \
@@ -9433,7 +9435,7 @@ GLM-4.6 supports tool calling capabilities. Enable the tool call parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.6 \
       --reasoning-parser glm45 \
@@ -9542,7 +9544,7 @@ Output Example:
     🔧 Tool Call: get_weather
        Arguments: {"location": "Beijing", "unit": "celsius"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -9683,7 +9685,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.6 \
       --tp 8
@@ -9694,7 +9696,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.6 \
@@ -9753,7 +9755,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.6 \
@@ -9813,7 +9815,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.6 \
@@ -9874,7 +9876,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.6 \
@@ -9933,7 +9935,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.6 \
@@ -9992,7 +9994,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.6 \
@@ -10053,7 +10055,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.6 \
@@ -10112,7 +10114,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.6 \
@@ -10171,7 +10173,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.6 \
@@ -10267,7 +10269,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -10343,7 +10345,7 @@ requirements.
 
 [Command]Command
 
->sh
+>bash
     docker pull lmsysorg/sglang:latest
 <
 Advantages:
@@ -10361,7 +10363,7 @@ modifications, you can build from source:
 
 [Command]Command
 
->sh
+>bash
     # Install SGLang using UV (recommended)
     git clone https://github.com/sgl-project/sglang.git
     cd sglang
@@ -10425,7 +10427,7 @@ Example with full multimodal optimizations:
 
 [Command]Command
 
->sh
+>bash
     SGLANG_VLM_CACHE_SIZE_MB=0 \
     python -m sglang.launch_server \
       --mm-feature-transport cuda_ipc \
@@ -10565,7 +10567,7 @@ deployment:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.6V \
       --reasoning-parser glm45 \
@@ -10779,7 +10781,7 @@ Command                                  *autoregressive-GLM-GLM-4.6V-command*
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -10810,7 +10812,7 @@ Command                                *autoregressive-GLM-GLM-4.6V-command-2*
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang-oai-chat \
       --port 30000 \
@@ -10878,7 +10880,7 @@ Command                                *autoregressive-GLM-GLM-4.6V-command-3*
 
 [Command]Command
 
->sh
+>bash
     python3 benchmark/mmmu/bench_sglang.py --response-answer-regex "<\|begin_of_box\|>(.*)<\|end_of_box\|>" --port 30000 --concurrency 64 --extra-request-body '{"max_tokens": 4096}'
 <
 
@@ -11059,7 +11061,7 @@ during deployment to separate the thinking and the content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.7 \
       --reasoning-parser glm45 \
@@ -11152,7 +11154,7 @@ GLM-4.7 supports tool calling capabilities. Enable the tool call parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.7 \
       --reasoning-parser glm45 \
@@ -11261,7 +11263,7 @@ Output Example:
     Tool Call: get_weather
        Arguments: {"location": "Beijing", "unit": "celsius"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -11408,7 +11410,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.7 \
       --tp 8
@@ -11419,7 +11421,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7 \
@@ -11436,7 +11438,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7 \
@@ -11453,7 +11455,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7 \
@@ -11472,7 +11474,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7 \
@@ -11489,7 +11491,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7 \
@@ -11506,7 +11508,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7 \
@@ -11525,7 +11527,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7 \
@@ -11542,7 +11544,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7 \
@@ -11559,7 +11561,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7 \
@@ -11590,7 +11592,7 @@ Model Deployment (NVIDIA B200, TP=2 NVFP4 --- max tok/s/gpu config):
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model nvidia/GLM-4.7-NVFP4 \
       --tp-size 2 \
@@ -11604,7 +11606,7 @@ Model Deployment (NVIDIA B200, TP=2 NVFP4 --- max tok/s/gpu config):
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model nvidia/GLM-4.7-NVFP4 \
@@ -11654,7 +11656,7 @@ Model Deployment (NVIDIA B200, TP=2 NVFP4 --- max tok/s/gpu config):
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model nvidia/GLM-4.7-NVFP4 \
@@ -11704,7 +11706,7 @@ Model Deployment (NVIDIA B200, TP=2 NVFP4 --- max tok/s/gpu config):
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model nvidia/GLM-4.7-NVFP4 \
@@ -11757,7 +11759,7 @@ Model Deployment (NVIDIA GB200, TP=2 NVFP4 --- max tok/s/gpu config):
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model nvidia/GLM-4.7-NVFP4 \
       --tp-size 2 \
@@ -11771,7 +11773,7 @@ Model Deployment (NVIDIA GB200, TP=2 NVFP4 --- max tok/s/gpu config):
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model nvidia/GLM-4.7-NVFP4 \
@@ -11821,7 +11823,7 @@ Model Deployment (NVIDIA GB200, TP=2 NVFP4 --- max tok/s/gpu config):
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model nvidia/GLM-4.7-NVFP4 \
@@ -11871,7 +11873,7 @@ Model Deployment (NVIDIA GB200, TP=2 NVFP4 --- max tok/s/gpu config):
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model nvidia/GLM-4.7-NVFP4 \
@@ -11962,7 +11964,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 1319
@@ -12090,7 +12092,7 @@ during deployment to separate the thinking and the content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.7-Flash \
       --reasoning-parser glm45 \
@@ -12185,7 +12187,7 @@ parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.7-Flash \
       --reasoning-parser glm45 \
@@ -12306,7 +12308,7 @@ Output Example:
     Tool Call: get_weather
        Arguments: {"location": "Beijing"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -12423,7 +12425,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/GLM-4.7-Flash \
       --attention-backend triton \
@@ -12435,7 +12437,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7-Flash \
@@ -12495,7 +12497,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7-Flash \
@@ -12555,7 +12557,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7-Flash \
@@ -12617,7 +12619,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7-Flash \
@@ -12677,7 +12679,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7-Flash \
@@ -12737,7 +12739,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7-Flash \
@@ -12799,7 +12801,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7-Flash \
@@ -12859,7 +12861,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7-Flash \
@@ -12919,7 +12921,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-4.7-Flash \
@@ -13017,7 +13019,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -13116,7 +13118,7 @@ Disagg · Decode                       role --- fronted by a
 
   [Command]Command
 
-  >sh
+  >bash
       echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
       sysctl -w vm.swappiness=0
       sysctl -w kernel.numa_balancing=0
@@ -13141,7 +13143,7 @@ Disagg · Decode                       role --- fronted by a
 
   [Command]Command
 
-  >sh
+  >bash
       sgl-router \
           --model-id Eco-Tech/GLM-5.1-w4a8 \
           --no-tokenizer \
@@ -13233,7 +13235,7 @@ enabled):
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path zai-org/GLM-5.1-FP8 \
       --tp 8 \
@@ -13257,7 +13259,7 @@ B300                                         *autoregressive-GLM-GLM-5.1-b300*
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path nvidia/GLM-5.1-NVFP4 \
       --tp 8 \
@@ -13280,7 +13282,7 @@ GB300                                       *autoregressive-GLM-GLM-5.1-gb300*
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path nvidia/GLM-5.1-NVFP4 \
       --tp 4 \
@@ -13313,7 +13315,7 @@ gfx950.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path amd/GLM-5.1-MXFP4 \
       --tp 4 \
@@ -13341,7 +13343,7 @@ FP8 (Recommended)                 *autoregressive-GLM-GLM-5.1-fp8-recommended*
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path zai-org/GLM-5.1-FP8 \
       --tp 8 \
@@ -13368,7 +13370,7 @@ BF16                                         *autoregressive-GLM-GLM-5.1-bf16*
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path zai-org/GLM-5.1 \
       --tp 8 \
@@ -13710,7 +13712,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-5.1-FP8 \
@@ -13773,7 +13775,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-5.1-FP8 \
@@ -13845,7 +13847,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -13875,7 +13877,7 @@ the sgl-eval command above.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run mmlu \
       --base-url http://127.0.0.1:30000/v1 \
       --num-threads 64 --max-tokens 2048
@@ -13962,7 +13964,7 @@ the sgl-eval command above.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -14005,7 +14007,7 @@ Install SGLang                     *autoregressive-GLM-GLM-5.2-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       pip install --upgrade pip
       pip install uv
       uv pip install --prerelease=allow sglang
@@ -14018,7 +14020,7 @@ Install SGLang                     *autoregressive-GLM-GLM-5.2-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:latest
 <
   For how to launch the image, see
@@ -14040,7 +14042,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull quay.io/ascend/sglang:v0.5.22-cann9.1.0-a3
 <
   Run the following setup before copying the generated command (CANN 9.1.0).
@@ -14050,7 +14052,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ASCEND_LAUNCH_BLOCKING
       echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
       sysctl -w vm.swappiness=0
@@ -14070,7 +14072,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ASCEND_LAUNCH_BLOCKING
       unset HCCL_IF_IP HCCL_SOCKET_FAMILY RANK_TABLE_FILE
       SGLANG_ROOT=/path/to/sglang
@@ -14171,7 +14173,7 @@ general-purpose starting points.
 [TP8·EP1 with Gluon target MoE (concurrency 1--2)]TP8·EP1 with Gluon target
 MoE (concurrency 1--2)
 
->sh
+>bash
     SGLANG_OPT_USE_TOPK_V2=true \
     SGLANG_TIMEOUT_KEEP_ALIVE=900 \
     sglang serve \
@@ -14202,7 +14204,7 @@ MoE (concurrency 1--2)
 
 [TP4·EP4 HiCache (concurrency 4--16)]TP4·EP4 HiCache (concurrency 4--16)
 
->sh
+>bash
     SGLANG_OPT_USE_TOPK_V2=true \
     SGLANG_TIMEOUT_KEEP_ALIVE=900 \
     sglang serve \
@@ -14234,7 +14236,7 @@ MoE (concurrency 1--2)
 
 [TP4·EP4 DCP4 (concurrency 16--48)]TP4·EP4 DCP4 (concurrency 16--48)
 
->sh
+>bash
     SGLANG_OPT_USE_TOPK_V2=true \
     SGLANG_TIMEOUT_KEEP_ALIVE=900 \
     sglang serve \
@@ -14436,7 +14438,7 @@ https://huggingface.co/amd/GLM-5.2-MXFP4.
 
   [Command]Command
 
-  >sh
+  >bash
       echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
       sysctl -w vm.swappiness=0
       sysctl -w kernel.numa_balancing=0
@@ -14600,7 +14602,7 @@ Deployment panel above works), then:
 
 [Command]Command
 
->sh
+>bash
     export ANTHROPIC_BASE_URL="http://127.0.0.1:30000"
     export ANTHROPIC_AUTH_TOKEN="dummy"
     export API_TIMEOUT_MS="3000000"
@@ -14644,7 +14646,7 @@ Prefill context parallelism can help with reduction of TTFT under long
 context. To enable prefill context parallelism for GLM 5.2, please append
 the following arguments:
 
->sh
+>bash
     --attn-cp-size 8 \
     --enable-prefill-cp \
     --cp-strategy interleave \
@@ -14657,7 +14659,7 @@ will increase latency for decode (in unified deployment) or short prefill.
 When deploying with PD Disaggregation, the prefill node can choose to enable
 LayerSplit https://z.ai/blog/scaling-pain technique with
 
->sh
+>bash
     --enable-dsa-cache-layer-split \
     --attn-cp-size 8 \
     --cp-strategy interleave \
@@ -14688,7 +14690,7 @@ Install SGLang                     *autoregressive-GLM-GLM-5.3-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       pip install --upgrade pip
       pip install uv
       uv pip install --prerelease=allow sglang
@@ -14701,7 +14703,7 @@ Install SGLang                     *autoregressive-GLM-GLM-5.3-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:latest
 <
   For how to launch the image, see
@@ -14723,7 +14725,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull quay.io/ascend/sglang:cann9.1.0-a3-B080
 <
   This CANN 9.1.0 image requires a compatible SGLang build, TorchNPU, ATB,
@@ -14737,7 +14739,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ASCEND_LAUNCH_BLOCKING
       echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
       sysctl -w vm.swappiness=0
@@ -14761,7 +14763,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ASCEND_LAUNCH_BLOCKING
       unset HCCL_IF_IP HCCL_SOCKET_FAMILY RANK_TABLE_FILE
       SGLANG_ROOT=/path/to/sglang
@@ -14866,7 +14868,7 @@ at concurrency 1--4.
 
 [TP4·EP4 (concurrency 4--20)]TP4·EP4 (concurrency 4--20)
 
->sh
+>bash
     SGLANG_OPT_USE_TOPK_V2=true \
     SGLANG_TIMEOUT_KEEP_ALIVE=900 \
     SGLANG_UNIFIED_RADIX_TREE_CORE_BACKEND=python \
@@ -14900,7 +14902,7 @@ at concurrency 1--4.
 
 [TP8·EP1 (concurrency 1--4)]TP8·EP1 (concurrency 1--4)
 
->sh
+>bash
     SGLANG_OPT_USE_TOPK_V2=true \
     SGLANG_TIMEOUT_KEEP_ALIVE=900 \
     python -m sglang.launch_server \
@@ -14969,7 +14971,7 @@ max-running-requests                                               2  4  8  20
 
 [TP8·EP1 (concurrency 1--10)]TP8·EP1 (concurrency 1--10)
 
->sh
+>bash
     sglang serve \
       --model-path zai-org/GLM-5.3 \
       --trust-remote-code \
@@ -15271,7 +15273,7 @@ Deployment panel above works), then:
 
 [Command]Command
 
->sh
+>bash
     export ANTHROPIC_BASE_URL="http://127.0.0.1:30000"
     export ANTHROPIC_AUTH_TOKEN="dummy"
     export API_TIMEOUT_MS="3000000"
@@ -15312,7 +15314,7 @@ Prefill context parallelism can help with reduction of TTFT under long
 context. To enable prefill context parallelism for GLM 5.3, please append
 the following arguments:
 
->sh
+>bash
     --attn-cp-size 8 \
     --enable-prefill-cp \
     --cp-strategy interleave \
@@ -15332,7 +15334,7 @@ When deploying with PD Disaggregation, a prefill worker using the Mooncake
 transfer backend can enable the LayerSplit https://z.ai/blog/scaling-pain
 technique with
 
->sh
+>bash
     --enable-dsa-cache-layer-split \
     --enable-prefill-cp \
     --attn-cp-size 8 \
@@ -15360,7 +15362,7 @@ Install SGLang               *autoregressive-GLM-GLM-5.3-Flash-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:latest
 <
   For the listed NVIDIA hardware, the deployment panel can render a complete
@@ -15386,7 +15388,7 @@ Install SGLang               *autoregressive-GLM-GLM-5.3-Flash-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       git clone https://github.com/sgl-project/sglang-torchtpu.git
       cd sglang-torchtpu
       cp python/pyproject_tpu.toml python/pyproject.toml
@@ -15409,7 +15411,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull swr.cn-southwest-2.myhuaweicloud.com/base_image/dockerhub/lmsysorg/sglang:cann9.1.0-a3-glm5.3-flash
 <
   Run the following setup before copying the generated command (CANN 9.1.0).
@@ -15419,7 +15421,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ASCEND_LAUNCH_BLOCKING
       source /usr/local/Ascend/ascend-toolkit/set_env.sh
       source /usr/local/Ascend/nnal/atb/set_env.sh
@@ -15436,7 +15438,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       NPU_IMAGE="<your-compatible-950pr-dt-series-image>"
       docker pull "$NPU_IMAGE"
 <
@@ -15444,7 +15446,7 @@ Install and prepare Ascend NPUs
 
   [Command]Command
 
-  >sh
+  >bash
       unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY ASCEND_LAUNCH_BLOCKING
       source /usr/local/Ascend/ascend-toolkit/set_env.sh
       source /usr/local/Ascend/ascend-toolkit/latest/opp/vendors/customize/bin/set_env.bash
@@ -15585,7 +15587,7 @@ MI300X                               *autoregressive-GLM-GLM-5.3-Flash-mi300x*
 
 [MI300X TP4·EP4 (concurrency 8)]MI300X TP4·EP4 (concurrency 8)
 
->sh
+>bash
     SGLANG_USE_AITER=1 \
     SGLANG_AITER_GFX942_BLOCKSCALE_USE_CK=1 \
     AITER_ONLINE_TUNE=0 \
@@ -15639,7 +15641,7 @@ MI325X                               *autoregressive-GLM-GLM-5.3-Flash-mi325x*
 
 [MI325X TP4·EP4 (concurrency 8)]MI325X TP4·EP4 (concurrency 8)
 
->sh
+>bash
     SGLANG_USE_AITER=1 \
     SGLANG_AITER_GFX942_BLOCKSCALE_USE_CK=1 \
     AITER_ONLINE_TUNE=0 \
@@ -15822,7 +15824,7 @@ Benchmark server command
   `SGLANG_SIMULATE_ACC_*` variables below. Omit these variables for normal
   serving and accuracy evaluation.
 
-  >sh
+  >bash
       MODEL_PATH="zai-org/GLM-5.3-Flash"
       CUDA_VISIBLE_DEVICES=0,1,2,3 \
       SGLANG_SIMULATE_ACC_LEN=3.5 \
@@ -15930,7 +15932,7 @@ FP8 pool. It does not use the scaled/packed FP8 layout. HiSparse and
 `--dcp-size > 1` are not supported with this pairing. The BF16 benchmark
 results above do not measure this FP8 KV configuration.
 
->sh
+>bash
     sglang serve --model-path zai-org/GLM-5.3-Flash \
       --tp-size 4 --ep-size 4 \
       --kv-cache-dtype fp8_e4m3 \
@@ -16020,7 +16022,7 @@ Encoder server (GB300) *autoregressive-GLM-GLM-5.3-Flash-encoder-server-gb300*
 
   [Command]Command
 
-  >sh
+  >bash
       sglang serve \
         --model-path zai-org/GLM-5.3-Flash \
         --tp-size 4 \
@@ -16036,7 +16038,7 @@ Language server (GB300)
 
   [Command]Command
 
-  >sh
+  >bash
       sglang serve \
         --model-path zai-org/GLM-5.3-Flash \
         --tp-size 4 \
@@ -16097,7 +16099,7 @@ Example of launching with Prefill CP on Blackwell GPU
 
   [Command]Command
 
-  >sh
+  >bash
       sglang serve \
         --model-path zai-org/GLM-5.3-Flash \
         --tp-size 4 \
@@ -16148,7 +16150,7 @@ PD serving on 4x GB300 (single node)
 
   [Prefill (GPU 0-1)]Prefill (GPU 0-1)
 
-  >sh
+  >bash
       sglang serve \
         --model-path zai-org/GLM-5.3-Flash \
         --tp-size 2 \
@@ -16166,7 +16168,7 @@ PD serving on 4x GB300 (single node)
 
   [Decode (GPU 2-3)]Decode (GPU 2-3)
 
-  >sh
+  >bash
       sglang serve \
         --model-path zai-org/GLM-5.3-Flash \
         --tp-size 2 \
@@ -16184,7 +16186,7 @@ PD serving on 4x GB300 (single node)
 
   [Router]Router
 
-  >sh
+  >bash
       sgl-router \
         --model-id zai-org/GLM-5.3-Flash \
         --no-tokenizer \
@@ -16326,7 +16328,7 @@ Deploy GLM-5 with the following command (FP8 on H200, all features enabled):
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path zai-org/GLM-5-FP8 \
       --tp 8 \
@@ -16352,7 +16354,7 @@ replace the NVIDIA instructions above.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path zai-org/GLM-5 \
       --tp 8 \
@@ -16722,7 +16724,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-5-FP8 \
@@ -16785,7 +16787,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/GLM-5-FP8 \
@@ -16857,7 +16859,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -16887,7 +16889,7 @@ the sgl-eval command above.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run mmlu \
       --base-url http://127.0.0.1:30000/v1 \
       --num-threads 64 --max-tokens 2048
@@ -16974,7 +16976,7 @@ the sgl-eval command above.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -17071,7 +17073,7 @@ parser during deployment to separate the thinking and content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path zai-org/Glyph \
       --reasoning-parser glm45 \
@@ -17156,7 +17158,7 @@ Glyph supports tool calling capabilities. Enable the tool call parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path zai-org/Glyph \
       --reasoning-parser glm45 \
@@ -17278,7 +17280,7 @@ Output Example:
     Tool Call: get_weather
        Arguments: {"location": "Beijing", "unit": "celsius"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -17355,7 +17357,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model zai-org/Glyph \
       --tp 2
@@ -17370,7 +17372,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/Glyph \
@@ -17435,7 +17437,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/Glyph \
@@ -17500,7 +17502,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/Glyph \
@@ -17568,7 +17570,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/Glyph \
@@ -17633,7 +17635,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/Glyph \
@@ -17698,7 +17700,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/Glyph \
@@ -17765,7 +17767,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/Glyph \
@@ -17830,7 +17832,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/Glyph \
@@ -17895,7 +17897,7 @@ comparable across frameworks and hardware platforms.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model zai-org/Glyph \
@@ -17963,7 +17965,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -18198,7 +18200,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     python3 -m lmms_eval \
       --model openai_compatible \
       --model_args "model_version=zai-org/GLM-OCR" \
@@ -18312,7 +18314,7 @@ SGLang exposes an OpenAI-compatible endpoint. First, start the server
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path  Meta-Llama/Llama-3.1-405B-Instruct \
       --tp 8
@@ -18404,7 +18406,7 @@ call parser enabled:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path  Meta-Llama/Llama-3.1-405B-Instruct \
       --tool-call-parser llama3 \
@@ -18576,7 +18578,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path Meta-Llama/Llama-3.1-70B \
       --tp 8
@@ -18591,7 +18593,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --backend sglang \
       --model Meta-Llama/Llama-3.1-70B \
@@ -18653,7 +18655,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --backend sglang \
       --model-path Meta-Llama/Llama-3.1-70B \
@@ -18715,7 +18717,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --backend sglang \
       --model-path Meta-Llama/Llama-3.1-70B \
@@ -18780,7 +18782,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --backend sglang \
       --model-path Meta-Llama/Llama-3.1-70B\
@@ -18840,7 +18842,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --backend sglang \
       --model-path Meta-Llama/Llama-3.1-70B \
@@ -18900,7 +18902,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --backend sglang \
       --model-path Meta-Llama/Llama-3.1-70B \
@@ -18963,7 +18965,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -19075,7 +19077,7 @@ during deployment:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path meta-llama/Llama-3.3-70B-Instruct \
       --tool-call-parser llama3 \
@@ -19228,7 +19230,7 @@ workload patterns:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --dataset-name random \
@@ -19361,14 +19363,14 @@ For basic API usage and request examples, please refer to:
 
 [Command]Command
 
->sh
+>bash
     docker pull lmsysorg/sglang:v0.5.9-rocm720-mi30x
 <
 [Command]
 
 [Command]Command
 
->sh
+>bash
     docker run -d -it --ipc=host --network=host --privileged \
       --cap-add=CAP_SYS_ADMIN \
       --device=/dev/kfd --device=/dev/dri --device=/dev/mem \
@@ -19391,7 +19393,7 @@ Llama-4-Scout                       *autoregressive-Meta-Llama4-llama-4-scout*
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path meta-llama/Llama-4-Scout-17B-16E-Instruct \
       --tp 8 \
@@ -19407,7 +19409,7 @@ Llama-4-Maverick                 *autoregressive-Meta-Llama4-llama-4-maverick*
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path meta-llama/Llama-4-Maverick-17B-128E-Instruct \
       --tp 8 \
@@ -19425,7 +19427,7 @@ algorithm and the SGLang EAGLE3 draft model:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path meta-llama/Llama-4-Maverick-17B-128E-Instruct \
       --speculative-algorithm EAGLE3 \
@@ -19458,7 +19460,7 @@ sglang version: 0.5.9
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path meta-llama/Llama-4-Scout-17B-16E-Instruct \
       --tp 8 \
@@ -19475,7 +19477,7 @@ sglang version: 0.5.9
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model meta-llama/Llama-4-Scout-17B-16E-Instruct \
@@ -19540,7 +19542,7 @@ sglang version: 0.5.9
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model meta-llama/Llama-4-Scout-17B-16E-Instruct \
@@ -19605,7 +19607,7 @@ sglang version: 0.5.9
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model meta-llama/Llama-4-Scout-17B-16E-Instruct \
@@ -19680,7 +19682,7 @@ sglang version: 0.5.9
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path meta-llama/Llama-4-Maverick-17B-128E-Instruct \
       --tp 8 \
@@ -19697,7 +19699,7 @@ sglang version: 0.5.9
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model meta-llama/Llama-4-Maverick-17B-128E-Instruct \
@@ -19762,7 +19764,7 @@ sglang version: 0.5.9
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model meta-llama/Llama-4-Maverick-17B-128E-Instruct \
@@ -19827,7 +19829,7 @@ sglang version: 0.5.9
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model meta-llama/Llama-4-Maverick-17B-128E-Instruct \
@@ -19893,7 +19895,7 @@ sglang version: 0.5.9
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -19943,7 +19945,7 @@ Llama-4-Maverick-17B-128E-Instruct                            80.5      80.7
 
 Install the evaluation package before running either command:
 
->sh
+>bash
     pip install sgl-eval==0.1.0
 <
 Scout:
@@ -19952,7 +19954,7 @@ Scout:
 
 [Command]Command
 
->sh
+>bash
     # Start the server
     python -m sglang.launch_server \
       --model-path meta-llama/Llama-4-Scout-17B-16E-Instruct \
@@ -19974,7 +19976,7 @@ Maverick:
 
 [Command]Command
 
->sh
+>bash
     # Start the server
     python -m sglang.launch_server \
       --model-path meta-llama/Llama-4-Maverick-17B-128E-Instruct \
@@ -20011,7 +20013,7 @@ Install SGLang                *autoregressive-Meta-MuseGlimmer-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       pip install --upgrade pip
       pip install uv
       # Muse Glimmer support is not in a release yet -- build the PR branch:
@@ -20028,7 +20030,7 @@ Install SGLang                *autoregressive-Meta-MuseGlimmer-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:dev-muse-glimmer
 <
   See |docs-get-started-install-method-3-using-docker| to start the image.
@@ -20059,37 +20061,28 @@ four formats:
 - A ready-to-serve NVFP4 + MXFP8 checkpoint.
 - Three MLX repacks for Apple Silicon.
 
-Form                Source                                Notes
-------------------  ------------------------------------  --------------------
-BF16                meta-models/Muse-Glimmer-30B          Supports image
-                                                          input.
-GGUF Q4_K_M         meta-models/Muse-Glimmer-30B-GGUF     Text only. This path
-                                                          is not optimized.
-                                                          SGLang shows a
-                                                          warning at startup.
-NVFP4               RadixArk/Muse-Glimmer-NVFP4           Text only. Ready to
-                                                          serve, no conversion
-                                                          needed.
-MLX Q4              RadixArk/Muse-Glimmer-q4-MLX          Text only. Apple
-                                                          Silicon (MLX
-                                                          backend). Same serve
-                                                          recipe as gs128, no
-                                                          measured round yet.
-                                                          See §3.4.
-MLX Q4_K_M (gs128)  RadixArk/Muse-Glimmer-q4km-gs128-MLX  Text only. Apple
-                                                          Silicon (MLX
-                                                          backend). Carries
-                                                          the vendor GGUF's
-                                                          exact quantization
-                                                          codes in MLX format.
-                                                          The measured MLX
-                                                          artifact. See §3.4.
-MLX Q4_K (dynamic)  RadixArk/Muse-Glimmer-q4k-dynamic-MLX  Text only. Apple
-                                                          Silicon (MLX
-                                                          backend). Same serve
-                                                          recipe as gs128, no
-                                                          measured round yet.
-                                                          See §3.4.
+Form                Source                        Notes
+------------------  ----------------------------  ----------------------------
+BF16                meta-models/Muse-Glimmer-30B  Supports image input.
+GGUF Q4_K_M         meta-models/Muse-Glimmer-     Text only. This path is not
+                    30B-GGUF                      optimized. SGLang shows a
+                                                  warning at startup.
+NVFP4               RadixArk/Muse-Glimmer-NVFP4   Text only. Ready to serve,
+                                                  no conversion needed.
+MLX Q4              RadixArk/Muse-Glimmer-q4-MLX  Text only. Apple Silicon
+                                                  (MLX backend). Same serve
+                                                  recipe as gs128, no measured
+                                                  round yet. See §3.4.
+MLX Q4_K_M (gs128)  RadixArk/Muse-Glimmer-q4km-   Text only. Apple Silicon
+                    gs128-MLX                     (MLX backend). Carries the
+                                                  vendor GGUF's exact
+                                                  quantization codes in MLX
+                                                  format. The measured MLX
+                                                  artifact. See §3.4.
+MLX Q4_K (dynamic)  RadixArk/Muse-Glimmer-q4k-    Text only. Apple Silicon
+                    dynamic-MLX                   (MLX backend). Same serve
+                                                  recipe as gs128, no measured
+                                                  round yet. See §3.4.
 
 Resources: Muse-Glimmer-30B (BF16)
 https://huggingface.co/meta-models/Muse-Glimmer-30B ·
@@ -20235,7 +20228,7 @@ Install SGLang              *autoregressive-Meta-MuseSparkOpen-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:latest                # NVIDIA B300 / GB300 / B200 / H200
       docker pull lmsysorg/sglang-rocm:muse-spark-open    # AMD MI355X
       docker pull lmsysorg/sglang:dev-muse-spark-xeon     # Intel Xeon CPU
@@ -20343,7 +20336,7 @@ Agg TP8·EP8 (2 nodes), lowest latency · 8 GPUs · concurrency 1
 
   Env Vars                          *autoregressive-Meta-MuseSparkOpen-env-vars*
 
-  >sh
+  >bash
       export ETCD_IP=<node running etcd>
       export AGG_HEAD_IP=<first node of the worker>
       export NODE_RANK=<0 on the first node, 1 on the second>
@@ -20351,7 +20344,7 @@ Agg TP8·EP8 (2 nodes), lowest latency · 8 GPUs · concurrency 1
 
   etcd                                  *autoregressive-Meta-MuseSparkOpen-etcd*
 
-  >sh
+  >bash
       etcd \
         --data-dir /tmp/etcd \
         --listen-client-urls http://0.0.0.0:2379 \
@@ -20360,7 +20353,7 @@ Agg TP8·EP8 (2 nodes), lowest latency · 8 GPUs · concurrency 1
 
   Dynamo frontend            *autoregressive-Meta-MuseSparkOpen-dynamo-frontend*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export DYN_ROUTER_QUEUE_THRESHOLD=None
       export DYN_ROUTER_TEMPERATURE=0
@@ -20380,7 +20373,7 @@ Agg TP8·EP8 (2 nodes), lowest latency · 8 GPUs · concurrency 1
 
   SGLang worker (run on each of the 2 nodes) *autoregressive-Meta-MuseSparkOpen-sglang-worker-run-on-each-of-the-2-nodes*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export ETCD_ENDPOINTS=http://$ETCD_IP:2379
       export NCCL_CUMEM_ENABLE=1
@@ -20423,7 +20416,7 @@ Agg TP8·EP8 (2 nodes), low latency · 8 GPUs · concurrency 4
 
   Env Vars                        *autoregressive-Meta-MuseSparkOpen-env-vars-2*
 
-  >sh
+  >bash
       export ETCD_IP=<node running etcd>
       export AGG_HEAD_IP=<first node of the worker>
       export NODE_RANK=<0 on the first node, 1 on the second>
@@ -20431,7 +20424,7 @@ Agg TP8·EP8 (2 nodes), low latency · 8 GPUs · concurrency 4
 
   etcd                                *autoregressive-Meta-MuseSparkOpen-etcd-2*
 
-  >sh
+  >bash
       etcd \
         --data-dir /tmp/etcd \
         --listen-client-urls http://0.0.0.0:2379 \
@@ -20440,7 +20433,7 @@ Agg TP8·EP8 (2 nodes), low latency · 8 GPUs · concurrency 4
 
   Dynamo frontend          *autoregressive-Meta-MuseSparkOpen-dynamo-frontend-2*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export DYN_ROUTER_QUEUE_THRESHOLD=None
       export DYN_ROUTER_TEMPERATURE=0
@@ -20460,7 +20453,7 @@ Agg TP8·EP8 (2 nodes), low latency · 8 GPUs · concurrency 4
 
   SGLang worker (run on each of the 2 nodes) *autoregressive-Meta-MuseSparkOpen-sglang-worker-run-on-each-of-the-2-nodes-2*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export ETCD_ENDPOINTS=http://$ETCD_IP:2379
       export NCCL_CUMEM_ENABLE=1
@@ -20503,14 +20496,14 @@ Agg TP4·EP4, balanced · 4 GPUs · concurrency 16
 
   Env Vars                        *autoregressive-Meta-MuseSparkOpen-env-vars-3*
 
-  >sh
+  >bash
       export ETCD_IP=<node running etcd>
       export AGG_HEAD_IP=<first node of the worker>
 <
 
   etcd                                *autoregressive-Meta-MuseSparkOpen-etcd-3*
 
-  >sh
+  >bash
       etcd \
         --data-dir /tmp/etcd \
         --listen-client-urls http://0.0.0.0:2379 \
@@ -20519,7 +20512,7 @@ Agg TP4·EP4, balanced · 4 GPUs · concurrency 16
 
   Dynamo frontend          *autoregressive-Meta-MuseSparkOpen-dynamo-frontend-3*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export DYN_ROUTER_QUEUE_THRESHOLD=None
       export DYN_ROUTER_TEMPERATURE=0
@@ -20539,7 +20532,7 @@ Agg TP4·EP4, balanced · 4 GPUs · concurrency 16
 
   SGLang worker                *autoregressive-Meta-MuseSparkOpen-sglang-worker*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export ETCD_ENDPOINTS=http://$ETCD_IP:2379
       export NCCL_CUMEM_ENABLE=1
@@ -20580,14 +20573,14 @@ Agg TP4·EP4, high throughput · 4 GPUs · concurrency 64
 
   Env Vars                        *autoregressive-Meta-MuseSparkOpen-env-vars-4*
 
-  >sh
+  >bash
       export ETCD_IP=<node running etcd>
       export AGG_HEAD_IP=<first node of the worker>
 <
 
   etcd                                *autoregressive-Meta-MuseSparkOpen-etcd-4*
 
-  >sh
+  >bash
       etcd \
         --data-dir /tmp/etcd \
         --listen-client-urls http://0.0.0.0:2379 \
@@ -20596,7 +20589,7 @@ Agg TP4·EP4, high throughput · 4 GPUs · concurrency 64
 
   Dynamo frontend          *autoregressive-Meta-MuseSparkOpen-dynamo-frontend-4*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export DYN_ROUTER_QUEUE_THRESHOLD=None
       export DYN_ROUTER_TEMPERATURE=0
@@ -20616,7 +20609,7 @@ Agg TP4·EP4, high throughput · 4 GPUs · concurrency 64
 
   SGLang worker              *autoregressive-Meta-MuseSparkOpen-sglang-worker-2*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export ETCD_ENDPOINTS=http://$ETCD_IP:2379
       export NCCL_CUMEM_ENABLE=1
@@ -20659,14 +20652,14 @@ Agg TP4·EP4 + HiCache, max throughput · 4 GPUs · concurrency 160
 
   Env Vars                        *autoregressive-Meta-MuseSparkOpen-env-vars-5*
 
-  >sh
+  >bash
       export ETCD_IP=<node running etcd>
       export AGG_HEAD_IP=<first node of the worker>
 <
 
   etcd                                *autoregressive-Meta-MuseSparkOpen-etcd-5*
 
-  >sh
+  >bash
       etcd \
         --data-dir /tmp/etcd \
         --listen-client-urls http://0.0.0.0:2379 \
@@ -20675,7 +20668,7 @@ Agg TP4·EP4 + HiCache, max throughput · 4 GPUs · concurrency 160
 
   Dynamo frontend          *autoregressive-Meta-MuseSparkOpen-dynamo-frontend-5*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export DYN_ROUTER_QUEUE_THRESHOLD=None
       export DYN_ROUTER_TEMPERATURE=0
@@ -20695,7 +20688,7 @@ Agg TP4·EP4 + HiCache, max throughput · 4 GPUs · concurrency 160
 
   SGLang worker              *autoregressive-Meta-MuseSparkOpen-sglang-worker-3*
 
-  >sh
+  >bash
       export DYN_REQUEST_PLANE=tcp
       export ETCD_ENDPOINTS=http://$ETCD_IP:2379
       export NCCL_CUMEM_ENABLE=1
@@ -20753,7 +20746,7 @@ concurrency.
 
 [Command]Command
 
->sh
+>bash
     SGLANG_USE_AITER=1 \
     SGLANG_USE_AITER_UNIFIED_ATTN=1 \
     MUSE_MOE_BACKEND=flydsl \
@@ -20785,7 +20778,7 @@ concurrency.
 
 [Monokernels (low concurrency)]Monokernels (low concurrency)
 
->sh
+>bash
       --enable-amd-monokernel \
       --max-running-requests 2 \
       --cuda-graph-max-bs-decode 2 \
@@ -20798,7 +20791,7 @@ concurrency.
 
 [HiCache (high concurrency)]HiCache (high concurrency)
 
->sh
+>bash
     PYTORCH_HIP_ALLOC_CONF=expandable_segments:True \
     PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
     SGLANG_AITER_HONOR_EXPLICIT_MEM_FRACTION=1 \
@@ -20864,7 +20857,7 @@ hand-written section.
 
 [Concurrency 1]Concurrency 1
 
->sh
+>bash
     LIBTPU_INIT_ARGS="--xla_tpu_enable_async_collective_fusion=true --xla_tpu_overlap_compute_collective_tc=true --xla_tpu_enable_async_collective_fusion_multiple_steps=true --xla_tpu_enable_latency_hiding_scheduler=true --xla_latency_hiding_scheduler_rerun=10 --xla_tpu_all_gather_collective_matmul_mode=post_spmd_conservative --xla_tpu_reduce_scatter_collective_matmul_mode=post_spmd_conservative --xla_tpu_enable_sparse_core_collective_offload_all_reduce=false --xla_tpu_offload_gather_to_sparsecore=false --xla_tpu_enable_sparse_core_collective_offload_reduce_scatter=false --xla_tpu_enable_sparse_core_collective_offload_all_gather=false" \
     SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1 \
     SGLANG_DFLASH_CONV_MATMUL_EXPAND=1 \
@@ -20974,7 +20967,7 @@ profile change enough that the command is shown in full:
 
 [Concurrency 16]Concurrency 16
 
->sh
+>bash
     LIBTPU_INIT_ARGS="--xla_tpu_enable_async_collective_fusion=true --xla_tpu_overlap_compute_collective_tc=true --xla_tpu_enable_async_collective_fusion_multiple_steps=true --xla_tpu_enable_latency_hiding_scheduler=true --xla_latency_hiding_scheduler_rerun=10 --xla_tpu_all_gather_collective_matmul_mode=post_spmd_conservative --xla_tpu_reduce_scatter_collective_matmul_mode=post_spmd_conservative --xla_tpu_enable_sparse_core_collective_offload_all_reduce=false --xla_tpu_offload_gather_to_sparsecore=false --xla_tpu_enable_sparse_core_collective_offload_reduce_scatter=false --xla_tpu_enable_sparse_core_collective_offload_all_gather=false" \
     SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1 \
     SGLANG_DFLASH_CONV_MATMUL_EXPAND=1 \
@@ -21449,7 +21442,7 @@ Encoder server (B300, GPUs 0--1)
 
   [Command]Command
 
-  >sh
+  >bash
       CUDA_VISIBLE_DEVICES=0,1 sglang serve \
         --model-path meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
         --quantization modelopt_fp4 \
@@ -21467,7 +21460,7 @@ Prefill server (B300, GPUs 0--3)
 
   [Command]Command
 
-  >sh
+  >bash
       export MC_INTRANODE_NVLINK=true
       export MC_TCP_ENABLE_CONNECTION_POOL=true
       export SGLANG_MOONCAKE_CUSTOM_MEM_POOL=INTRA_NODE_NVLINK
@@ -21497,7 +21490,7 @@ Decode server (B300, GPUs 4--7)
 
   [Command]Command
 
-  >sh
+  >bash
       export MC_INTRANODE_NVLINK=true
       export MC_TCP_ENABLE_CONNECTION_POOL=true
       export SGLANG_MOONCAKE_CUSTOM_MEM_POOL=INTRA_NODE_NVLINK
@@ -21526,7 +21519,7 @@ Router                              *autoregressive-Meta-MuseSparkOpen-router*
 
   [Command]Command
 
-  >sh
+  >bash
       sgl-router \
         --model-id meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
         --no-tokenizer \
@@ -21615,7 +21608,7 @@ Helion decode worker (4×GB300)
 
   [Command]Command
 
-  >sh
+  >bash
       python -m pip install helion==1.5.0
 
       export NCCL_NVLS_ENABLE=1
@@ -21713,7 +21706,7 @@ For AMD MI300X/MI325X/MI355X GPUs:
 
 [Command]Command
 
->sh
+>bash
     # Docker (AMD MI300X/MI325X)
     docker pull lmsysorg/sglang:v0.5.9-rocm720-mi30x
 
@@ -21748,7 +21741,7 @@ runtime versions and test limits.
 
 [Command]Command
 
->sh
+>bash
     python -m pip install modelscope
     modelscope download --model Eco-Tech/MiniMax-M2.5-w8a8-QuaRot \
       --local_dir /models/MiniMax-M2.5-w8a8-QuaRot
@@ -21792,14 +21785,13 @@ with 64 GB per die, while this preset requires all 16 dies.
    cache, and at least 30 GB for the container image. Download both models
    below, or reuse complete copies from shared storage.
 
-Role    Model                                 Directory inside the container
-------  ------------------------------------  ------------------------------------
-W8A8    Eco-Tech/MiniMax-M2.5-w8a8-QuaRot     /models/MiniMax-M2.5-w8a8-QuaRot
-main
-model
-EAGLE3  sgl-npu/MiniMax-M2.5-eagel-model-0318  /models/MiniMax-M2.5-eagel-model-0318
-draft
-model
+Role                Model                         Directory inside the
+                                                  container
+------------------  ----------------------------  ----------------------------
+W8A8 main model     Eco-Tech/MiniMax-M2.5-w8a8-   /models/MiniMax-M2.5-w8a8-
+                    QuaRot                        QuaRot
+EAGLE3 draft model  sgl-npu/MiniMax-M2.5-eagel-   /models/MiniMax-M2.5-eagel-
+                    model-0318                    model-0318
 
 The draft repository identifier contains `eagel`; use that exact spelling.
 Keep its `custom_eagle3` Python package alongside the draft weights. The
@@ -21813,7 +21805,7 @@ https://github.com/modelscope/modelscope/blob/master/docs/source/command.md#down
 
 [Command]Command
 
->sh
+>bash
     python3 -m pip install modelscope
     modelscope download --model Eco-Tech/MiniMax-M2.5-w8a8-QuaRot \
       --local_dir /models/MiniMax-M2.5-w8a8-QuaRot
@@ -21833,7 +21825,7 @@ before running the generated command:
 
 [Command]Command
 
->sh
+>bash
     echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
     sysctl -w vm.swappiness=0
     sysctl -w kernel.numa_balancing=0
@@ -22007,7 +21999,7 @@ following command:
 
 [Command]Command
 
->sh
+>bash
     curl http://localhost:8000/v1/chat/completions \
         -H "Content-Type: application/json" \
         -d '{
@@ -22078,7 +22070,7 @@ deployment to separate the thinking and the content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path MiniMaxAI/MiniMax-M2.5 \
       --tp 4 \
@@ -22217,7 +22209,7 @@ parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path MiniMaxAI/MiniMax-M2.5 \
       --tp 4 \
@@ -22296,7 +22288,7 @@ Output Example:
     Tool Call: get_weather
        Arguments: {"location": "Beijing"}
 <
-Note:
+Note: ~
 
 - Tool calls are returned in `message.tool_calls` with the function name and
   arguments
@@ -22358,7 +22350,7 @@ container. The A3 preset listens on port 6688.
 
 [Command]Command
 
->sh
+>bash
     curl --fail --silent --show-error --max-time 30 http://127.0.0.1:6688/health
     curl --fail --silent --show-error --max-time 30 http://127.0.0.1:6688/v1/models
 
@@ -22434,7 +22426,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
         --model-path MiniMaxAI/MiniMax-M2.5 \
         --tp 8 \
@@ -22454,7 +22446,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.5 \
@@ -22519,7 +22511,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.5 \
@@ -22584,7 +22576,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.5 \
@@ -22649,7 +22641,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
         --model-path MiniMaxAI/MiniMax-M2.5 \
         --tp 8 \
@@ -22669,7 +22661,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.5 \
@@ -22734,7 +22726,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.5 \
@@ -22799,7 +22791,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.5 \
@@ -22871,7 +22863,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
         --model-path MiniMaxAI/MiniMax-M2.5 \
         --tp 8 \
@@ -22891,7 +22883,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.5 \
@@ -22956,7 +22948,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.5 \
@@ -23021,7 +23013,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.5 \
@@ -23089,7 +23081,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -23120,7 +23112,7 @@ the sgl-eval command above.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run mmlu \
       --base-url http://127.0.0.1:30000/v1 \
       --num-threads 64 --max-tokens 2048
@@ -23221,7 +23213,7 @@ After warm-up, run the reference workload from the same container:
 
 [Command]Command
 
->sh
+>bash
     set -o pipefail
     python3 -m sglang.benchmark.serving \
       --dataset-name random \
@@ -23312,7 +23304,7 @@ settings were:
 
 [Command]Command
 
->sh
+>bash
     export HCCL_BUFFSIZE=128
     export OMP_NUM_THREADS=1
     export PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
@@ -23342,7 +23334,7 @@ Prompt                              Answer content               Finish reason
 ----------------------------------  ---------------------------  -------------
 What is the capital of France?      Paris                        stop
 Answer with the city name only.
-请用中文回答：2加2等于多少？                     2加2等于4。                      stop
+请用中文回答：2加2等于多少？        2加2等于4。                  stop
 Return only a JSON object with one  {"result":56} (parsed JSON)  stop
 key named result whose value is 7
 * 8.
@@ -23376,7 +23368,7 @@ France
 2 + 2           4               53              12.598          0.466
 JSON object     {"result":56}   185             43.747          0.477
 for 7 × 8
-中国首都            北京              138             31.891          0.456
+中国首都        北京            138             31.891          0.456
 Copy a word     orchard         73              16.724          0.459
 Sort 3, 1, 2    [1,2,3]         142             33.590          0.465
 as a JSON
@@ -23437,7 +23429,7 @@ benchmark launch command was:
 
 [Command]Command
 
->sh
+>bash
     export HCCL_BUFFSIZE=128
     export OMP_NUM_THREADS=1
     export PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
@@ -23640,7 +23632,7 @@ including failures:
 
 [Command]Command
 
->sh
+>bash
     set -euo pipefail
     mkdir -p minimax-a2-reference-perf
     for SEED in 1 17 29; do
@@ -23884,7 +23876,7 @@ Deployment Command:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path MiniMaxAI/MiniMax-M2.7 \
       --tp 4 \
@@ -23902,7 +23894,7 @@ following command:
 
 [Command]Command
 
->sh
+>bash
     curl http://localhost:30000/v1/chat/completions \
         -H "Content-Type: application/json" \
         -d '{
@@ -23973,7 +23965,7 @@ deployment to separate the thinking and the content sections:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path MiniMaxAI/MiniMax-M2.7 \
       --tp 4 \
@@ -24118,7 +24110,7 @@ parser:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path MiniMaxAI/MiniMax-M2.7 \
       --tp 4 \
@@ -24283,7 +24275,7 @@ below)
 
 [Command]Command
 
->sh
+>bash
     pip install sgl-eval
 
     sgl-eval run gpqa \
@@ -24313,7 +24305,7 @@ pass@8                                                     96.46%    0.00%
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run aime25 \
         --base-url http://localhost:30000/v1 \
         --model MiniMaxAI/MiniMax-M2.7 \
@@ -24342,7 +24334,7 @@ pass@8                                100.00%                        0.00%
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run mmlu_pro \
         --base-url http://localhost:30000/v1 \
         --model MiniMaxAI/MiniMax-M2.7 \
@@ -24389,7 +24381,7 @@ pass@1 (greedy)                                            69.41%    18.75%
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.7 \
@@ -24442,7 +24434,7 @@ pass@1 (greedy)                                            69.41%    18.75%
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2.7 \
@@ -24542,14 +24534,14 @@ Docker image install.
 
 [Command]Command
 
->sh
+>bash
     docker pull lmsysorg/sglang:v0.5.9-rocm720-mi30x
 <
 [Command]
 
 [Command]Command
 
->sh
+>bash
     docker run -d -it --ipc=host --network=host --privileged \
       --cap-add=CAP_SYS_ADMIN \
       --device=/dev/kfd --device=/dev/dri --device=/dev/mem \
@@ -24569,7 +24561,7 @@ Docker image install.
 
 [Command]Command
 
->sh
+>bash
     mv /sgl-workspace/sglang/python/sglang/srt/models/transformers.py \
        /sgl-workspace/sglang/python/sglang/srt/models/hf_transformers_model.py
 <
@@ -24585,7 +24577,7 @@ backend=get_compiler_backend()) in
 
 [Command]Command
 
->sh
+>bash
     #@torch.compile(dynamic=True, backend=get_compiler_backend())
 <
 
@@ -24613,7 +24605,7 @@ GPUs (H100/H200/B200), use these explicit commands:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
         --model-path MiniMaxAI/MiniMax-M2 \
         --tp-size 4 \
@@ -24630,7 +24622,7 @@ GPUs (H100/H200/B200), use these explicit commands:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
         --model-path MiniMaxAI/MiniMax-M2 \
         --tp-size 8 \
@@ -24662,7 +24654,7 @@ After the server starts, verify with:
 
 [Command]Command
 
->sh
+>bash
     curl http://localhost:30000/v1/chat/completions \
         -H "Content-Type: application/json" \
         -d '{
@@ -24693,7 +24685,7 @@ Server Command:
 
 [Command]Command
 
->sh
+>bash
         sglang serve \
         --model-path MiniMaxAI/MiniMax-M2 \
         --tp-size 4 \
@@ -24829,7 +24821,7 @@ Server Command:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
         --model-path MiniMaxAI/MiniMax-M2 \
         --tp-size 4 \
@@ -24984,7 +24976,7 @@ Model Deployment:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
         --model-path MiniMaxAI/MiniMax-M2 \
         --tp-size 4 \
@@ -25001,7 +24993,7 @@ Model Deployment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2 \
@@ -25066,7 +25058,7 @@ Model Deployment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2 \
@@ -25131,7 +25123,7 @@ Model Deployment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model MiniMaxAI/MiniMax-M2 \
@@ -25199,7 +25191,7 @@ Model Deployment:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
         --model-path MiniMaxAI/MiniMax-M2 \
         --tp-size 4 \
@@ -25212,7 +25204,7 @@ Model Deployment:
 
 [Command]Command
 
->sh
+>bash
       sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -25260,7 +25252,7 @@ Install SGLang            *autoregressive-MiniMax-MiniMax-M3.1-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       pip install --upgrade pip
       pip install uv
 
@@ -25284,7 +25276,7 @@ Install SGLang            *autoregressive-MiniMax-MiniMax-M3.1-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       git clone https://github.com/MiniMax-AI/MSA.git
       cd MSA
       git checkout c8e1013a16a708d2a7656805d5fc26f2b87715d1
@@ -25299,7 +25291,7 @@ Install SGLang            *autoregressive-MiniMax-MiniMax-M3.1-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:latest
       # AMD MI350X / MI355X (ROCm 7.2):
       docker pull lmsysorg/sglang-rocm:v0.5.23-rocm720-mi35x-20261113
@@ -25844,7 +25836,7 @@ node B, and then the router. Mooncake picks the RDMA NICs automatically; add
 
 [Prefill server (node A)]Prefill server (node A)
 
->sh
+>bash
     FMHA_SM100_ALLOW_JIT=1 \
     SGLANG_OPT_DEEPGEMM_MEGA_MOE_NUM_MAX_TOKENS_PER_RANK=32768 \
     sglang serve \
@@ -25874,7 +25866,7 @@ node B, and then the router. Mooncake picks the RDMA NICs automatically; add
 
 [Decode server (node B)]Decode server (node B)
 
->sh
+>bash
     FMHA_SM100_ALLOW_JIT=1 \
     SGLANG_OPT_DEEPGEMM_MEGA_MOE_NUM_MAX_TOKENS_PER_RANK=32768 \
     sglang serve \
@@ -25901,7 +25893,7 @@ node B, and then the router. Mooncake picks the RDMA NICs automatically; add
 
 [Router]Router
 
->sh
+>bash
     sgl-router \
       --model-id MiniMaxAI/MiniMax-M3.1-Flash \
       --no-tokenizer \
@@ -25945,7 +25937,7 @@ Install SGLang              *autoregressive-MiniMax-MiniMax-M3-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       pip install -U uv
       uv venv --python 3.12 && source .venv/bin/activate
 
@@ -25961,7 +25953,7 @@ Install SGLang              *autoregressive-MiniMax-MiniMax-M3-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       # Pull the image the command panel selects for your platform, e.g.:
       docker pull lmsysorg/sglang:v0.5.23-cu130
 <
@@ -26435,7 +26427,7 @@ Vision Example (Python)
       Tall city buildings with classic urban architecture, an American flag, and white lane markings — a bustling downtown area, possibly Midtown Manhattan.
 <
 
-Notes:
+Notes: ~
 
 - If the server cannot fetch external URLs, embed the image as a base64
   `data:image/png;base64,...` URI --- SGLang decodes it server-side.
@@ -26478,7 +26470,7 @@ node B); point `--disaggregation-ib-device` at your RDMA NIC(s).
 
 [Prefill server (node A)]Prefill server (node A)
 
->sh
+>bash
     sglang serve \
       --model-path MiniMaxAI/MiniMax-M3-MXFP8 \
       --trust-remote-code \
@@ -26495,7 +26487,7 @@ node B); point `--disaggregation-ib-device` at your RDMA NIC(s).
 
 [Decode server (node B)]Decode server (node B)
 
->sh
+>bash
     sglang serve \
       --model-path MiniMaxAI/MiniMax-M3-MXFP8 \
       --trust-remote-code \
@@ -26519,7 +26511,7 @@ the page layout the sparse-index transfer relies on. This is the validated 2
 
 [Prefill server (node A)]Prefill server (node A)
 
->sh
+>bash
     sglang serve \
       --model-path MiniMaxAI/MiniMax-M3 \
       --trust-remote-code \
@@ -26539,7 +26531,7 @@ the page layout the sparse-index transfer relies on. This is the validated 2
 
 [Decode server (node B)]Decode server (node B)
 
->sh
+>bash
     sglang serve \
       --model-path MiniMaxAI/MiniMax-M3 \
       --trust-remote-code \
@@ -26561,7 +26553,7 @@ workers' `--model-path`:
 
 [PD router]PD router
 
->sh
+>bash
     sgl-router \
       --model-id <model-path> \
       --no-tokenizer \
@@ -26675,7 +26667,7 @@ instructions.
 
   [Command]Command
 
-  >sh
+  >bash
       python -c "import transformers; print(transformers.__version__)"
 <
   If your version is lower, upgrade:
@@ -26684,7 +26676,7 @@ instructions.
 
   [Command]Command
 
-  >sh
+  >bash
       pip install -U --pre "transformers>=5.0.0rc0"
 <
 
@@ -26812,7 +26804,7 @@ Devstral 2 supports tool calling capabilities. Enable the tool call parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model mistralai/Devstral-2-123B-Instruct-2512 \
       --tp 2 \
@@ -26940,7 +26932,7 @@ For basic API usage and request examples, please refer to:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path mistralai/Devstral-2-123B-Instruct-2512 \
       --tp 8 \
@@ -26961,7 +26953,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path mistralai/Devstral-2-123B-Instruct-2512 \
       --tp 8 \
@@ -26974,7 +26966,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model mistralai/Devstral-2-123B-Instruct-2512 \
@@ -27034,7 +27026,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model mistralai/Devstral-2-123B-Instruct-2512 \
@@ -27094,7 +27086,7 @@ Scenario 1: Chat (1K/1K) - Most Important
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model mistralai/Devstral-2-123B-Instruct-2512 \
@@ -27193,7 +27185,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:8888/v1 \
       --num-examples 1319 \
@@ -27274,7 +27266,7 @@ docker
 
 [Command]Command
 
->sh
+>bash
     pip install mistral-common --upgrade
     pip install transformers==5.0.0.rc0
 <
@@ -27297,14 +27289,14 @@ For basic API usage and request examples, please refer to:
 
 [Command]Command
 
->sh
+>bash
     docker pull lmsysorg/sglang:v0.5.9-rocm720-mi30x
 <
 [Command]
 
 [Command]Command
 
->sh
+>bash
     docker run -d -it --ipc=host --network=host --privileged \
       --cap-add=CAP_SYS_ADMIN \
       --device=/dev/kfd --device=/dev/dri --device=/dev/mem \
@@ -27324,7 +27316,7 @@ For basic API usage and request examples, please refer to:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path mistralai/Ministral-3-14B-Instruct-2512 \
       --tp 1 \
@@ -27350,7 +27342,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path mistralai/Ministral-3-14B-Instruct-2512 \
       --tp 1 \
@@ -27366,7 +27358,7 @@ Low Concurrency
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model mistralai/Ministral-3-14B-Instruct-2512 \
@@ -27431,7 +27423,7 @@ Medium Concurrency
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model mistralai/Ministral-3-14B-Instruct-2512 \
@@ -27496,7 +27488,7 @@ High Concurrency
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model mistralai/Ministral-3-14B-Instruct-2512 \
@@ -27566,7 +27558,7 @@ Document model accuracy on standard benchmarks:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 1319 \
@@ -27603,7 +27595,7 @@ Install SGLang         *autoregressive-Mistral-Mistral-Large-4-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:mistral-large-4
 <
   The image ships with `mistral-common` 1.13.0 or later, required to load
@@ -27642,14 +27634,13 @@ sparse attention, and cross-layer KV sharing. The checkpoints declare a
 native 1,048,576-token context and bundle a DSpark draft model for
 speculative decoding.
 
-Checkpoint                            Weights              Hardware
-------------------------------------  -------------------  -------------------
-mistralai/Mistral-Large-4-1T-A52B     FP8 E4M3, 128×128    8× B300, two Vera
-                                      block scales         Rubin trays
-mistralai/Mistral-Large-4-1T-A52B-NVFP4  NVFP4 routed         Blackwell only: 4×
-                                      experts, block-FP8   GB300, one Vera
-                                      attention and dense  Rubin tray
-                                      layers
+Checkpoint                Weights                    Hardware
+------------------------  -------------------------  -------------------------
+mistralai/Mistral-Large-  FP8 E4M3, 128×128 block    8× B300, two Vera Rubin
+4-1T-A52B                 scales                     trays
+mistralai/Mistral-Large-  NVFP4 routed experts,      Blackwell only: 4× GB300,
+4-1T-A52B-NVFP4           block-FP8 attention and    one Vera Rubin tray
+                          dense layers
 
 Recommended generation: `temperature=1.0`, `top_p=0.95` (the checkpoint's
 `generation_config.json` defaults; informational --- do not hardcode in
@@ -28001,7 +27992,7 @@ target (~4 GB), and is meant for low-concurrency latency-bound serving.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model-path mistralai/Mistral-Medium-3.5-128B \
       --tp 4 \
@@ -28337,7 +28328,7 @@ GSM8K                        *autoregressive-Mistral-Mistral-Medium-3.5-gsm8k*
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -28365,7 +28356,7 @@ MMMU                          *autoregressive-Mistral-Mistral-Medium-3.5-mmmu*
 
 [Command]Command
 
->sh
+>bash
     python3 benchmark/mmmu/bench_sglang.py --port 30000
 <
 Results:
@@ -28388,7 +28379,7 @@ Latency (Low Concurrency)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --dataset-name random \
@@ -28425,7 +28416,7 @@ Throughput (High Concurrency)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --dataset-name random \
@@ -28467,7 +28458,7 @@ Single-stream latency benchmark (`--max-concurrency 1`).
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --dataset-name random \
@@ -28920,7 +28911,7 @@ GSM8K                           *autoregressive-Mistral-Mistral-Small-4-gsm8k*
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -28945,7 +28936,7 @@ MMLU                             *autoregressive-Mistral-Mistral-Small-4-mmlu*
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run mmlu \
       --base-url http://127.0.0.1:30000/v1 \
       --num-threads 64 --max-tokens 2048
@@ -28970,7 +28961,7 @@ Latency (Low Concurrency)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --num-prompts 10 \
@@ -28996,7 +28987,7 @@ Throughput (High Concurrency)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --num-prompts 1000 \
@@ -29534,7 +29525,7 @@ enabled):
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path moonshotai/Kimi-K2.5 \
       --tp 8 \
@@ -29556,7 +29547,7 @@ enabled):
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path nvidia/Kimi-K2.5-NVFP4 \
       --tp 8 \
@@ -29591,7 +29582,7 @@ multimodal understanding and reasoning across various subjects:
 
 [Command]Command
 
->sh
+>bash
     python3 benchmark/mmmu/bench_sglang.py \
         --response-answer-regex "(?i)(?:answer|ans)[:\s]*(?:\*\*)?[\(\[]?([A-Za-z])[\)\]]?(?:\*\*)?" \
         --port 30000 \
@@ -29670,7 +29661,7 @@ standardized performance evaluation.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path moonshotai/Kimi-K2.5 \
       --tp 8 \
@@ -29684,7 +29675,7 @@ standardized performance evaluation.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -29746,7 +29737,7 @@ standardized performance evaluation.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -29806,7 +29797,7 @@ standardized performance evaluation.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -29870,7 +29861,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -29930,7 +29921,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -29990,7 +29981,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -30016,7 +30007,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -30076,7 +30067,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -30136,7 +30127,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -30200,7 +30191,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path moonshotai/Kimi-K2.5 \
       --tp 8 \
@@ -30221,7 +30212,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -30247,7 +30238,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -30271,7 +30262,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -30320,7 +30311,7 @@ TP=8, each GPU gets 8 heads (invalid).
 
 [Command]Command
 
->sh
+>bash
     SGLANG_USE_AITER=1 SGLANG_ROCM_FUSED_DECODE_MLA=0 \
     sglang serve \
       --model-path moonshotai/Kimi-K2.5 \
@@ -30337,7 +30328,7 @@ TP=8, each GPU gets 8 heads (invalid).
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -30399,7 +30390,7 @@ TP=8, each GPU gets 8 heads (invalid).
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.5 \
@@ -30986,7 +30977,7 @@ enabled):
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path moonshotai/Kimi-K2.6 \
       --tp 8 \
@@ -31008,7 +30999,7 @@ enabled):
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path nvidia/Kimi-K2.6-NVFP4 \
       --tp 8 \
@@ -31069,7 +31060,7 @@ Evaluation Command:
 
 [Command]Command
 
->sh
+>bash
     cd K2-Vendor-Verifier
 
     python tool_calls_eval.py tool-calls/samples.jsonl \
@@ -31104,7 +31095,7 @@ Evaluation Command:
 
 [Command]Command
 
->sh
+>bash
     pip install sgl-eval
 
     # The dataset ships with sgl-eval; --n-repeats runs all 32 samples per problem.
@@ -31144,7 +31135,7 @@ Evaluation Command:
 
 [Command]Command
 
->sh
+>bash
     OPENAI_BASE_URL=http://localhost:30000/v1 OPENAI_API_KEY=placeholder \
     inspect eval inspect_evals/gpqa_diamond \
       --model openai/moonshotai/Kimi-K2.6 \
@@ -31181,7 +31172,7 @@ Evaluation Command:
 
 [Command]Command
 
->sh
+>bash
     cd Kimi-Vendor-Verifier
 
     OPENAI_BASE_URL=http://localhost:30000/v1 OPENAI_API_KEY=placeholder \
@@ -31218,7 +31209,7 @@ Evaluation Command:
 
 [Command]Command
 
->sh
+>bash
     cd Kimi-Vendor-Verifier
 
     OPENAI_BASE_URL=http://localhost:30000/v1 OPENAI_API_KEY=placeholder \
@@ -31261,7 +31252,7 @@ standardized performance evaluation.
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path moonshotai/Kimi-K2.6 \
       --tp 8 \
@@ -31277,7 +31268,7 @@ Scenario 1: Chat (1K/1K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -31337,7 +31328,7 @@ Scenario 1: Chat (1K/1K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -31397,7 +31388,7 @@ Scenario 1: Chat (1K/1K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -31459,7 +31450,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -31519,7 +31510,7 @@ Scenario 2: Reasoning (1K/8K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -31581,7 +31572,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -31641,7 +31632,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -31701,7 +31692,7 @@ Scenario 3: Summarization (8K/1K)
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -31787,7 +31778,7 @@ standardized performance evaluation.
 
 [Command]Command
 
->sh
+>bash
     SGLANG_USE_AITER=1 SGLANG_ROCM_FUSED_DECODE_MLA=0 \
     sglang serve \
       --model-path moonshotai/Kimi-K2.6 \
@@ -31806,7 +31797,7 @@ standardized performance evaluation.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -31868,7 +31859,7 @@ standardized performance evaluation.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-K2.6 \
@@ -32481,7 +32472,7 @@ tool parsing enabled):
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --model-path moonshotai/Kimi-K2.7-Code \
       --tp 8 \
@@ -32500,7 +32491,7 @@ parsers are auto-detected from the checkpoint):
 
 [Command]Command
 
->sh
+>bash
     SGLANG_USE_AITER=1 \
     HIP_FORCE_DEV_KERNARG=1 \
     SGLANG_EXPERT_PARALLEL_SIZE=1 \
@@ -32563,7 +32554,7 @@ levels (all 1319 test questions via sgl-eval):
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 1319 \
@@ -32590,7 +32581,7 @@ We use SGLang's built-in `bench_serving` tool with the `random` dataset
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model amd/Kimi-K2.7-Code-MXFP4 \
@@ -32689,7 +32680,7 @@ Enable reasoning parser for Kimi-K2-Thinking:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model moonshotai/Kimi-K2-Thinking \
       --reasoning-parser kimi_k2 \
@@ -32697,7 +32688,7 @@ Enable reasoning parser for Kimi-K2-Thinking:
       --host 0.0.0.0 \
       --port 8000
 <
-Example:
+Example: ~
 
 [Example]
 
@@ -32821,7 +32812,7 @@ Deployment Command:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model moonshotai/Kimi-K2-Instruct \
       --tool-call-parser kimi_k2 \
@@ -32944,7 +32935,7 @@ Output Example:
       🔧 Tool Call: get_weather
        Arguments: {"location":"Beijing"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -33020,7 +33011,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
         --model-path moonshotai/Kimi-K2-Instruct \
         --tp 8 \
@@ -33035,7 +33026,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -33098,7 +33089,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
         --model-path moonshotai/Kimi-K2-Instruct \
         --tp 8 \
@@ -33114,7 +33105,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -33180,7 +33171,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
         --model-path moonshotai/Kimi-K2-Instruct \
         --tp 8 \
@@ -33195,7 +33186,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:8000/v1 \
       --num-examples 200
@@ -33241,7 +33232,7 @@ Install SGLang        *autoregressive-Moonshotai-Kimi-K3.1-Pro-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       git clone https://github.com/sgl-project/sglang.git && cd sglang
       pip install -e "python"
 <
@@ -33614,7 +33605,7 @@ Router                        *autoregressive-Moonshotai-Kimi-K3.1-Pro-router*
 
   [Command]Command
 
-  >sh
+  >bash
       sgl-router \
         --model-id moonshotai/Kimi-K3.1-Pro \
         --no-tokenizer \
@@ -33662,7 +33653,7 @@ https://github.com/sgl-project/sglang-torchtpu. Run its recipe on each host:
 
 [Command]Command
 
->sh
+>bash
     python3 -m benchmark.tpu.launch_server --config recipe/configs/kimi_k3_1/server.py
 <
 Single request, all 93 layers: 133 tok/s at 8K input (TPOT 7.52 ms) and 112
@@ -33730,7 +33721,7 @@ Install SGLang              *autoregressive-Moonshotai-Kimi-K3-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       pip install --upgrade pip
       pip install uv
       uv pip install --prerelease=allow sglang
@@ -33743,7 +33734,7 @@ Install SGLang              *autoregressive-Moonshotai-Kimi-K3-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull lmsysorg/sglang:latest                                  # NVIDIA (CUDA)
       docker pull lmsysorg/sglang-rocm:v0.5.23-rocm720-mi35x-20261113     # AMD MI350X / MI355X (ROCm)
 <
@@ -33757,7 +33748,7 @@ Install SGLang              *autoregressive-Moonshotai-Kimi-K3-install-sglang*
 
   [Command]Command
 
-  >sh
+  >bash
       docker pull quay.io/ascend/sglang:main-cann9.1.0-a3   # Ascend A3 Series
       docker pull lmsysorg/sglang:main-cann9.1.0-950        # Ascend 950PR/DT Series
 <
@@ -33956,19 +33947,19 @@ side).
 Capacity levers, all in the Playground. Each trades precision or cache
 behavior for capacity --- re-verify accuracy on your workload:
 
-Lever                                Effect
------------------------------------  -----------------------------------------
----mamba-radix-cache-strategy          4 state slots per request instead of 5
+Lever                               Effect
+----------------------------------  ------------------------------------------
+---mamba-radix-cache-strategy         4 state slots per request instead of 5
 extra_buffer_lazy
----mamba-ssm-dtype bfloat16            ~halves state bytes; with spec on, KDA
-                                     verification falls back from the fused
-                                     kernel to Triton
----kv-cache-dtype fp8_e4m3             halves KV bytes per token; under PD both
-                                     roles must match at connect
----mem-fraction-static 0.90--0.92       cheapest first win when the boot log
-                                     shows a large idle avail mem
-SGLANG_OPT_MAMBA_SKIP_DECODE_LOCK=1  frees one more slot per request
-                                     (experimental, under validation)
+---mamba-ssm-dtype bfloat16           ~halves state bytes; with spec on, KDA
+                                    verification falls back from the fused
+                                    kernel to Triton
+---kv-cache-dtype fp8_e4m3            halves KV bytes per token; under PD both
+                                    roles must match at connect
+---mem-fraction-static 0.90--0.92      cheapest first win when the boot log shows
+                                    a large idle avail mem
+SGLANG_OPT_MAMBA_SKIP_DECODE_LOCK=  frees one more slot per request
+1                                   (experimental, under validation)
 
 Speculation: DSPARK holds block size + 1 (= 8) intermediate states per
 request --- the calculator folds this in --- and an unset
@@ -34084,48 +34075,50 @@ change on top. Everything here is gfx950/ROCm-only and inert elsewhere. The
 two SiTU rows need an AITER revision at or past ROCm/aiter#4534
 https://github.com/ROCm/aiter/pull/4534 (FlyDSL 0.3.0).
 
-Env var                               Default  Effect
-------------------------------------  -------  ------------------------------------
-AITER_SITUV2_A8W4=1                   unset    SiTU v2 MoE with A8W4 activation
-                                               quantization, on AITER's
-                                               GU-interleaved preshuffled weight
-                                               layout. The performance default the
-                                               cell ships.
-AITER_SITUV2_A4W4=1                   unset    A4W4 instead, on the generic
-                                               separated shuffle layout.
-                                               Numerically correct but slower than
-                                               A8W4 (530.8 vs 537.3 tok/s median
-                                               output on 8×MI35x). Setting both
-                                               gives A8W4 precedence --- SGLang
-                                               follows AITER and keeps the
-                                               GU-interleaved layout.
-SGLANG_USE_HIP_K3_KDA_FUSED_BACKEND=aiter  gfx950   Opt in to the fused ROCm KDA decode
-                                               boundary: the f_b projection is
-                                               deferred into the gfx950 FlyDSL
-                                               kernel so decode fuses f_b +
-                                               convolution + recurrent state update
-                                               + gated RMSNorm. The kernel takes a
-                                               BF16 f_b: a block-FP8 one uses the
-                                               dequantized copy the model already
-                                               keeps, and a Quark per-channel FP8
-                                               one is dequantized once at load. The
-                                               default gfx950 selects the SGLang
-                                               gfx950 kernel, which takes an FP32
-                                               state only; any other value keeps
-                                               the unfused KDA path.
-SGLANG_USE_HIP_K3_FLYDSL_SOURCE       auto     Which FlyDSL implementation backs
-                                               the fused decode: sglang / aiter pin
-                                               one, and auto prefers SGLang's
-                                               vendored kernel but binds AITER's
-                                               when the vendored one is missing or
-                                               does not take the recurrent state
-                                               dtype. The vendored kernel takes an
-                                               FP32 state only; AITER's
-                                               (aiter.ops.flydsl.linear_attention_kernels,
-                                               from ROCm/aiter#6026) also takes the
-                                               BF16 state of ---mamba-ssm-dtype
-                                               bfloat16, so auto serves that state
-                                               on AITER's kernel.
+Env var                            Default  Effect
+---------------------------------  -------  ----------------------------------
+AITER_SITUV2_A8W4=1                unset    SiTU v2 MoE with A8W4 activation
+                                            quantization, on AITER's
+                                            GU-interleaved preshuffled weight
+                                            layout. The performance default
+                                            the cell ships.
+AITER_SITUV2_A4W4=1                unset    A4W4 instead, on the generic
+                                            separated shuffle layout.
+                                            Numerically correct but slower
+                                            than A8W4 (530.8 vs 537.3 tok/s
+                                            median output on 8×MI35x). Setting
+                                            both gives A8W4 precedence ---
+                                            SGLang follows AITER and keeps the
+                                            GU-interleaved layout.
+SGLANG_USE_HIP_K3_KDA_FUSED_       gfx950   Opt in to the fused ROCm KDA
+BACKEND=aiter                               decode boundary: the f_b
+                                            projection is deferred into the
+                                            gfx950 FlyDSL kernel so decode
+                                            fuses f_b + convolution +
+                                            recurrent state update + gated
+                                            RMSNorm. The kernel takes a BF16
+                                            f_b: a block-FP8 one uses the
+                                            dequantized copy the model already
+                                            keeps, and a Quark per-channel FP8
+                                            one is dequantized once at load.
+                                            The default gfx950 selects the
+                                            SGLang gfx950 kernel, which takes
+                                            an FP32 state only; any other
+                                            value keeps the unfused KDA path.
+SGLANG_USE_HIP_K3_FLYDSL_SOURCE    auto     Which FlyDSL implementation backs
+                                            the fused decode: sglang / aiter
+                                            pin one, and auto prefers SGLang's
+                                            vendored kernel but binds AITER's
+                                            when the vendored one is missing
+                                            or does not take the recurrent
+                                            state dtype. The vendored kernel
+                                            takes an FP32 state only; AITER's
+                                            (aiter.ops.flydsl.linear_
+                                            attention_kernels,
+                                            from ROCm/aiter#6026) also takes
+                                            the BF16 state of ---mamba-ssm-dtype
+                                            bfloat16, so auto serves that
+                                            state on AITER's kernel.
 
 The fused KDA backend is fail-closed at two levels. At model init it arms
 only when the flag is exactly `aiter`, the gfx950 FlyDSL kernels are
@@ -34326,7 +34319,7 @@ Router                              *autoregressive-Moonshotai-Kimi-K3-router*
 
   [Command]Command
 
-  >sh
+  >bash
       sgl-router \
         --model-id <model-path> \
         --no-tokenizer \
@@ -34430,7 +34423,7 @@ the context window, caps concurrency, and lowers the static-memory target:
 
 [Command]Command
 
->sh
+>bash
     sglang serve \
       --trust-remote-code \
       --model-path moonshotai/Kimi-K3 \
@@ -34493,7 +34486,7 @@ runs the same command with its own `--node-rank`). On GB200/GB300 the same
 
 [Command]Command
 
->sh
+>bash
     SGLANG_OPT_DEEPGEMM_MEGA_MOE_NUM_MAX_TOKENS_PER_RANK=20480 \
     sglang serve \
       --trust-remote-code \
@@ -34612,14 +34605,14 @@ For basic API usage and request examples, please refer to:
 
 [Command]Command
 
->sh
+>bash
     docker pull lmsysorg/sglang:v0.5.7-rocm700-mi30x
 <
 [Command]
 
 [Command]Command
 
->sh
+>bash
     docker run -d -it --ipc=host --network=host --privileged \
       --cap-add=CAP_SYS_ADMIN \
       --device=/dev/kfd --device=/dev/dri --device=/dev/mem \
@@ -34639,7 +34632,7 @@ For basic API usage and request examples, please refer to:
 
 [Command]Command
 
->sh
+>bash
     pip install sentencepiece tiktoken
 <
 
@@ -34650,7 +34643,7 @@ For basic API usage and request examples, please refer to:
 
 [Command]Command
 
->sh
+>bash
     export SGLANG_ROCM_FUSED_DECODE_MLA=0
 
     SGLANG_ROCM_FUSED_DECODE_MLA=0 python3 -m sglang.launch_server \
@@ -34681,7 +34674,7 @@ sglang version: 0.5.7
 
 [Command]Command
 
->sh
+>bash
     SGLANG_ROCM_FUSED_DECODE_MLA=0 python3 -m sglang.launch_server \
       --model-path moonshotai/Kimi-Linear-48B-A3B-Instruct \
       --tokenizer-path  moonshotai/Kimi-Linear-48B-A3B-Instruct \
@@ -34698,7 +34691,7 @@ sglang version: 0.5.7
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-Linear-48B-A3B-Instruct \
@@ -34763,7 +34756,7 @@ sglang version: 0.5.7
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-Linear-48B-A3B-Instruct \
@@ -34828,7 +34821,7 @@ sglang version: 0.5.7
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model moonshotai/Kimi-Linear-48B-A3B-Instruct \
@@ -34896,7 +34889,7 @@ sglang version: 0.5.7
 
 [Command]Command
 
->sh
+>bash
     SGLANG_ROCM_FUSED_DECODE_MLA=0 python3 -m sglang.launch_server \
       --model-path moonshotai/Kimi-Linear-48B-A3B-Instruct \
       --tokenizer-path  moonshotai/Kimi-Linear-48B-A3B-Instruct \
@@ -34909,7 +34902,7 @@ sglang version: 0.5.7
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -35028,7 +35021,7 @@ deployment to separate the thinking and content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model openai/gpt-oss-120b \
       --reasoning-parser gpt-oss \
@@ -35149,7 +35142,7 @@ Start sglang server:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model openai/gpt-oss-120b \
       --tool-call-parser gpt-oss \
@@ -35256,7 +35249,7 @@ Start sglang server:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model openai/gpt-oss-120b \
       --reasoning-parser gpt-oss \
@@ -35359,7 +35352,7 @@ Output Example:
     🔧 Tool Call: get_weather
        Arguments: {"location": "Beijing", "unit": "celsius"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -35421,7 +35414,7 @@ small batch sizes.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model-path openai/gpt-oss-120b \
       --speculative-algorithm EAGLE3 \
@@ -35445,7 +35438,7 @@ and Python interpreter). Set `EXA_API_KEY` to enable native web search; add
 
 [Command]Command
 
->sh
+>bash
     export EXA_API_KEY=YOUR_EXA_KEY
     # Optional: server-side Exa tuning (defaults shown)
     export SGLANG_EXA_NUM_RESULTS=10
@@ -35464,7 +35457,7 @@ For production, use external MCP SSE servers instead of `demo`:
 
 [Command]Command
 
->sh
+>bash
     mcp run -t sse browser_server.py:mcp
     mcp run -t sse python_server.py:mcp
 
@@ -35540,7 +35533,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model openai/gpt-oss-120b \
       --tp 8
@@ -35551,7 +35544,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --num-prompt 100 \
@@ -35611,7 +35604,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model openai/gpt-oss-120b \
       --tp 8
@@ -35622,7 +35615,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --num-prompt 1000 \
@@ -35683,7 +35676,7 @@ Test Results:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:8000/v1 \
       --num-examples 200
@@ -35946,7 +35939,7 @@ Example Output:
     Response costs: 13.79s
     Generated text: The first image shows a single red taxi driving on a street with a few other taxis in the background. The second image shows a large number of taxis parked in a lot, with some appearing to be in various states of repair. The first image has a single taxi with a visible license plate, while the second image has multiple taxis with different license plates. The first image has a clear view of the street and surrounding area, while the second image is taken from an elevated perspective, showing a wider view of the parking lot and the surrounding area.
 <
-Note:
+Note: ~
 
 - You can also provide local file paths using `file://` protocol.
 - For larger images, you may need more memory, adjust
@@ -35977,7 +35970,7 @@ have 128 input tokens, two 720p images, and 1024 output tokens.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen2.5-VL-72B-Instruct \
       --tp 8 \
@@ -35990,7 +35983,7 @@ have 128 input tokens, two 720p images, and 1024 output tokens.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang-oai-chat \
       --host 127.0.0.1 \
@@ -36014,7 +36007,7 @@ have 128 input tokens, two 720p images, and 1024 output tokens.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen2.5-VL-72B-Instruct \
       --tp 8 \
@@ -36073,7 +36066,7 @@ have 128 input tokens, two 720p images, and 1024 output tokens.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang-oai-chat \
       --host 127.0.0.1 \
@@ -36144,7 +36137,7 @@ You can evaluate the model's accuracy using the MMMU dataset:
 
 [Command]Command
 
->sh
+>bash
     python3 benchmark/mmmu/bench_sglang.py \
         --port 30000 \
         --concurrency 64
@@ -36291,7 +36284,7 @@ Deployment Command:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-Coder-Next \
       --tp 2 \
@@ -36536,7 +36529,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-Coder-Next \
       --tp 2 \
@@ -36553,7 +36546,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -36620,7 +36613,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -36687,7 +36680,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -36754,7 +36747,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-Coder-Next \
       --tp 2 \
@@ -36771,7 +36764,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -36838,7 +36831,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -36905,7 +36898,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -36975,7 +36968,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -37042,7 +37035,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -37109,7 +37102,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --host 127.0.0.1 \
@@ -37179,7 +37172,7 @@ Test Environment:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200 \
@@ -37210,7 +37203,7 @@ the sgl-eval command above.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run mmlu \
       --base-url http://127.0.0.1:30000/v1 \
       --num-threads 64 --max-tokens 2048
@@ -37546,7 +37539,7 @@ during deployment. The following example uses 30B-A3B model:
 
 [Command]Command
 
->sh
+>bash
     SGLANG_USE_AITER=0 python -m sglang.launch_server \
       --model Qwen/Qwen3-Coder-30B-A3B-Instruct \
       --tp 1 \
@@ -37643,7 +37636,7 @@ with random dataset.
 
 [Command]Command
 
->sh
+>bash
     SGLANG_USE_AITER=0 python -m sglang.launch_server \
       --model Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8 \
       --tp 8 \
@@ -37662,7 +37655,7 @@ with random dataset.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8 \
@@ -37727,7 +37720,7 @@ with random dataset.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8 \
@@ -37792,7 +37785,7 @@ with random dataset.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --model Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8 \
@@ -37854,7 +37847,7 @@ with random dataset.
 The following runs use the same random dataset benchmark client commands as
 the AMD section. On B200, launch the server with the following command:
 
->sh
+>bash
     sglang serve --model Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8 --tp 8 --ep 8 --context-length 8192 --page-size 32 --trust-remote-code
 
     ##### 5.1.2.1 FP8 Model
@@ -38141,7 +38134,7 @@ the AMD section. On B200, launch the server with the following command:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:30000/v1 \
       --num-examples 200
@@ -38305,7 +38298,7 @@ For basic API usage and request examples, please refer to:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-Next-80B-A3B-Thinking \
       --reasoning-parser qwen3 \
@@ -38423,7 +38416,7 @@ process, allowing you to see how the model arrives at its conclusions.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-Next-80B-A3B-Instruct \
       --tp 8 \
@@ -38554,7 +38547,7 @@ Start sglang server:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-Next-80B-A3B-Instruct \
       --tool-call-parser qwen \
@@ -38664,7 +38657,7 @@ Start sglang server:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-Next-80B-A3B-Thinking \
       --reasoning-parser qwen3 \
@@ -38770,7 +38763,7 @@ Output Example:
     {"name": "get_weather", "arguments": {"location": "Beijing"}}
     </tool_call>
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -38836,7 +38829,7 @@ Qwen3-Next-80B-A3B-Instruct
 
 [Command]Command
 
->sh
+>bash
     SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1 python -m sglang.launch_server --model Qwen/Qwen3-Next-80B-A3B-Instruct    --tp 8   --host 0.0.0.0   --port 8000 --json-model-override-args '{"rope_scaling":{"rope_type":"yarn","factor":4.0,"original_max_position_embeddings":262144}}' --context-length 1010000
 <
 Qwen3-Next-80B-A3B-Thinking
@@ -38845,7 +38838,7 @@ Qwen3-Next-80B-A3B-Thinking
 
 [Command]Command
 
->sh
+>bash
     SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1 python -m sglang.launch_server --model Qwen/Qwen3-Next-80B-A3B-Thinking   --reasoning-parser qwen3     --tp 8   --host 0.0.0.0   --port 8000 --json-model-override-args '{"rope_scaling":{"rope_type":"yarn","factor":4.0,"original_max_position_embeddings":262144}}' --context-length 1010000
 <
 
@@ -38861,7 +38854,7 @@ separate draft model is required.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.launch_server \
       --model Qwen/Qwen3-Next-80B-A3B-Instruct \
       --speculative-algorithm NEXTN \
@@ -38902,7 +38895,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-Next-80B-A3B-Instruct \
       --tp 8
@@ -38913,7 +38906,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --num-prompt 100 \
@@ -38973,7 +38966,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-Next-80B-A3B-Instruct \
       --tp 8 \
@@ -38984,7 +38977,7 @@ performance in actual use scenarios.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang \
       --num-prompt 1000 \
@@ -39045,7 +39038,7 @@ Test Results:
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run gsm8k \
       --base-url http://127.0.0.1:8000/v1 \
       --num-examples 200
@@ -39081,7 +39074,7 @@ not directly comparable; rerun this command for a matching result.
 
 [Command]Command
 
->sh
+>bash
     sgl-eval run mmlu \
       --base-url http://127.0.0.1:30000/v1 \
       --num-threads 64 --max-tokens 2048
@@ -39235,7 +39228,7 @@ Example with full multimodal optimizations:
 
 [Command]Command
 
->sh
+>bash
     SGLANG_VLM_CACHE_SIZE_MB=0 \
     python -m sglang.launch_server \
       --mm-feature-transport cuda_ipc \
@@ -39453,7 +39446,7 @@ Qwen3-VL supports video understanding by processing video URLs:
     print(f"Response costs: {time.time() - start:.2f}s")
     print(f"Generated text: {response.choices[0].message.content}")
 <
-Note:
+Note: ~
 
 - For video processing, ensure you have sufficient context length configured
   (up to 262K tokens)
@@ -39481,7 +39474,7 @@ during deployment to separate the thinking and content sections:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-VL-235B-A22B-Thinking \
       --reasoning-parser qwen3 \
@@ -39568,7 +39561,7 @@ Qwen3-VL supports tool calling capabilities. Enable the tool call parser:
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-VL-235B-A22B-Thinking \
       --reasoning-parser qwen3 \
@@ -39692,7 +39685,7 @@ Output Example:
     🔧 Tool Call: get_weather
        Arguments: {"location": "Beijing", "unit": "celsius"}
 <
-Note:
+Note: ~
 
 - The reasoning parser shows how the model decides to use a tool
 - Tool calls are clearly marked with the function name and arguments
@@ -39768,7 +39761,7 @@ have 128 input tokens, two 720p images, and 1024 output tokens.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-VL-235B-A22B-Instruct \
       --tp 8 \
@@ -39781,7 +39774,7 @@ have 128 input tokens, two 720p images, and 1024 output tokens.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang-oai-chat \
       --host 127.0.0.1 \
@@ -39851,7 +39844,7 @@ TTFT by using CUDA IPC for transferring multimodal features.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --mm-feature-transport cuda_ipc \
       --model Qwen/Qwen3-VL-235B-A22B-Instruct \
@@ -39865,7 +39858,7 @@ TTFT by using CUDA IPC for transferring multimodal features.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang-oai-chat \
       --host 127.0.0.1 \
@@ -39935,7 +39928,7 @@ TTFT by using CUDA IPC for transferring multimodal features.
 
 [Command]Command
 
->sh
+>bash
     python -m sglang.launch_server \
       --model Qwen/Qwen3-VL-235B-A22B-Instruct \
       --tp 8 \
@@ -39948,7 +39941,7 @@ TTFT by using CUDA IPC for transferring multimodal features.
 
 [Command]Command
 
->sh
+>bash
     python3 -m sglang.benchmark.serving \
       --backend sglang-oai-chat \
       --host 127.0.0.1 \
@@ -40020,7 +40013,7 @@ You can evaluate the model's accuracy using the MMMU dataset with
 
 [Command]Command
 
->sh
+>bash
     uv pip install lmms_eval
 
     python3 -m lmms_eval \

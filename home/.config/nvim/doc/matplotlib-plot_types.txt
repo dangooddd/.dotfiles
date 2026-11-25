@@ -6,7 +6,9 @@ PLOT_TYPES                                     *matplotlib-section-plot_types*
 
 
 ----------------------------------------------------------------------------
-bar3d(x, y, z, dx, dy, dz)  *matplotlib-plot_types-3D-bar3d_simple*
+                                       *matplotlib-plot_types-3D-bar3d_simple*
+
+bar3d(x, y, z, dx, dy, dz)
 
 *plot_types-3D-bar3d_simple-sphx-glr-plot-types-3d-bar3d-simple-py*
 
@@ -39,7 +41,9 @@ See
 <
 
 ----------------------------------------------------------------------------
-fill_between(x1, y1, z1, x2, y2, z2)  *matplotlib-plot_types-3D-fill_between3d_simple*
+                              *matplotlib-plot_types-3D-fill_between3d_simple*
+
+fill_between(x1, y1, z1, x2, y2, z2)
 
 *plot_types-3D-fill_between3d_simple-sphx-glr-plot-types-3d-fill-between3d-simple-py*
 
@@ -118,7 +122,9 @@ voxels([x, y, z], filled)
 plot_wireframe(X, Y, Z)
 
 ----------------------------------------------------------------------------
-plot(xs, ys, zs)  *matplotlib-plot_types-3D-plot3d_simple*
+                                      *matplotlib-plot_types-3D-plot3d_simple*
+
+plot(xs, ys, zs)
 
 *plot_types-3D-plot3d_simple-sphx-glr-plot-types-3d-plot3d-simple-py*
 
@@ -149,7 +155,9 @@ See
 <
 
 ----------------------------------------------------------------------------
-quiver(X, Y, Z, U, V, W)  *matplotlib-plot_types-3D-quiver3d_simple*
+                                    *matplotlib-plot_types-3D-quiver3d_simple*
+
+quiver(X, Y, Z, U, V, W)
 
 *plot_types-3D-quiver3d_simple-sphx-glr-plot-types-3d-quiver3d-simple-py*
 
@@ -185,7 +193,9 @@ See
 <
 
 ----------------------------------------------------------------------------
-scatter(xs, ys, zs)  *matplotlib-plot_types-3D-scatter3d_simple*
+                                   *matplotlib-plot_types-3D-scatter3d_simple*
+
+scatter(xs, ys, zs)
 
 *plot_types-3D-scatter3d_simple-sphx-glr-plot-types-3d-scatter3d-simple-py*
 
@@ -218,7 +228,9 @@ See
 <
 
 ----------------------------------------------------------------------------
-stem(x, y, z)  *matplotlib-plot_types-3D-stem3d*
+                                             *matplotlib-plot_types-3D-stem3d*
+
+stem(x, y, z)
 
 *plot_types-3D-stem3d-sphx-glr-plot-types-3d-stem3d-py*
 
@@ -249,7 +261,9 @@ See
 <
 
 ----------------------------------------------------------------------------
-plot_surface(X, Y, Z)  *matplotlib-plot_types-3D-surface3d_simple*
+                                   *matplotlib-plot_types-3D-surface3d_simple*
+
+plot_surface(X, Y, Z)
 
 *plot_types-3D-surface3d_simple-sphx-glr-plot-types-3d-surface3d-simple-py*
 
@@ -281,7 +295,9 @@ See
 <
 
 ----------------------------------------------------------------------------
-plot_trisurf(x, y, z)  *matplotlib-plot_types-3D-trisurf3d_simple*
+                                   *matplotlib-plot_types-3D-trisurf3d_simple*
+
+plot_trisurf(x, y, z)
 
 *plot_types-3D-trisurf3d_simple-sphx-glr-plot-types-3d-trisurf3d-simple-py*
 
@@ -318,7 +334,9 @@ See
 <
 
 ----------------------------------------------------------------------------
-voxels([x, y, z], filled)  *matplotlib-plot_types-3D-voxels_simple*
+                                      *matplotlib-plot_types-3D-voxels_simple*
+
+voxels([x, y, z], filled)
 
 *plot_types-3D-voxels_simple-sphx-glr-plot-types-3d-voxels-simple-py*
 
@@ -353,7 +371,9 @@ See
 <
 
 ----------------------------------------------------------------------------
-plot_wireframe(X, Y, Z)  *matplotlib-plot_types-3D-wire3d_simple*
+                                      *matplotlib-plot_types-3D-wire3d_simple*
+
+plot_wireframe(X, Y, Z)
 
 *plot_types-3D-wire3d_simple-sphx-glr-plot-types-3d-wire3d-simple-py*
 
@@ -382,7 +402,9 @@ See
 <
 
 ----------------------------------------------------------------------------
-barbs(X, Y, U, V)  *matplotlib-plot_types-arrays-barbs*
+                                          *matplotlib-plot_types-arrays-barbs*
+
+barbs(X, Y, U, V)
 
 *plot_types-arrays-barbs-sphx-glr-plot-types-arrays-barbs-py*
 
@@ -420,7 +442,9 @@ See |matplotlib.axes.Axes.barbs|.
 <
 
 ----------------------------------------------------------------------------
-contour(X, Y, Z)  *matplotlib-plot_types-arrays-contour*
+                                        *matplotlib-plot_types-arrays-contour*
+
+contour(X, Y, Z)
 
 *plot_types-arrays-contour-sphx-glr-plot-types-arrays-contour-py*
 
@@ -448,7 +472,9 @@ See |matplotlib.axes.Axes.contour|.
 <
 
 ----------------------------------------------------------------------------
-contourf(X, Y, Z)  *matplotlib-plot_types-arrays-contourf*
+                                       *matplotlib-plot_types-arrays-contourf*
+
+contourf(X, Y, Z)
 
 *plot_types-arrays-contourf-sphx-glr-plot-types-arrays-contourf-py*
 
@@ -476,7 +502,9 @@ See |matplotlib.axes.Axes.contourf|.
 <
 
 ----------------------------------------------------------------------------
-imshow(Z)  *matplotlib-plot_types-arrays-imshow*
+                                         *matplotlib-plot_types-arrays-imshow*
+
+imshow(Z)
 
 *plot_types-arrays-imshow-sphx-glr-plot-types-arrays-imshow-py*
 
@@ -537,7 +565,9 @@ quiver(X, Y, U, V)
 streamplot(X, Y, U, V)
 
 ----------------------------------------------------------------------------
-pcolormesh(X, Y, Z)  *matplotlib-plot_types-arrays-pcolormesh*
+                                     *matplotlib-plot_types-arrays-pcolormesh*
+
+pcolormesh(X, Y, Z)
 
 *plot_types-arrays-pcolormesh-sphx-glr-plot-types-arrays-pcolormesh-py*
 
@@ -567,7 +597,9 @@ equally spaced (indeed they can be skewed).
 <
 
 ----------------------------------------------------------------------------
-quiver(X, Y, U, V)  *matplotlib-plot_types-arrays-quiver*
+                                         *matplotlib-plot_types-arrays-quiver*
+
+quiver(X, Y, U, V)
 
 *plot_types-arrays-quiver-sphx-glr-plot-types-arrays-quiver-py*
 
@@ -600,7 +632,9 @@ See |matplotlib.axes.Axes.quiver|.
 <
 
 ----------------------------------------------------------------------------
-streamplot(X, Y, U, V)  *matplotlib-plot_types-arrays-streamplot*
+                                     *matplotlib-plot_types-arrays-streamplot*
+
+streamplot(X, Y, U, V)
 
 *plot_types-arrays-streamplot-sphx-glr-plot-types-arrays-streamplot-py*
 
@@ -630,7 +664,9 @@ See |matplotlib.axes.Axes.streamplot|.
 <
 
 ----------------------------------------------------------------------------
-bar(x, height)  *matplotlib-plot_types-basic-bar*
+                                             *matplotlib-plot_types-basic-bar*
+
+bar(x, height)
 
 *plot_types-basic-bar-sphx-glr-plot-types-basic-bar-py*
 
@@ -658,7 +694,9 @@ See |matplotlib.axes.Axes.bar|.
 <
 
 ----------------------------------------------------------------------------
-fill_between(x, y1, y2)  *matplotlib-plot_types-basic-fill_between*
+                                    *matplotlib-plot_types-basic-fill_between*
+
+fill_between(x, y1, y2)
 
 *plot_types-basic-fill_between-sphx-glr-plot-types-basic-fill-between-py*
 
@@ -723,7 +761,9 @@ stackplot(x, y)
 stairs(values)
 
 ----------------------------------------------------------------------------
-plot(x, y)  *matplotlib-plot_types-basic-plot*
+                                            *matplotlib-plot_types-basic-plot*
+
+plot(x, y)
 
 *plot_types-basic-plot-sphx-glr-plot-types-basic-plot-py*
 
@@ -757,7 +797,9 @@ See |matplotlib.axes.Axes.plot|.
 <
 
 ----------------------------------------------------------------------------
-scatter(x, y)  *matplotlib-plot_types-basic-scatter_plot*
+                                    *matplotlib-plot_types-basic-scatter_plot*
+
+scatter(x, y)
 
 *plot_types-basic-scatter_plot-sphx-glr-plot-types-basic-scatter-plot-py*
 
@@ -791,7 +833,9 @@ See |matplotlib.axes.Axes.scatter|.
 <
 
 ----------------------------------------------------------------------------
-stackplot(x, y)  *matplotlib-plot_types-basic-stackplot*
+                                       *matplotlib-plot_types-basic-stackplot*
+
+stackplot(x, y)
 
 *plot_types-basic-stackplot-sphx-glr-plot-types-basic-stackplot-py*
 
@@ -824,7 +868,9 @@ See |matplotlib.axes.Axes.stackplot|
 <
 
 ----------------------------------------------------------------------------
-stairs(values)  *matplotlib-plot_types-basic-stairs*
+                                          *matplotlib-plot_types-basic-stairs*
+
+stairs(values)
 
 *plot_types-basic-stairs-sphx-glr-plot-types-basic-stairs-py*
 
@@ -855,7 +901,9 @@ See |matplotlib.axes.Axes.stairs| when plotting `\(y\)` between
 <
 
 ----------------------------------------------------------------------------
-stem(x, y)  *matplotlib-plot_types-basic-stem*
+                                            *matplotlib-plot_types-basic-stem*
+
+stem(x, y)
 
 *plot_types-basic-stem-sphx-glr-plot-types-basic-stem-py*
 
@@ -1040,7 +1088,9 @@ voxels([x, y, z], filled)
 plot_wireframe(X, Y, Z)
 
 ----------------------------------------------------------------------------
-boxplot(X)  *matplotlib-plot_types-stats-boxplot_plot*
+                                    *matplotlib-plot_types-stats-boxplot_plot*
+
+boxplot(X)
 
 *plot_types-stats-boxplot_plot-sphx-glr-plot-types-stats-boxplot-plot-py*
 
@@ -1075,7 +1125,9 @@ See |matplotlib.axes.Axes.boxplot|.
 <
 
 ----------------------------------------------------------------------------
-ecdf(x)  *matplotlib-plot_types-stats-ecdf*
+                                            *matplotlib-plot_types-stats-ecdf*
+
+ecdf(x)
 
 *plot_types-stats-ecdf-sphx-glr-plot-types-stats-ecdf-py*
 
@@ -1100,7 +1152,9 @@ See |matplotlib.axes.Axes.ecdf|.
 <
 
 ----------------------------------------------------------------------------
-errorbar(x, y, yerr, xerr)  *matplotlib-plot_types-stats-errorbar_plot*
+                                   *matplotlib-plot_types-stats-errorbar_plot*
+
+errorbar(x, y, yerr, xerr)
 
 *plot_types-stats-errorbar_plot-sphx-glr-plot-types-stats-errorbar-plot-py*
 
@@ -1132,7 +1186,9 @@ See |matplotlib.axes.Axes.errorbar|.
 <
 
 ----------------------------------------------------------------------------
-eventplot(D)  *matplotlib-plot_types-stats-eventplot*
+                                       *matplotlib-plot_types-stats-eventplot*
+
+eventplot(D)
 
 *plot_types-stats-eventplot-sphx-glr-plot-types-stats-eventplot-py*
 
@@ -1163,7 +1219,9 @@ See |matplotlib.axes.Axes.eventplot|.
 <
 
 ----------------------------------------------------------------------------
-hexbin(x, y, C)  *matplotlib-plot_types-stats-hexbin*
+                                          *matplotlib-plot_types-stats-hexbin*
+
+hexbin(x, y, C)
 
 *plot_types-stats-hexbin-sphx-glr-plot-types-stats-hexbin-py*
 
@@ -1193,7 +1251,9 @@ See |matplotlib.axes.Axes.hexbin|.
 <
 
 ----------------------------------------------------------------------------
-hist2d(x, y)  *matplotlib-plot_types-stats-hist2d*
+                                          *matplotlib-plot_types-stats-hist2d*
+
+hist2d(x, y)
 
 *plot_types-stats-hist2d-sphx-glr-plot-types-stats-hist2d-py*
 
@@ -1223,7 +1283,9 @@ See |matplotlib.axes.Axes.hist2d|.
 <
 
 ----------------------------------------------------------------------------
-hist(x)  *matplotlib-plot_types-stats-hist_plot*
+                                       *matplotlib-plot_types-stats-hist_plot*
+
+hist(x)
 
 *plot_types-stats-hist_plot-sphx-glr-plot-types-stats-hist-plot-py*
 
@@ -1291,7 +1353,9 @@ pie(x)
 ecdf(x)
 
 ----------------------------------------------------------------------------
-pie(x)  *matplotlib-plot_types-stats-pie*
+                                             *matplotlib-plot_types-stats-pie*
+
+pie(x)
 
 *plot_types-stats-pie-sphx-glr-plot-types-stats-pie-py*
 
@@ -1322,7 +1386,9 @@ See |matplotlib.axes.Axes.pie|.
 <
 
 ----------------------------------------------------------------------------
-violinplot(D)  *matplotlib-plot_types-stats-violin*
+                                          *matplotlib-plot_types-stats-violin*
+
+violinplot(D)
 
 *plot_types-stats-violin-sphx-glr-plot-types-stats-violin-py*
 
@@ -1379,7 +1445,9 @@ tripcolor(x, y, z)
 triplot(x, y)
 
 ----------------------------------------------------------------------------
-tricontour(x, y, z)  *matplotlib-plot_types-unstructured-tricontour*
+                               *matplotlib-plot_types-unstructured-tricontour*
+
+tricontour(x, y, z)
 
 *plot_types-unstructured-tricontour-sphx-glr-plot-types-unstructured-tricontour-py*
 
@@ -1412,7 +1480,9 @@ See |matplotlib.axes.Axes.tricontour|.
 <
 
 ----------------------------------------------------------------------------
-tricontourf(x, y, z)  *matplotlib-plot_types-unstructured-tricontourf*
+                              *matplotlib-plot_types-unstructured-tricontourf*
+
+tricontourf(x, y, z)
 
 *plot_types-unstructured-tricontourf-sphx-glr-plot-types-unstructured-tricontourf-py*
 
@@ -1445,7 +1515,9 @@ See |matplotlib.axes.Axes.tricontourf|.
 <
 
 ----------------------------------------------------------------------------
-tripcolor(x, y, z)  *matplotlib-plot_types-unstructured-tripcolor*
+                                *matplotlib-plot_types-unstructured-tripcolor*
+
+tripcolor(x, y, z)
 
 *plot_types-unstructured-tripcolor-sphx-glr-plot-types-unstructured-tripcolor-py*
 
@@ -1477,7 +1549,9 @@ See |matplotlib.axes.Axes.tripcolor|.
 <
 
 ----------------------------------------------------------------------------
-triplot(x, y)  *matplotlib-plot_types-unstructured-triplot*
+                                  *matplotlib-plot_types-unstructured-triplot*
+
+triplot(x, y)
 
 *plot_types-unstructured-triplot-sphx-glr-plot-types-unstructured-triplot-py*
 

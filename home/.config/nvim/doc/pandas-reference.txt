@@ -29,185 +29,212 @@ their own python code that calls pandas or expects certain results.
 Each of these aliases listed in the table below can be found by importing
 them from |reference-aliases-module-pandas.api.typing.aliases|.
 
-Alias                                 Meaning
-------------------------------------  ----------------------------------------
-type                                  Type of functions that can be passed to
-pandas.api.typing.aliases.AggFuncType  DataFrame's, Series', and
-                                      DataFrameGroupBy's aggregate() methods
-type                                  Argument type for join in DataFrame's
-pandas.api.typing.aliases.AlignJoin   and Series' align() methods
-type                                  Argument type for how in DataFrame's and
-pandas.api.typing.aliases.AnyAll      Series' dropna() methods
-type                                  Used to represent ExtensionArray, numpy
-pandas.api.typing.aliases.AnyArrayLike  arrays, Index and Series
-type                                  Used to represent ExtensionArray, numpy
-pandas.api.typing.aliases.ArrayLike   arrays
-type                                  Argument type in DataFrame's and Series'
-pandas.api.typing.aliases.AstypeArg   astype() methods
-type pandas.api.typing.aliases.Axes   AnyArrayLike plus sequences (not
-                                      strings) and range
-type pandas.api.typing.aliases.Axis   Argument type for axis in many methods
-type                                  Argument type for engine in
-pandas.api.typing.aliases.CSVEngine   pandas.read_csv()
-type                                  Argument type for colspace in
-pandas.api.typing.aliases.ColspaceArgType  pandas.DataFrame.to_html()
-type                                  Argument type for compression in all I/O
-pandas.api.typing.aliases.CompressionOptions  output methods except
-                                      pandas.DataFrame.to_parquet()
-type                                  Argument type for correlation in
-pandas.api.typing.aliases.CorrelationMethod  DataFrame's and Series' corr() methods
-type                                  Argument type for keep in DataFrame's
-pandas.api.typing.aliases.DropKeep    and Series' drop_duplicates() methods
-type pandas.api.typing.aliases.Dtype  Types as objects that can be used to
-                                      specify dtypes
-type                                  Argument type for dtype in various
-pandas.api.typing.aliases.DtypeArg    methods
-type                                  Argument type for dtype_backend in
-pandas.api.typing.aliases.DtypeBackend  various methods
-type                                  Numpy dtypes and Extension dtypes
+Alias                               Meaning
+----------------------------------  ------------------------------------------
+type                                Type of functions that can be passed to
+pandas.api.typing.aliases.          DataFrame's, Series', and
+AggFuncType                         DataFrameGroupBy's aggregate() methods
+type                                Argument type for join in DataFrame's and
+pandas.api.typing.aliases.          Series' align() methods
+AlignJoin
+type                                Argument type for how in DataFrame's and
+pandas.api.typing.aliases.AnyAll    Series' dropna() methods
+type                                Used to represent ExtensionArray, numpy
+pandas.api.typing.aliases.          arrays, Index and Series
+AnyArrayLike
+type                                Used to represent ExtensionArray, numpy
+pandas.api.typing.aliases.          arrays
+ArrayLike
+type                                Argument type in DataFrame's and Series'
+pandas.api.typing.aliases.          astype() methods
+AstypeArg
+type                                AnyArrayLike plus sequences (not strings)
+pandas.api.typing.aliases.Axes      and range
+type                                Argument type for axis in many methods
+pandas.api.typing.aliases.Axis
+type                                Argument type for engine in
+pandas.api.typing.aliases.          pandas.read_csv()
+CSVEngine
+type                                Argument type for colspace in
+pandas.api.typing.aliases.          pandas.DataFrame.to_html()
+ColspaceArgType
+type                                Argument type for compression in all I/O
+pandas.api.typing.aliases.          output methods except
+CompressionOptions                  pandas.DataFrame.to_parquet()
+type                                Argument type for correlation in
+pandas.api.typing.aliases.          DataFrame's and Series' corr() methods
+CorrelationMethod
+type                                Argument type for keep in DataFrame's and
+pandas.api.typing.aliases.DropKeep  Series' drop_duplicates() methods
+type                                Types as objects that can be used to
+pandas.api.typing.aliases.Dtype     specify dtypes
+type                                Argument type for dtype in various methods
+pandas.api.typing.aliases.DtypeArg
+type                                Argument type for dtype_backend in various
+pandas.api.typing.aliases.          methods
+DtypeBackend
+type                                Numpy dtypes and Extension dtypes
 pandas.api.typing.aliases.DtypeObj
-type                                  Argument type for if_sheet_exists in
-pandas.api.typing.aliases.ExcelWriterIfSheetExists  ExcelWriter
-type                                  Argument type for merge_cells in
-pandas.api.typing.aliases.ExcelWriterMergeCells  DataFrame's and Series' to_excel()
-                                      methods
-type                                  Type of paths for files for I/O methods
+type                                Argument type for if_sheet_exists in
+pandas.api.typing.aliases.          ExcelWriter
+ExcelWriterIfSheetExists
+type                                Argument type for merge_cells in
+pandas.api.typing.aliases.          DataFrame's and Series' to_excel() methods
+ExcelWriterMergeCells
+type                                Type of paths for files for I/O methods
 pandas.api.typing.aliases.FilePath
-type                                  Argument type for method in various
-pandas.api.typing.aliases.FillnaOptions  methods where NA values are filled
-type                                  Argument type for float_format in
-pandas.api.typing.aliases.FloatFormatType  DataFrame's and Series' to_string()
-                                      methods
-type                                  Argument type for formatters in
-pandas.api.typing.aliases.FormattersType  DataFrame's and Series' to_string()
-                                      methods
-type                                  Argument type for orient in
-pandas.api.typing.aliases.FromDictOrient  DataFrame.from_dict()
-type                                  Argument type for flavor in
-pandas.api.typing.aliases.HTMLFlavors  pandas.read_html()
-type                                  Argument type for errors in multiple
-pandas.api.typing.aliases.IgnoreRaise  methods
-type                                  Argument type for level in multiple
-pandas.api.typing.aliases.IndexLabel  methods
-type                                  Argument type for interpolate in
-pandas.api.typing.aliases.InterpolateOptions  DataFrame's and Series' interpolate()
-                                      methods
-type                                  Argument type for closed in Interval,
-pandas.api.typing.aliases.IntervalClosedType  IntervalIndex, and inclusive in various
-                                      methods
-type                                  Restriction for closed to be left or
-pandas.api.typing.aliases.IntervalLeftRight  right in Interval, IntervalIndex, and
-                                      inclusive in various methods
-type                                  Argument type for engine in
-pandas.api.typing.aliases.JSONEngine  pandas.read_json()
-type                                  Argument type for the return type of a
-pandas.api.typing.aliases.JSONSerializable  callable for argument default_handler in
-                                      DataFrame's and Series' to_json()
-                                      methods
-type                                  Argument type for how in
-pandas.api.typing.aliases.JoinHow     pandas.merge_ordered() and for join in
-                                      Series.align()
-type                                  Argument type for validate in
-pandas.api.typing.aliases.JoinValidate  DataFrame.join()
-type                                  Argument type for arguments that can be
-pandas.api.typing.aliases.ListLike    either a single value or a list of
-                                      values in various methods
-type                                  Argument type for how in pandas.merge()
+type                                Argument type for method in various
+pandas.api.typing.aliases.          methods where NA values are filled
+FillnaOptions
+type                                Argument type for float_format in
+pandas.api.typing.aliases.          DataFrame's and Series' to_string()
+FloatFormatType                     methods
+type                                Argument type for formatters in
+pandas.api.typing.aliases.          DataFrame's and Series' to_string()
+FormattersType                      methods
+type                                Argument type for orient in
+pandas.api.typing.aliases.          DataFrame.from_dict()
+FromDictOrient
+type                                Argument type for flavor in
+pandas.api.typing.aliases.          pandas.read_html()
+HTMLFlavors
+type                                Argument type for errors in multiple
+pandas.api.typing.aliases.          methods
+IgnoreRaise
+type                                Argument type for level in multiple
+pandas.api.typing.aliases.          methods
+IndexLabel
+type                                Argument type for interpolate in
+pandas.api.typing.aliases.          DataFrame's and Series' interpolate()
+InterpolateOptions                  methods
+type                                Argument type for closed in Interval,
+pandas.api.typing.aliases.          IntervalIndex, and inclusive in various
+IntervalClosedType                  methods
+type                                Restriction for closed to be left or right
+pandas.api.typing.aliases.          in Interval, IntervalIndex, and inclusive
+IntervalLeftRight                   in various methods
+type                                Argument type for engine in
+pandas.api.typing.aliases.          pandas.read_json()
+JSONEngine
+type                                Argument type for the return type of a
+pandas.api.typing.aliases.          callable for argument default_handler in
+JSONSerializable                    DataFrame's and Series' to_json() methods
+type                                Argument type for how in
+pandas.api.typing.aliases.JoinHow   pandas.merge_ordered() and for join in
+                                    Series.align()
+type                                Argument type for validate in
+pandas.api.typing.aliases.          DataFrame.join()
+JoinValidate
+type                                Argument type for arguments that can be
+pandas.api.typing.aliases.ListLike  either a single value or a list of values
+                                    in various methods
+type                                Argument type for how in pandas.merge()
 pandas.api.typing.aliases.MergeHow
-type                                  Argument type for validate in
-pandas.api.typing.aliases.MergeValidate  pandas.merge()
-type                                  Argument type for na_position in
-pandas.api.typing.aliases.NaPosition  DataFrame's and Series' sort_values()
-                                      methods
-type                                  Argument type for keep in DataFrame's
-pandas.api.typing.aliases.NsmallestNlargestKeep  and Series' nlargest(), DataFrame's and
-                                      Series' nsmallest(), and SeriesGroupBy's
-                                      nlargest() methods
-type                                  Argument type for errors in DataFrame's,
-pandas.api.typing.aliases.OpenFileErrors  Series' to_hdf() methods, and
-                                      DataFrame's and Series' to_csv() methods
-type                                  Return type for ordered in
-pandas.api.typing.aliases.Ordered     pandas.CategoricalDtype and
-                                      pandas.Categorical
-type                                  Argument type for compression in
-pandas.api.typing.aliases.ParquetCompressionOptions  DataFrame.to_parquet()
-type                                  Argument type for interpolation in
-pandas.api.typing.aliases.QuantileInterpolation  DataFrame's and Series' quantile()
-                                      methods
-type                                  Additional argument type corresponding
-pandas.api.typing.aliases.ReadBuffer  to buffers for various file reading
-                                      methods
-type                                  Additional argument type corresponding
-pandas.api.typing.aliases.ReadCsvBuffer  to buffers for pandas.read_csv()
-type                                  Additional argument type corresponding
-pandas.api.typing.aliases.ReadPickleBuffer  to buffers for pandas.read_pickle()
-type                                  Argument type for reindex in DataFrame's
-pandas.api.typing.aliases.ReindexMethod  and Series' reindex() methods
-type                                  Types that can be stored in Series with
-pandas.api.typing.aliases.Scalar      non-object dtype
-type                                  Argument type used for scalar indexing
-pandas.api.typing.aliases.ScalarIndexer  operations, such as the key argument in
-                                      __getitem__() methods
-type                                  Argument type used for sequence indexing
-pandas.api.typing.aliases.SequenceIndexer  operations, such as the key argument in
-                                      __getitem__() methods
-type                                  Used for arguments that require
-pandas.api.typing.aliases.SequenceNotStr  sequences, but not plain strings
-type                                  Argument types for start and end in
-pandas.api.typing.aliases.SliceType   Index.slice_locs()
-type                                  Argument type for kind in DataFrame's
-pandas.api.typing.aliases.SortKind    and Series' sort_values() methods
-type                                  Argument type for storage_options in
-pandas.api.typing.aliases.StorageOptions  various file output methods
-type                                  Argument type for suffixes in
-pandas.api.typing.aliases.Suffixes    pandas.merge(), pandas.merge_ordered(),
-                                      and DataFrame's and Series' compare()
-                                      methods
-type                                  Argument type for indexer and indices in
-pandas.api.typing.aliases.TakeIndexer  DataFrame's and Series' take() methods
-type                                  Argument type for ambiguous in time
-pandas.api.typing.aliases.TimeAmbiguous  operations
-type                                  Argument type for origin in DataFrame's,
-pandas.api.typing.aliases.TimeGrouperOrigin  Series' resample() methods and for
-                                      Grouper
-type                                  Argument type for nonexistent in time
-pandas.api.typing.aliases.TimeNonexistent  operations
-type                                  Time unit argument and return type for
-pandas.api.typing.aliases.TimeUnit    pandas.Timedelta.unit, arguments unit
-                                      and date_unit
-type                                  Argument type for offset in various
-pandas.api.typing.aliases.TimedeltaConvertibleTypes  methods, such as DataFrame's and Series'
-                                      resample(), halflife in DataFrame's,
-                                      DataFrameGroupBy's, and Series' ewm(),
-                                      and start and end in
-                                      pandas.timedelta_range()
-type                                  Argument type for origin in DataFrame's
-pandas.api.typing.aliases.TimestampConvertibleTypes  and Series' resample(), and in
-                                      pandas.to_datetime()
-type                                  Argument type for byteorder in
-pandas.api.typing.aliases.ToStataByteorder  DataFrame.to_stata()
-type                                  Argument type for how in DataFrame's and
-pandas.api.typing.aliases.ToTimestampHow  Series' to_timestamp() methods, and
-                                      convention in DataFrame's and Series'
-                                      resample() methods
-type                                  Argument type for join in
-pandas.api.typing.aliases.UpdateJoin  DataFrame.update()
-type                                  Argument type for usecols in
-pandas.api.typing.aliases.UsecolsArgType  pandas.read_clipboard(),
-                                      pandas.read_csv() and
-                                      pandas.read_excel()
-type                                  Argument type for method in Rolling's
-pandas.api.typing.aliases.WindowingRankType  and Expanding's rank() methods,
-                                      applicable in rolling and expanding
-                                      window operations
-type                                  Additional argument type corresponding
-pandas.api.typing.aliases.WriteBuffer  to buffers for various file output
-                                      methods
-type                                  Additional argument type corresponding
-pandas.api.typing.aliases.WriteExcelBuffer  to buffers for DataFrame's, Series' and
-                                      Styler's to_excel() methods
-type                                  Argument type for parser in
-pandas.api.typing.aliases.XMLParsers  DataFrame.to_xml() and pandas.read_xml()
+type                                Argument type for validate in
+pandas.api.typing.aliases.          pandas.merge()
+MergeValidate
+type                                Argument type for na_position in
+pandas.api.typing.aliases.          DataFrame's and Series' sort_values()
+NaPosition                          methods
+type                                Argument type for keep in DataFrame's and
+pandas.api.typing.aliases.          Series' nlargest(), DataFrame's and
+NsmallestNlargestKeep               Series' nsmallest(), and SeriesGroupBy's
+                                    nlargest() methods
+type                                Argument type for errors in DataFrame's,
+pandas.api.typing.aliases.          Series' to_hdf() methods, and DataFrame's
+OpenFileErrors                      and Series' to_csv() methods
+type                                Return type for ordered in
+pandas.api.typing.aliases.Ordered   pandas.CategoricalDtype and
+                                    pandas.Categorical
+type                                Argument type for compression in
+pandas.api.typing.aliases.          DataFrame.to_parquet()
+ParquetCompressionOptions
+type                                Argument type for interpolation in
+pandas.api.typing.aliases.          DataFrame's and Series' quantile() methods
+QuantileInterpolation
+type                                Additional argument type corresponding to
+pandas.api.typing.aliases.          buffers for various file reading methods
+ReadBuffer
+type                                Additional argument type corresponding to
+pandas.api.typing.aliases.          buffers for pandas.read_csv()
+ReadCsvBuffer
+type                                Additional argument type corresponding to
+pandas.api.typing.aliases.          buffers for pandas.read_pickle()
+ReadPickleBuffer
+type                                Argument type for reindex in DataFrame's
+pandas.api.typing.aliases.          and Series' reindex() methods
+ReindexMethod
+type                                Types that can be stored in Series with
+pandas.api.typing.aliases.Scalar    non-object dtype
+type                                Argument type used for scalar indexing
+pandas.api.typing.aliases.          operations, such as the key argument in
+ScalarIndexer                       __getitem__() methods
+type                                Argument type used for sequence indexing
+pandas.api.typing.aliases.          operations, such as the key argument in
+SequenceIndexer                     __getitem__() methods
+type                                Used for arguments that require sequences,
+pandas.api.typing.aliases.          but not plain strings
+SequenceNotStr
+type                                Argument types for start and end in
+pandas.api.typing.aliases.          Index.slice_locs()
+SliceType
+type                                Argument type for kind in DataFrame's and
+pandas.api.typing.aliases.SortKind  Series' sort_values() methods
+type                                Argument type for storage_options in
+pandas.api.typing.aliases.          various file output methods
+StorageOptions
+type                                Argument type for suffixes in
+pandas.api.typing.aliases.Suffixes  pandas.merge(), pandas.merge_ordered(),
+                                    and DataFrame's and Series' compare()
+                                    methods
+type                                Argument type for indexer and indices in
+pandas.api.typing.aliases.          DataFrame's and Series' take() methods
+TakeIndexer
+type                                Argument type for ambiguous in time
+pandas.api.typing.aliases.          operations
+TimeAmbiguous
+type                                Argument type for origin in DataFrame's,
+pandas.api.typing.aliases.          Series' resample() methods and for Grouper
+TimeGrouperOrigin
+type                                Argument type for nonexistent in time
+pandas.api.typing.aliases.          operations
+TimeNonexistent
+type                                Time unit argument and return type for
+pandas.api.typing.aliases.TimeUnit  pandas.Timedelta.unit, arguments unit and
+                                    date_unit
+type                                Argument type for offset in various
+pandas.api.typing.aliases.          methods, such as DataFrame's and Series'
+TimedeltaConvertibleTypes           resample(), halflife in DataFrame's,
+                                    DataFrameGroupBy's, and Series' ewm(), and
+                                    start and end in pandas.timedelta_range()
+type                                Argument type for origin in DataFrame's
+pandas.api.typing.aliases.          and Series' resample(), and in
+TimestampConvertibleTypes           pandas.to_datetime()
+type                                Argument type for byteorder in
+pandas.api.typing.aliases.          DataFrame.to_stata()
+ToStataByteorder
+type                                Argument type for how in DataFrame's and
+pandas.api.typing.aliases.          Series' to_timestamp() methods, and
+ToTimestampHow                      convention in DataFrame's and Series'
+                                    resample() methods
+type                                Argument type for join in
+pandas.api.typing.aliases.          DataFrame.update()
+UpdateJoin
+type                                Argument type for usecols in
+pandas.api.typing.aliases.          pandas.read_clipboard(), pandas.read_csv()
+UsecolsArgType                      and pandas.read_excel()
+type                                Argument type for method in Rolling's and
+pandas.api.typing.aliases.          Expanding's rank() methods, applicable in
+WindowingRankType                   rolling and expanding window operations
+type                                Additional argument type corresponding to
+pandas.api.typing.aliases.          buffers for various file output methods
+WriteBuffer
+type                                Additional argument type corresponding to
+pandas.api.typing.aliases.          buffers for DataFrame's, Series' and
+WriteExcelBuffer                    Styler's to_excel() methods
+type                                Argument type for parser in
+pandas.api.typing.aliases.          DataFrame.to_xml() and pandas.read_xml()
+XMLParsers
 
 ----------------------------------------------------------------------------
                                                            *pandas.ArrowDtype*
@@ -740,21 +767,22 @@ class pandas.Categorical(values, categories=None, ordered=None, dtype=None,
 
     Methods: ~
 
-    from_codes(codes[, categories,       Make a Categorical type from codes and
-    ordered, ...])                       categories or dtype.
-    as_ordered()                         Set the Categorical to be ordered.
-    as_unordered()                       Set the Categorical to be unordered.
-    set_categories(new_categories[,      Set the categories to the specified new
-    ordered, rename])                    categories.
-    rename_categories(new_categories)    Rename categories.
-    reorder_categories(new_categories[,  Reorder categories as specified in
-    ordered])                            new_categories.
-    add_categories(new_categories)       Add new categories.
-    remove_categories(removals)          Remove the specified categories.
-    remove_unused_categories()           Remove categories which are not used.
-    map(mapper[, na_action])             Map categories using an input mapping or
-                                         function.
-    __array__([dtype, copy])             The numpy array interface.
+    from_codes(codes[, categories,      Make a Categorical type from codes and
+    ordered, ...])                      categories or dtype.
+    as_ordered()                        Set the Categorical to be ordered.
+    as_unordered()                      Set the Categorical to be unordered.
+    set_categories(new_categories[,     Set the categories to the specified
+    ordered, rename])                   new categories.
+    rename_categories(new_categories)   Rename categories.
+    reorder_categories(new_             Reorder categories as specified in
+    categories[,                        new_categories.
+    ordered])
+    add_categories(new_categories)      Add new categories.
+    remove_categories(removals)         Remove the specified categories.
+    remove_unused_categories()          Remove categories which are not used.
+    map(mapper[, na_action])            Map categories using an input mapping
+                                        or function.
+    __array__([dtype, copy])            The numpy array interface.
 
     Raises: ~
         ValueError
@@ -1782,18 +1810,21 @@ class pandas.CategoricalIndex(data=None, categories=None, ordered=None,
 
     Methods: ~
 
-    rename_categories(new_categories)    Rename categories.
-    reorder_categories(new_categories[,  Reorder categories as specified in
-    ordered])                            new_categories.
-    add_categories(new_categories)       Add new categories.
-    remove_categories(removals)          Remove the specified categories.
-    remove_unused_categories()           Remove categories which are not used.
-    set_categories(new_categories[,      Set the categories to the specified new
-    ordered, rename])                    categories.
-    as_ordered()                         Set the CategoricalIndex to be ordered.
-    as_unordered()                       Set the CategoricalIndex to be unordered.
-    map(mapper[, na_action])             Map values using input an input mapping
-                                         or function.
+    rename_categories(new_categories)   Rename categories.
+    reorder_categories(new_             Reorder categories as specified in
+    categories[,                        new_categories.
+    ordered])
+    add_categories(new_categories)      Add new categories.
+    remove_categories(removals)         Remove the specified categories.
+    remove_unused_categories()          Remove categories which are not used.
+    set_categories(new_categories[,     Set the categories to the specified
+    ordered, rename])                   new categories.
+    as_ordered()                        Set the CategoricalIndex to be
+                                        ordered.
+    as_unordered()                      Set the CategoricalIndex to be
+                                        unordered.
+    map(mapper[, na_action])            Map values using input an input
+                                        mapping or function.
 
     Raises: ~
         ValueError
@@ -10225,7 +10256,8 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
     iat      Access a single value for a row/column pair by integer position.
     iloc     Purely integer-location based indexing for selection by position.
     index    The index (row labels) of the DataFrame.
-    loc      Access a group of rows and columns by label(s) or a boolean array.
+    loc      Access a group of rows and columns by label(s) or a boolean
+             array.
     ndim     Return an int representing the number of axes / array dimensions.
     shape    Return a tuple representing the dimensionality of the DataFrame.
     size     Return an int representing the number of elements in this object.
@@ -10234,8 +10266,9 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
 
     Methods: ~
 
-    abs()                               Return a Series/DataFrame with absolute
-                                        numeric value of each element.
+    abs()                               Return a Series/DataFrame with
+                                        absolute numeric value of each
+                                        element.
     add(other[, axis, level,            Get Addition of dataframe and other,
     fill_value])                        element-wise (binary operator add).
     add_prefix(prefix[, axis])          Prefix labels with string prefix.
@@ -10244,8 +10277,8 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
                                         over the specified axis.
     aggregate([func, axis])             Aggregate using one or more operations
                                         over the specified axis.
-    align(other[, join, axis, level,    Align two objects on their axes with the
-    copy, ...])                         specified join method.
+    align(other[, join, axis, level,    Align two objects on their axes with
+    copy, ...])                         the specified join method.
     all(*[, axis, bool_only, skipna])   Return whether all elements are True,
                                         potentially over an axis.
     any(*[, axis, bool_only, skipna])   Return whether any element is True,
@@ -10254,46 +10287,47 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
     result_type, args, ...])            DataFrame.
     asfreq(freq[, method, how,          Convert time series to specified
     normalize, ...])                    frequency.
-    asof(where[, subset])               Return the last row(s) without any NaNs
-                                        before where.
+    asof(where[, subset])               Return the last row(s) without any
+                                        NaNs before where.
     assign(**kwargs)                    Assign new columns to a DataFrame.
-    astype(dtype[, copy, errors])       Cast a pandas object to a specified dtype
-                                        dtype.
-    at_time(time[, asof, axis])         Select values at particular time of day
-                                        (e.g., 9:30AM).
-    between_time(start_time,            Select values between particular times of
-    end_time[, ...])                    the day (e.g., 9:00-9:30 AM).
-    bfill(*[, axis, inplace, limit,     Fill NA/NaN values by using the next valid
-    limit_area])                        observation to fill the gap.
-    boxplot([column, by, ax, fontsize,  Make a box plot from DataFrame columns.
-    rot, ...])
+    astype(dtype[, copy, errors])       Cast a pandas object to a specified
+                                        dtype dtype.
+    at_time(time[, asof, axis])         Select values at particular time of
+                                        day (e.g., 9:30AM).
+    between_time(start_time,            Select values between particular times
+    end_time[, ...])                    of the day (e.g., 9:00-9:30 AM).
+    bfill(*[, axis, inplace, limit,     Fill NA/NaN values by using the next
+    limit_area])                        valid observation to fill the gap.
+    boxplot([column, by, ax, fontsize,  Make a box plot from DataFrame
+    rot, ...])                          columns.
     clip([lower, upper, axis,           Trim values at input threshold(s).
     inplace])
-    combine(other, func[, fill_value,   Perform column-wise combine with another
-    overwrite])                         DataFrame.
+    combine(other, func[, fill_value,   Perform column-wise combine with
+    overwrite])                         another DataFrame.
     combine_first(other)                Update null elements with value in the
                                         same location in other.
-    compare(other[, align_axis,         Compare to another DataFrame and show the
-    keep_shape, ...])                   differences.
-    convert_dtypes([infer_objects,      Convert columns from numpy dtypes to the
-    ...])                               best dtypes that support pd.NA.
-    copy([deep])                        Make a copy of this object's indices and
-                                        data.
-    corr([method, min_periods,          Compute pairwise correlation of columns,
-    numeric_only])                      excluding NA/null values.
+    compare(other[, align_axis,         Compare to another DataFrame and show
+    keep_shape, ...])                   the differences.
+    convert_dtypes([infer_objects,      Convert columns from numpy dtypes to
+    ...])                               the best dtypes that support pd.NA.
+    copy([deep])                        Make a copy of this object's indices
+                                        and data.
+    corr([method, min_periods,          Compute pairwise correlation of
+    numeric_only])                      columns, excluding NA/null values.
     corrwith(other[, axis, drop,        Compute pairwise correlation.
     method, ...])
-    count([axis, numeric_only])         Count non-NA cells for each column or row.
-    cov([min_periods, ddof,             Compute pairwise covariance of columns,
-    numeric_only])                      excluding NA/null values.
-    cummax([axis, skipna,               Return cumulative maximum over a DataFrame
+    count([axis, numeric_only])         Count non-NA cells for each column or
+                                        row.
+    cov([min_periods, ddof,             Compute pairwise covariance of
+    numeric_only])                      columns, excluding NA/null values.
+    cummax([axis, skipna,               Return cumulative maximum over a
+    numeric_only])                      DataFrame or Series axis.
+    cummin([axis, skipna,               Return cumulative minimum over a
+    numeric_only])                      DataFrame or Series axis.
+    cumprod([axis, skipna,              Return cumulative product over a
+    numeric_only])                      DataFrame or Series axis.
+    cumsum([axis, skipna,               Return cumulative sum over a DataFrame
     numeric_only])                      or Series axis.
-    cummin([axis, skipna,               Return cumulative minimum over a DataFrame
-    numeric_only])                      or Series axis.
-    cumprod([axis, skipna,              Return cumulative product over a DataFrame
-    numeric_only])                      or Series axis.
-    cumsum([axis, skipna,               Return cumulative sum over a DataFrame or
-    numeric_only])                      Series axis.
     describe([percentiles, include,     Generate descriptive statistics.
     exclude])
     diff([periods, axis])               First discrete difference of element.
@@ -10303,8 +10337,8 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
     divide(other[, axis, level,         Get Floating division of dataframe and
     fill_value])                        other, element-wise (binary operator
                                         truediv).
-    dot(other)                          Compute the matrix multiplication between
-                                        the DataFrame and other.
+    dot(other)                          Compute the matrix multiplication
+                                        between the DataFrame and other.
     drop([labels, axis, index,          Drop specified labels from rows or
     columns, level, ...])               columns.
     drop_duplicates([subset, keep,      Return DataFrame with duplicate rows
@@ -10313,45 +10347,46 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
                                         index / column level(s) removed.
     dropna(*[, axis, how, thresh,       Remove missing values.
     subset, ...])
-    duplicated([subset, keep])          Return boolean Series denoting duplicate
-                                        rows.
+    duplicated([subset, keep])          Return boolean Series denoting
+                                        duplicate rows.
     eq(other[, axis, level])            Get Equal to of dataframe and other,
                                         element-wise (binary operator eq).
-    equals(other)                       Test whether two objects contain the same
-                                        elements.
-    eval(expr, *[, inplace])            Evaluate a string describing operations on
-                                        DataFrame columns.
+    equals(other)                       Test whether two objects contain the
+                                        same elements.
+    eval(expr, *[, inplace])            Evaluate a string describing
+                                        operations on DataFrame columns.
     ewm([com, span, halflife, alpha,    Provide exponentially weighted (EW)
     ...])                               calculations.
     expanding([min_periods, method])    Provide expanding window calculations.
-    explode(column[, ignore_index])     Transform each element of a list-like to a
-                                        row, replicating index values.
-    ffill(*[, axis, inplace, limit,     Fill NA/NaN values by propagating the last
-    limit_area])                        valid observation to next valid.
+    explode(column[, ignore_index])     Transform each element of a list-like
+                                        to a row, replicating index values.
+    ffill(*[, axis, inplace, limit,     Fill NA/NaN values by propagating the
+    limit_area])                        last valid observation to next valid.
     fillna(value, *[, axis, inplace,    Fill NA/NaN values with value.
     limit])
-    filter([arg, like, regex, axis,     Subset the rows or columns according to a
-    items, cond, na])                   boolean mask or the labels.
-    first_valid_index()                 Return index for first non-missing value
-                                        or None, if no value is found.
+    filter([arg, like, regex, axis,     Subset the rows or columns according
+    items, cond, na])                   to a boolean mask or the labels.
+    first_valid_index()                 Return index for first non-missing
+                                        value or None, if no value is found.
     floordiv(other[, axis, level,       Get Integer division of dataframe and
     fill_value])                        other, element-wise (binary operator
                                         floordiv).
-    from_arrow(data)                    Construct a DataFrame from a tabular Arrow
-                                        object.
+    from_arrow(data)                    Construct a DataFrame from a tabular
+                                        Arrow object.
     from_dict(data[, orient, dtype,     Construct DataFrame from dict of
     columns])                           array-like or dicts.
-    from_records(data[, index,          Convert structured or record ndarray to
-    exclude, ...])                      DataFrame.
-    ge(other[, axis, level])            Get Greater than or equal to of dataframe
-                                        and other, element-wise (binary operator
-                                        ge).
-    get(key[, default])                 Get item from object for given key (ex:
-                                        DataFrame column).
+    from_records(data[, index,          Convert structured or record ndarray
+    exclude, ...])                      to DataFrame.
+    ge(other[, axis, level])            Get Greater than or equal to of
+                                        dataframe and other, element-wise
+                                        (binary operator ge).
+    get(key[, default])                 Get item from object for given key
+                                        (ex: DataFrame column).
     groupby([by, level, as_index,       Group DataFrame using a mapper or by a
     sort, ...])                         Series of columns.
-    gt(other[, axis, level])            Get Greater than of dataframe and other,
-                                        element-wise (binary operator gt).
+    gt(other[, axis, level])            Get Greater than of dataframe and
+                                        other, element-wise (binary operator
+                                        gt).
     head([n])                           Return the first n rows.
     hist([column, by, grid,             Make a histogram of the DataFrame's
     xlabelsize, xrot, ...])             columns.
@@ -10359,22 +10394,23 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
     numeric_only])                      maximum over requested axis.
     idxmin([axis, skipna,               Return index of first occurrence of
     numeric_only])                      minimum over requested axis.
-    infer_objects([copy])               Attempt to infer better dtypes for object
-                                        columns.
-    info([verbose, buf, max_cols,       Print a concise summary of a DataFrame.
-    memory_usage, ...])
-    insert(loc, column, value[,         Insert column into DataFrame at specified
-    allow_duplicates])                  location.
+    infer_objects([copy])               Attempt to infer better dtypes for
+                                        object columns.
+    info([verbose, buf, max_cols,       Print a concise summary of a
+    memory_usage, ...])                 DataFrame.
+    insert(loc, column, value[,         Insert column into DataFrame at
+    allow_duplicates])                  specified location.
     interpolate([method, axis, limit,   Fill NaN values using an interpolation
     inplace, ...])                      method.
     isetitem(loc, value)                Set the given value in the column with
                                         position loc.
-    isin(values)                        Whether each element in the DataFrame is
-                                        contained in values.
+    isin(values)                        Whether each element in the DataFrame
+                                        is contained in values.
     isna()                              Detect missing values.
     isnull()                            DataFrame.isnull is an alias for
                                         DataFrame.isna.
-    items()                             Iterate over (column name, Series) pairs.
+    items()                             Iterate over (column name, Series)
+                                        pairs.
     iterrows()                          Iterate over DataFrame rows as (index,
                                         Series) pairs.
     itertuples([index, name])           Iterate over DataFrame rows as
@@ -10383,92 +10419,98 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
     rsuffix, ...])
     keys()                              Get the 'info axis' (see Indexing for
                                         more).
-    kurt(*[, axis, skipna,              Return unbiased kurtosis over requested
-    numeric_only])                      axis.
-    kurtosis(*[, axis, skipna,          Return unbiased kurtosis over requested
-    numeric_only])                      axis.
-    last_valid_index()                  Return index for last non-missing value or
-                                        None, if no value is found.
-    le(other[, axis, level])            Get Less than or equal to of dataframe and
-                                        other, element-wise (binary operator le).
+    kurt(*[, axis, skipna,              Return unbiased kurtosis over
+    numeric_only])                      requested axis.
+    kurtosis(*[, axis, skipna,          Return unbiased kurtosis over
+    numeric_only])                      requested axis.
+    last_valid_index()                  Return index for last non-missing
+                                        value or None, if no value is found.
+    le(other[, axis, level])            Get Less than or equal to of dataframe
+                                        and other, element-wise (binary
+                                        operator le).
     lt(other[, axis, level])            Get Less than of dataframe and other,
                                         element-wise (binary operator lt).
     map(func[, na_action])              Apply a function to a Dataframe
                                         elementwise.
     mask(cond[, other, inplace, axis,   Replace values where the condition is
     level])                             True.
-    max(*[, axis, skipna,               Return the maximum of the values over the
-    numeric_only])                      requested axis.
+    max(*[, axis, skipna,               Return the maximum of the values over
+    numeric_only])                      the requested axis.
     mean(*[, axis, skipna,              Return the mean of the values over the
     numeric_only])                      requested axis.
-    median(*[, axis, skipna,            Return the median of the values over the
-    numeric_only])                      requested axis.
+    median(*[, axis, skipna,            Return the median of the values over
+    numeric_only])                      the requested axis.
     melt([id_vars, value_vars,          Unpivot DataFrame from wide to long
     var_name, ...])                     format, optionally leaving identifiers
                                         set.
-    memory_usage([index, deep])         Return the memory usage of each column in
-                                        bytes.
-    merge(right[, how, on, left_on,     Merge DataFrame or named Series objects
-    right_on, ...])                     with a database-style join.
-    min(*[, axis, skipna,               Return the minimum of the values over the
-    numeric_only])                      requested axis.
+    memory_usage([index, deep])         Return the memory usage of each column
+                                        in bytes.
+    merge(right[, how, on, left_on,     Merge DataFrame or named Series
+    right_on, ...])                     objects with a database-style join.
+    min(*[, axis, skipna,               Return the minimum of the values over
+    numeric_only])                      the requested axis.
     mod(other[, axis, level,            Get Modulo of dataframe and other,
     fill_value])                        element-wise (binary operator mod).
-    mode([axis, numeric_only, dropna])  Get the mode(s) of each element along the
-                                        selected axis.
-    mul(other[, axis, level,            Get Multiplication of dataframe and other,
-    fill_value])                        element-wise (binary operator mul).
-    multiply(other[, axis, level,       Get Multiplication of dataframe and other,
-    fill_value])                        element-wise (binary operator mul).
-    ne(other[, axis, level])            Get Not equal to of dataframe and other,
-                                        element-wise (binary operator ne).
-    nlargest(n, columns[, keep])        Return the first n rows ordered by columns
-                                        in descending order.
+    mode([axis, numeric_only, dropna])  Get the mode(s) of each element along
+                                        the selected axis.
+    mul(other[, axis, level,            Get Multiplication of dataframe and
+    fill_value])                        other, element-wise (binary operator
+                                        mul).
+    multiply(other[, axis, level,       Get Multiplication of dataframe and
+    fill_value])                        other, element-wise (binary operator
+                                        mul).
+    ne(other[, axis, level])            Get Not equal to of dataframe and
+                                        other, element-wise (binary operator
+                                        ne).
+    nlargest(n, columns[, keep])        Return the first n rows ordered by
+                                        columns in descending order.
     notna()                             Detect existing (non-missing) values.
     notnull()                           DataFrame.notnull is an alias for
                                         DataFrame.notna.
-    nsmallest(n, columns[, keep])       Return the first n rows ordered by columns
-                                        in ascending order.
+    nsmallest(n, columns[, keep])       Return the first n rows ordered by
+                                        columns in ascending order.
     nunique([axis, dropna])             Count number of distinct elements in
                                         specified axis.
-    pct_change([periods, fill_method,   Fractional change between the current and
-    freq])                              a prior element.
+    pct_change([periods, fill_method,   Fractional change between the current
+    freq])                              and a prior element.
     pipe(func, *args, **kwargs)         Apply chainable functions that expect
                                         Series or DataFrames.
     pivot(*, columns[, index, values])  Return reshaped DataFrame organized by
                                         given index / column values.
-    pivot_table([values, index,         Create a spreadsheet-style pivot table as
-    columns, ...])                      a DataFrame.
-    pop(item)                           Return item and drop it from DataFrame.
+    pivot_table([values, index,         Create a spreadsheet-style pivot table
+    columns, ...])                      as a DataFrame.
+    pop(item)                           Return item and drop it from
+                                        DataFrame.
     pow(other[, axis, level,            Get Exponential power of dataframe and
-    fill_value])                        other, element-wise (binary operator pow).
-    prod(*[, axis, skipna,              Return the product of the values over the
-    numeric_only, min_count])           requested axis.
-    product(*[, axis, skipna,           Return the product of the values over the
-    numeric_only, ...])                 requested axis.
-    quantile([q, axis, numeric_only,    Return values at the given quantile over
-    ...])                               requested axis.
-    query(expr, *[, parser, engine,     Query the columns of a DataFrame with a
-    local_dict, ...])                   boolean expression.
+    fill_value])                        other, element-wise (binary operator
+                                        pow).
+    prod(*[, axis, skipna,              Return the product of the values over
+    numeric_only, min_count])           the requested axis.
+    product(*[, axis, skipna,           Return the product of the values over
+    numeric_only, ...])                 the requested axis.
+    quantile([q, axis, numeric_only,    Return values at the given quantile
+    ...])                               over requested axis.
+    query(expr, *[, parser, engine,     Query the columns of a DataFrame with
+    local_dict, ...])                   a boolean expression.
     radd(other[, axis, level,           Get Addition of dataframe and other,
     fill_value])                        element-wise (binary operator radd).
-    rank([axis, method, numeric_only,   Compute numerical data ranks (1 through n)
-    ...])                               along axis.
+    rank([axis, method, numeric_only,   Compute numerical data ranks (1
+    ...])                               through n) along axis.
     rdiv(other[, axis, level,           Get Floating division of dataframe and
     fill_value])                        other, element-wise (binary operator
                                         rtruediv).
     reindex([labels, index, columns,    Conform DataFrame to new index with
     axis, ...])                         optional filling logic.
-    reindex_like(other[, method, copy,  Return an object with matching indices as
-    limit, ...])                        other object.
+    reindex_like(other[, method, copy,  Return an object with matching indices
+    limit, ...])                        as other object.
     rename([mapper, index, columns,     Rename columns or index labels.
     axis, copy, ...])
-    rename_axis([mapper, index,         Set the name of the axis for the index or
-    columns, axis, ...])                columns.
+    rename_axis([mapper, index,         Set the name of the axis for the index
+    columns, axis, ...])                or columns.
     reorder_levels(order[, axis])       Rearrange index or column levels using
                                         input order.
-    replace([to_replace, value,         Replace values given in to_replace with
-    inplace, regex])                    value.
+    replace([to_replace, value,         Replace values given in to_replace
+    inplace, regex])                    with value.
     resample(rule[, closed, label,      Resample time-series data.
     convention, ...])
     reset_index([level, drop, inplace,  Reset the index, or a level of it.
@@ -10478,51 +10520,56 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
                                         rfloordiv).
     rmod(other[, axis, level,           Get Modulo of dataframe and other,
     fill_value])                        element-wise (binary operator rmod).
-    rmul(other[, axis, level,           Get Multiplication of dataframe and other,
-    fill_value])                        element-wise (binary operator rmul).
+    rmul(other[, axis, level,           Get Multiplication of dataframe and
+    fill_value])                        other, element-wise (binary operator
+                                        rmul).
     rolling(window[, min_periods,       Provide rolling window calculations.
     center, ...])
-    round([decimals])                   Round numeric columns in a DataFrame to a
-                                        variable number of decimal places.
+    round([decimals])                   Round numeric columns in a DataFrame
+                                        to a variable number of decimal
+                                        places.
     rpow(other[, axis, level,           Get Exponential power of dataframe and
     fill_value])                        other, element-wise (binary operator
                                         rpow).
-    rsub(other[, axis, level,           Get Subtraction of dataframe and other,
-    fill_value])                        element-wise (binary operator rsub).
+    rsub(other[, axis, level,           Get Subtraction of dataframe and
+    fill_value])                        other, element-wise (binary operator
+                                        rsub).
     rtruediv(other[, axis, level,       Get Floating division of dataframe and
     fill_value])                        other, element-wise (binary operator
                                         rtruediv).
-    sample([n, frac, replace, weights,  Return a random sample of items from an
-    ...])                               axis of object.
+    sample([n, frac, replace, weights,  Return a random sample of items from
+    ...])                               an axis of object.
     select(*args, **kwargs)             Select a subset of columns from the
                                         DataFrame.
-    select_dtypes([include, exclude])   Return a subset of the DataFrame's columns
-                                        based on the column dtypes.
-    sem(*[, axis, skipna, ddof,         Return unbiased standard error of the mean
-    numeric_only])                      over requested axis.
+    select_dtypes([include, exclude])   Return a subset of the DataFrame's
+                                        columns based on the column dtypes.
+    sem(*[, axis, skipna, ddof,         Return unbiased standard error of the
+    numeric_only])                      mean over requested axis.
     set_axis(labels, *[, axis, copy])   Assign desired index to given axis.
-    set_flags(*[, copy,                 Return a new object with updated flags.
-    allows_duplicate_labels])
+    set_flags(*[, copy,                 Return a new object with updated
+    allows_duplicate_labels])           flags.
     set_index(keys, *[, drop, append,   Set the DataFrame index using existing
     inplace, ...])                      columns.
-    shift([periods, freq, axis,         Shift index by desired number of periods
-    fill_value, suffix])                with an optional time freq.
-    skew(*[, axis, skipna,              Return unbiased skew over requested axis.
-    numeric_only])
+    shift([periods, freq, axis,         Shift index by desired number of
+    fill_value, suffix])                periods with an optional time freq.
+    skew(*[, axis, skipna,              Return unbiased skew over requested
+    numeric_only])                      axis.
     sort_index(*[, axis, level,         Sort object by labels (along an axis).
     ascending, ...])
     sort_values(by, *[, axis,           Sort by the values along either axis.
     ascending, ...])
-    squeeze([axis])                     Squeeze 1 dimensional axis objects into
-                                        scalars.
-    stack([level, dropna, sort,         Stack the prescribed level(s) from columns
-    future_stack])                      to index.
+    squeeze([axis])                     Squeeze 1 dimensional axis objects
+                                        into scalars.
+    stack([level, dropna, sort,         Stack the prescribed level(s) from
+    future_stack])                      columns to index.
     std(*[, axis, skipna, ddof,         Return sample standard deviation over
     numeric_only])                      requested axis.
-    sub(other[, axis, level,            Get Subtraction of dataframe and other,
-    fill_value])                        element-wise (binary operator sub).
-    subtract(other[, axis, level,       Get Subtraction of dataframe and other,
-    fill_value])                        element-wise (binary operator sub).
+    sub(other[, axis, level,            Get Subtraction of dataframe and
+    fill_value])                        other, element-wise (binary operator
+                                        sub).
+    subtract(other[, axis, level,       Get Subtraction of dataframe and
+    fill_value])                        other, element-wise (binary operator
+                                        sub).
     sum(*[, axis, skipna,               Return the sum of the values over the
     numeric_only, min_count])           requested axis.
     swaplevel([i, j, axis])             Swap levels i and j in a MultiIndex.
@@ -10530,15 +10577,15 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
     take(indices[, axis])               Return the elements in the given
                                         positional indices along an axis.
     to_clipboard(*[, excel, sep])       Copy object to the system clipboard.
-    to_csv([path_or_buf, sep, na_rep,   Write object to a comma-separated values
-    ...])                               (csv) file.
+    to_csv([path_or_buf, sep, na_rep,   Write object to a comma-separated
+    ...])                               values (csv) file.
     to_dict([orient, into, index])      Convert the DataFrame to a dictionary.
     to_excel(excel_writer, *[,          Write object to an Excel sheet.
     sheet_name, ...])
-    to_feather(path, **kwargs)          Write a DataFrame to the binary Feather
-                                        format.
-    to_hdf(path_or_buf, *, key[, mode,  Write the contained data to an HDF5 file
-    ...])                               using HDFStore.
+    to_feather(path, **kwargs)          Write a DataFrame to the binary
+                                        Feather format.
+    to_hdf(path_or_buf, *, key[, mode,  Write the contained data to an HDF5
+    ...])                               file using HDFStore.
     to_html([buf, columns, col_space,   Render a DataFrame as an HTML table.
     header, ...])
     to_iceberg(table_identifier[,       Write a DataFrame to an Apache Iceberg
@@ -10549,49 +10596,53 @@ class pandas.DataFrame(data=None, index=None, columns=None, dtype=None,
     index, ...])                        longtable, or nested table.
     to_markdown([buf, mode, index,      Print DataFrame in Markdown-friendly
     storage_options])                   format.
-    to_numpy([dtype, copy, na_value])   Convert the DataFrame to a NumPy array.
+    to_numpy([dtype, copy, na_value])   Convert the DataFrame to a NumPy
+                                        array.
     to_orc([path, engine, index,        Write a DataFrame to the Optimized Row
     engine_kwargs])                     Columnar (ORC) format.
-    to_parquet([path, engine,           Write a DataFrame to the binary parquet
-    compression, ...])                  format.
-    to_period([freq, axis, copy])       Convert DataFrame from DatetimeIndex to
-                                        PeriodIndex.
+    to_parquet([path, engine,           Write a DataFrame to the binary
+    compression, ...])                  parquet format.
+    to_period([freq, axis, copy])       Convert DataFrame from DatetimeIndex
+                                        to PeriodIndex.
     to_pickle(path, *[, compression,    Pickle (serialize) object to file.
     protocol, ...])
-    to_records([index, column_dtypes,   Convert DataFrame to a NumPy record array.
-    index_dtypes])
-    to_sql(name, con, *[, schema,       Write records stored in a DataFrame to a
-    if_exists, ...])                    SQL database.
+    to_records([index, column_dtypes,   Convert DataFrame to a NumPy record
+    index_dtypes])                      array.
+    to_sql(name, con, *[, schema,       Write records stored in a DataFrame to
+    if_exists, ...])                    a SQL database.
     to_stata(path, *[, convert_dates,   Export DataFrame object to Stata dta
     ...])                               format.
-    to_string([buf, columns,            Render a DataFrame to a console-friendly
-    col_space, header, ...])            tabular output.
+    to_string([buf, columns,            Render a DataFrame to a
+    col_space, header, ...])            console-friendly tabular output.
     to_timestamp([freq, how, axis,      Cast PeriodIndex to DatetimeIndex of
     copy])                              timestamps, at beginning of period.
-    to_xarray()                         Return an xarray object from the pandas
-                                        object.
+    to_xarray()                         Return an xarray object from the
+                                        pandas object.
     to_xml([path_or_buffer, index,      Render a DataFrame to an XML document.
     root_name, ...])
-    transform(func[, axis])             Call func on self producing a DataFrame
-                                        with the same axis shape as self.
+    transform(func[, axis])             Call func on self producing a
+                                        DataFrame with the same axis shape as
+                                        self.
     transpose(*args[, copy])            Transpose index and columns.
     truediv(other[, axis, level,        Get Floating division of dataframe and
     fill_value])                        other, element-wise (binary operator
                                         truediv).
-    truncate([before, after, axis,      Truncate a Series or DataFrame before and
-    copy])                              after some index value.
-    tz_convert(tz[, axis, level,        Convert tz-aware axis to target time zone.
-    copy])
-    tz_localize(tz[, axis, level,       Localize time zone naive index of a Series
-    copy, ...])                         or DataFrame to target time zone.
+    truncate([before, after, axis,      Truncate a Series or DataFrame before
+    copy])                              and after some index value.
+    tz_convert(tz[, axis, level,        Convert tz-aware axis to target time
+    copy])                              zone.
+    tz_localize(tz[, axis, level,       Localize time zone naive index of a
+    copy, ...])                         Series or DataFrame to target time
+                                        zone.
     unstack([level, fill_value, sort])  Pivot a level of the (necessarily
                                         hierarchical) index labels.
-    update(other[, join, overwrite,     Modify in place using non-NA values from
-    ...])                               another DataFrame.
-    value_counts([subset, normalize,    Return a Series containing the frequency
-    sort, ...])                         of each distinct row in the DataFrame.
-    var(*[, axis, skipna, ddof,         Return unbiased variance over requested
-    numeric_only])                      axis.
+    update(other[, join, overwrite,     Modify in place using non-NA values
+    ...])                               from another DataFrame.
+    value_counts([subset, normalize,    Return a Series containing the
+    sort, ...])                         frequency of each distinct row in the
+                                        DataFrame.
+    var(*[, axis, skipna, ddof,         Return unbiased variance over
+    numeric_only])                      requested axis.
     where(cond[, other, inplace, axis,  Replace values where the condition is
     level])                             False.
     xs(key[, axis, level, drop_level])  Return cross-section from the
@@ -16726,80 +16777,86 @@ DataFrame.plot(*args, **kwargs)
     x             (label or position, default None) Only used if data is a
                   DataFrame.
     y             (label, position or list of label, positions, default None)
-                  Allows plotting of one column versus another. Only used if data
-                  is a DataFrame.
+                  Allows plotting of one column versus another. Only used if
+                  data is a DataFrame.
     kind          (str) The kind of plot to produce: - ‘line' : line plot
-                  (default) - ‘bar' : vertical bar plot - ‘barh' : horizontal bar
-                  plot - ‘hist' : histogram - ‘box' : boxplot - ‘kde' : Kernel
-                  Density Estimation plot - ‘density' : same as ‘kde' - ‘area' :
-                  area plot - ‘pie' : pie plot - ‘scatter' : scatter plot
-                  (DataFrame only) - ‘hexbin' : hexbin plot (DataFrame only)
+                  (default) - ‘bar' : vertical bar plot - ‘barh' : horizontal
+                  bar plot - ‘hist' : histogram - ‘box' : boxplot - ‘kde' :
+                  Kernel Density Estimation plot - ‘density' : same as ‘kde' -
+                  ‘area' : area plot - ‘pie' : pie plot - ‘scatter' : scatter
+                  plot (DataFrame only) - ‘hexbin' : hexbin plot (DataFrame
+                  only)
     by            (str or sequence of str, optional) Column label(s) in the
-                  DataFrame to group by. Only used if kind="hist" or kind="box";
-                  ignored for other kinds. See DataFrame.plot.hist() and
-                  DataFrame.plot.box().
-    ax            (matplotlib axes object, default None) The axes to plot on. If
-                  None, Series.plot draws on the current axes
-                  (matplotlib.pyplot.gca()) when a figure already exists, while
-                  DataFrame.plot always creates a new figure.
-    subplots      (bool or sequence of iterables, default False) Whether to group
-                  columns into subplots: - False : No subplots will be used - True
-                  : Make separate subplots for each column. - sequence of
-                  iterables of column labels: Create a subplot for each group of
-                  columns. For example [(‘a', ‘c'), (‘b', ‘d')] will create 2
-                  subplots: one with columns ‘a' and ‘c', and one with columns ‘b'
-                  and ‘d'. Remaining columns that aren't specified will be plotted
-                  in additional subplots (one per column).
+                  DataFrame to group by. Only used if kind="hist" or
+                  kind="box"; ignored for other kinds. See
+                  DataFrame.plot.hist() and DataFrame.plot.box().
+    ax            (matplotlib axes object, default None) The axes to plot on.
+                  If None, Series.plot draws on the current axes
+                  (matplotlib.pyplot.gca()) when a figure already exists,
+                  while DataFrame.plot always creates a new figure.
+    subplots      (bool or sequence of iterables, default False) Whether to
+                  group columns into subplots: - False : No subplots will be
+                  used - True : Make separate subplots for each column. -
+                  sequence of iterables of column labels: Create a subplot for
+                  each group of columns. For example [(‘a', ‘c'), (‘b', ‘d')]
+                  will create 2 subplots: one with columns ‘a' and ‘c', and
+                  one with columns ‘b' and ‘d'. Remaining columns that aren't
+                  specified will be plotted in additional subplots (one per
+                  column).
     sharex        (bool, default True if ax is None else False) In case
                   subplots=True, share x axis and set some x axis labels to
-                  invisible; defaults to True if ax is None otherwise False if an
-                  ax is passed in; Be aware, that passing in both an ax and
+                  invisible; defaults to True if ax is None otherwise False if
+                  an ax is passed in; Be aware, that passing in both an ax and
                   sharex=True will alter all x axis labels for all axis in a
                   figure.
-    sharey        (bool, default False) In case subplots=True, share y axis and
-                  set some y axis labels to invisible.
-    layout        (tuple, optional) (rows, columns) for the layout of subplots.
+    sharey        (bool, default False) In case subplots=True, share y axis
+                  and set some y axis labels to invisible.
+    layout        (tuple, optional) (rows, columns) for the layout of
+                  subplots.
     figsize       (a tuple (width, height) in inches) Size of a figure object.
     use_index     (bool, default True) Use index as ticks for x axis.
-    title         (str or list) Title to use for the plot. If a string is passed,
-                  print the string at the top of the figure. If a list is passed
-                  and subplots is True, print each item in the list above the
-                  corresponding subplot.
+    title         (str or list) Title to use for the plot. If a string is
+                  passed, print the string at the top of the figure. If a list
+                  is passed and subplots is True, print each item in the list
+                  above the corresponding subplot.
     grid          (bool, default None (matlab style default)) Axis grid lines.
     legend        (bool or {‘reverse'}) Place legend on axis subplots.
     style         (list or dict) The matplotlib line style per column.
-    logx          (bool or ‘sym', default False) Use log scaling or symlog scaling
-                  on x axis.
-    logy          (bool or ‘sym' default False) Use log scaling or symlog scaling
-                  on y axis.
-    loglog        (bool or ‘sym', default False) Use log scaling or symlog scaling
-                  on both x and y axes.
+    logx          (bool or ‘sym', default False) Use log scaling or symlog
+                  scaling on x axis.
+    logy          (bool or ‘sym' default False) Use log scaling or symlog
+                  scaling on y axis.
+    loglog        (bool or ‘sym', default False) Use log scaling or symlog
+                  scaling on both x and y axes.
     xticks        (sequence) Values to use for the xticks.
     yticks        (sequence) Values to use for the yticks.
     xlim          (2-tuple/list) Set the x limits of the current axes.
     ylim          (2-tuple/list) Set the y limits of the current axes.
-    xlabel        (label, optional) Name to use for the xlabel on x-axis. Default
-                  uses index name as xlabel, or the x-column name for planar
-                  plots. .. versionchanged:: 2.0.0 Now applicable to histograms.
-    ylabel        (label, optional) Name to use for the ylabel on y-axis. Default
-                  will show no ylabel, or the y-column name for planar plots. ..
-                  versionchanged:: 2.0.0 Now applicable to histograms.
-    rot           (float, default None) Rotation for ticks (xticks for vertical,
-                  yticks for horizontal plots).
+    xlabel        (label, optional) Name to use for the xlabel on x-axis.
+                  Default uses index name as xlabel, or the x-column name for
+                  planar plots. .. versionchanged:: 2.0.0 Now applicable to
+                  histograms.
+    ylabel        (label, optional) Name to use for the ylabel on y-axis.
+                  Default will show no ylabel, or the y-column name for planar
+                  plots. .. versionchanged:: 2.0.0 Now applicable to
+                  histograms.
+    rot           (float, default None) Rotation for ticks (xticks for
+                  vertical, yticks for horizontal plots).
     fontsize      (float, default None) Font size for xticks and yticks.
-    colormap      (str or matplotlib colormap object, default None) Colormap to
-                  select colors from. If string, load colormap with that name from
-                  matplotlib.
+    colormap      (str or matplotlib colormap object, default None) Colormap
+                  to select colors from. If string, load colormap with that
+                  name from matplotlib.
     colorbar      (bool, optional) If True, plot colorbar (only relevant for
                   ‘scatter' and ‘hexbin' plots).
-    position      (float) Specify relative alignments for bar plot layout. From 0
-                  (left/bottom-end) to 1 (right/top-end). Default is 0.5 (center).
-    table         (bool, Series or DataFrame, default False) If True, draw a table
-                  using the data in the DataFrame and the data will be transposed
-                  to meet matplotlib's default layout. If a Series or DataFrame is
-                  passed, use passed data to draw a table.
-    yerr          (DataFrame, Series, array-like, dict and str) See Plotting with
-                  Error Bars for detail.
+    position      (float) Specify relative alignments for bar plot layout.
+                  From 0 (left/bottom-end) to 1 (right/top-end). Default is
+                  0.5 (center).
+    table         (bool, Series or DataFrame, default False) If True, draw a
+                  table using the data in the DataFrame and the data will be
+                  transposed to meet matplotlib's default layout. If a Series
+                  or DataFrame is passed, use passed data to draw a table.
+    yerr          (DataFrame, Series, array-like, dict and str) See Plotting
+                  with Error Bars for detail.
     xerr          (DataFrame, Series, array-like, dict and str) Equivalent to
                   yerr.
     stacked       (bool, default False in line and bar plots, and True in area
@@ -16810,11 +16867,12 @@ DataFrame.plot(*args, **kwargs)
     mark_right    (bool, default True) When using a secondary_y axis,
                   automatically mark the column labels with “(right)” in the
                   legend.
-    include_bool  (bool, default is False) If True, boolean values can be plotted.
+    include_bool  (bool, default is False) If True, boolean values can be
+                  plotted.
     backend       (str, default None) Backend to use instead of the backend
                   specified in the option plotting.backend. For instance,
-                  ‘matplotlib'. Alternatively, to specify the plotting.backend for
-                  the whole session, set pd.options.plotting.backend.
+                  ‘matplotlib'. Alternatively, to specify the plotting.backend
+                  for the whole session, set pd.options.plotting.backend.
 
     Returns: ~
         `matplotlib.axes.Axes`
@@ -24436,10 +24494,10 @@ DataFrame.to_html(buf=None, *, columns=None, col_space=None, header=True,
 <
     HTML output
 
-              col1                                col2
-    --------  ----------------------------------  --------------------------------
-    0         1                                   4
-    1         2                                   3
+             col1                              col2
+    -------  --------------------------------  -------------------------------
+    0        1                                 4
+    1        2                                 3
 
     >python
         >>> df = pd.DataFrame(data={"col1": [1, 2], "col2": [4, 3]})
@@ -24466,10 +24524,10 @@ DataFrame.to_html(buf=None, *, columns=None, col_space=None, header=True,
 <
     HTML output
 
-    col1                                    col2
-    --------------------------------------  --------------------------------------
-    1                                       4
-    2                                       3
+    col1                                  col2
+    ------------------------------------  ------------------------------------
+    1                                     4
+    2                                     3
 
 ----------------------------------------------------------------------------
                                                  *pandas.DataFrame.to_iceberg*
@@ -28796,22 +28854,28 @@ class pandas.DatetimeIndex(data=None, freq=<no_default>, tz=<no_default>,
     nanosecond        The nanoseconds of the datetime.
     date              Returns numpy array of python datetime.date objects.
     time              Returns numpy array of datetime.time objects.
-    timetz            Returns numpy array of datetime.time objects with timezones.
+    timetz            Returns numpy array of datetime.time objects with
+                      timezones.
     dayofyear         (DEPRECATED) The ordinal day of the year.
     day_of_year       The ordinal day of the year.
-    dayofweek         (DEPRECATED) The day of the week with Monday=0, Sunday=6.
+    dayofweek         (DEPRECATED) The day of the week with Monday=0,
+                      Sunday=6.
     day_of_week       The day of the week with Monday=0, Sunday=6.
-    weekday           (DEPRECATED) The day of the week with Monday=0, Sunday=6.
+    weekday           (DEPRECATED) The day of the week with Monday=0,
+                      Sunday=6.
     quarter           The quarter of the date.
     tz                Return the timezone.
-    freq              Return the frequency object if it is set, otherwise None.
+    freq              Return the frequency object if it is set, otherwise
+                      None.
     freqstr           Return the frequency object as a string if it's set,
                       otherwise None.
-    is_month_start    Indicates whether the date is the first day of the month.
+    is_month_start    Indicates whether the date is the first day of the
+                      month.
     is_month_end      Indicates whether the date is the last day of the month.
     is_quarter_start  Indicator for whether the date is the first day of a
                       quarter.
-    is_quarter_end    Indicator for whether the date is the last day of a quarter.
+    is_quarter_end    Indicator for whether the date is the last day of a
+                      quarter.
     is_year_start     Indicate whether the date is the first day of a year.
     is_year_end       Indicate whether the date is the last day of the year.
     is_leap_year      Boolean indicator if the date belongs to a leap year.
@@ -28824,22 +28888,22 @@ class pandas.DatetimeIndex(data=None, freq=<no_default>, tz=<no_default>,
                                         date_format.
     snap([freq])                        Snap time stamps to nearest occurring
                                         frequency.
-    tz_convert(tz)                      Convert tz-aware Datetime Array/Index from
-                                        one time zone to another.
-    tz_localize(tz[, ambiguous,         Localize tz-naive Datetime Array/Index to
-    nonexistent])                       tz-aware Datetime Array/Index.
-    round(freq[, ambiguous,             Perform round operation on the data to the
-    nonexistent])                       specified freq.
-    floor(freq[, ambiguous,             Perform floor operation on the data to the
-    nonexistent])                       specified freq.
-    ceil(freq[, ambiguous,              Perform ceil operation on the data to the
-    nonexistent])                       specified freq.
+    tz_convert(tz)                      Convert tz-aware Datetime Array/Index
+                                        from one time zone to another.
+    tz_localize(tz[, ambiguous,         Localize tz-naive Datetime Array/Index
+    nonexistent])                       to tz-aware Datetime Array/Index.
+    round(freq[, ambiguous,             Perform round operation on the data to
+    nonexistent])                       the specified freq.
+    floor(freq[, ambiguous,             Perform floor operation on the data to
+    nonexistent])                       the specified freq.
+    ceil(freq[, ambiguous,              Perform ceil operation on the data to
+    nonexistent])                       the specified freq.
     to_period([freq])                   Cast to PeriodArray/PeriodIndex at a
                                         particular frequency.
     to_pydatetime()                     Return an ndarray of datetime.datetime
                                         objects.
-    to_series([index, name])            Create a Series with both index and values
-                                        equal to the index keys.
+    to_series([index, name])            Create a Series with both index and
+                                        values equal to the index keys.
     to_frame([index, name])             Create a DataFrame with a column
                                         containing the Index.
     to_julian_date()                    Convert Timestamp to a Julian Date.
@@ -30636,8 +30700,8 @@ class pandas.ExcelFile(path_or_buffer, engine=None, storage_options=None,
     Methods: ~
 
     close()                             close io if necessary
-    parse([sheet_name, header, names,   (DEPRECATED) Parse specified sheet(s) into
-    ...])                               a DataFrame.
+    parse([sheet_name, header, names,   (DEPRECATED) Parse specified sheet(s)
+    ...])                               into a DataFrame.
 
 ----------------------------------------------------------------------------
                                                       *pandas.ExcelFile.parse*
@@ -31071,10 +31135,10 @@ class pandas.ExcelWriter(path, engine=None, date_format=None,
     Attributes: ~
 
     book                  Book instance.
-    date_format           Format string for dates written into Excel files (e.g.
-                          'YYYY-MM-DD').
-    datetime_format       Format string for dates written into Excel files (e.g.
-                          'YYYY-MM-DD').
+    date_format           Format string for dates written into Excel files
+                          (e.g. 'YYYY-MM-DD').
+    datetime_format       Format string for dates written into Excel files
+                          (e.g. 'YYYY-MM-DD').
     engine                Name of engine.
     if_sheet_exists       How to behave when writing to a sheet that already
                           exists in append mode.
@@ -31144,9 +31208,7 @@ class pandas.Flags(obj, *, allows_duplicate_labels)
 <
     Attributes: ~
 
-    allows_duplicate_labels     Whether this object allows duplicate labels.
-
-    Methods: ~
+    allows_duplicate_labels   Whether this object allows duplicate labels.
 
 ----------------------------------------------------------------------------
                                                          *pandas.Float32Dtype*
@@ -31242,33 +31304,34 @@ class pandas.Grouper(*args, **kwargs)
 
     Attributes: ~
 
-    key         (str, defaults to None) Groupby key, which selects the grouping
-                column of the target.
-    level       (name/number, defaults to None) The level for the target index.
-    freq        (str / frequency object, defaults to None) This will groupby the
-                specified frequency if the target selection (via key or level) is
-                a datetime-like object. For full specification of available
-                frequencies, please see here.
+    key         (str, defaults to None) Groupby key, which selects the
+                grouping column of the target.
+    level       (name/number, defaults to None) The level for the target
+                index.
+    freq        (str / frequency object, defaults to None) This will groupby
+                the specified frequency if the target selection (via key or
+                level) is a datetime-like object. For full specification of
+                available frequencies, please see here.
     sort        (bool, default False) Whether to sort the resulting labels.
     closed      ({‘left' or ‘right'}) Closed end of interval. Only when freq
                 parameter is passed.
-    label       ({‘left' or ‘right'}) Interval boundary to use for labeling. Only
-                when freq parameter is passed.
-    convention  ({‘start', ‘end', ‘e', ‘s'}) If grouper is PeriodIndex and freq
-                parameter is passed.
-    origin      (Timestamp or str, default ‘start_day') The timestamp on which to
-                adjust the grouping. The timezone of origin must match the
-                timezone of the index. If string, must be one of the following: -
-                ‘epoch': origin is 1970-01-01 - ‘start': origin is the first value
-                of the timeseries - ‘start_day': origin is the first day at
-                midnight of the timeseries - ‘end': origin is the last value of
-                the timeseries - ‘end_day': origin is the ceiling midnight of the
-                last day
-    offset      (Timedelta or str, default None) An offset timedelta added to the
-                origin.
-    dropna      (bool, default True) If True, and if group keys contain NA values,
-                NA values together with row/column will be dropped. If False, NA
-                values will also be treated as the key in groups.
+    label       ({‘left' or ‘right'}) Interval boundary to use for labeling.
+                Only when freq parameter is passed.
+    convention  ({‘start', ‘end', ‘e', ‘s'}) If grouper is PeriodIndex and
+                freq parameter is passed.
+    origin      (Timestamp or str, default ‘start_day') The timestamp on which
+                to adjust the grouping. The timezone of origin must match the
+                timezone of the index. If string, must be one of the
+                following: - ‘epoch': origin is 1970-01-01 - ‘start': origin
+                is the first value of the timeseries - ‘start_day': origin is
+                the first day at midnight of the timeseries - ‘end': origin is
+                the last value of the timeseries - ‘end_day': origin is the
+                ceiling midnight of the last day
+    offset      (Timedelta or str, default None) An offset timedelta added to
+                the origin.
+    dropna      (bool, default True) If True, and if group keys contain NA
+                values, NA values together with row/column will be dropped. If
+                False, NA values will also be treated as the key in groups.
 
     Returns: ~
         Grouper or pandas.api.typing.TimeGrouper
@@ -31786,15 +31849,15 @@ Index.array
     This table lays out the different array types for each extension dtype
     within pandas.
 
-    dtype                                          array type
-    ---------------------------------------------  -------------------------------
-    category                                       Categorical
-    period                                         PeriodArray
-    interval                                       IntervalArray
-    IntegerNA                                      IntegerArray
-    string                                         StringArray
-    boolean                                        BooleanArray
-    datetime64[ns, tz]                             DatetimeArray
+    dtype                                       array type
+    ------------------------------------------  ------------------------------
+    category                                    Categorical
+    period                                      PeriodArray
+    interval                                    IntervalArray
+    IntegerNA                                   IntegerArray
+    string                                      StringArray
+    boolean                                     BooleanArray
+    datetime64[ns, tz]                          DatetimeArray
 
     For any 3rd-party extension types, the array type will be an
     ExtensionArray.
@@ -33148,13 +33211,16 @@ class pandas.Index(data=None, dtype=None, copy=None, name=None,
 <
     Attributes: ~
 
-    T                        Return the transpose, which is by definition self.
-    array                    The ExtensionArray of the data backing this Index.
+    T                        Return the transpose, which is by definition
+                             self.
+    array                    The ExtensionArray of the data backing this
+                             Index.
     dtype                    Return the dtype object of the underlying data.
     empty                    Indicator whether Index is empty.
     has_duplicates           Check if the Index has duplicate values.
     hasnans                  Return True if there are any NaNs.
-    inferred_type            Return a string of the type inferred from the values.
+    inferred_type            Return a string of the type inferred from the
+                             values.
     is_monotonic_decreasing  Return a boolean if the values are equal or
                              decreasing.
     is_monotonic_increasing  Return a boolean if the values are equal or
@@ -33162,84 +33228,93 @@ class pandas.Index(data=None, dtype=None, copy=None, name=None,
     is_unique                Return if the index has unique values.
     name                     Return Index or MultiIndex name.
     names                    Get names on index.
-    nbytes                   Return the number of bytes in the underlying data.
+    nbytes                   Return the number of bytes in the underlying
+                             data.
     ndim                     Number of dimensions of the underlying data, by
                              definition 1.
     nlevels                  Number of levels.
-    shape                    Return a tuple of the shape of the underlying data.
-    size                     Return the number of elements in the underlying data.
-    values                   Return an array representing the data in the Index.
+    shape                    Return a tuple of the shape of the underlying
+                             data.
+    size                     Return the number of elements in the underlying
+                             data.
+    values                   Return an array representing the data in the
+                             Index.
 
     Methods: ~
 
-    all(*args, **kwargs)                Return whether all elements are Truthy.
+    all(*args, **kwargs)                Return whether all elements are
+                                        Truthy.
     any(*args, **kwargs)                Return whether any element is Truthy.
     append(other)                       Append a collection of Index options
                                         together.
-    argmax([axis, skipna])              Return int position of the largest value
-                                        in the Index.
-    argmin([axis, skipna])              Return int position of the smallest value
-                                        in the Index.
-    argsort(*args, **kwargs)            Return the integer indices that would sort
-                                        the index.
-    asof(label)                         Return the label from the index, or, if
-                                        not present, the previous one.
-    asof_locs(where, mask)              Return the locations (indices) of labels
-                                        in the index.
+    argmax([axis, skipna])              Return int position of the largest
+                                        value in the Index.
+    argmin([axis, skipna])              Return int position of the smallest
+                                        value in the Index.
+    argsort(*args, **kwargs)            Return the integer indices that would
+                                        sort the index.
+    asof(label)                         Return the label from the index, or,
+                                        if not present, the previous one.
+    asof_locs(where, mask)              Return the locations (indices) of
+                                        labels in the index.
     astype(dtype[, copy])               Create an Index with values cast to
                                         dtypes.
     copy([name, deep])                  Make a copy of this object.
-    delete(loc)                         Make new Index with passed location(-s)
-                                        deleted.
+    delete(loc)                         Make new Index with passed
+                                        location(-s) deleted.
     diff([periods])                     Computes the difference between
-                                        consecutive values in the Index object.
-    difference(other[, sort])           Return a new Index with elements of index
-                                        not in other.
-    drop(labels[, errors])              Make new Index with passed list of labels
-                                        deleted.
+                                        consecutive values in the Index
+                                        object.
+    difference(other[, sort])           Return a new Index with elements of
+                                        index not in other.
+    drop(labels[, errors])              Make new Index with passed list of
+                                        labels deleted.
     drop_duplicates(*[, keep])          Return Index with duplicate values
                                         removed.
     droplevel([level])                  Return index with requested level(s)
                                         removed.
     dropna([how])                       Return Index without NA/NaN values.
     duplicated([keep])                  Indicate duplicate index values.
-    equals(other)                       Determine if two Index object are equal.
-    factorize([sort, use_na_sentinel])  Encode the object as an enumerated type or
-                                        categorical variable.
+    equals(other)                       Determine if two Index object are
+                                        equal.
+    factorize([sort, use_na_sentinel])  Encode the object as an enumerated
+                                        type or categorical variable.
     fillna(value)                       Fill NA/NaN values with the specified
                                         value.
     get_indexer(target[, method,        Compute indexer and mask for new index
     limit, tolerance])                  given the current index.
-    get_indexer_for(target)             Guaranteed return of an indexer even when
-                                        non-unique.
+    get_indexer_for(target)             Guaranteed return of an indexer even
+                                        when non-unique.
     get_indexer_non_unique(target)      Compute indexer and mask for new index
                                         given the current index.
-    get_level_values(level)             Return an Index of values for requested
-                                        level.
+    get_level_values(level)             Return an Index of values for
+                                        requested level.
     get_loc(key)                        Get integer location, slice or boolean
                                         mask for requested label.
-    get_slice_bound(label, side)        Calculate slice bound that corresponds to
-                                        given label.
-    groupby(values)                     Group the index labels by a given array of
-                                        values.
-    identical(other)                    Similar to equals, but checks that object
-                                        attributes and types are also equal.
-    infer_objects([copy])               If we have an object dtype, try to infer a
-                                        non-object dtype.
+    get_slice_bound(label, side)        Calculate slice bound that corresponds
+                                        to given label.
+    groupby(values)                     Group the index labels by a given
+                                        array of values.
+    identical(other)                    Similar to equals, but checks that
+                                        object attributes and types are also
+                                        equal.
+    infer_objects([copy])               If we have an object dtype, try to
+                                        infer a non-object dtype.
     insert(loc, item)                   Make new Index inserting new item at
                                         location.
     intersection(other[, sort])         Form the intersection of two Index
                                         objects.
-    is_(other)                          More flexible, faster check like is but
-                                        that works through views.
+    is_(other)                          More flexible, faster check like is
+                                        but that works through views.
     isin(values[, level])               Return a boolean array where the index
                                         values are in values.
     isna()                              Detect missing values.
     isnull()                            Detect missing values.
-    item()                              Return the first element of the underlying
-                                        data as a Python scalar.
-    join(other, *[, how, level, ...])   Compute join_index and indexers to conform
-                                        data structures to the new index.
+    item()                              Return the first element of the
+                                        underlying data as a Python scalar.
+    join(other, *[, how, level, ...])   Compute join_index and indexers to
+                                        conform data structures to the new
+                                        index.
     map(mapper[, na_action])            Map values using an input mapping or
                                         function.
     max([axis, skipna])                 Return the maximum value of the Index.
@@ -33247,10 +33322,10 @@ class pandas.Index(data=None, dtype=None, copy=None, name=None,
     min([axis, skipna])                 Return the minimum value of the Index.
     notna()                             Detect existing (non-missing) values.
     notnull()                           Detect existing (non-missing) values.
-    nunique([dropna])                   Return number of unique elements in the
-                                        object.
-    putmask(mask, value)                Return a new Index of the values set with
-                                        the mask.
+    nunique([dropna])                   Return number of unique elements in
+                                        the object.
+    putmask(mask, value)                Return a new Index of the values set
+                                        with the mask.
     ravel([order])                      Return a view on self.
     reindex(target[, method, level,     Create index with target's values.
     limit, ...])
@@ -33258,33 +33333,34 @@ class pandas.Index(data=None, dtype=None, copy=None, name=None,
     repeat(repeats[, axis])             Repeat elements of an Index.
     replace([to_replace, value,         Replace values in the Index.
     regex])
-    round([decimals])                   Round each value in the Index to the given
-                                        number of decimals.
+    round([decimals])                   Round each value in the Index to the
+                                        given number of decimals.
     searchsorted(value[, side,          Find indices where elements should be
     sorter])                            inserted to maintain order.
     set_names(names, *[, level,         Set Index or MultiIndex name.
     inplace])
     shift([periods, freq])              Shift index by desired number of time
                                         frequency increments.
-    slice_indexer([start, end, step])   Compute the slice indexer for input labels
-                                        and step.
-    slice_locs([start, end, step])      Compute slice locations for input labels.
+    slice_indexer([start, end, step])   Compute the slice indexer for input
+                                        labels and step.
+    slice_locs([start, end, step])      Compute slice locations for input
+                                        labels.
     sort_values(*[, return_indexer,     Return a sorted copy of the index.
     ascending, ...])
-    sortlevel([level, ascending, ...])  For internal compatibility with the Index
-                                        API.
-    symmetric_difference(other[,        Compute the symmetric difference of two
-    result_name, sort])                 Index objects.
-    take(indices[, axis, allow_fill,    Return a new Index of the values selected
-    fill_value])                        by the indices.
+    sortlevel([level, ascending, ...])  For internal compatibility with the
+                                        Index API.
+    symmetric_difference(other[,        Compute the symmetric difference of
+    result_name, sort])                 two Index objects.
+    take(indices[, axis, allow_fill,    Return a new Index of the values
+    fill_value])                        selected by the indices.
     to_flat_index()                     Identity method.
     to_frame([index, name])             Create a DataFrame with a column
                                         containing the Index.
     to_list()                           Return a list of the values.
-    to_numpy([dtype, copy, na_value])   A NumPy ndarray representing the values in
-                                        this Series or Index.
-    to_series([index, name])            Create a Series with both index and values
-                                        equal to the index keys.
+    to_numpy([dtype, copy, na_value])   A NumPy ndarray representing the
+                                        values in this Series or Index.
+    to_series([index, name])            Create a Series with both index and
+                                        values equal to the index keys.
     tolist()                            Return a list of the values.
     transpose(*args, **kwargs)          Return the transpose, which is by
                                         definition self.
@@ -33293,7 +33369,8 @@ class pandas.Index(data=None, dtype=None, copy=None, name=None,
     value_counts([normalize, sort,      Return a Series containing counts of
     ascending, ...])                    unique values.
     view([cls])                         Return a view of the Index with the
-                                        specified dtype or a new Index instance.
+                                        specified dtype or a new Index
+                                        instance.
     where(cond[, other])                Replace values where the condition is
                                         False.
 
@@ -35413,14 +35490,14 @@ Index.to_numpy(dtype=None, copy=False, na_value=<no_default>, **kwargs)
     This table lays out the different dtypes and default return types of
     `to_numpy()` for various dtypes within pandas.
 
-    dtype                        array type
-    ---------------------------  -------------------------------------------------
-    category[T]                  ndarray[T] (same dtype as input)
-    period                       ndarray[object] (Periods)
-    interval                     ndarray[object] (Intervals)
-    IntegerNA                    ndarray[object]
-    datetime64[ns]               datetime64[ns]
-    datetime64[ns, tz]           ndarray[object] (Timestamps)
+    dtype                      array type
+    -------------------------  -----------------------------------------------
+    category[T]                ndarray[T] (same dtype as input)
+    period                     ndarray[object] (Periods)
+    interval                   ndarray[object] (Intervals)
+    IntegerNA                  ndarray[object]
+    datetime64[ns]             datetime64[ns]
+    datetime64[ns, tz]         ndarray[object] (Timestamps)
 
     For timezone-aware datetime data, calling `to_numpy()` without
     specifying `dtype` produces an object-dtype array of |pandas.Timestamp|
@@ -36563,7 +36640,7 @@ class pandas.Interval
 
     Methods: ~
 
-    overlaps(other)      Check whether two Interval objects overlap.
+    overlaps(other)     Check whether two Interval objects overlap.
 
 ----------------------------------------------------------------------------
                                                     *pandas.Interval.is_empty*
@@ -37390,12 +37467,12 @@ class pandas.IntervalIndex(data, closed=None, dtype=None, copy=None,
                                   IntervalIndex as an Index.
     length                        Calculate the length of each interval in the
                                   IntervalIndex.
-    is_empty                      Indicates if an interval is empty, meaning it
-                                  contains no points.
+    is_empty                      Indicates if an interval is empty, meaning
+                                  it contains no points.
     is_non_overlapping_monotonic  Return True if the IntervalIndex is
                                   non-overlapping and monotonic.
-    is_overlapping                Return True if the IntervalIndex has overlapping
-                                  intervals, else False.
+    is_overlapping                Return True if the IntervalIndex has
+                                  overlapping intervals, else False.
     values                        Return an array representing the data in the
                                   Index.
 
@@ -37405,18 +37482,19 @@ class pandas.IntervalIndex(data, closed=None, dtype=None, copy=None,
     name, ...])                         left and right bounds.
     from_tuples(data[, closed, name,    Construct an IntervalIndex from an
     copy, dtype])                       array-like of tuples.
-    from_breaks(breaks[, closed, name,  Construct an IntervalIndex from an array
-    copy, dtype])                       of splits.
+    from_breaks(breaks[, closed, name,  Construct an IntervalIndex from an
+    copy, dtype])                       array of splits.
     get_loc(key)                        Get integer location, slice or boolean
                                         mask for requested label.
     get_indexer(target[, method,        Compute indexer and mask for new index
     limit, tolerance])                  given the current index.
-    contains(other)                     Check elementwise if the Intervals contain
-                                        the value.
-    overlaps(other)                     Check elementwise if an Interval overlaps
-                                        the values in the IntervalIndex.
-    set_closed(closed)                  Return an identical IntervalIndex closed
-                                        on the specified side.
+    contains(other)                     Check elementwise if the Intervals
+                                        contain the value.
+    overlaps(other)                     Check elementwise if an Interval
+                                        overlaps the values in the
+                                        IntervalIndex.
+    set_closed(closed)                  Return an identical IntervalIndex
+                                        closed on the specified side.
     to_tuples([na_tuple])               Return an Index of tuples of the form
                                         (left, right).
 
@@ -38886,17 +38964,18 @@ class pandas.MultiIndex(levels=None, codes=None, sortorder=None, names=None,
     verify_integrity])
     set_codes(codes, *[, level,         Set new codes on MultiIndex.
     verify_integrity])
-    to_frame([index, name,              Create a DataFrame with the levels of the
-    allow_duplicates])                  MultiIndex as columns.
-    to_flat_index()                     Convert a MultiIndex to an Index of Tuples
-                                        containing the level values.
-    sortlevel([level, ascending, ...])  Sort MultiIndex at the requested level.
+    to_frame([index, name,              Create a DataFrame with the levels of
+    allow_duplicates])                  the MultiIndex as columns.
+    to_flat_index()                     Convert a MultiIndex to an Index of
+                                        Tuples containing the level values.
+    sortlevel([level, ascending, ...])  Sort MultiIndex at the requested
+                                        level.
     droplevel([level])                  Return index with requested level(s)
                                         removed.
     swaplevel([i, j])                   Swap level i with level j.
     reorder_levels(order)               Rearrange levels using input order.
-    remove_unused_levels()              Create new MultiIndex from current that
-                                        removes unused levels.
+    remove_unused_levels()              Create new MultiIndex from current
+                                        that removes unused levels.
     get_level_values(level)             Return vector of label values for
                                         requested level.
     get_indexer(target[, method,        Compute indexer and mask for new index
@@ -39890,8 +39969,6 @@ class pandas.NamedAgg(column, aggfunc, *args, **kwargs)
 
     args
 
-    Methods: ~
-
 ----------------------------------------------------------------------------
                                                         *pandas.Period.asfreq*
 
@@ -40414,7 +40491,8 @@ class pandas.Period(value=None, freq=None, ordinal=None, year=None,
     Attributes: ~
 
     day            Get day of the month that a Period falls on.
-    day_of_week    Day of the week the period lies in, with Monday=0 and Sunday=6.
+    day_of_week    Day of the week the period lies in, with Monday=0 and
+                   Sunday=6.
     day_of_year    Return the day of the year.
     dayofweek      (DEPRECATED) Return day of the week.
     dayofyear      (DEPRECATED) Return day of the year.
@@ -40436,18 +40514,20 @@ class pandas.Period(value=None, freq=None, ordinal=None, year=None,
     second         Get the second component of the Period.
     start_time     Get the Timestamp for the start of the period.
     week           Get the week of the year on the given Period.
-    weekday        Day of the week the period lies in, with Monday=0 and Sunday=6.
+    weekday        Day of the week the period lies in, with Monday=0 and
+                   Sunday=6.
     weekofyear     Get the week of the year on the given Period.
     year           Return the year this Period falls on.
 
     Methods: ~
 
-    asfreq(freq[, how])        Convert Period to desired frequency, at the start
-                               or end of the interval.
+    asfreq(freq[, how])        Convert Period to desired frequency, at the
+                               start or end of the interval.
     now(freq)                  Return the period of now's date.
     strftime(fmt)              (DEPRECATED) Returns a formatted string
                                representation of the Period.
-    to_timestamp([freq, how])  Return the Timestamp representation of the Period.
+    to_timestamp([freq, how])  Return the Timestamp representation of the
+                               Period.
 
 ----------------------------------------------------------------------------
                                                   *pandas.Period.is_leap_year*
@@ -40801,35 +40881,38 @@ Period.strftime(fmt)
     directives `%f`, `%F`, `%q`, `%l`, `%u`, `%N`. (formatting & docs
     originally from scikits.timeries).
 
-    Directive  Meaning                                                       Notes
-    ---------  ------------------------------------------------------------  -----
+    Directive  Meaning                                                   Notes
+    ---------  --------------------------------------------------------  -----
     %a         Locale's abbreviated weekday name.
     %A         Locale's full weekday name.
     %b         Locale's abbreviated month name.
     %B         Locale's full month name.
     %c         Locale's appropriate date and time representation.
     %d         Day of the month as a decimal number [01,31].
-    %f         ‘Fiscal' year without a century as a decimal number [00,99]   (1)
-    %F         ‘Fiscal' year with a century as a decimal number              (2)
+    %f         ‘Fiscal' year without a century as a decimal number       (1)
+               [00,99]
+    %F         ‘Fiscal' year with a century as a decimal number          (2)
     %H         Hour (24-hour clock) as a decimal number [00,23].
     %I         Hour (12-hour clock) as a decimal number [01,12].
     %j         Day of the year as a decimal number [001,366].
     %m         Month as a decimal number [01,12].
     %M         Minute as a decimal number [00,59].
-    %p         Locale's equivalent of either AM or PM.                       (3)
+    %p         Locale's equivalent of either AM or PM.                   (3)
     %q         Quarter as a decimal number [1,4]
-    %S         Second as a decimal number [00,61].                           (4)
+    %S         Second as a decimal number [00,61].                       (4)
     %l         Millisecond as a decimal number [000,999].
     %u         Microsecond as a decimal number [000000,999999].
     %N         Nanosecond as a decimal number [000000000,999999999].
-    %n         Nanosecond as a decimal number [000000000,999999999].         (6)
-    %U         Week number of the year (Sunday as the first day of the       (5)
-               week) as a decimal number [00,53]. All days in a new year
-               preceding the first Sunday are considered to be in week 0.
+    %n         Nanosecond as a decimal number [000000000,999999999].     (6)
+    %U         Week number of the year (Sunday as the first day of the   (5)
+               week) as a decimal number [00,53]. All days in a new
+               year preceding the first Sunday are considered to be in
+               week 0.
     %w         Weekday as a decimal number [0(Sunday),6].
-    %W         Week number of the year (Monday as the first day of the       (5)
-               week) as a decimal number [00,53]. All days in a new year
-               preceding the first Monday are considered to be in week 0.
+    %W         Week number of the year (Monday as the first day of the   (5)
+               week) as a decimal number [00,53]. All days in a new
+               year preceding the first Monday are considered to be in
+               week 0.
     %x         Locale's appropriate date representation.
     %X         Locale's appropriate time representation.
     %y         Year without century as a decimal number [00,99].
@@ -41737,8 +41820,8 @@ class pandas.PeriodIndex(data=None, freq=None, dtype=None, copy=None,
     daysinmonth    (DEPRECATED) The number of days in the month.
     end_time       Get the Timestamp for the end of the period.
     freq           Return the frequency object if it is set, otherwise None.
-    freqstr        Return the frequency object as a string if it's set, otherwise
-                   None.
+    freqstr        Return the frequency object as a string if it's set,
+                   otherwise None.
     hour           The hour of the period.
     is_leap_year   Logical indicating if the date belongs to a leap year.
     minute         The minute of the period.
@@ -41755,13 +41838,13 @@ class pandas.PeriodIndex(data=None, freq=None, dtype=None, copy=None,
 
     Methods: ~
 
-    asfreq([freq, how])                 Convert the PeriodIndex to the specified
-                                        frequency freq.
+    asfreq([freq, how])                 Convert the PeriodIndex to the
+                                        specified frequency freq.
     strftime(date_format)               Convert to Index using specified
                                         date_format.
     to_timestamp([freq, how])           Cast to DatetimeIndex.
-    from_fields(*[, year, quarter,      Construct a PeriodIndex from fields (year,
-    month, day, ...])                   month, day, etc.).
+    from_fields(*[, year, quarter,      Construct a PeriodIndex from fields
+    month, day, ...])                   (year, month, day, etc.).
     from_ordinals(ordinals, *, freq[,   Construct a PeriodIndex from ordinals.
     name])
 
@@ -42288,7 +42371,8 @@ class pandas.RangeIndex(start=None, stop=None, step=None, dtype=None,
 
     Methods: ~
 
-    from_range(data[, name, dtype])  Create pandas.RangeIndex from a range object.
+    from_range(data[, name, dtype])  Create pandas.RangeIndex from a range
+                                     object.
 
       See also: ~
 
@@ -43786,15 +43870,15 @@ property Series.array
     This table lays out the different array types for each extension dtype
     within pandas.
 
-    dtype                                          array type
-    ---------------------------------------------  -------------------------------
-    category                                       Categorical
-    period                                         PeriodArray
-    interval                                       IntervalArray
-    IntegerNA                                      IntegerArray
-    string                                         StringArray
-    boolean                                        BooleanArray
-    datetime64[ns, tz]                             DatetimeArray
+    dtype                                       array type
+    ------------------------------------------  ------------------------------
+    category                                    Categorical
+    period                                      PeriodArray
+    interval                                    IntervalArray
+    IntegerNA                                   IntegerArray
+    string                                      StringArray
+    boolean                                     BooleanArray
+    datetime64[ns, tz]                          DatetimeArray
 
     For any 3rd-party extension types, the array type will be an
     ExtensionArray.

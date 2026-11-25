@@ -472,14 +472,14 @@ practice this became the dominant bottleneck, so we made three changes:
 *advance-async-on-policy-distill-configuration-highlights-on-policy-distill-trainer-yaml*
 6. CONFIGURATION HIGHLIGHTS (`on_policy_distill_trainer.yaml`)
 
-Section                    Purpose                   Notable Keys
--------------------------  ------------------------  -------------------------
-actor_rollout_ref.teacher  Teacher server            server_ip, server_port,
-                                                     n_server_workers
-trainer                    Global training control   total_epochs, save_freq,
+Section                   Purpose                    Notable Keys
+------------------------  -------------------------  -------------------------
+actor_rollout_ref.        Teacher server             server_ip, server_port,
+teacher                                              n_server_workers
+trainer                   Global training control    total_epochs, save_freq,
                                                      scheduler (one_step_off
-rollout                    Resource split for        n_gpus_per_node, nnodes
-                           rollout
+rollout                   Resource split for         n_gpus_per_node, nnodes
+                          rollout
 
 Remember to set `trainer.n_gpus_per_node`, `trainer.nnodes`,
 `rollout.n_gpus_per_node` and `rollout.nnodes` to allocate GPU resources.
@@ -2936,29 +2936,37 @@ The MTP training process can be flexibly controlled through the following
 configurations. All configurations are based on the
 `actor_rollout_ref.model.mtp` prefix:
 
-Configuration        Core Parameters                       Description
-Scenario
--------------------  ------------------------------------  -------------------
-Load MTP Parameters  enable=True                           VRAM usage will
-Only                                                       increase, but the
-                                                           exported parameters
-                                                           include the MTP
-                                                           module and can be
-                                                           directly used for
-                                                           online deployment
-Full-Parameter MTP   enable=Trueenable_train=Truemtp_loss_scaling_factor=0.1  MTP Loss will apply
-Training                                                   to all model
-                                                           parameters
-MTP Parameter-Only   enable=Trueenable_train=Truedetach_encoder=True  Freeze the Encoder
-Training                                                   layer, update only
-                                                           MTP module
-                                                           parameters, MTP
-                                                           Loss applies only
-                                                           to MTP parameters
-MTP Accelerated      1. vLLM                               Achieve inference
-Rollout              configuration:enable=Trueenable_rollout=Truemethod="mtp"num_speculative_tokens=12.  acceleration during
-                     SGLang                                the Rollout phase
-                     configuration:enable=Trueenable_rollout=Truespeculative_algorithm="EAGLE"speculative_num_steps=2speculative_eagle_topk=2speculative_num_draft_tokens=4  based on MTP
+Configuration Scenario    Core Parameters            Description
+------------------------  -------------------------  -------------------------
+Load MTP Parameters Only  enable=True                VRAM usage will increase,
+                                                     but the exported
+                                                     parameters include the
+                                                     MTP module and can be
+                                                     directly used for online
+                                                     deployment
+Full-Parameter MTP        enable=True                MTP Loss will apply to
+Training                  enable_train=True          all model parameters
+                          mtp_loss_scaling_factor=
+                          0.1
+MTP Parameter-Only        enable=True                Freeze the Encoder layer,
+Training                  enable_train=True          update only MTP module
+                          detach_encoder=True        parameters, MTP Loss
+                                                     applies only to MTP
+                                                     parameters
+MTP Accelerated Rollout   1. vLLM configuration:     Achieve inference
+                          enable=True                acceleration during the
+                          enable_rollout=True        Rollout phase based on
+                          method="mtp"               MTP
+                          num_speculative_tokens=1
+                          2. SGLang configuration:
+                          enable=True
+                          enable_rollout=True
+                          speculative_algorithm=
+                          "EAGLE"
+                          speculative_num_steps=2
+                          speculative_eagle_topk=2
+                          speculative_num_draft_
+                          tokens=4
 
 3. EXPERIMENTAL RESULTS                     *advance-mtp-experimental-results*
 
@@ -3047,7 +3055,9 @@ The presence of mtp layer has limited effect on main loss. However, when MTP
 layer is detached, the mtp_loss converges to a higher value.
 
 ----------------------------------------------------------------------------
-RL(HF) algorithms with LoRA Support  *verl-advance-ppo_lora*
+                                                       *verl-advance-ppo_lora*
+
+RL(HF) algorithms with LoRA Support
 
 Last updated: 02/03/2026.
 
@@ -3683,9 +3693,12 @@ Default download URLs for `linux-amd64` (installer versions):
 
 Service     Version  Download URL
 ----------  -------  ---------------------------------------------------------
-Prometheus  2.54.1   https://github.com/prometheus/prometheus/releases/download/v2.54.1/prometheus-2.54.1.linux-amd64.tar.gz
-Tempo       2.6.1    https://github.com/grafana/tempo/releases/download/v2.6.1/tempo_2.6.1_linux_amd64.tar.gz
-Grafana     13.0.0   https://dl.grafana.com/oss/release/grafana-13.0.0.linux-amd64.tar.gz
+Prometheus  2.54.1   https://github.com/prometheus/prometheus/releases/
+                     download/v2.54.1/prometheus-2.54.1.linux-amd64.tar.gz
+Tempo       2.6.1    https://github.com/grafana/tempo/releases/download/v2.6.
+                     1/tempo_2.6.1_linux_amd64.tar.gz
+Grafana     13.0.0   https://dl.grafana.com/oss/release/grafana-13.0.0.linux-
+                     amd64.tar.gz
 
 For `linux-arm64`, replace `amd64` with `arm64` in the filenames and URLs
 (Tempo uses `linux_arm64` in the archive name). Filenames must match
@@ -3997,7 +4010,7 @@ automatically added to the outputs of `ToolAgentLoop.run` and each
 `LLMServerClient.generate` call, making it convenient to inspect complete
 trajectories and individual turns.
 
-Note:
+Note: ~
 
 1. mlflow does not support comparing multiple traces
 2. rollout_trace can not associate the mlflow trace with the run, so the
@@ -4277,36 +4290,31 @@ Off-policy control               *advance-v1_async_trainer-off-policy-control*
 
 The V1 sampler controls staleness in model-version units:
 
-Parameter                             Default  Meaning
-------------------------------------  -------  -------------------------------
-trainer.v1.sampler.max_off_policy_threshold  8        Maximum model versions from
-                                               first generation to being
-                                               trained before staleness
-                                               handling is triggered. null
-                                               disables off-policy version
-                                               control entirely: no samples
-                                               are dropped or awaited for
-                                               staleness
-trainer.v1.sampler.max_off_policy_strategy  drop     drop evicts stale prompt groups
-                                               (for GRPO, one stale
-                                               trajectory, the whole sample
-                                               dropped); wait blocks for
-                                               threshold-reaching in-flight
-                                               groups instead of dropping
-                                               them. Ignored when
-                                               max_off_policy_threshold is
-                                               null
-trainer.v1.sampler.poll_interval      2.0      Seconds between two checks of
-                                               the rollout progress while a
-                                               training step waits for its
-                                               batch. A batch that completes
-                                               between two checks waits for
-                                               the next one, so short steps
-                                               (fast generation, small models)
-                                               gain from a shorter interval
-                                               such as 0.1. Applies to the
-                                               built-in replay buffers; a
-                                               custom sampler sets its own
+Parameter                          Default  Meaning
+---------------------------------  -------  ----------------------------------
+trainer.v1.sampler.max_off_        8        Maximum model versions from first
+policy_threshold                            generation to being trained before
+                                            staleness handling is triggered.
+                                            null disables off-policy version
+                                            control entirely: no samples are
+                                            dropped or awaited for staleness
+trainer.v1.sampler.max_off_        drop     drop evicts stale prompt groups
+policy_strategy                             (for GRPO, one stale trajectory,
+                                            the whole sample dropped); wait
+                                            blocks for threshold-reaching
+                                            in-flight groups instead of
+                                            dropping them. Ignored when
+                                            max_off_policy_threshold is null
+trainer.v1.sampler.poll_interval   2.0      Seconds between two checks of the
+                                            rollout progress while a training
+                                            step waits for its batch. A batch
+                                            that completes between two checks
+                                            waits for the next one, so short
+                                            steps (fast generation, small
+                                            models) gain from a shorter
+                                            interval such as 0.1. Applies to
+                                            the built-in replay buffers; a
+                                            custom sampler sets its own
 
 Monitor both forms of off-policy behavior:
 

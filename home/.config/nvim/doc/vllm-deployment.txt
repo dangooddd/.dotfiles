@@ -11,15 +11,15 @@ Using Docker                                    *vllm-deployment-docker-index*
 PRE-BUILT IMAGES                    *deployment-docker-index-pre-built-images*
 
 NVIDIA CUDAAMD ROCmIntel XPUApple Silicon
-vLLM offers an official Docker image for deployment. The image can be used
-to run OpenAI compatible server and is available on Docker Hub as
+vLLM offers an official Docker image for deployment. The image can be
+used to run OpenAI compatible server and is available on Docker Hub as
 vllm/vllm-openai https://hub.docker.com/r/vllm/vllm-openai/tags.
 
 The default CUDA release images use Ubuntu 24.04. Separate `-ubuntu2404`
-release tags are no longer published. Use `latest` or `v<version>` instead
-of `latest-ubuntu2404` or `v<version>-ubuntu2404`; for architecture-specific
-tags, use `latest-x86_64` / `latest-aarch64` or `v<version>-x86_64` /
-`v<version>-aarch64`.
+release tags are no longer published. Use `latest` or `v<version>`
+instead of `latest-ubuntu2404` or `v<version>-ubuntu2404`; for
+architecture-specific tags, use `latest-x86_64` / `latest-aarch64` or
+`v<version>-x86_64` / `v<version>-aarch64`.
 
 >bash
     docker run --runtime nvidia --gpus all \
@@ -42,24 +42,25 @@ https://podman.io/.
     docker.io/vllm/vllm-openai:latest \
     --model Qwen/Qwen3-0.6B
 <
-You can add any other |vllm-configuration-engine_args-index| you need after
-the image tag (`vllm/vllm-openai:latest`).
+You can add any other |vllm-configuration-engine_args-index| you need
+after the image tag (`vllm/vllm-openai:latest`).
 
   Note: ~
 
-  You can either use the `ipc=host` flag or `--shm-size` flag to allow the
-  container to access the host's shared memory. vLLM uses PyTorch, which
-  uses shared memory to share data between processes under the hood,
-  particularly for tensor parallel inference.
+  You can either use the `ipc=host` flag or `--shm-size` flag to allow
+  the container to access the host's shared memory. vLLM uses PyTorch,
+  which uses shared memory to share data between processes under the
+  hood, particularly for tensor parallel inference.
 
   Note: ~
 
-  Optional dependencies are not included in order to avoid licensing issues
-  (e.g. Issue #8030 https://github.com/vllm-project/vllm/issues/8030).
+  Optional dependencies are not included in order to avoid licensing
+  issues (e.g. Issue #8030
+  https://github.com/vllm-project/vllm/issues/8030).
 
-  If you need to use those dependencies (having accepted the license terms),
-  create a custom Dockerfile on top of the base image with an extra layer
-  that installs them:
+  If you need to use those dependencies (having accepted the license
+  terms), create a custom Dockerfile on top of the base image with an
+  extra layer that installs them:
 
   >dockerfile
       FROM vllm/vllm-openai:v0.11.0
@@ -88,25 +89,26 @@ the image tag (`vllm/vllm-openai:latest`).
 Running on Systems with Older CUDA Drivers
 
 vLLM's Docker image comes with CUDA compatibility libraries
-https://docs.nvidia.com/deploy/cuda-compatibility/index.html pre-installed.
-This allows you to run vLLM on systems with NVIDIA drivers that are older
-than the CUDA Toolkit version used in the image, but only supports select
-professional and datacenter NVIDIA GPUs.
+https://docs.nvidia.com/deploy/cuda-compatibility/index.html
+pre-installed. This allows you to run vLLM on systems with NVIDIA
+drivers that are older than the CUDA Toolkit version used in the image,
+but only supports select professional and datacenter NVIDIA GPUs.
 
 For CUDA 13 images, the minimum host kernel is Linux 4.15 when running
 normally because CUDA 13 requires an R580 or newer driver. Compatibility
 mode supports R535 and R570 host drivers; R535 lowers the minimum host
-kernel to Linux 3.10, while R570 still requires Linux 4.15. Upgrading the
-container userland to Ubuntu 24.04 does not raise these driver-defined
-kernel requirements. See NVIDIA's forward compatibility matrix
+kernel to Linux 3.10, while R570 still requires Linux 4.15. Upgrading
+the container userland to Ubuntu 24.04 does not raise these
+driver-defined kernel requirements. See NVIDIA's
+forward compatibility matrix
 https://docs.nvidia.com/deploy/cuda-compatibility/forward-compatibility.html#use-the-right-cuda-forward-compatibility-package,
 R535 requirements
 https://download.nvidia.com/XFree86/Linux-x86_64/535.104.05/README/minimumrequirements.html,
 and R580 requirements
 https://download.nvidia.com/XFree86/Linux-x86_64/580.76.05/README/minimumrequirements.html.
 
-To enable this feature, set the `VLLM_ENABLE_CUDA_COMPATIBILITY` environment
-variable to `1` or `true` when running the container:
+To enable this feature, set the `VLLM_ENABLE_CUDA_COMPATIBILITY`
+environment variable to `1` or `true` when running the container:
 
 >bash
     docker run --runtime nvidia --gpus all \
@@ -119,25 +121,26 @@ variable to `1` or `true` when running the container:
 This will automatically configure `LD_LIBRARY_PATH` to point to the
 compatibility libraries before loading PyTorch and other dependencies.
 
-vLLM offers official Docker images for deployment. The images can be used to
-run OpenAI compatible server and are available on Docker Hub as
-vllm/vllm-openai-rocm https://hub.docker.com/r/vllm/vllm-openai-rocm/tags.
+vLLM offers official Docker images for deployment. The images can be
+used to run OpenAI compatible server and are available on Docker Hub as
+vllm/vllm-openai-rocm
+https://hub.docker.com/r/vllm/vllm-openai-rocm/tags.
 
 - `vllm/vllm-openai-rocm:latest` --- stable release, built on ROCm 10.0
   (also tagged `latest-rocm100`)
 - `vllm/vllm-openai-rocm:nightly` --- preview build from the latest
-  development branch on ROCm 10.0 (also tagged `nightly-rocm100`), use this
-  if you want the latest features and fixes
+  development branch on ROCm 10.0 (also tagged `nightly-rocm100`), use
+  this if you want the latest features and fixes
 - `vllm/vllm-openai-rocm:latest-rocm72` / `nightly-rocm72` --- earlier
   builds on the legacy ROCm 7.2 stack, no longer updated
-- `vllm/vllm-openai-rocm:base-nightly` / `latest-base` (and their `-rocm100`
-  forms) --- the same image without vLLM itself: the ROCm stack plus all of
-  vLLM's dependencies. Earlier builds of these tags held only the ROCm stack
-  (docker/Dockerfile.rocm_base
+- `vllm/vllm-openai-rocm:base-nightly` / `latest-base` (and their
+  `-rocm100` forms) --- the same image without vLLM itself: the ROCm
+  stack plus all of vLLM's dependencies. Earlier builds of these tags
+  held only the ROCm stack (docker/Dockerfile.rocm_base
   https://github.com/vllm-project/vllm/blob/main/docker/Dockerfile.rocm_base)
 
-ROCm 10.0 images use zstd-compressed layers; pulling them needs Docker 23 or
-newer (or containerd 1.5 or newer).
+ROCm 10.0 images use zstd-compressed layers; pulling them needs Docker
+23 or newer (or containerd 1.5 or newer).
 
 >bash
     docker run --rm \
@@ -178,33 +181,34 @@ Use AMD's Docker Images (Deprecated)
 
   Deprecated: ~
 
-  AMD's Docker images (`rocm/vllm` and `rocm/vllm-dev`) are deprecated in
-  favor of the official vLLM Docker images above (`vllm/vllm-openai-rocm`).
-  Please migrate to the official images.
+  AMD's Docker images (`rocm/vllm` and `rocm/vllm-dev`) are deprecated
+  in favor of the official vLLM Docker images above
+  (`vllm/vllm-openai-rocm`). Please migrate to the official images.
 
-Prior to January 20th, 2026 when the official docker images became available
-on upstream vLLM docker hub
+Prior to January 20th, 2026 when the official docker images became
+available on upstream vLLM docker hub
 https://hub.docker.com/v2/repositories/vllm/vllm-openai-rocm/tags/, the
-AMD Infinity hub for vLLM https://hub.docker.com/r/rocm/vllm/tags offered a
-prebuilt, optimized docker image designed for validating inference
-performance on the AMD Instinct MI300X™ accelerator. AMD also offered
-nightly prebuilt docker image from Docker Hub
+AMD Infinity hub for vLLM https://hub.docker.com/r/rocm/vllm/tags
+offered a prebuilt, optimized docker image designed for validating
+inference performance on the AMD Instinct MI300X™ accelerator. AMD also
+offered nightly prebuilt docker image from Docker Hub
 https://hub.docker.com/r/rocm/vllm-dev, which has vLLM and all its
-dependencies installed. The entrypoint of this docker image is `/bin/bash`
-(different from the vLLM's Official Docker Image).
+dependencies installed. The entrypoint of this docker image is
+`/bin/bash` (different from the vLLM's Official Docker Image).
 
   Tip: ~
 
-  Please check LLM inference performance validation on AMD Instinct MI300X
+  Please check
+  LLM inference performance validation on AMD Instinct MI300X
   https://rocm.docs.amd.com/en/latest/how-to/performance-validation/mi300x/vllm-benchmark.html
   for instructions on how to use this prebuilt docker image.
 
-vLLM offers official Docker images for deployment. The images can be used to
-run OpenAI compatible server and are available on Docker Hub as
+vLLM offers official Docker images for deployment. The images can be
+used to run OpenAI compatible server and are available on Docker Hub as
 vllm/vllm-openai-xpu https://hub.docker.com/r/vllm/vllm-openai-xpu/tags.
 
-- `vllm/vllm-openai-xpu:latest` --- stable release, available starting from
-  v0.26.0
+- `vllm/vllm-openai-xpu:latest` --- stable release, available starting
+  from v0.26.0
 - `vllm/vllm-openai-xpu:nightly` --- preview build from the latest
   development branch, use this if you want the latest features and fixes
 
@@ -243,41 +247,48 @@ source checkout and default working directory.
 
 Short image names                  *deployment-docker-index-short-image-names*
 
-Release images (from v0.33.0) and nightly images are also published under
-the shorter `vllm/vllm` name, with the platform as a tag suffix. These are
-the same images (same digests) as the `vllm/vllm-openai*` tags.
+Release images (from v0.33.0) and nightly images are also published
+under the shorter `vllm/vllm` name, with the platform as a tag suffix.
+These are the same images (same digests) as the `vllm/vllm-openai*`
+tags.
 
-Image                                 vllm/vllm tag
-------------------------------------  ----------------------------------------
-vllm/vllm-openai:{latest,v<version>,nightly}  vllm/vllm:{latest,v<version>,nightly}
-vllm/vllm-openai:{latest,v<version>}-efa  vllm/vllm:{latest,v<version>}-efa
-vllm/vllm-openai:cu134-nightly        vllm/vllm:nightly-cu134
-vllm/vllm-openai-rocm:{latest,v<version>,nightly}  vllm/vllm:{latest,v<version>,nightly}-rocm
-vllm/vllm-openai-rocm:{latest,v<version>,nightly}-<variant>  vllm/vllm:{latest,v<version>,nightly}-<variant>,
-                                      e.g. -rocm100
-vllm/vllm-openai-cpu:{latest,v<version>,nightly}  vllm/vllm:{latest,v<version>,nightly}-cpu
-vllm/vllm-openai-xpu:{latest,v<version>,nightly}  vllm/vllm:{latest,v<version>,nightly}-xpu
+Image                               vllm/vllm tag
+----------------------------------  ------------------------------------------
+vllm/vllm-openai:{latest,           vllm/vllm:{latest,v<version>,nightly}
+v<version>,nightly}
+vllm/vllm-openai:{latest,           vllm/vllm:{latest,v<version>}-efa
+v<version>}-efa
+vllm/vllm-openai:cu134-nightly      vllm/vllm:nightly-cu134
+vllm/vllm-openai-rocm:{latest,      vllm/vllm:{latest,v<version>,nightly}-rocm
+v<version>,nightly}
+vllm/vllm-openai-rocm:{latest,      vllm/vllm:{latest,v<version>,nightly}-
+v<version>,nightly}-<variant>       <variant>,
+                                    e.g. -rocm100
+vllm/vllm-openai-cpu:{latest,       vllm/vllm:{latest,v<version>,nightly}-cpu
+v<version>,nightly}
+vllm/vllm-openai-xpu:{latest,       vllm/vllm:{latest,v<version>,nightly}-xpu
+v<version>,nightly}
 
-For example, `docker pull vllm/vllm:v0.33.0-rocm` pulls the same image as
-`docker pull vllm/vllm-openai-rocm:v0.33.0`. Per-architecture tags, ROCm
-`-base` images and commit-pinned nightly tags (`nightly-<commit>`) are only
-published under the `vllm/vllm-openai*` names.
+For example, `docker pull vllm/vllm:v0.33.0-rocm` pulls the same image
+as `docker pull vllm/vllm-openai-rocm:v0.33.0`. Per-architecture tags,
+ROCm `-base` images and commit-pinned nightly tags (`nightly-<commit>`)
+are only published under the `vllm/vllm-openai*` names.
 
-Release images for ROCm and XPU are also published as `vllm/vllm-rocm` and
-`vllm/vllm-xpu`, with the same tags as `vllm/vllm-openai-rocm` and
+Release images for ROCm and XPU are also published as `vllm/vllm-rocm`
+and `vllm/vllm-xpu`, with the same tags as `vllm/vllm-openai-rocm` and
 `vllm/vllm-openai-xpu` (e.g. `vllm/vllm-rocm:v0.33.0`,
 `vllm/vllm-xpu:latest`).
 
                     *deployment-docker-index-run-a-vllm-recipes-configuration*
 RUN A VLLM RECIPES CONFIGURATION
 
-vLLM Recipes https://recipes.vllm.ai/ can be converted into `config.yaml`
-and `env.sh`. See the Recipes conversion tool README
-https://github.com/vllm-project/vllm/blob/main/tools/recipes/README.md for
-usage.
+vLLM Recipes https://recipes.vllm.ai/ can be converted into
+`config.yaml` and `env.sh`. See the Recipes conversion tool README
+https://github.com/vllm-project/vllm/blob/main/tools/recipes/README.md
+for usage.
 
-For Docker, mount both files and source `env.sh` inside the container before
-starting vLLM:
+For Docker, mount both files and source `env.sh` inside the container
+before starting vLLM:
 
 >bash
     docker run --rm --gpus all \
@@ -294,11 +305,11 @@ starting vLLM:
          *deployment-docker-index-persist-the-compile-cache-across-containers*
 PERSIST THE COMPILE CACHE ACROSS CONTAINERS
 
-Mounting the Hugging Face cache keeps model weights across containers, but
-each new container still starts with an empty `VLLM_CACHE_ROOT` (default
-`~/.cache/vllm`) and recompiles the model's `torch.compile` artifacts. Mount
-a named volume at that path to reuse the inductor, Triton, and AOT artifacts
-from the second container onward:
+Mounting the Hugging Face cache keeps model weights across containers,
+but each new container still starts with an empty `VLLM_CACHE_ROOT`
+(default `~/.cache/vllm`) and recompiles the model's `torch.compile`
+artifacts. Mount a named volume at that path to reuse the inductor,
+Triton, and AOT artifacts from the second container onward:
 
 >bash
     docker run --rm --gpus all \
@@ -308,14 +319,14 @@ from the second container onward:
         vllm/vllm-openai:latest \
         meta-llama/Llama-3.1-8B-Instruct
 <
-See |configuration-optimization-index-faster-startup| for the mechanism and
-for what invalidates the cache.
+See |configuration-optimization-index-faster-startup| for the mechanism
+and for what invalidates the cache.
 
 RUN AS A NON-ROOT USER        *deployment-docker-index-run-as-a-non-root-user*
 
 The CUDA `vllm/vllm-openai` image runs as root by default for backward
-compatibility. It is also prepared to run as the built-in `vllm` user (UID
-2000, GID 0):
+compatibility. It is also prepared to run as the built-in `vllm` user
+(UID 2000, GID 0):
 
 >bash
     docker run --rm --gpus all \
@@ -325,9 +336,9 @@ compatibility. It is also prepared to run as the built-in `vllm` user (UID
         meta-llama/Llama-3.1-8B-Instruct
 <
 When mounting model or cache volumes for a non-root container, mount
-writable paths under `/home/vllm` instead of `/root`. For example, mount the
-Hugging Face cache at `/home/vllm/.cache/huggingface` and make the mounted
-directory writable by group 0.
+writable paths under `/home/vllm` instead of `/root`. For example, mount
+the Hugging Face cache at `/home/vllm/.cache/huggingface` and make the
+mounted directory writable by group 0.
 
 >bash
     docker run --rm --gpus all \
@@ -337,8 +348,8 @@ directory writable by group 0.
         vllm/vllm-openai:latest \
         meta-llama/Llama-3.1-8B-Instruct
 <
-To build an image that defaults to the non-root `vllm` user, use the opt-in
-`vllm-openai-nonroot` target:
+To build an image that defaults to the non-root `vllm` user, use the
+opt-in `vllm-openai-nonroot` target:
 
 >bash
     docker build --target vllm-openai-nonroot \
@@ -351,9 +362,9 @@ To build an image that defaults to the non-root `vllm` user, use the opt-in
         meta-llama/Llama-3.1-8B-Instruct
 <
 The `vllm-openai-nonroot` target also supports OpenShift-style arbitrary
-UIDs when the runtime UID is a member of group 0. In Kubernetes manifests,
-set the container security context accordingly and keep mounted cache/model
-paths writable by group 0:
+UIDs when the runtime UID is a member of group 0. In Kubernetes
+manifests, set the container security context accordingly and keep
+mounted cache/model paths writable by group 0:
 
 >yaml
     securityContext:
@@ -362,15 +373,17 @@ paths writable by group 0:
       runAsGroup: 0
       fsGroup: 0
 <
-Runtime UIDs outside group 0 are not part of the documented support matrix
-because they may be unable to write to `/home/vllm` or `/opt/uv/cache`.
+Runtime UIDs outside group 0 are not part of the documented support
+matrix because they may be unable to write to `/home/vllm` or
+`/opt/uv/cache`.
 
 BUILD IMAGE FROM SOURCE      *deployment-docker-index-build-image-from-source*
 
 NVIDIA CUDAAMD ROCmIntel XPUApple Silicon
-You can build and run vLLM from source via the provided docker/Dockerfile
-https://github.com/vllm-project/vllm/blob/main/docker/Dockerfile. To build
-vLLM:
+You can build and run vLLM from source via the provided
+docker/Dockerfile
+https://github.com/vllm-project/vllm/blob/main/docker/Dockerfile. To
+build vLLM:
 
 >bash
     # optionally specifies: --build-arg max_jobs=8 --build-arg nvcc_threads=2
@@ -381,12 +394,12 @@ vLLM:
 <
   Note: ~
 
-  By default vLLM will build for all GPU types for widest distribution. If
-  you are just building for the current GPU type, you can add
-  `--build-arg torch_cuda_arch_list=""` to delegate architecture selection
-  to PyTorch. This requires the GPU to be visible to the container build;
-  standard Docker BuildKit builds do not expose it and PyTorch instead falls
-  back to its common architecture list.
+  By default vLLM will build for all GPU types for widest distribution.
+  If you are just building for the current GPU type, you can add
+  `--build-arg torch_cuda_arch_list=""` to delegate architecture
+  selection to PyTorch. This requires the GPU to be visible to the
+  container build; standard Docker BuildKit builds do not expose it and
+  PyTorch instead falls back to its common architecture list.
 
   If you are using Podman instead of Docker, you might need to disable
   SELinux labeling by adding `--security-opt label=disable` when running
@@ -400,15 +413,16 @@ vLLM:
 
   - Enable the feature by adding the build argument:
     `--build-arg VLLM_USE_PRECOMPILED="1"`.
-  - How it works: By default, vLLM automatically finds the correct wheels
-    from our Nightly Builds
-    https://docs.vllm.ai/en/latest/contributing/ci/nightly_builds/ by using
-    the merge-base commit with the upstream `main` branch.
+  - How it works: By default, vLLM automatically finds the correct
+    wheels from our Nightly Builds
+    https://docs.vllm.ai/en/latest/contributing/ci/nightly_builds/ by
+    using the merge-base commit with the upstream `main` branch.
   - Override commit: To use wheels from a specific commit, provide the
     `--build-arg VLLM_PRECOMPILED_WHEEL_COMMIT=<commit_hash>` argument.
 
-  For a detailed explanation, refer to the documentation on 'Set up using
-  Python-only build (without compilation)' part in Build wheel from source
+  For a detailed explanation, refer to the documentation on 'Set up
+  using Python-only build (without compilation)' part in
+  Build wheel from source
   https://docs.vllm.ai/en/latest/contributing/ci/nightly_builds/#precompiled-wheels-usage,
   these args are similar.
 
@@ -416,17 +430,17 @@ vLLM:
 Building vLLM's Docker Image from Source for Arm64/aarch64
 
 A docker container can be built for aarch64 systems such as the Nvidia
-Grace-Hopper and Grace-Blackwell. Using the flag `--platform "linux/arm64"`
-will build for arm64.
+Grace-Hopper and Grace-Blackwell. Using the flag
+`--platform "linux/arm64"` will build for arm64.
 
   Note: ~
 
   Multiple modules must be compiled, so this process can take a while.
   Recommend using `--build-arg max_jobs=` & `--build-arg nvcc_threads=`
   flags to speed up build process. However, ensure your `max_jobs` is
-  substantially larger than `nvcc_threads` to get the most benefits. Keep an
-  eye on memory usage with parallel jobs as it can be substantial (see
-  example below).
+  substantially larger than `nvcc_threads` to get the most benefits.
+  Keep an eye on memory usage with parallel jobs as it can be
+  substantial (see example below).
 
   Command: ~
 
@@ -443,7 +457,8 @@ will build for arm64.
       --build-arg torch_cuda_arch_list="9.0 10.0+PTX"
 <
 
-For (G)B300, we recommend using CUDA 13, as shown in the following command.
+For (G)B300, we recommend using CUDA 13, as shown in the following
+command.
 
   Command: ~
 
@@ -463,8 +478,8 @@ For (G)B300, we recommend using CUDA 13, as shown in the following command.
 
   Note: ~
 
-  If you are building the `linux/arm64` image on a non-ARM host (e.g., an
-  x86_64 machine), you need to ensure your system is set up for
+  If you are building the `linux/arm64` image on a non-ARM host (e.g.,
+  an x86_64 machine), you need to ensure your system is set up for
   cross-compilation using QEMU. This allows your host machine to emulate
   ARM64 execution.
 
@@ -474,8 +489,8 @@ For (G)B300, we recommend using CUDA 13, as shown in the following command.
   >bash
       docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 <
-  After setting up QEMU, you can use the `--platform "linux/arm64"` flag in
-  your `docker build` command.
+  After setting up QEMU, you can use the `--platform "linux/arm64"` flag
+  in your `docker build` command.
 
 *deployment-docker-index-preview-building-vllms-docker-image-from-source-for-nvidia-rubin-gpu-architecture*
 [Preview] Building vLLM's Docker Image from Source for NVIDIA Rubin GPU
@@ -485,22 +500,23 @@ Set `INSTALL_RUBIN_PRERELEASE=true` to enable the Rubin build path.
 
 Triton is the version that the pinned PyTorch nightly requires
 (`triton==3.9.0+gitb7ddcf86`, the Triton 3.9.0 release), installed from
-PyTorch's nightly index. It lowers SM107 through LLVM's SM100 target, which
-enables vLLM's default compiled mode on VR200 and R100. See the warning on
-ptxas 13.5.37 below.
+PyTorch's nightly index. It lowers SM107 through LLVM's SM100 target,
+which enables vLLM's default compiled mode on VR200 and R100. See the
+warning on ptxas 13.5.37 below.
 
 For `FINAL_BASE_IMAGE`, use the public, multi-arch
-`nvidia/cuda:13.5.0-base-ubuntu24.04` image. Set `NCCL_VERSION` to 2.32.3 or
-newer, the first NCCL release with Rubin (SM107) support. For
+`nvidia/cuda:13.5.0-base-ubuntu24.04` image. Set `NCCL_VERSION` to
+2.32.3 or newer, the first NCCL release with Rubin (SM107) support. For
 `BUILD_BASE_IMAGE`, use:
 
 - `pytorch/manylinux2_28-builder:cuda13.5` for x86_64 CPUs.
 - `pytorch/manylinuxaarch64-builder:cuda13.5` for ARM64/AArch64 CPUs.
 
-`requirements/rubin-prerelease.txt` pins PyTorch's cu135 nightly. PyTorch
-does not publish cu135 torchvision or torchaudio yet, so they use the cu134
-nightlies of the same date. Set `CUDA_VERSION` to the final image's CUDA
-version (13.5): the runtime stage installs the matching CUDA packages.
+`requirements/rubin-prerelease.txt` pins PyTorch's cu135 nightly.
+PyTorch does not publish cu135 torchvision or torchaudio yet, so they
+use the cu134 nightlies of the same date. Set `CUDA_VERSION` to the
+final image's CUDA version (13.5): the runtime stage installs the
+matching CUDA packages.
 
   ARM64/AArch64 build command: ~
 
@@ -542,31 +558,33 @@ version (13.5): the runtime stage installs the matching CUDA packages.
 
   Note: ~
 
-  Keep the default explicit `torch_cuda_arch_list`. GPU-less BuildKit builds
-  cannot inspect the host GPU. R100 and VR200 report compute capability
-  10.7, for which the generic `10.0` target provides family-compatible
-  kernels.
+  Keep the default explicit `torch_cuda_arch_list`. GPU-less BuildKit
+  builds cannot inspect the host GPU. R100 and VR200 report compute
+  capability 10.7, for which the generic `10.0` target provides
+  family-compatible kernels.
 
-  `RUN_WHEEL_CHECK=false` disables only the PyPI publication-size guard for
-  this private staging image.
-
-  Warning: ~
-
-  Run the image on hosts with an R620 or newer driver. On older drivers the
-  NVIDIA Container Toolkit loads the image's CUDA 13.5 forward-compatibility
-  driver instead. On R610 hosts that driver reports no CUDA peer access
-  between GPUs, so torch symmetric memory and the FlashInfer all-reduce
-  fusion fall back to NCCL, and serving performance differs from a native
-  R620 driver. The image's `NVIDIA_REQUIRE_CUDA` does not list R570 or R590
-  drivers, so the toolkit refuses to start it on those.
+  `RUN_WHEEL_CHECK=false` disables only the PyPI publication-size guard
+  for this private staging image.
 
   Warning: ~
 
-  CUDA 13.5.0's ptxas (13.5.37) silently miscompiles some `sm_107a` code,
-  which can corrupt model output on VR200 and R100. Importing FlashInfer
-  points Triton at the `ptxas` on `PATH`, which in these images is that
-  version. Until a fixed ptxas ships, run the image with this option, which
-  keeps Triton on the `ptxas-blackwell` 13.4 that its wheel bundles:
+  Run the image on hosts with an R620 or newer driver. On older drivers
+  the NVIDIA Container Toolkit loads the image's CUDA 13.5
+  forward-compatibility driver instead. On R610 hosts that driver
+  reports no CUDA peer access between GPUs, so torch symmetric memory
+  and the FlashInfer all-reduce fusion fall back to NCCL, and serving
+  performance differs from a native R620 driver. The image's
+  `NVIDIA_REQUIRE_CUDA` does not list R570 or R590 drivers, so the
+  toolkit refuses to start it on those.
+
+  Warning: ~
+
+  CUDA 13.5.0's ptxas (13.5.37) silently miscompiles some `sm_107a`
+  code, which can corrupt model output on VR200 and R100. Importing
+  FlashInfer points Triton at the `ptxas` on `PATH`, which in these
+  images is that version. Until a fixed ptxas ships, run the image with
+  this option, which keeps Triton on the `ptxas-blackwell` 13.4 that its
+  wheel bundles:
 
   >bash
       --env "TRITON_PTXAS_BLACKWELL_PATH=/usr/local/lib/python3.14/dist-packages/triton/backends/nvidia/bin/ptxas-blackwell"
@@ -586,20 +604,20 @@ To run vLLM with the custom-built Docker image:
         --env "HF_TOKEN=<secret>" \
         vllm/vllm-openai <args...>
 <
-The argument `vllm/vllm-openai` specifies the image to run, and should be
-replaced with the name of the custom-built image (the `-t` tag from the
-build command).
+The argument `vllm/vllm-openai` specifies the image to run, and should
+be replaced with the name of the custom-built image (the `-t` tag from
+the build command).
 
   Note: ~
 
   For version 0.4.1 and 0.4.2 only - the vLLM docker images under these
-  versions are supposed to be run under the root user since a library under
-  the root user's home directory, i.e.
-  `/root/.config/vllm/nccl/cu12/libnccl.so.2.18.1` is required to be loaded
-  during runtime. If you are running the container under a different user,
-  you may need to first change the permissions of the library (and all the
-  parent directories) to allow the user to access it, then run vLLM with
-  environment variable
+  versions are supposed to be run under the root user since a library
+  under the root user's home directory, i.e.
+  `/root/.config/vllm/nccl/cu12/libnccl.so.2.18.1` is required to be
+  loaded during runtime. If you are running the container under a
+  different user, you may need to first change the permissions of the
+  library (and all the parent directories) to allow the user to access
+  it, then run vLLM with environment variable
   `VLLM_NCCL_SO_PATH=/root/.config/vllm/nccl/cu12/libnccl.so.2.18.1` .
 
 You can build and run vLLM from source via the provided
@@ -607,28 +625,29 @@ docker/Dockerfile.rocm
 https://github.com/vllm-project/vllm/blob/main/docker/Dockerfile.rocm,
 driven by docker/docker-bake-rocm.hcl
 https://github.com/vllm-project/vllm/blob/main/docker/docker-bake-rocm.hcl
-(requires Docker Buildx). It uses ROCm 10.0 (installed from TheRock wheels,
-docker/Dockerfile.rocm_base
+(requires Docker Buildx). It uses ROCm 10.0 (installed from TheRock
+wheels, docker/Dockerfile.rocm_base
 https://github.com/vllm-project/vllm/blob/main/docker/Dockerfile.rocm_base).
 Older vLLM branches support ROCm 5.7 through 7.0.
 
 To build vllm on ROCm 10.0 for all supported GPUs (an image with
 `vllm serve` as entrypoint), reusing the published ROCm stack and
-dependencies (`vllm/vllm-openai-rocm:base-nightly`) so that only vLLM itself
-is compiled:
+dependencies (`vllm/vllm-openai-rocm:base-nightly`) so that only vLLM
+itself is compiled:
 
 >bash
     STACK_IMAGE=vllm/vllm-openai-rocm:base-nightly RUNTIME=vllm/vllm-openai-rocm:base-nightly \
         TAG=vllm/vllm-openai-rocm docker buildx bake -f docker/docker-bake-rocm.hcl vllm-openai
 <
-Without `STACK_IMAGE` and `RUNTIME`, the ROCm stack and every dependency are
-built from source as well, which takes several hours. To compile vLLM only
-for your GPU, add for example `--set vllm-openai.args.ARCH=gfx942`.
+Without `STACK_IMAGE` and `RUNTIME`, the ROCm stack and every dependency
+are built from source as well, which takes several hours. To compile
+vLLM only for your GPU, add for example
+`--set vllm-openai.args.ARCH=gfx942`.
 
 When building the ROCm stack from source, add for example
-`--set stack-rocm.args.FA_ROCM_ARCH=gfx942` to compile FlashAttention only
-for your GPU. Leaving `FA_ROCM_ARCH` empty uses the full `PYTORCH_ROCM_ARCH`
-list.
+`--set stack-rocm.args.FA_ROCM_ARCH=gfx942` to compile FlashAttention
+only for your GPU. Leaving `FA_ROCM_ARCH` empty uses the full
+`PYTORCH_ROCM_ARCH` list.
 
 To run vLLM with the custom-built Docker image:
 
@@ -645,9 +664,9 @@ To run vLLM with the custom-built Docker image:
         --ipc=host \
         vllm/vllm-openai-rocm <args...>
 <
-The argument `vllm/vllm-openai-rocm` specifies the image to run, and should
-be replaced with the name of the custom-built image (the `-t` tag from the
-build command).
+The argument `vllm/vllm-openai-rocm` specifies the image to run, and
+should be replaced with the name of the custom-built image (the `-t` tag
+from the build command).
 
 To use the docker image as base for development, you can launch it in
 interactive session through overriding the entrypoint.
@@ -685,8 +704,8 @@ interactive session through overriding the entrypoint.
 Using Kubernetes                                   *vllm-deployment-k8s-index*
 
 Deploying vLLM on Kubernetes is a scalable and efficient way to serve
-machine learning models. This guide walks you through deploying vLLM using
-native Kubernetes.
+machine learning models. This guide walks you through deploying vLLM
+using native Kubernetes.
 
 - |deployment-k8s-index-deployment-with-cpus|
 - |deployment-k8s-index-deployment-with-gpus|
@@ -695,7 +714,8 @@ native Kubernetes.
   - |deployment-k8s-index-startup-probe-or-readiness-probe-failure-container-log-contains-keyboardinterrupt-terminated|
 - |deployment-k8s-index-conclusion|
 
-Alternatively, you can deploy vLLM to Kubernetes using any of the following:
+Alternatively, you can deploy vLLM to Kubernetes using any of the
+following:
 
 - Helm https://docs.vllm.ai/en/latest/deployment/frameworks/helm/
 - NVIDIA Dynamo
@@ -706,7 +726,8 @@ Alternatively, you can deploy vLLM to Kubernetes using any of the following:
 - KAITO https://docs.vllm.ai/en/latest/deployment/integrations/kaito/
 - KServe https://docs.vllm.ai/en/latest/deployment/integrations/kserve/
 - Kthena https://docs.vllm.ai/en/latest/deployment/integrations/kthena/
-- KubeRay https://docs.vllm.ai/en/latest/deployment/integrations/kuberay/
+- KubeRay
+  https://docs.vllm.ai/en/latest/deployment/integrations/kuberay/
 - kubernetes-sigs/lws
   https://docs.vllm.ai/en/latest/deployment/frameworks/lws/
 - meta-llama/llama-stack
@@ -722,8 +743,8 @@ DEPLOYMENT WITH CPUS               *deployment-k8s-index-deployment-with-cpus*
 
   Note: ~
 
-  The use of CPUs here is for demonstration and testing purposes only and
-  its performance will not be on par with GPUs.
+  The use of CPUs here is for demonstration and testing purposes only
+  and its performance will not be on par with GPUs.
 
 First, create a Kubernetes PVC and Secret for downloading and storing
 Hugging Face model:
@@ -754,14 +775,14 @@ Hugging Face model:
       EOF
 <
 
-Here, the `token` field stores your Hugging Face access token. For details
-on how to generate a token, see the Hugging Face documentation
+Here, the `token` field stores your Hugging Face access token. For
+details on how to generate a token, see the Hugging Face documentation
 https://huggingface.co/docs/hub/en/security-tokens.
 
 Next, start the vLLM server as a Kubernetes Deployment and Service.
 
-Note that you will want to configure your vLLM image based on your processor
-arch:
+Note that you will want to configure your vLLM image based on your
+processor arch:
 
   Config: ~
 
@@ -835,7 +856,8 @@ We can verify that the vLLM server has started successfully via the logs
 
 DEPLOYMENT WITH GPUS               *deployment-k8s-index-deployment-with-gpus*
 
-Pre-requisite: Ensure that you have a running Kubernetes cluster with GPUs
+Pre-requisite: Ensure that you have a running
+Kubernetes cluster with GPUs
 https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/.
 
 1. Create a PVC, Secret and Deployment for vLLM
@@ -861,8 +883,8 @@ https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/.
            volumeMode: Filesystem
 <
 
-   Secret is optional and only required for accessing gated models, you can
-   skip this step if you are not using gated models
+   Secret is optional and only required for accessing gated models, you
+   can skip this step if you are not using gated models
 
    >yaml
        apiVersion: v1
@@ -874,8 +896,8 @@ https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/.
        stringData:
          token: "REPLACE_WITH_TOKEN"
 <
-   Next to create the deployment file for vLLM to run the model server. The
-   following example deploys the `Mistral-7B-Instruct-v0.3` model.
+   Next to create the deployment file for vLLM to run the model server.
+   The following example deploys the `Mistral-7B-Instruct-v0.3` model.
 
    Here are two examples for using NVIDIA GPU and AMD GPU.
 
@@ -955,8 +977,8 @@ https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/.
 
    AMD GPU:
 
-   You can refer to the `deployment.yaml` below if using AMD ROCm GPU like
-   MI300X.
+   You can refer to the `deployment.yaml` below if using AMD ROCm GPU
+   like MI300X.
 
      Yaml: ~
 
@@ -1078,8 +1100,8 @@ https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/.
                "temperature": 0
              }'
 <
-   If the service is correctly deployed, you should receive a response from
-   the vLLM model.
+   If the service is correctly deployed, you should receive a response
+   from the vLLM model.
 
 SERVING WITH GRPC                     *deployment-k8s-index-serving-with-grpc*
 
@@ -1097,8 +1119,8 @@ native gRPC probes
 https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-grpc-liveness-probe
 (available since Kubernetes 1.24).
 
-To deploy with gRPC, change the `vllm serve` command to include `--grpc` and
-replace `httpGet` probes with `grpc` probes:
+To deploy with gRPC, change the `vllm serve` command to include `--grpc`
+and replace `httpGet` probes with `grpc` probes:
 
 >yaml
     containers:
@@ -1123,9 +1145,9 @@ replace `httpGet` probes with `grpc` probes:
 <
   Note: ~
 
-  The gRPC health service checks the engine status on every probe. If the
-  engine is unhealthy or the server is shutting down, the probe returns
-  `NOT_SERVING`.
+  The gRPC health service checks the engine status on every probe. If
+  the engine is unhealthy or the server is shutting down, the probe
+  returns `NOT_SERVING`.
 
 You can also verify the health service manually with `grpcurl`:
 
@@ -1136,12 +1158,12 @@ You can also verify the health service manually with `grpcurl`:
                        *deployment-k8s-index-rust-frontend-grpc-health-checks*
 Rust frontend gRPC health checks
 
-The Rust frontend is a separate server from `--grpc` above. Start it with
-`VLLM_USE_RUST_FRONTEND=1 vllm serve <model> --grpc-port 50051` or
+The Rust frontend is a separate server from `--grpc` above. Start it
+with `VLLM_USE_RUST_FRONTEND=1 vllm serve <model> --grpc-port 50051` or
 `vllm-rs serve <model> --grpc-port 50051`. Its gRPC port serves
-`grpc.health.v1.Health` and reports engine liveness and inference readiness
-under separate service names, so a paused engine can leave the load balancer
-without being restarted:
+`grpc.health.v1.Health` and reports engine liveness and inference
+readiness under separate service names, so a paused engine can leave the
+load balancer without being restarted:
 
 Service                       Reports NOT_SERVING when
 ----------------------------  ------------------------------------------------
@@ -1154,12 +1176,12 @@ readiness and vllm.Inference  The engine has failed, shutdown has started, the
                               weight update has not finished successfully.
 vllm.Control and ""           The engine has failed or shutdown has started.
 
-Point the startup and liveness probes at `liveness` and the readiness probe
-at `readiness`. A liveness probe on `readiness` or `vllm.Inference` restarts
-an engine that stays paused longer than the probe's failure threshold. The
-listener stops accepting connections when shutdown starts, so probes see the
-endpoint as unavailable while `--shutdown-timeout` drains in-flight
-requests.
+Point the startup and liveness probes at `liveness` and the readiness
+probe at `readiness`. A liveness probe on `readiness` or
+`vllm.Inference` restarts an engine that stays paused longer than the
+probe's failure threshold. The listener stops accepting connections when
+shutdown starts, so probes see the endpoint as unavailable while
+`--shutdown-timeout` drains in-flight requests.
 
 >yaml
     startupProbe:
@@ -1178,11 +1200,12 @@ requests.
         service: readiness
 <
 A paused or sleeping pod leaves the endpoints of its Services, so send
-resume, wake-up, and weight-update calls to the pod directly, for example
-through a headless Service with `publishNotReadyAddresses: true`. After a
-process checkpoint fails, the engine stays paused and `liveness` stays
-`SERVING`, so whatever drives the checkpoint must restart the pod when
-`/checkpoint/status` reports the failure.
+resume, wake-up, and weight-update calls to the pod directly, for
+example through a headless Service with
+`publishNotReadyAddresses: true`. After a process checkpoint fails, the
+engine stays paused and `liveness` stays `SERVING`, so whatever drives
+the checkpoint must restart the pod when `/checkpoint/status` reports
+the failure.
 
 This server does not enable gRPC reflection, so check a service manually
 with `grpc_health_probe`
@@ -1198,32 +1221,32 @@ TROUBLESHOOTING                         *deployment-k8s-index-troubleshooting*
 Startup Probe or Readiness Probe Failure, container log contains
 "KeyboardInterrupt: terminated"
 
-If the startup or readiness probe failureThreshold is too low for the time
-needed to start up the server, Kubernetes scheduler will kill the container.
-A couple of indications that this has happened:
+If the startup or readiness probe failureThreshold is too low for the
+time needed to start up the server, Kubernetes scheduler will kill the
+container. A couple of indications that this has happened:
 
 1. container log contains "KeyboardInterrupt: terminated"
 2. `kubectl get events` shows message
    `Container $NAME failed startup probe, will be restarted`
 
-To mitigate, increase the failureThreshold to allow more time for the model
-server to start serving. You can identify an ideal failureThreshold by
-removing the probes from the manifest and measuring how much time it takes
-for the model server to show it's ready to serve.
+To mitigate, increase the failureThreshold to allow more time for the
+model server to start serving. You can identify an ideal
+failureThreshold by removing the probes from the manifest and measuring
+how much time it takes for the model server to show it's ready to serve.
 
 CONCLUSION                                   *deployment-k8s-index-conclusion*
 
-Deploying vLLM with Kubernetes allows for efficient scaling and management
-of ML models leveraging GPU resources. By following the steps outlined
-above, you should be able to set up and test a vLLM deployment within your
-Kubernetes cluster. If you encounter any issues or have suggestions, please
-feel free to contribute to the documentation.
+Deploying vLLM with Kubernetes allows for efficient scaling and
+management of ML models leveraging GPU resources. By following the steps
+outlined above, you should be able to set up and test a vLLM deployment
+within your Kubernetes cluster. If you encounter any issues or have
+suggestions, please feel free to contribute to the documentation.
 
 ----------------------------------------------------------------------------
 Using Nginx                                      *vllm-deployment-nginx-index*
 
-This document shows how to launch multiple vLLM serving containers and use
-Nginx to act as a load balancer between the servers.
+This document shows how to launch multiple vLLM serving containers and
+use Nginx to act as a load balancer between the servers.
 
 BUILD NGINX CONTAINER           *deployment-nginx-index-build-nginx-container*
 
@@ -1250,10 +1273,11 @@ Build the container:
                       *deployment-nginx-index-create-simple-nginx-config-file*
 CREATE SIMPLE NGINX CONFIG FILE
 
-Create a file named `nginx_conf/nginx.conf`. Note that you can add as many
-servers as you'd like. In the below example we'll start with two. To add
-more, add another `server vllmN:8000 max_fails=3 fail_timeout=10000s;` entry
-to `upstream backend`.
+Create a file named `nginx_conf/nginx.conf`. Note that you can add as
+many servers as you'd like. In the below example we'll start with two.
+To add more, add another
+`server vllmN:8000 max_fails=3 fail_timeout=10000s;` entry to
+`upstream backend`.
 
   Config: ~
 
@@ -1281,8 +1305,8 @@ BUILD VLLM CONTAINER             *deployment-nginx-index-build-vllm-container*
     cd $vllm_root
     docker build -f docker/Dockerfile . --tag vllm
 <
-If you are behind proxy, you can pass the proxy settings to the docker build
-command as shown below:
+If you are behind proxy, you can pass the proxy settings to the docker
+build command as shown below:
 
 >bash
     cd $vllm_root
@@ -1301,16 +1325,16 @@ CREATE DOCKER NETWORK           *deployment-nginx-index-create-docker-network*
 
 LAUNCH VLLM CONTAINERS         *deployment-nginx-index-launch-vllm-containers*
 
-Notes:
+Notes: ~
 
 - If you have your HuggingFace models cached somewhere else, update
   `hf_cache_dir` below.
 - If you don't have an existing HuggingFace cache you will want to start
-  `vllm0` and wait for the model to complete downloading and the server to
-  be ready. This will ensure that `vllm1` can leverage the model you just
-  downloaded and it won't have to be downloaded again.
-- The below example assumes GPU backend used. If you are using CPU backend,
-  remove `--gpus device=ID`, add `VLLM_CPU_KVCACHE_SPACE` and
+  `vllm0` and wait for the model to complete downloading and the server
+  to be ready. This will ensure that `vllm1` can leverage the model you
+  just downloaded and it won't have to be downloaded again.
+- The below example assumes GPU backend used. If you are using CPU
+  backend, remove `--gpus device=ID`, add `VLLM_CPU_KVCACHE_SPACE` and
   `VLLM_CPU_OMP_THREADS_BIND` environment variables to the docker run
   command.
 - Adjust the model name that you want to use in your vLLM servers if you
@@ -1345,8 +1369,9 @@ Notes:
 
   Note: ~
 
-  If you are behind proxy, you can pass the proxy settings to the docker run
-  command via `-e http_proxy=$http_proxy -e https_proxy=$https_proxy`.
+  If you are behind proxy, you can pass the proxy settings to the docker
+  run command via
+  `-e http_proxy=$http_proxy -e https_proxy=$https_proxy`.
 
 LAUNCH NGINX                             *deployment-nginx-index-launch-nginx*
 

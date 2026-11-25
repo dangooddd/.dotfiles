@@ -5167,13 +5167,14 @@ class torch.Event(device=None, *, enable_timing=False, blocking=False,
     Return type: ~
         |torch.Event|
 
-    Example:
+    Example: ~
 
     >python
         >>> event = torch.Event()
         >>> e_cuda = torch.Event(device='cuda')
 <
-    elapsed_time(end_event) → float *torch.Event.elapsed_time*
+    elapsed_time(end_event) → float
+    *torch.Event.elapsed_time*
         Returns the elapsed time in milliseconds between when this event and
         the `end_event` are each recorded via |torch.Stream.record_event|.
 
@@ -5186,7 +5187,7 @@ class torch.Event(device=None, *, enable_timing=False, blocking=False,
         Return type: ~
             float
 
-        Example:
+        Example: ~
 
         >python
             >>> s_cuda = torch.Stream(device='cuda')
@@ -5195,7 +5196,8 @@ class torch.Event(device=None, *, enable_timing=False, blocking=False,
             >>> ms = e1_cuda.elapsed_time(e2_cuda)
 <
 
-    query() → bool *torch.Event.query*
+    query() → bool
+    *torch.Event.query*
         Check if the stream where this event was recorded already moved past
         the point where the event was recorded. Always returns `True` if the
         Event was not recorded.
@@ -5207,7 +5209,7 @@ class torch.Event(device=None, *, enable_timing=False, blocking=False,
         Return type: ~
             bool
 
-        Example:
+        Example: ~
 
         >python
             >>> s_cuda = torch.Stream(device='cuda')
@@ -5216,7 +5218,8 @@ class torch.Event(device=None, *, enable_timing=False, blocking=False,
             True
 <
 
-    record(stream=None) → None *torch.Event.record*
+    record(stream=None) → None
+    *torch.Event.record*
         Record the event in a given stream. The stream's device must match
         the event's device. This function is equivalent to
         `stream.record_event(self)`.
@@ -5225,18 +5228,19 @@ class torch.Event(device=None, *, enable_timing=False, blocking=False,
             stream (|torch.Stream|, optional) -- A stream to be recorded. If
             not given, the current stream will be used.
 
-        Example:
+        Example: ~
 
         >python
             >>> e_cuda = torch.Event(device='cuda')
             >>> e_cuda.record()
 <
 
-    synchronize() → None *torch.Event.synchronize*
+    synchronize() → None
+    *torch.Event.synchronize*
         Wait for the event to complete. This prevents the CPU thread from
         proceeding until the event completes.
 
-        Example:
+        Example: ~
 
         >python
             >>> s_cuda = torch.Stream(device='cuda')
@@ -5244,7 +5248,8 @@ class torch.Event(device=None, *, enable_timing=False, blocking=False,
             >>> e_cuda.synchronize()
 <
 
-    wait(stream=None) → None *torch.Event.wait*
+    wait(stream=None) → None
+    *torch.Event.wait*
         Make all future work submitted to the given stream wait for this
         event.
 
@@ -5252,7 +5257,7 @@ class torch.Event(device=None, *, enable_timing=False, blocking=False,
             stream (|torch.Stream|, optional) -- A stream to synchronize. If
             not given, the current stream will be used.
 
-        Example:
+        Example: ~
 
         >python
             >>> s1_cuda = torch.Stream(device='cuda')
@@ -5289,7 +5294,7 @@ class torch.Generator
 
         Gets the current device of the generator.
 
-        Example:
+        Example: ~
 
         >python
             >>> g_cpu = torch.Generator()
@@ -5297,7 +5302,8 @@ class torch.Generator
             device(type='cpu')
 <
 
-    get_state() → |torch.Tensor| *torch.Generator.get_state*
+    get_state() → |torch.Tensor|
+    *torch.Generator.get_state*
         Returns the Generator state as a `torch.ByteTensor`.
 
         Returns: ~
@@ -5307,7 +5313,7 @@ class torch.Generator
         Return type: ~
             |torch.Tensor|
 
-        Example:
+        Example: ~
 
         >python
             >>> g_cpu = torch.Generator()
@@ -5333,7 +5339,8 @@ class torch.Generator
             >>> current_state = g_cuda.graphsafe_get_state()
 <
 
-    graphsafe_set_state(state) → None *torch.Generator.graphsafe_set_state*
+    graphsafe_set_state(state) → None
+    *torch.Generator.graphsafe_set_state*
         Sets the state of the generator to the specified state in a manner
         that is safe for use in graph capture. This method is crucial for
         ensuring that the generator's state can be captured in the CUDA
@@ -5352,10 +5359,11 @@ class torch.Generator
             >>> g_cuda.graphsafe_set_state(current_state)
 <
 
-    initial_seed() → int *torch.Generator.initial_seed*
+    initial_seed() → int
+    *torch.Generator.initial_seed*
         Returns the initial seed for generating random numbers.
 
-        Example:
+        Example: ~
 
         >python
             >>> g_cpu = torch.Generator()
@@ -5363,7 +5371,8 @@ class torch.Generator
             2147483647
 <
 
-    manual_seed(seed) → |torch.Generator| *torch.Generator.manual_seed*
+    manual_seed(seed) → |torch.Generator|
+    *torch.Generator.manual_seed*
         Sets the seed for generating random numbers. Returns a
         torch.Generator object. Any 32-bit integer is a valid seed.
 
@@ -5380,7 +5389,7 @@ class torch.Generator
         Return type: ~
             |torch.Generator|
 
-        Example:
+        Example: ~
 
         >python
             >>> g_cpu = torch.Generator()
@@ -5388,7 +5397,8 @@ class torch.Generator
 <
 
     philox_state(increment) → tuple[|torch.Tensor|, |torch.Tensor|,
-    |torch.Tensor|] *torch.Generator.philox_state*
+    |torch.Tensor|]
+    *torch.Generator.philox_state*
         Reserves `increment` values from this generator's Philox4x32-10
         stream and returns the reserved position as
         `(seed, offset, intragraph_offset)`, three 1-element `int64`
@@ -5469,11 +5479,12 @@ class torch.Generator
             >>> seed, offset, intragraph = g_cuda.philox_state(4)
 <
 
-    seed() → int *torch.Generator.seed*
+    seed() → int
+    *torch.Generator.seed*
         Gets a non-deterministic random number from std::random_device or
         the current time and uses it to seed a Generator.
 
-        Example:
+        Example: ~
 
         >python
             >>> g_cpu = torch.Generator()
@@ -5481,13 +5492,14 @@ class torch.Generator
             1516516984916
 <
 
-    set_state(new_state) → void *torch.Generator.set_state*
+    set_state(new_state) → void
+    *torch.Generator.set_state*
         Sets the Generator state.
 
         Parameters: ~
             new_state (torch.ByteTensor) -- The desired state.
 
-        Example:
+        Example: ~
 
         >python
             >>> g_cpu = torch.Generator()
@@ -5524,7 +5536,7 @@ class torch.Stream(device, *, priority)
     Return type: ~
         |torch.Stream|
 
-    Example:
+    Example: ~
 
     >python
         >>> with torch.Stream(device='cuda') as s_cuda:
@@ -5532,7 +5544,8 @@ class torch.Stream(device, *, priority)
         >>>     b = torch.randn(5, 10, device='cuda')
         >>>     c = torch.mm(a, b)
 <
-    is_capturing() → bool *torch.Stream.is_capturing*
+    is_capturing() → bool
+    *torch.Stream.is_capturing*
         Return true if this stream is currently recording work for graph
         capture.
 
@@ -5542,14 +5555,15 @@ class torch.Stream(device, *, priority)
         Return type: ~
             bool
 
-        Example:
+        Example: ~
 
         >python
             >>> s_cuda = torch.Stream(device='cuda')
             >>> s_cuda.is_capturing()
 <
 
-    query() → bool *torch.Stream.query*
+    query() → bool
+    *torch.Stream.query*
         Check if all the work submitted has been completed.
 
         Returns: ~
@@ -5559,7 +5573,7 @@ class torch.Stream(device, *, priority)
         Return type: ~
             bool
 
-        Example:
+        Example: ~
 
         >python
             >>> s_cuda = torch.Stream(device='cuda')
@@ -5567,7 +5581,8 @@ class torch.Stream(device, *, priority)
             True
 <
 
-    record_event(event) → |torch.Event| *torch.Stream.record_event*
+    record_event(event) → |torch.Event|
+    *torch.Stream.record_event*
         Record an event. En-queuing it into the Stream to allow further
         synchronization from the current point in the FIFO queue.
 
@@ -5581,30 +5596,32 @@ class torch.Stream(device, *, priority)
         Return type: ~
             |torch.Event|
 
-        Example:
+        Example: ~
 
         >python
             >>> s_cuda = torch.Stream(device='cuda')
             >>> e_cuda = s_cuda.record_event()
 <
 
-    synchronize() → None *torch.Stream.synchronize*
+    synchronize() → None
+    *torch.Stream.synchronize*
         Wait for all the kernels in this stream to complete.
 
-        Example:
+        Example: ~
 
         >python
             >>> s_cuda = torch.Stream(device='cuda')
             >>> s_cuda.synchronize()
 <
 
-    wait_event(event) → None *torch.Stream.wait_event*
+    wait_event(event) → None
+    *torch.Stream.wait_event*
         Make all future work submitted to the stream wait for an event.
 
         Parameters: ~
             event (|torch.Event|) -- an event to wait for.
 
-        Example:
+        Example: ~
 
         >python
             >>> s1_cuda = torch.Stream(device='cuda')
@@ -5613,7 +5630,8 @@ class torch.Stream(device, *, priority)
             >>> s2_cuda.wait_event(e_cuda)
 <
 
-    wait_stream(stream) → None *torch.Stream.wait_stream*
+    wait_stream(stream) → None
+    *torch.Stream.wait_stream*
         Synchronize with another stream. All future work submitted to this
         stream will wait until all kernels already submitted to the given
         stream are completed.
@@ -5621,7 +5639,7 @@ class torch.Stream(device, *, priority)
         Parameters: ~
             stream (|torch.Stream|) -- a stream to synchronize.
 
-        Example:
+        Example: ~
 
         >python
             >>> s1_cuda = torch.Stream(device='cuda')
@@ -6380,7 +6398,7 @@ Tensor.col_indices() → IntTensor
     multiplication, it is necessary to use `int32` indexing in order to
     avoid downcasting and potentially losing information.
 
-    Example:
+    Example: ~
 
     >python
         >>> csr = torch.eye(5,5).to_sparse_csr()
@@ -6543,7 +6561,7 @@ Tensor.crow_indices() → IntTensor
     multiplication, it is necessary to use `int32` indexing in order to
     avoid downcasting and potentially losing information.
 
-    Example:
+    Example: ~
 
     >python
         >>> csr = torch.eye(5,5).to_sparse_csr()
@@ -6761,7 +6779,7 @@ Tensor.dim_order(ambiguity_check=False) → tuple
         ambiguity_check (bool or List[|torch.memory_format|]) -- The check
         method for ambiguity of dim order.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> torch.empty((2, 3, 5, 7)).dim_order()
@@ -6850,7 +6868,7 @@ Tensor.dsplit(split_size_or_sections) → List of Tensors
 Tensor.element_size() → int
     Returns the size in bytes of an individual element.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.tensor([]).element_size()
@@ -6960,7 +6978,7 @@ Tensor.expand(*size) → |torch.Tensor|
       that are vectorized) may result in incorrect behavior. If you need to
       write to the tensors, please clone them first.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([[1], [2], [3]])
@@ -7040,7 +7058,7 @@ Tensor.fill_diagonal_(fill_value, wrap=False) → |torch.Tensor|
         - wrap (bool, optional) -- the diagonal ‘wrapped' after N columns
           for tall matrices. Default: `False`
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.zeros(3, 3)
@@ -7257,7 +7275,7 @@ Tensor.get_device() -> Device ordinal (Integer)
     For CUDA tensors, this function returns the device ordinal of the GPU on
     which the tensor resides. For CPU tensors, this function returns -1.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.randn(3, 4, 5, device='cuda:0')
@@ -7412,7 +7430,7 @@ Tensor.imag
 
       |torch.imag| is only supported for tensors with complex dtypes.
 
-    Example:
+    Example: ~
 
     >python
         >>> x=torch.randn(4, dtype=torch.cfloat)
@@ -7462,7 +7480,7 @@ Tensor.index_add_(dim, index, source, *, alpha=1) → |torch.Tensor|
     Keyword Arguments: ~
         alpha (Number) -- the scalar multiplier for `source`
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.ones(5, 3)
@@ -7512,7 +7530,7 @@ Tensor.index_copy_(dim, index, tensor) → |torch.Tensor|
         - index (LongTensor) -- indices of |torch.tensor| to select from
         - tensor (|torch.Tensor|) -- the tensor containing values to copy
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.zeros(5, 3)
@@ -7544,7 +7562,7 @@ Tensor.index_fill_(dim, index, value) → |torch.Tensor|
         - index (LongTensor) -- indices of `self` tensor to fill in
         - value (float) -- the value to fill with
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
@@ -7635,7 +7653,7 @@ Tensor.index_reduce_(dim, index, source, reduce, *, include_self=True) →
         include_self (bool) -- whether the elements from the `self` tensor
         are included in the reduction
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.empty(5, 3).fill_(2)
@@ -7779,7 +7797,7 @@ Tensor.is_leaf
     call to |torch.Tensor.backward|. To get |torch.Tensor.grad| populated
     for non-leaf Tensors, you can use |torch.Tensor.retain_grad|.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.rand(10, requires_grad=True)
@@ -7923,7 +7941,7 @@ Tensor.item() → number
 
     This operation is not differentiable.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([1.0])
@@ -8618,7 +8636,7 @@ Tensor.new_empty(size, *, dtype=None, device=None, requires_grad=False,
           allocated in the pinned memory. Works only for CPU tensors.
           Default: `False`.
 
-    Example:
+    Example: ~
 
     >python
         >>> tensor = torch.ones(())
@@ -8654,7 +8672,7 @@ Tensor.new_full(size, fill_value, *, dtype=None, device=None,
           allocated in the pinned memory. Works only for CPU tensors.
           Default: `False`.
 
-    Example:
+    Example: ~
 
     >python
         >>> tensor = torch.ones((2,), dtype=torch.float64)
@@ -8691,7 +8709,7 @@ Tensor.new_ones(size, *, dtype=None, device=None, requires_grad=False,
           allocated in the pinned memory. Works only for CPU tensors.
           Default: `False`.
 
-    Example:
+    Example: ~
 
     >python
         >>> tensor = torch.tensor((), dtype=torch.int32)
@@ -8742,7 +8760,7 @@ Tensor.new_tensor(data, *, dtype=None, device=None, requires_grad=False,
           allocated in the pinned memory. Works only for CPU tensors.
           Default: `False`.
 
-    Example:
+    Example: ~
 
     >python
         >>> tensor = torch.ones((2,), dtype=torch.int8)
@@ -8779,7 +8797,7 @@ Tensor.new_zeros(size, *, dtype=None, device=None, requires_grad=False,
           allocated in the pinned memory. Works only for CPU tensors.
           Default: `False`.
 
-    Example:
+    Example: ~
 
     >python
         >>> tensor = torch.tensor((), dtype=torch.float64)
@@ -8970,7 +8988,7 @@ Tensor.put_(index, source, accumulate=False) → |torch.Tensor|
         - accumulate (bool, optional) -- whether to accumulate into self.
           Default: `False`
 
-    Example:
+    Example: ~
 
     >python
         >>> src = torch.tensor([[4, 3, 5],
@@ -9066,7 +9084,7 @@ Tensor.real
 
     Returns `self` if `self` is a real-valued tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> x=torch.randn(4, dtype=torch.cfloat)
@@ -9193,7 +9211,7 @@ Tensor.register_hook(hook)
       how when this hook is executed, and how its execution is ordered
       relative to other hooks.
 
-    Example:
+    Example: ~
 
     >python
         >>> v = torch.tensor([0., 0., 0.], requires_grad=True)
@@ -9242,7 +9260,7 @@ Tensor.register_post_accumulate_grad_hook(hook)
       can use torch.enable_grad() to re-enable autograd within the hook if
       you need it.
 
-    Example:
+    Example: ~
 
     >python
         >>> v = torch.tensor([0., 0., 0.], requires_grad=True)
@@ -9300,7 +9318,7 @@ Tensor.repeat(*repeats) → |torch.Tensor|
         repeat (|torch.Size|, int..., tuple of int or list of int) -- The
         number of times to repeat this tensor along each dimension
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([1, 2, 3])
@@ -9351,7 +9369,7 @@ Tensor.requires_grad_(requires_grad=True) → |torch.Tensor|
         requires_grad (bool) -- If autograd should record operations on this
         tensor. Default: `True`.
 
-    Example:
+    Example: ~
 
     >python
         >>> # Let's say we want to preprocess some saved weights and use
@@ -9437,7 +9455,7 @@ Tensor.resize_(*sizes, memory_format=torch.contiguous_format) →
           that memory format of `self` is going to be unaffected if
           `self.size()` matches `sizes`.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([[1, 2], [3, 4], [5, 6]])
@@ -9610,7 +9628,7 @@ Tensor.scatter_(dim, index, src, *, reduce=None) → |torch.Tensor|
         reduce (str, optional) -- reduction operation to apply, can be
         either `'add'` or `'multiply'`.
 
-    Example:
+    Example: ~
 
     >python
         >>> src = torch.arange(1, 11).reshape((2, 5))
@@ -9654,7 +9672,7 @@ Tensor.scatter_(dim, index, src, *, reduce=None) → |torch.Tensor|
         reduce (str, optional) -- reduction operation to apply, can be
         either `'add'` or `'multiply'`.
 
-    Example:
+    Example: ~
 
     >python
         >>> index = torch.tensor([[0, 1]])
@@ -9712,7 +9730,7 @@ Tensor.scatter_add_(dim, index, src) → |torch.Tensor|
           empty, the operation returns `self` unchanged.
         - src (|torch.Tensor|) -- the source elements to scatter and add
 
-    Example:
+    Example: ~
 
     >python
         >>> src = torch.ones((2, 5))
@@ -9785,7 +9803,7 @@ Tensor.scatter_reduce_(dim, index, src, reduce, *, include_self=True) →
         - include_self (bool) -- whether elements from the `self` tensor are
           included in the reduction
 
-    Example:
+    Example: ~
 
     >python
         >>> src = torch.tensor([1., 2., 3., 4., 5., 6.])
@@ -9855,7 +9873,7 @@ Tensor.shape
 
     See also |torch.Tensor.size|.
 
-    Example:
+    Example: ~
 
     >python
         >>> t = torch.empty(3, 4, 5)
@@ -9964,7 +9982,7 @@ Tensor.size(dim=None) → torch.Size or int
     Parameters: ~
         dim (int, optional) -- The dimension for which to retrieve the size.
 
-    Example:
+    Example: ~
 
     >python
         >>> t = torch.empty(3, 4, 5)
@@ -10041,7 +10059,7 @@ Tensor.sparse_mask(mask) → |torch.Tensor|
         mask (|torch.Tensor|) -- a sparse tensor whose indices are used as a
         filter
 
-    Example:
+    Example: ~
 
     >python
         >>> nse = 5
@@ -10200,7 +10218,7 @@ Tensor.storage_offset() → int
     Returns `self` tensor's offset in the underlying storage in terms of
     number of storage elements (not bytes).
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([1, 2, 3, 4, 5])
@@ -10232,7 +10250,7 @@ Tensor.stride(dim) → tuple or int
         dim (int, optional) -- the desired dimension in which stride is
         required
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]])
@@ -10445,7 +10463,7 @@ Tensor.to(*args, **kwargs) → |torch.Tensor|
       cross-stream synchronization. See |notes-cuda-cuda-stream-semantics|
       for the required pattern.
 
-    Example:
+    Example: ~
 
     >python
         >>> tensor = torch.randn(2, 2)  # Initially dtype=float32, device=cpu
@@ -10481,7 +10499,7 @@ Tensor.to_dense(dtype=None, *, masked_grad=True) → |torch.Tensor|
           `self` has a sparse layout then the backward of
           |torch.Tensor.to_dense| returns `grad.sparse_mask(self)`.
 
-    Example:
+    Example: ~
 
     >python
         >>> s = torch.sparse_coo_tensor(
@@ -10512,7 +10530,7 @@ Tensor.to_sparse(sparseDims) → |torch.Tensor|
         sparseDims (int, optional) -- the number of sparse dimensions to
         include in the new sparse tensor
 
-    Example:
+    Example: ~
 
     >python
         >>> d = torch.tensor([[0, 0, 0], [9, 0, 10], [0, 0, 0]])
@@ -10559,7 +10577,7 @@ Tensor.to_sparse(sparseDims) → |torch.Tensor|
           used only if `self` is a strided tensor, and must be a value
           between 0 and dimension of `self` tensor minus two.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([[1, 0], [0, 0], [2, 3]])
@@ -10606,7 +10624,7 @@ Tensor.to_sparse_bsc(blocksize, dense_dim) → |torch.Tensor|
           is a strided tensor, and must be a value between 0 and dimension
           of `self` tensor minus two.
 
-    Example:
+    Example: ~
 
     >python
         >>> dense = torch.randn(10, 10)
@@ -10655,7 +10673,7 @@ Tensor.to_sparse_bsr(blocksize, dense_dim) → |torch.Tensor|
           is a strided tensor, and must be a value between 0 and dimension
           of `self` tensor minus two.
 
-    Example:
+    Example: ~
 
     >python
         >>> dense = torch.randn(10, 10)
@@ -10691,7 +10709,7 @@ Tensor.to_sparse_bsr(blocksize, dense_dim) → |torch.Tensor|
 Tensor.to_sparse_coo()
     Convert a tensor to |sparse-coo-docs|.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> dense = torch.randn(5, 5)
@@ -10716,7 +10734,7 @@ Tensor.to_sparse_csc() → |torch.Tensor|
         a strided tensor, and must be a value between 0 and dimension of
         `self` tensor minus two.
 
-    Example:
+    Example: ~
 
     >python
         >>> dense = torch.randn(5, 5)
@@ -10753,7 +10771,7 @@ Tensor.to_sparse_csr(dense_dim=None) → |torch.Tensor|
         a strided tensor, and must be a value between 0 and dimension of
         `self` tensor minus two.
 
-    Example:
+    Example: ~
 
     >python
         >>> dense = torch.randn(5, 5)
@@ -10784,7 +10802,7 @@ Tensor.tolist() → list or number
 
     This operation is not differentiable.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> a = torch.randn(2, 2)
@@ -10938,7 +10956,7 @@ Tensor.unfold(dimension, size, step) → |torch.Tensor|
         - size (int) -- the size of each slice that is unfolded
         - step (int) -- the step between each slice
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.arange(1., 8)
@@ -11059,7 +11077,7 @@ Tensor.view(*shape) → |torch.Tensor|
     Parameters: ~
         shape (|torch.Size| or int...) -- the desired size
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.randn(4, 4)
@@ -11133,7 +11151,7 @@ Tensor.view(*shape) → |torch.Tensor|
     Parameters: ~
         dtype (|torch.dtype|) -- the desired dtype
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.randn(4, 4)
@@ -11438,7 +11456,7 @@ torch._logging.set_logs(*, all=None, dynamo=None, aot=None, autograd=None,
         - caching (bool) -- Whether to emit detailed Inductor caching
           information. Default: `False`
 
-    Example:
+    Example: ~
 
     >python
         >>> import logging
@@ -11468,7 +11486,7 @@ torch.abs(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.abs(torch.tensor([-1, -2, 3]))
@@ -11528,7 +11546,7 @@ class torch.accelerator.Graph(keep_graph=False, *, pool=None,
     Return type: ~
         Self
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.zeros([2000], device=0)
@@ -11540,19 +11558,24 @@ class torch.accelerator.Graph(keep_graph=False, *, pool=None,
 
         >>> graph.replay()
 <
-    capture_begin() *torch.accelerator.Graph.capture_begin*
+    capture_begin()
+    *torch.accelerator.Graph.capture_begin*
         Begin graph capture on the current stream.
 
         All operations on the current stream after this call will be
         recorded into the graph until `capture_end` is called, using the
         memory pool and capture error mode provided at construction time.
 
-capture_end()  *torch.accelerator.Graph.capture_end*
+                                         *torch.accelerator.Graph.capture_end*
+
+capture_end()
     End graph capture on the current stream of the current device.
 
     After this call, the graph can be replayed via `replay`.
 
-debug_dump(path)  *torch.accelerator.Graph.debug_dump*
+                                          *torch.accelerator.Graph.debug_dump*
+
+debug_dump(path)
     Dump the captured graph to a file for debugging purposes if the
     debugging is enabled via `enable_debug_mode`.
 
@@ -11575,15 +11598,21 @@ debug_dump(path)  *torch.accelerator.Graph.debug_dump*
         >>> g.debug_dump("graph_dump.dot")
 <
 
-enable_debug_mode()  *torch.accelerator.Graph.enable_debug_mode*
+                                   *torch.accelerator.Graph.enable_debug_mode*
+
+enable_debug_mode()
     Enable debugging mode for `debug_dump`.
 
-instantiate()  *torch.accelerator.Graph.instantiate*
+                                         *torch.accelerator.Graph.instantiate*
+
+instantiate()
     Instantiate the underlying graph. Will be called by `capture_end` if
     `keep_graph=False`, or by `replay` if `keep_graph=True` and
     `instantiate` has not already been explicitly called.
 
-pool()  *torch.accelerator.Graph.pool*
+                                                *torch.accelerator.Graph.pool*
+
+pool()
     Return an opaque token representing the id of this graph's memory pool.
 
     This id can optionally be passed to another graph's `capture_begin`,
@@ -11606,10 +11635,14 @@ pool()  *torch.accelerator.Graph.pool*
 Return type: ~
     tuple[int, int]
 
-replay()  *torch.accelerator.Graph.replay*
+                                              *torch.accelerator.Graph.replay*
+
+replay()
     Replay the work captured by this graph.
 
-reset()  *torch.accelerator.Graph.reset*
+                                               *torch.accelerator.Graph.reset*
+
+reset()
     Delete the graph currently held by this instance.
 
     After this call, the graph can be recaptured. Set `graph_pool` or
@@ -11642,7 +11675,7 @@ torch.accelerator.current_accelerator(check_available=False)
       being used. This API does NOT poison fork. For more details, see
       |notes-multiprocessing-multiprocessing-poison-fork-note|.
 
-    Example:
+    Example: ~
 
     >python
         >>> # If an accelerator is available, send the model to it
@@ -11800,7 +11833,7 @@ torch.accelerator.is_available()
       more details, see
       |notes-multiprocessing-multiprocessing-poison-fork-note|.
 
-    Example:
+    Example: ~
 
     >python
         >>> assert torch.accelerator.is_available() "No available accelerators detected."
@@ -12174,7 +12207,7 @@ torch.accelerator.synchronize(device=None, /)
       This function is a no-op if the current |torch-accelerators| is not
       initialized.
 
-    Example:
+    Example: ~
 
     >python
         >>> assert torch.accelerator.is_available() "No available accelerators detected."
@@ -12204,7 +12237,7 @@ torch.acos(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -12242,7 +12275,7 @@ torch.acosh(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4).uniform_(1, 2)
@@ -12296,7 +12329,7 @@ torch.add(input, other, *, alpha=1, out=None) → |torch.Tensor|
         - alpha (Number) -- the multiplier for `other`.
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> a = torch.randn(4)
@@ -12365,7 +12398,7 @@ torch.addbmm(input, batch1, batch2, *, beta=1, alpha=1, out=None) →
           (`\alpha`)
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> M = torch.randn(3, 5)
@@ -12413,7 +12446,7 @@ torch.addcdiv(input, tensor1, tensor2, *, value=1, out=None) →
           `\text{tensor1} / \text{tensor2}`
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> t = torch.randn(1, 3)
@@ -12450,7 +12483,7 @@ torch.addcmul(input, tensor1, tensor2, *, value=1, out=None) →
         - value (Number, optional) -- multiplier for `tensor1 .* tensor2`
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> t = torch.randn(1, 3)
@@ -12511,7 +12544,7 @@ torch.addmm(input, mat1, mat2, *, beta=1, alpha=1, out=None) →
           (`\alpha`)
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> M = torch.randn(2, 3)
@@ -12572,7 +12605,7 @@ torch.addmv(input, mat, vec, *, beta=1, alpha=1, out=None) → |torch.Tensor|
         - alpha (Number, optional) -- multiplier for `mat @ vec` (`\alpha`)
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> M = torch.randn(2)
@@ -12620,7 +12653,7 @@ torch.addr(input, vec1, vec2, *, beta=1, alpha=1, out=None) → |torch.Tensor|
           `\text{vec1} \otimes \text{vec2}` (`\alpha`)
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> vec1 = torch.arange(1., 4.)
@@ -12645,7 +12678,7 @@ torch.adjoint(input: |torch.Tensor|) → |torch.Tensor|
     Parameters: ~
         {input} --
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.arange(4, dtype=torch.float)
@@ -12690,7 +12723,7 @@ torch.all(input: |torch.Tensor|, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.rand(1, 2).bool()
@@ -12724,7 +12757,7 @@ torch.all(input: |torch.Tensor|, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.rand(4, 2).bool()
@@ -12760,7 +12793,7 @@ torch.allclose(input: |torch.Tensor|, other: |torch.Tensor|, rtol: float =
         - equal_nan (bool, optional) -- if `True`, then two `NaN` s will be
           considered equal. Default: `False`
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.allclose(torch.tensor([10000., 1e-07]), torch.tensor([10000.1, 1e-08]))
@@ -12824,7 +12857,7 @@ torch.amax(input, dim=None, keepdim=False, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4, 4)
@@ -12877,7 +12910,7 @@ torch.amin(input, dim=None, keepdim=False, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4, 4)
@@ -12929,7 +12962,7 @@ torch.aminmax(input, *, dim=None, keepdim=False, out=None) -> (Tensor min,
       |torch.amin| computes just the minimum value |torch.amax| computes
       just the maximum value
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.aminmax(torch.tensor([1, -3, 5]))
@@ -12976,7 +13009,7 @@ torch.angle(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
       the function would return zero for all real numbers and not propagate
       floating-point NaNs.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.angle(torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j]))*180/3.14159
@@ -13002,7 +13035,7 @@ torch.any(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.rand(1, 2).bool()
@@ -13036,7 +13069,7 @@ torch.any(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4, 2) < 0
@@ -13155,7 +13188,8 @@ class torch.ao.nn.intrinsic.modules.fused.ConvAdd2d(conv, add)
     Add. During quantization this will be replaced with the corresponding
     fused module.
 
-    forward(x1, x2) *torch.ao.nn.intrinsic.modules.fused.ConvAdd2d.forward*
+    forward(x1, x2)
+    *torch.ao.nn.intrinsic.modules.fused.ConvAdd2d.forward*
         Applies convolution to x1 and adds the result to x2.
 
 ----------------------------------------------------------------------------
@@ -13277,7 +13311,8 @@ class torch.ao.nn.intrinsic.qat.ConvBnReLU1d(in_channels, out_channels,
     Variables: ~
         weight_fake_quant -- fake quant module for weight
 
-    forward(input) *torch.ao.nn.intrinsic.qat.ConvBnReLU1d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.qat.ConvBnReLU1d.forward*
         Performs forward pass through fused Conv1d, BatchNorm1d, and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13304,7 +13339,8 @@ class torch.ao.nn.intrinsic.qat.ConvBnReLU2d(in_channels, out_channels,
     Variables: ~
         weight_fake_quant -- fake quant module for weight
 
-    forward(input) *torch.ao.nn.intrinsic.qat.ConvBnReLU2d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.qat.ConvBnReLU2d.forward*
         Performs forward pass through fused Conv2d, BatchNorm2d, and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13331,7 +13367,8 @@ class torch.ao.nn.intrinsic.qat.ConvBnReLU3d(in_channels, out_channels,
     Variables: ~
         weight_fake_quant -- fake quant module for weight
 
-    forward(input) *torch.ao.nn.intrinsic.qat.ConvBnReLU3d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.qat.ConvBnReLU3d.forward*
         Performs forward pass through fused Conv3d, BatchNorm3d, and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13352,7 +13389,8 @@ class torch.ao.nn.intrinsic.qat.ConvReLU2d(in_channels, out_channels,
     Variables: ~
         weight_fake_quant -- fake quant module for weight
 
-    forward(input) *torch.ao.nn.intrinsic.qat.ConvReLU2d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.qat.ConvReLU2d.forward*
         Performs forward pass through fused Conv2d and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13373,7 +13411,8 @@ class torch.ao.nn.intrinsic.qat.ConvReLU3d(in_channels, out_channels,
     Variables: ~
         weight_fake_quant -- fake quant module for weight
 
-    forward(input) *torch.ao.nn.intrinsic.qat.ConvReLU3d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.qat.ConvReLU3d.forward*
         Performs forward pass through fused Conv3d and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13396,7 +13435,7 @@ class torch.ao.nn.intrinsic.qat.LinearReLU(in_features, out_features,
     Variables: ~
         weight (|torch.Tensor|) -- fake quant module for weight
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.qat.LinearReLU(20, 30)
@@ -13611,7 +13650,7 @@ class torch.ao.nn.intrinsic.qat.modules.linear_relu.LinearReLU(in_features,
     Variables: ~
         weight (|torch.Tensor|) -- fake quant module for weight
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.qat.LinearReLU(20, 30)
@@ -13638,7 +13677,8 @@ class torch.ao.nn.intrinsic.quantized.BNReLU2d(num_features, eps=1e-05,
     Variables: ~
         torch.ao.nn.quantized.BatchNorm2d (Same as) --
 
-    forward(input) *torch.ao.nn.intrinsic.quantized.BNReLU2d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.quantized.BNReLU2d.forward*
         Applies fused BatchNorm2d and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13661,7 +13701,8 @@ class torch.ao.nn.intrinsic.quantized.BNReLU3d(num_features, eps=1e-05,
     Variables: ~
         torch.ao.nn.quantized.BatchNorm3d (Same as) --
 
-    forward(input) *torch.ao.nn.intrinsic.quantized.BNReLU3d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.quantized.BNReLU3d.forward*
         Applies fused BatchNorm3d and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13685,7 +13726,8 @@ class torch.ao.nn.intrinsic.quantized.ConvReLU1d(in_channels, out_channels,
     Variables: ~
         torch.ao.nn.quantized.Conv1d (Same as) --
 
-    forward(input) *torch.ao.nn.intrinsic.quantized.ConvReLU1d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.quantized.ConvReLU1d.forward*
         Applies fused quantized Conv1d and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13709,7 +13751,8 @@ class torch.ao.nn.intrinsic.quantized.ConvReLU2d(in_channels, out_channels,
     Variables: ~
         torch.ao.nn.quantized.Conv2d (Same as) --
 
-    forward(input) *torch.ao.nn.intrinsic.quantized.ConvReLU2d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.quantized.ConvReLU2d.forward*
         Applies fused quantized Conv2d and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13732,7 +13775,8 @@ class torch.ao.nn.intrinsic.quantized.ConvReLU3d(in_channels, out_channels,
 
     Attributes: Same as torch.ao.nn.quantized.Conv3d
 
-    forward(input) *torch.ao.nn.intrinsic.quantized.ConvReLU3d.forward*
+    forward(input)
+    *torch.ao.nn.intrinsic.quantized.ConvReLU3d.forward*
         Applies fused quantized Conv3d and ReLU.
 
     classmethod from_float(mod, use_precomputed_fake_quant=False)
@@ -13755,7 +13799,7 @@ class torch.ao.nn.intrinsic.quantized.LinearReLU(in_features, out_features,
     Variables: ~
         torch.ao.nn.quantized.Linear (Same as) --
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.intrinsic.LinearReLU(20, 30)
@@ -13778,7 +13822,7 @@ class torch.ao.nn.intrinsic.quantized.dynamic.LinearReLU(in_features,
     Variables: ~
         torch.ao.nn.quantized.dynamic.Linear (Same as) --
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.intrinsic.quantized.dynamic.LinearReLU(20, 30)
@@ -13803,7 +13847,7 @@ torch.ao.nn.intrinsic.quantized.dynamic.modules.linear_relu.LinearReLU(in_featur
     Variables: ~
         torch.ao.nn.quantized.dynamic.Linear (Same as) --
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.intrinsic.quantized.dynamic.LinearReLU(20, 30)
@@ -14025,7 +14069,7 @@ torch.ao.nn.intrinsic.quantized.modules.linear_relu.LinearReLU(in_features,
     Variables: ~
         torch.ao.nn.quantized.Linear (Same as) --
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.intrinsic.LinearReLU(20, 30)
@@ -14048,7 +14092,7 @@ torch.ao.nn.intrinsic.quantized.modules.linear_relu.LinearTanh(in_features,
     Variables: ~
         torch.ao.nn.quantized.Linear (Same as) --
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.intrinsic.LinearTanh(20, 30)
@@ -14287,7 +14331,7 @@ class torch.ao.nn.quantizable.LSTM(input_size, hidden_size, num_layers=1,
       To access the weights and biases, you need to access them per layer.
       See examples below.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> import torch.ao.nn.quantizable as nnqa
@@ -14310,15 +14354,18 @@ class torch.ao.nn.quantizable.MultiheadAttention(embed_dim, num_heads,
     dropout=0.0, bias=True, add_bias_kv=False, add_zero_attn=False, kdim=None,
     vdim=None, batch_first=False, device=None, dtype=None)
 
-dequantize()  *torch.ao.nn.quantizable.MultiheadAttention.dequantize*
+                       *torch.ao.nn.quantizable.MultiheadAttention.dequantize*
+
+dequantize()
     Utility to convert the quantized MHA back to float.
 
     The motivation for this is that it is not trivial to convert the weights
     from the format that is used in the quantized version back to the float.
 
+                          *torch.ao.nn.quantizable.MultiheadAttention.forward*
+
 forward(query, key, value, key_padding_mask=None, need_weights=True,
     attn_mask=None, average_attn_weights=True, is_causal=False)
-    *torch.ao.nn.quantizable.MultiheadAttention.forward*
     Note: ~
 
     Please, refer to |torch.nn.MultiheadAttention.forward| for more
@@ -14392,16 +14439,18 @@ torch.ao.nn.quantizable.modules.activation.MultiheadAttention(embed_dim,
     num_heads, dropout=0.0, bias=True, add_bias_kv=False, add_zero_attn=False,
     kdim=None, vdim=None, batch_first=False, device=None, dtype=None)
 
-dequantize()
     *torch.ao.nn.quantizable.modules.activation.MultiheadAttention.dequantize*
+
+dequantize()
     Utility to convert the quantized MHA back to float.
 
     The motivation for this is that it is not trivial to convert the weights
     from the format that is used in the quantized version back to the float.
 
+       *torch.ao.nn.quantizable.modules.activation.MultiheadAttention.forward*
+
 forward(query, key, value, key_padding_mask=None, need_weights=True,
     attn_mask=None, average_attn_weights=True, is_causal=False)
-    *torch.ao.nn.quantizable.modules.activation.MultiheadAttention.forward*
     Note: ~
 
     Please, refer to |torch.nn.MultiheadAttention.forward| for more
@@ -14485,7 +14534,7 @@ class torch.ao.nn.quantizable.modules.rnn.LSTM(input_size, hidden_size,
       To access the weights and biases, you need to access them per layer.
       See examples below.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> import torch.ao.nn.quantizable as nnqa
@@ -14516,7 +14565,7 @@ class torch.ao.nn.quantizable.modules.rnn.LSTMCell(input_dim, hidden_dim,
     chunk'd. This optimization can be beneficial for on-device inference
     latency. This flag is cascaded down from the parent classes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> import torch.ao.nn.quantizable as nnqa
@@ -14582,7 +14631,7 @@ class torch.ao.nn.quantized.Conv1d(in_channels, out_channels, kernel_size,
 
     See |torch.nn.Conv1d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.quantized.Conv1d(16, 33, 3, stride=2)
@@ -14628,7 +14677,7 @@ class torch.ao.nn.quantized.Conv2d(in_channels, out_channels, kernel_size,
 
     See |torch.nn.Conv2d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # With square kernels and equal stride
@@ -14678,7 +14727,7 @@ class torch.ao.nn.quantized.Conv3d(in_channels, out_channels, kernel_size,
 
     See |torch.nn.Conv3d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # With square kernels and equal stride
@@ -14725,7 +14774,7 @@ class torch.ao.nn.quantized.ConvTranspose1d(in_channels, out_channels,
 
     See |torch.nn.ConvTranspose2d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> torch.backends.quantized.engine = 'qnnpack'
@@ -14770,7 +14819,7 @@ class torch.ao.nn.quantized.ConvTranspose2d(in_channels, out_channels,
 
     See |torch.nn.ConvTranspose2d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # QNNPACK or FBGEMM as backend
@@ -14821,7 +14870,7 @@ class torch.ao.nn.quantized.ConvTranspose3d(in_channels, out_channels,
 
     See |torch.nn.ConvTranspose3d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> torch.backends.quantized.engine = 'fbgemm'
@@ -14963,7 +15012,7 @@ class torch.ao.nn.quantized.FloatFunctional
       This class does not provide a `forward` hook. Instead, you must use
       one of the underlying functions (e.g. `add`).
 
-    Examples:
+    Examples: ~
 
     >python
         >>> f_add = FloatFunctional()
@@ -15090,7 +15139,7 @@ class torch.ao.nn.quantized.Linear(in_features, out_features, bias_=True,
         - zero_point -- zero_point parameter for output Quantized Tensor,
           type: long
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.quantized.Linear(20, 30)
@@ -15136,7 +15185,7 @@ class torch.ao.nn.quantized.QFunctional
       This class does not provide a `forward` hook. Instead, you must use
       one of the underlying functions (e.g. `add`).
 
-    Examples:
+    Examples: ~
 
     >python
         >>> q_add = QFunctional()
@@ -15171,7 +15220,7 @@ class torch.ao.nn.quantized.ReLU6(inplace=False)
     - Input: `(N, *)` where * means, any number of additional dimensions
     - Output: `(N, *)`, same shape as the input
 
-Examples:
+Examples: ~
 
 >python
     >>> m = nn.quantized.ReLU6()
@@ -15299,7 +15348,7 @@ class torch.ao.nn.quantized.dynamic.GRU(*args, **kwargs)
       V100 GPU is used, 5) input data is not in `PackedSequence` format
       persistent algorithm can be selected to improve performance.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.GRU(10, 20, 2)
@@ -15321,7 +15370,7 @@ class torch.ao.nn.quantized.dynamic.GRUCell(input_size, hidden_size,
     https://pytorch.org/docs/stable/nn.html#torch.nn.GRUCell for
     documentation.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.GRUCell(10, 20)
@@ -15341,7 +15390,7 @@ class torch.ao.nn.quantized.dynamic.LSTM(*args, **kwargs)
     outputs. We adopt the same interface as torch.nn.LSTM, please see
     https://pytorch.org/docs/stable/nn.html#torch.nn.LSTM for documentation.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.LSTM(10, 20, 2)
@@ -15363,7 +15412,7 @@ class torch.ao.nn.quantized.dynamic.LSTMCell(*args, **kwargs)
     https://pytorch.org/docs/stable/nn.html#torch.nn.LSTMCell for
     documentation.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.LSTMCell(10, 20)
@@ -15397,7 +15446,7 @@ class torch.ao.nn.quantized.dynamic.Linear(in_features, out_features,
           the module of shape `(\text{out\_features})`. If `bias` is `True`,
           the values are initialized to zero.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.quantized.dynamic.Linear(20, 30)
@@ -15434,7 +15483,7 @@ class torch.ao.nn.quantized.dynamic.RNNCell(input_size, hidden_size,
     https://pytorch.org/docs/stable/nn.html#torch.nn.RNNCell for
     documentation.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.RNNCell(10, 20)
@@ -15466,7 +15515,7 @@ class torch.ao.nn.quantized.dynamic.modules.conv.Conv1d(in_channels,
 
     See |torch.nn.Conv1d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.quantized.dynamic.Conv1d(16, 33, 3, stride=2)
@@ -15494,7 +15543,7 @@ class torch.ao.nn.quantized.dynamic.modules.conv.Conv2d(in_channels,
 
     See |torch.nn.Conv2d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # With square kernels and equal stride
@@ -15527,7 +15576,7 @@ class torch.ao.nn.quantized.dynamic.modules.conv.Conv3d(in_channels,
 
     See |torch.nn.Conv3d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # With square kernels and equal stride
@@ -15563,7 +15612,7 @@ torch.ao.nn.quantized.dynamic.modules.conv.ConvTranspose1d(in_channels,
 
     See |torch.nn.ConvTranspose1d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # With square kernels and equal stride
@@ -15605,7 +15654,7 @@ torch.ao.nn.quantized.dynamic.modules.conv.ConvTranspose2d(in_channels,
 
     See |torch.nn.ConvTranspose2d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # With square kernels and equal stride
@@ -15647,7 +15696,7 @@ torch.ao.nn.quantized.dynamic.modules.conv.ConvTranspose3d(in_channels,
 
     See |torch.nn.ConvTranspose3d| for other attributes.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # With cubic kernels and equal stride
@@ -15687,7 +15736,7 @@ class torch.ao.nn.quantized.dynamic.modules.linear.Linear(in_features,
           the module of shape `(\text{out\_features})`. If `bias` is `True`,
           the values are initialized to zero.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = nn.quantized.dynamic.Linear(20, 30)
@@ -15821,7 +15870,7 @@ class torch.ao.nn.quantized.dynamic.modules.rnn.GRU(*args, **kwargs)
       V100 GPU is used, 5) input data is not in `PackedSequence` format
       persistent algorithm can be selected to improve performance.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.GRU(10, 20, 2)
@@ -15843,7 +15892,7 @@ class torch.ao.nn.quantized.dynamic.modules.rnn.GRUCell(input_size,
     https://pytorch.org/docs/stable/nn.html#torch.nn.GRUCell for
     documentation.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.GRUCell(10, 20)
@@ -15863,7 +15912,7 @@ class torch.ao.nn.quantized.dynamic.modules.rnn.LSTM(*args, **kwargs)
     outputs. We adopt the same interface as torch.nn.LSTM, please see
     https://pytorch.org/docs/stable/nn.html#torch.nn.LSTM for documentation.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.LSTM(10, 20, 2)
@@ -15885,7 +15934,7 @@ class torch.ao.nn.quantized.dynamic.modules.rnn.LSTMCell(*args, **kwargs)
     https://pytorch.org/docs/stable/nn.html#torch.nn.LSTMCell for
     documentation.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.LSTMCell(10, 20)
@@ -15922,7 +15971,7 @@ class torch.ao.nn.quantized.dynamic.modules.rnn.RNNCell(input_size,
     https://pytorch.org/docs/stable/nn.html#torch.nn.RNNCell for
     documentation.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> rnn = nn.RNNCell(10, 20)
@@ -16109,7 +16158,7 @@ class torch.ao.nn.quantized.functional.conv1d(input, weight, bias, stride=1,
         - zero_point -- quantization zero_point for the output. Default: 0
         - dtype -- quantization data type to use. Default: `torch.quint8`
 
-    Examples:
+    Examples: ~
 
     >python
         >>> from torch.ao.nn.quantized import functional as qF
@@ -16158,7 +16207,7 @@ class torch.ao.nn.quantized.functional.conv2d(input, weight, bias, stride=1,
         - zero_point -- quantization zero_point for the output. Default: 0
         - dtype -- quantization data type to use. Default: `torch.quint8`
 
-    Examples:
+    Examples: ~
 
     >python
         >>> from torch.ao.nn.quantized import functional as qF
@@ -16207,7 +16256,7 @@ class torch.ao.nn.quantized.functional.conv3d(input, weight, bias, stride=1,
         - zero_point -- quantization zero_point for the output. Default: 0
         - dtype -- quantization data type to use. Default: `torch.quint8`
 
-    Examples:
+    Examples: ~
 
     >python
         >>> from torch.ao.nn.quantized import functional as qF
@@ -16674,9 +16723,10 @@ class torch.ao.quantization.backend_config.BackendConfig(name='')
         backend_config = BackendConfig("my_backend")             .set_backend_pattern_config(linear_config)             .set_backend_pattern_config(conv_relu_config)             .set_backend_pattern_config(fused_conv_relu_config)
 <
 
+                  *torch.ao.quantization.backend_config.BackendConfig.configs*
+
 property configs :
 list[|torch.ao.quantization.backend_config.BackendPatternConfig|]
-*torch.ao.quantization.backend_config.BackendConfig.configs*
     Return a copy of the list of configs set in this BackendConfig.
 
 classmethod from_dict(backend_config_dict)
@@ -16691,16 +16741,18 @@ classmethod from_dict(backend_config_dict)
     Return type: ~
         |torch.ao.quantization.backend_config.BackendConfig|
 
+*torch.ao.quantization.backend_config.BackendConfig.set_backend_pattern_config*
+
 set_backend_pattern_config(config)
-    *torch.ao.quantization.backend_config.BackendConfig.set_backend_pattern_config*
     Set the config for a pattern that can be run on the target backend. This
     overrides any existing config for the given pattern.
 
     Return type: ~
         |torch.ao.quantization.backend_config.BackendConfig|
 
+*torch.ao.quantization.backend_config.BackendConfig.set_backend_pattern_configs*
+
 set_backend_pattern_configs(configs)
-    *torch.ao.quantization.backend_config.BackendConfig.set_backend_pattern_configs*
     Set the configs for patterns that can be run on the target backend. This
     overrides any existing config for a given pattern if it was previously
     registered already.
@@ -16708,13 +16760,17 @@ set_backend_pattern_configs(configs)
     Return type: ~
         |torch.ao.quantization.backend_config.BackendConfig|
 
-set_name(name)  *torch.ao.quantization.backend_config.BackendConfig.set_name*
+                 *torch.ao.quantization.backend_config.BackendConfig.set_name*
+
+set_name(name)
     Set the name of the target backend.
 
     Return type: ~
         |torch.ao.quantization.backend_config.BackendConfig|
 
-to_dict()  *torch.ao.quantization.backend_config.BackendConfig.to_dict*
+                  *torch.ao.quantization.backend_config.BackendConfig.to_dict*
+
+to_dict()
     Convert this `BackendConfig` to a dictionary with the items described in
     |torch.ao.quantization.backend_config.BackendConfig.from_dict|.
 
@@ -16731,8 +16787,9 @@ torch.ao.quantization.backend_config.BackendPatternConfig(pattern=None)
     pattern. For a detailed example usage, see
     |torch.ao.quantization.backend_config.BackendConfig|.
 
+  *torch.ao.quantization.backend_config.BackendPatternConfig.add_dtype_config*
+
 add_dtype_config(dtype_config)
-    *torch.ao.quantization.backend_config.BackendPatternConfig.add_dtype_config*
     Add a set of supported data types passed as arguments to quantize ops in
     the reference model spec.
 
@@ -16762,24 +16819,27 @@ classmethod from_dict(backend_pattern_config_dict)
     Return type: ~
         |torch.ao.quantization.backend_config.BackendPatternConfig|
 
+ *torch.ao.quantization.backend_config.BackendPatternConfig.set_dtype_configs*
+
 set_dtype_configs(dtype_configs)
-    *torch.ao.quantization.backend_config.BackendPatternConfig.set_dtype_configs*
     Set the supported data types passed as arguments to quantize ops in the
     reference model spec, overriding all previously registered data types.
 
     Return type: ~
         |torch.ao.quantization.backend_config.BackendPatternConfig|
 
+  *torch.ao.quantization.backend_config.BackendPatternConfig.set_fused_module*
+
 set_fused_module(fused_module)
-    *torch.ao.quantization.backend_config.BackendPatternConfig.set_fused_module*
     Set the module that represents the fused implementation for this
     pattern.
 
     Return type: ~
         |torch.ao.quantization.backend_config.BackendPatternConfig|
 
+  *torch.ao.quantization.backend_config.BackendPatternConfig.set_fuser_method*
+
 set_fuser_method(fuser_method)
-    *torch.ao.quantization.backend_config.BackendPatternConfig.set_fuser_method*
     Set the function that specifies how to fuse this BackendPatternConfig's
     pattern.
 
@@ -16799,8 +16859,9 @@ set_fuser_method(fuser_method)
     Return type: ~
         |torch.ao.quantization.backend_config.BackendPatternConfig|
 
+*torch.ao.quantization.backend_config.BackendPatternConfig.set_observation_type*
+
 set_observation_type(observation_type)
-    *torch.ao.quantization.backend_config.BackendPatternConfig.set_observation_type*
     Set how observers should be inserted in the graph for this pattern.
 
     Observation type here refers to how observers (or quant-dequant ops)
@@ -16826,8 +16887,9 @@ set_observation_type(observation_type)
     Return type: ~
         |torch.ao.quantization.backend_config.BackendPatternConfig|
 
+       *torch.ao.quantization.backend_config.BackendPatternConfig.set_pattern*
+
 set_pattern(pattern)
-    *torch.ao.quantization.backend_config.BackendPatternConfig.set_pattern*
     Set the pattern to configure.
 
     The pattern can be a float module, functional operator, pytorch
@@ -16838,15 +16900,17 @@ set_pattern(pattern)
     Return type: ~
         |torch.ao.quantization.backend_config.BackendPatternConfig|
 
-set_qat_module(qat_module)
     *torch.ao.quantization.backend_config.BackendPatternConfig.set_qat_module*
+
+set_qat_module(qat_module)
     Set the module that represents the QAT implementation for this pattern.
 
     Return type: ~
         |torch.ao.quantization.backend_config.BackendPatternConfig|
 
+*torch.ao.quantization.backend_config.BackendPatternConfig.set_reference_quantized_module*
+
 set_reference_quantized_module(reference_quantized_module)
-    *torch.ao.quantization.backend_config.BackendPatternConfig.set_reference_quantized_module*
     Set the module that represents the reference quantized implementation
     for this pattern's root module.
 
@@ -16856,8 +16920,9 @@ set_reference_quantized_module(reference_quantized_module)
     Return type: ~
         |torch.ao.quantization.backend_config.BackendPatternConfig|
 
+   *torch.ao.quantization.backend_config.BackendPatternConfig.set_root_module*
+
 set_root_module(root_module)
-    *torch.ao.quantization.backend_config.BackendPatternConfig.set_root_module*
     Set the module that represents the root for this pattern.
 
     When we construct the reference quantized model during the convert
@@ -16874,8 +16939,9 @@ set_root_module(root_module)
     Return type: ~
         |torch.ao.quantization.backend_config.BackendPatternConfig|
 
+           *torch.ao.quantization.backend_config.BackendPatternConfig.to_dict*
+
 to_dict()
-    *torch.ao.quantization.backend_config.BackendPatternConfig.to_dict*
     Convert this `BackendPatternConfig` to a dictionary with the items
     described in
     |torch.ao.quantization.backend_config.BackendPatternConfig.from_dict|.
@@ -16966,7 +17032,9 @@ classmethod from_dict(dtype_config_dict)
     Return type: ~
         |torch.ao.quantization.backend_config.DTypeConfig|
 
-to_dict()  *torch.ao.quantization.backend_config.DTypeConfig.to_dict*
+                    *torch.ao.quantization.backend_config.DTypeConfig.to_dict*
+
+to_dict()
     Convert this `DTypeConfig` to a dictionary with the items described in
     |torch.ao.quantization.backend_config.DTypeConfig.from_dict|.
 
@@ -17071,7 +17139,7 @@ torch.ao.quantization.backend_config.utils.get_fusion_pattern_to_extra_inputs_ge
     This is optional, if not specified, we will not copy over any extra
     inputs for the root node.
 
-    Example:
+    Example: ~
 
     >python
         # Let's say we have the pattern (torch.add, MatchAllNode, (torch.nn.BatchNorm2d, torch.nn.Conv2d))
@@ -17542,7 +17610,7 @@ class torch.ao.quantization.fuse_modules.fuse_modules(model,
     Returns: ~
         model with fused modules. A new copy is created if inplace=True.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> m = M().eval()
@@ -17590,9 +17658,10 @@ classmethod from_dict(convert_custom_config_dict)
     Return type: ~
         |torch.ao.quantization.fx.custom_config.ConvertCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.ConvertCustomConfig.set_observed_to_quantized_mapping*
+
 set_observed_to_quantized_mapping(observed_class, quantized_class,
     quant_type=QuantType.STATIC)
-    *torch.ao.quantization.fx.custom_config.ConvertCustomConfig.set_observed_to_quantized_mapping*
     Set the mapping from a custom observed module class to a custom
     quantized module class.
 
@@ -17602,16 +17671,18 @@ set_observed_to_quantized_mapping(observed_class, quantized_class,
     Return type: ~
         |torch.ao.quantization.fx.custom_config.ConvertCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.ConvertCustomConfig.set_preserved_attributes*
+
 set_preserved_attributes(attributes)
-    *torch.ao.quantization.fx.custom_config.ConvertCustomConfig.set_preserved_attributes*
     Set the names of the attributes that will persist in the graph module
     even if they are not used in the model's `forward` method.
 
     Return type: ~
         |torch.ao.quantization.fx.custom_config.ConvertCustomConfig|
 
+          *torch.ao.quantization.fx.custom_config.ConvertCustomConfig.to_dict*
+
 to_dict()
-    *torch.ao.quantization.fx.custom_config.ConvertCustomConfig.to_dict*
     Convert this `ConvertCustomConfig` to a dictionary with the items
     described in
     |torch.ao.quantization.fx.custom_config.ConvertCustomConfig.from_dict|.
@@ -17647,15 +17718,18 @@ classmethod from_dict(fuse_custom_config_dict)
     Return type: ~
         |torch.ao.quantization.fx.custom_config.FuseCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.FuseCustomConfig.set_preserved_attributes*
+
 set_preserved_attributes(attributes)
-    *torch.ao.quantization.fx.custom_config.FuseCustomConfig.set_preserved_attributes*
     Set the names of the attributes that will persist in the graph module
     even if they are not used in the model's `forward` method.
 
     Return type: ~
         |torch.ao.quantization.fx.custom_config.FuseCustomConfig|
 
-to_dict()  *torch.ao.quantization.fx.custom_config.FuseCustomConfig.to_dict*
+             *torch.ao.quantization.fx.custom_config.FuseCustomConfig.to_dict*
+
+to_dict()
     Convert this `FuseCustomConfig` to a dictionary with the items described
     in
     |torch.ao.quantization.fx.custom_config.ConvertCustomConfig.from_dict|.
@@ -17707,9 +17781,10 @@ classmethod from_dict(prepare_custom_config_dict)
     Return type: ~
         |torch.ao.quantization.fx.custom_config.PrepareCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_float_to_observed_mapping*
+
 set_float_to_observed_mapping(float_class, observed_class,
     quant_type=QuantType.STATIC)
-    *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_float_to_observed_mapping*
     Set the mapping from a custom float module class to a custom observed
     module class.
 
@@ -17720,48 +17795,54 @@ set_float_to_observed_mapping(float_class, observed_class,
     Return type: ~
         |torch.ao.quantization.fx.custom_config.PrepareCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_input_quantized_indexes*
+
 set_input_quantized_indexes(indexes)
-    *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_input_quantized_indexes*
     Set the indexes of the inputs of the graph that should be quantized.
     Inputs are otherwise assumed to be in fp32 by default instead.
 
     Return type: ~
         |torch.ao.quantization.fx.custom_config.PrepareCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_non_traceable_module_classes*
+
 set_non_traceable_module_classes(module_classes)
-    *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_non_traceable_module_classes*
     Set the modules that are not symbolically traceable, identified by
     class.
 
     Return type: ~
         |torch.ao.quantization.fx.custom_config.PrepareCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_non_traceable_module_names*
+
 set_non_traceable_module_names(module_names)
-    *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_non_traceable_module_names*
     Set the modules that are not symbolically traceable, identified by name.
 
     Return type: ~
         |torch.ao.quantization.fx.custom_config.PrepareCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_output_quantized_indexes*
+
 set_output_quantized_indexes(indexes)
-    *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_output_quantized_indexes*
     Set the indexes of the outputs of the graph that should be quantized.
     Outputs are otherwise assumed to be in fp32 by default instead.
 
     Return type: ~
         |torch.ao.quantization.fx.custom_config.PrepareCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_preserved_attributes*
+
 set_preserved_attributes(attributes)
-    *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_preserved_attributes*
     Set the names of the attributes that will persist in the graph module
     even if they are not used in the model's `forward` method.
 
     Return type: ~
         |torch.ao.quantization.fx.custom_config.PrepareCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_standalone_module_class*
+
 set_standalone_module_class(module_class, qconfig_mapping, example_inputs,
     prepare_custom_config, backend_config)
-    *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_standalone_module_class*
     Set the configuration for running a standalone module identified by
     `module_class`.
 
@@ -17773,9 +17854,10 @@ set_standalone_module_class(module_class, qconfig_mapping, example_inputs,
     Return type: ~
         |torch.ao.quantization.fx.custom_config.PrepareCustomConfig|
 
+*torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_standalone_module_name*
+
 set_standalone_module_name(module_name, qconfig_mapping, example_inputs,
     prepare_custom_config, backend_config)
-    *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.set_standalone_module_name*
     Set the configuration for running a standalone module identified by
     `module_name`.
 
@@ -17787,8 +17869,9 @@ set_standalone_module_name(module_name, qconfig_mapping, example_inputs,
     Return type: ~
         |torch.ao.quantization.fx.custom_config.PrepareCustomConfig|
 
+          *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.to_dict*
+
 to_dict()
-    *torch.ao.quantization.fx.custom_config.PrepareCustomConfig.to_dict*
     Convert this `PrepareCustomConfig` to a dictionary with the items
     described in
     |torch.ao.quantization.fx.custom_config.PrepareCustomConfig.from_dict|.
@@ -17820,8 +17903,10 @@ class torch.ao.quantization.fx.graph_module.QuantizedGraphModule(*args,
 ----------------------------------------------------------------------------
 NodeInfo                             *torch.ao.quantization.fx.utils.NodeInfo*
 
+                                  *torch.ao.quantization.fx.utils.NodeInfo.op*
+
 class torch.ao.quantization.fx.utils.NodeInfo(op, target)
-    op *torch.ao.quantization.fx.utils.NodeInfo.op*
+    op
         Alias for field number 0
 
     target *torch.ao.quantization.fx.utils.NodeInfo.target*
@@ -18096,7 +18181,7 @@ torch.ao.quantization.observer.AffineQuantizedObserverBase(mapping_type,
         same constructor arguments, but different instances. Can be used in
         conjunction with _callable_args
 
-        Example:
+        Example: ~
 
         >python
             >>> Foo.with_args = classmethod(_with_args)
@@ -18228,7 +18313,8 @@ class torch.ao.quantization.observer.MinMaxObserver(dtype=torch.quint8,
     *torch.ao.quantization.observer.MinMaxObserver.calculate_qparams*
         Calculates the quantization parameters.
 
-    forward(x_orig) *torch.ao.quantization.observer.MinMaxObserver.forward*
+    forward(x_orig)
+    *torch.ao.quantization.observer.MinMaxObserver.forward*
         Records the running minimum and maximum of `x`.
 
     reset_min_max_vals()
@@ -18370,7 +18456,7 @@ class torch.ao.quantization.observer.ObserverBase(dtype, is_dynamic=False)
         same constructor arguments, but different instances. Can be used in
         conjunction with _callable_args
 
-        Example:
+        Example: ~
 
         >python
             >>> Foo.with_args = classmethod(_with_args)
@@ -18391,7 +18477,7 @@ class torch.ao.quantization.observer.ObserverBase(dtype, is_dynamic=False)
         arguments should only be calculated at construction time. Can be
         used in conjunction with _with_args
 
-        Example:
+        Example: ~
 
         >python
             >>> Foo.with_callable_args = classmethod(_with_callable_args)
@@ -18996,15 +19082,17 @@ classmethod from_dict(qconfig_dict)
     Return type: ~
         |torch.ao.quantization.qconfig_mapping.QConfigMapping|
 
+             *torch.ao.quantization.qconfig_mapping.QConfigMapping.set_global*
+
 set_global(global_qconfig)
-    *torch.ao.quantization.qconfig_mapping.QConfigMapping.set_global*
     Set the global (default) QConfig.
 
     Return type: ~
         |torch.ao.quantization.qconfig_mapping.QConfigMapping|
 
+        *torch.ao.quantization.qconfig_mapping.QConfigMapping.set_module_name*
+
 set_module_name(module_name, qconfig)
-    *torch.ao.quantization.qconfig_mapping.QConfigMapping.set_module_name*
     Set the QConfig for modules matching the given module name. If the
     QConfig for an existing module name was already set, the new QConfig
     will override the old one.
@@ -19012,8 +19100,9 @@ set_module_name(module_name, qconfig)
     Return type: ~
         |torch.ao.quantization.qconfig_mapping.QConfigMapping|
 
+*torch.ao.quantization.qconfig_mapping.QConfigMapping.set_module_name_object_type_order*
+
 set_module_name_object_type_order(module_name, object_type, index, qconfig)
-    *torch.ao.quantization.qconfig_mapping.QConfigMapping.set_module_name_object_type_order*
     Set the QConfig for modules matching a combination of the given module
     name, object type, and the index at which the module appears.
 
@@ -19023,8 +19112,9 @@ set_module_name_object_type_order(module_name, object_type, index, qconfig)
     Return type: ~
         |torch.ao.quantization.qconfig_mapping.QConfigMapping|
 
+  *torch.ao.quantization.qconfig_mapping.QConfigMapping.set_module_name_regex*
+
 set_module_name_regex(module_name_regex, qconfig)
-    *torch.ao.quantization.qconfig_mapping.QConfigMapping.set_module_name_regex*
     Set the QConfig for modules matching the given regex string.
 
     Regexes will be matched in the order in which they are registered
@@ -19047,8 +19137,9 @@ set_module_name_regex(module_name_regex, qconfig)
     Return type: ~
         |torch.ao.quantization.qconfig_mapping.QConfigMapping|
 
+        *torch.ao.quantization.qconfig_mapping.QConfigMapping.set_object_type*
+
 set_object_type(object_type, qconfig)
-    *torch.ao.quantization.qconfig_mapping.QConfigMapping.set_object_type*
     Set the QConfig for a given module type, function, or method name. If
     the QConfig for an existing object type was already set, the new QConfig
     will override the old one.
@@ -19056,7 +19147,9 @@ set_object_type(object_type, qconfig)
     Return type: ~
         |torch.ao.quantization.qconfig_mapping.QConfigMapping|
 
-to_dict()  *torch.ao.quantization.qconfig_mapping.QConfigMapping.to_dict*
+                *torch.ao.quantization.qconfig_mapping.QConfigMapping.to_dict*
+
+to_dict()
     Convert this `QConfigMapping` to a dictionary with the following keys:
 
       “” (for global QConfig)
@@ -19335,7 +19428,7 @@ class torch.ao.quantization.quantize_fx.convert_fx(graph_module,
     Return type: ~
         |torch.fx.GraphModule|
 
-    Example:
+    Example: ~
 
     >python
         # prepared_model: the model after prepare_fx/prepare_qat_fx and calibration/training
@@ -19370,7 +19463,7 @@ class torch.ao.quantization.quantize_fx.fuse_fx(model,
     Return type: ~
         |torch.fx.GraphModule|
 
-    Example:
+    Example: ~
 
     >python
         from torch.ao.quantization import fuse_fx
@@ -19416,7 +19509,7 @@ class torch.ao.quantization.quantize_fx.prepare_fx(model, qconfig_mapping,
     Return type: ~
         |torch.fx.GraphModule|
 
-    Example:
+    Example: ~
 
     >python
         import torch
@@ -19546,7 +19639,7 @@ class torch.ao.quantization.quantize_fx.prepare_qat_fx(model,
     Return type: ~
         |torch.fx.GraphModule|
 
-    Example:
+    Example: ~
 
     >python
         import torch
@@ -19968,7 +20061,7 @@ torch.arange(start=0, end, step=1, *, out=None, dtype=None,
         - requires_grad (bool, optional) -- If autograd should record
           operations on the returned tensor. Default: `False`.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.arange(5)
@@ -20092,7 +20185,7 @@ torch.argmax(input) → LongTensor
     Parameters: ~
         input (|torch.Tensor|) -- the input tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4, 4)
@@ -20116,7 +20209,7 @@ torch.argmax(input) → LongTensor
         - input (|torch.Tensor|) -- the input tensor.
         - dim -- the dimension to reduce.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4, 4)
@@ -20148,7 +20241,7 @@ torch.argmin(input, dim=None, keepdim=False) → LongTensor
         - input (|torch.Tensor|) -- the input tensor.
         - dim -- the dimension to reduce.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4, 4)
@@ -20193,7 +20286,7 @@ torch.argsort(input, dim=-1, descending=False, *, stable=False) →
         stable (bool, optional) -- controls the relative order of equivalent
         elements
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4, 4)
@@ -20234,7 +20327,7 @@ torch.argwhere(input) → |torch.Tensor|
     Parameters: ~
         {input} --
 
-    Example:
+    Example: ~
 
     >python
         >>> t = torch.tensor([1, 0, 1])
@@ -20277,7 +20370,7 @@ torch.as_strided(input, size, stride, storage_offset=None) → |torch.Tensor|
           storage of the output tensor. If `None`, the storage_offset of the
           output tensor will match the input tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.randn(3, 3)
@@ -20332,7 +20425,7 @@ torch.as_strided_scatter(input, src, size, stride, storage_offset=None) →
       Specifically, it should have the same shape as torch.as_strided(input,
       size, stride, storage_offset)
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.arange(4).reshape(2, 2) + 1
@@ -20387,7 +20480,7 @@ torch.as_tensor(data: Any, *, dtype: |torch.dtype| | None = None, device:
           used. If None and data is not a tensor then the result tensor is
           constructed on the current device.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = numpy.array([1, 2, 3])
@@ -20492,7 +20585,7 @@ torch.asarray(obj: Any, *, dtype: |torch.dtype| | None, device:
           tensor with an autograd history then the returned tensor will have
           the same history.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.tensor([1, 2, 3])
@@ -20553,7 +20646,7 @@ torch.asin(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -20585,7 +20678,7 @@ torch.asinh(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -20617,7 +20710,7 @@ torch.atan(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -20649,7 +20742,7 @@ torch.atan2(input: |torch.Tensor|, other: |torch.Tensor|, *, out:
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -20687,7 +20780,7 @@ torch.atanh(input: |torch.Tensor|, *, out: |torch.Tensor| | None) →
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4).uniform_(-1, 1)
@@ -20717,7 +20810,7 @@ torch.atleast_1d(*tensors)
     Returns: ~
         output (Tensor or tuple of Tensors)
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.arange(2)
@@ -20752,7 +20845,7 @@ torch.atleast_2d(*tensors)
     Returns: ~
         output (Tensor or tuple of Tensors)
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor(1.)
@@ -21055,11 +21148,14 @@ class torch.autograd.forward_ad.UnpackedDualTensor(primal, tangent)
 
     See |torch.autograd.forward_ad.unpack_dual| for more details.
 
-count(value, /)  *torch.autograd.forward_ad.UnpackedDualTensor.count*
+                          *torch.autograd.forward_ad.UnpackedDualTensor.count*
+
+count(value, /)
     Return number of occurrences of value.
 
+                          *torch.autograd.forward_ad.UnpackedDualTensor.index*
+
 index(value, start=0, stop=9223372036854775807, /)
-    *torch.autograd.forward_ad.UnpackedDualTensor.index*
     Return first index of value.
 
     Raises ValueError if the value is not present.
@@ -21089,7 +21185,7 @@ class torch.autograd.forward_ad.dual_level
       however, so only a single forward AD level is supported. To compute
       higher-order forward grads, one can use |torch.func.jvp|.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([1])
@@ -21151,7 +21247,7 @@ torch.autograd.forward_ad.make_dual(tensor, tangent, *, level=None)
     Given a function f whose jacobian is J, it allows one to compute the
     Jacobian-vector product (jvp) between J and a given vector v as follows.
 
-    Example:
+    Example: ~
 
     >python
         >>> with dual_level():
@@ -21176,7 +21272,7 @@ torch.autograd.forward_ad.unpack_dual(tensor, *, level=None)
 
     This function is backward differentiable.
 
-    Example:
+    Example: ~
 
     >python
         >>> with dual_level():
@@ -21195,7 +21291,8 @@ BackwardCFunction                  *torch.autograd.function.BackwardCFunction*
 class torch.autograd.function.BackwardCFunction
     This class is used for internal autograd work. Do not use.
 
-    apply(*args) *torch.autograd.function.BackwardCFunction.apply*
+    apply(*args)
+    *torch.autograd.function.BackwardCFunction.apply*
         Apply method used when executing this Node during the backward.
 
         Called by the autograd engine (non-boxed path) and by direct
@@ -21208,7 +21305,8 @@ class torch.autograd.function.BackwardCFunction
         True. Grads arrive as a single mutable list argument, allowing
         backward to free individual grads mid-execution.
 
-    apply_jvp(*args) *torch.autograd.function.BackwardCFunction.apply_jvp*
+    apply_jvp(*args)
+    *torch.autograd.function.BackwardCFunction.apply_jvp*
         Apply method used when executing forward mode AD during the forward
 
     property input_grad_buffers : tuple[|torch.Tensor| | None, ...]
@@ -21298,7 +21396,8 @@ class torch.autograd.function.BackwardCFunction
           producers, and any `AccumulateGrad` hook behavior bypassed by the
           direct write.
 
-    mark_dirty(*args) *torch.autograd.function.BackwardCFunction.mark_dirty*
+    mark_dirty(*args)
+    *torch.autograd.function.BackwardCFunction.mark_dirty*
         Mark given tensors as modified in an in-place operation.
 
         This should be called at most once, in either the `setup_context()`
@@ -21333,8 +21432,9 @@ class torch.autograd.function.BackwardCFunction
             >>>              # computation has been modified by an inplace operation
 <
 
+           *torch.autograd.function.BackwardCFunction.mark_non_differentiable*
+
 mark_non_differentiable(*args)
-    *torch.autograd.function.BackwardCFunction.mark_non_differentiable*
     Mark outputs as non-differentiable.
 
     This should be called at most once, in either the `setup_context()` or
@@ -21365,8 +21465,9 @@ mark_non_differentiable(*args)
         >>>         return grad_input
 <
 
+                 *torch.autograd.function.BackwardCFunction.save_for_backward*
+
 save_for_backward(*tensors)
-    *torch.autograd.function.BackwardCFunction.save_for_backward*
     Save given tensors for a future call to `backward()`.
 
     `save_for_backward` should be called at most once, in either the
@@ -21403,7 +21504,7 @@ save_for_backward(*tensors)
     https://docs.pytorch.org/docs/2.15/notes/extending.html#extending-autograd
     for more details on how to use this method.
 
-    Example:
+    Example: ~
 
     >python
         >>> class Func(Function):
@@ -21431,8 +21532,9 @@ save_for_backward(*tensors)
         >>> d = Func.apply(a, b, c)
 <
 
+                  *torch.autograd.function.BackwardCFunction.save_for_forward*
+
 save_for_forward(*tensors)
-    *torch.autograd.function.BackwardCFunction.save_for_forward*
     Save given tensors for a future call to `jvp()`.
 
     `save_for_forward` should be called at most once, in either the
@@ -21448,7 +21550,7 @@ save_for_forward(*tensors)
     https://docs.pytorch.org/docs/2.15/notes/extending.html#extending-autograd
     for more details on how to use this method.
 
-    Example:
+    Example: ~
 
     >python
         >>> class Func(torch.autograd.Function):
@@ -21481,8 +21583,9 @@ save_for_forward(*tensors)
         >>>         d = Func.apply(a_dual, b, c)
 <
 
+             *torch.autograd.function.BackwardCFunction.set_materialize_grads*
+
 set_materialize_grads(value)
-    *torch.autograd.function.BackwardCFunction.set_materialize_grads*
     Set whether to materialize grad tensors. Default is `True`.
 
     This should be called only from either the `setup_context()` or
@@ -21491,7 +21594,7 @@ set_materialize_grads(value)
     If `True`, undefined grad tensors will be expanded to tensors full of
     zeros prior to calling the `backward()` and `jvp()` methods.
 
-    Example:
+    Example: ~
 
     >python
         >>> class SimpleFunc(Function):
@@ -21527,8 +21630,9 @@ set_materialize_grads(value)
         >>> b, _ = Func.apply(a)  # induces g2 to be undefined
 <
 
+             *torch.autograd.function.BackwardCFunction.set_output_grad_dtype*
+
 set_output_grad_dtype(*dtypes)
-    *torch.autograd.function.BackwardCFunction.set_output_grad_dtype*
     Declare the gradient dtype for each of this Function's outputs.
 
     This should be called at most once, from either the `setup_context()` or
@@ -21763,7 +21867,7 @@ FunctionCtx.save_for_backward(*tensors)
     https://docs.pytorch.org/docs/2.15/notes/extending.html#extending-autograd
     for more details on how to use this method.
 
-    Example:
+    Example: ~
 
     >python
         >>> class Func(Function):
@@ -21803,7 +21907,7 @@ FunctionCtx.set_materialize_grads(value)
     If `True`, undefined grad tensors will be expanded to tensors full of
     zeros prior to calling the `backward()` and `jvp()` methods.
 
-    Example:
+    Example: ~
 
     >python
         >>> class SimpleFunc(Function):
@@ -22043,7 +22147,8 @@ class torch.autograd.function.InplaceFunction(inplace=False)
         Return type: ~
             Any
 
-    mark_dirty(*args) *torch.autograd.function.InplaceFunction.mark_dirty*
+    mark_dirty(*args)
+    *torch.autograd.function.InplaceFunction.mark_dirty*
         Mark given tensors as modified in an in-place operation.
 
         This should be called at most once, in either the
@@ -22080,8 +22185,9 @@ class torch.autograd.function.InplaceFunction(inplace=False)
             >>>              # computation has been modified by an inplace operation
 <
 
+             *torch.autograd.function.InplaceFunction.mark_non_differentiable*
+
 mark_non_differentiable(*args)
-    *torch.autograd.function.InplaceFunction.mark_non_differentiable*
     Mark outputs as non-differentiable.
 
     This should be called at most once, in either the
@@ -22114,8 +22220,9 @@ mark_non_differentiable(*args)
         >>>         return grad_input
 <
 
+                   *torch.autograd.function.InplaceFunction.save_for_backward*
+
 save_for_backward(*tensors)
-    *torch.autograd.function.InplaceFunction.save_for_backward*
     Save given tensors for a future call to `backward()`.
 
     `save_for_backward` should be called at most once, in either the
@@ -22155,7 +22262,7 @@ save_for_backward(*tensors)
     https://docs.pytorch.org/docs/2.15/notes/extending.html#extending-autograd
     for more details on how to use this method.
 
-    Example:
+    Example: ~
 
     >python
         >>> class Func(Function):
@@ -22183,8 +22290,9 @@ save_for_backward(*tensors)
         >>> d = Func.apply(a, b, c)
 <
 
+                    *torch.autograd.function.InplaceFunction.save_for_forward*
+
 save_for_forward(*tensors)
-    *torch.autograd.function.InplaceFunction.save_for_forward*
     Save given tensors for a future call to `jvp()`.
 
     `save_for_forward` should be called at most once, in either the
@@ -22201,7 +22309,7 @@ save_for_forward(*tensors)
     https://docs.pytorch.org/docs/2.15/notes/extending.html#extending-autograd
     for more details on how to use this method.
 
-    Example:
+    Example: ~
 
     >python
         >>> class Func(torch.autograd.Function):
@@ -22234,8 +22342,9 @@ save_for_forward(*tensors)
         >>>         d = Func.apply(a_dual, b, c)
 <
 
+               *torch.autograd.function.InplaceFunction.set_materialize_grads*
+
 set_materialize_grads(value)
-    *torch.autograd.function.InplaceFunction.set_materialize_grads*
     Set whether to materialize grad tensors. Default is `True`.
 
     This should be called only from either the
@@ -22247,7 +22356,7 @@ set_materialize_grads(value)
     |torch.autograd.function.InplaceFunction.backward| and
     |torch.autograd.function.InplaceFunction.jvp| methods.
 
-    Example:
+    Example: ~
 
     >python
         >>> class SimpleFunc(Function):
@@ -22283,8 +22392,9 @@ set_materialize_grads(value)
         >>> b, _ = Func.apply(a)  # induces g2 to be undefined
 <
 
+               *torch.autograd.function.InplaceFunction.set_output_grad_dtype*
+
 set_output_grad_dtype(*dtypes)
-    *torch.autograd.function.InplaceFunction.set_output_grad_dtype*
     Declare the gradient dtype for each of this Function's outputs.
 
     This should be called at most once, from either the
@@ -22410,7 +22520,8 @@ class torch.autograd.function.NestedIOFunction(*args, **kwargs)
     This class is here only for backward compatibility reasons. Use
     |torch.autograd.Function| instead of this for any new use case.
 
-    backward(*gradients) *torch.autograd.function.NestedIOFunction.backward*
+    backward(*gradients)
+    *torch.autograd.function.NestedIOFunction.backward*
         Shared backward utility.
 
         Return type: ~
@@ -22420,18 +22531,22 @@ class torch.autograd.function.NestedIOFunction(*args, **kwargs)
     *torch.autograd.function.NestedIOFunction.backward_extended*
         User defined backward.
 
-forward(*args)  *torch.autograd.function.NestedIOFunction.forward*
+                            *torch.autograd.function.NestedIOFunction.forward*
+
+forward(*args)
     Shared forward utility.
 
     Return type: ~
         Any
 
+                   *torch.autograd.function.NestedIOFunction.forward_extended*
+
 forward_extended(*input)
-    *torch.autograd.function.NestedIOFunction.forward_extended*
     User defined forward.
 
+                 *torch.autograd.function.NestedIOFunction.input_grad_buffers*
+
 property input_grad_buffers : tuple[|torch.Tensor| | None, ...]
-*torch.autograd.function.NestedIOFunction.input_grad_buffers*
     Return existing buffers for accumulating gradients of this Function's
     inputs.
 
@@ -22536,20 +22651,24 @@ static jvp(ctx, *grad_inputs) *torch.autograd.function.NestedIOFunction.jvp*
     Return type: ~
         Any
 
+                         *torch.autograd.function.NestedIOFunction.mark_dirty*
+
 mark_dirty(*args, **kwargs)
-    *torch.autograd.function.NestedIOFunction.mark_dirty*
     See `Function.mark_dirty()`.
 
+            *torch.autograd.function.NestedIOFunction.mark_non_differentiable*
+
 mark_non_differentiable(*args, **kwargs)
-    *torch.autograd.function.NestedIOFunction.mark_non_differentiable*
     See `Function.mark_non_differentiable()`.
 
+                  *torch.autograd.function.NestedIOFunction.save_for_backward*
+
 save_for_backward(*args)
-    *torch.autograd.function.NestedIOFunction.save_for_backward*
     See `Function.save_for_backward()`.
 
+                   *torch.autograd.function.NestedIOFunction.save_for_forward*
+
 save_for_forward(*tensors)
-    *torch.autograd.function.NestedIOFunction.save_for_forward*
     Save given tensors for a future call to `jvp()`.
 
     `save_for_forward` should be called at most once, in either the
@@ -22567,7 +22686,7 @@ save_for_forward(*tensors)
     https://docs.pytorch.org/docs/2.15/notes/extending.html#extending-autograd
     for more details on how to use this method.
 
-    Example:
+    Example: ~
 
     >python
         >>> class Func(torch.autograd.Function):
@@ -22600,12 +22719,14 @@ save_for_forward(*tensors)
         >>>         d = Func.apply(a_dual, b, c)
 <
 
+                      *torch.autograd.function.NestedIOFunction.saved_tensors*
+
 property saved_tensors
-*torch.autograd.function.NestedIOFunction.saved_tensors*
     See `Function.saved_tensors()`.
 
+              *torch.autograd.function.NestedIOFunction.set_materialize_grads*
+
 set_materialize_grads(value)
-    *torch.autograd.function.NestedIOFunction.set_materialize_grads*
     Set whether to materialize grad tensors. Default is `True`.
 
     This should be called only from either the
@@ -22617,7 +22738,7 @@ set_materialize_grads(value)
     |torch.autograd.function.NestedIOFunction.backward| and
     |torch.autograd.function.NestedIOFunction.jvp| methods.
 
-    Example:
+    Example: ~
 
     >python
         >>> class SimpleFunc(Function):
@@ -22653,8 +22774,9 @@ set_materialize_grads(value)
         >>> b, _ = Func.apply(a)  # induces g2 to be undefined
 <
 
+              *torch.autograd.function.NestedIOFunction.set_output_grad_dtype*
+
 set_output_grad_dtype(*dtypes)
-    *torch.autograd.function.NestedIOFunction.set_output_grad_dtype*
     Declare the gradient dtype for each of this Function's outputs.
 
     This should be called at most once, from either the
@@ -23380,7 +23502,9 @@ class torch.autograd.grad_mode.enforce_grad_layout_policy(enable=True)
         ...     # gradient rather than being forced to match p's strides.
 <
 
-clone()  *torch.autograd.grad_mode.enforce_grad_layout_policy.clone*
+                   *torch.autograd.grad_mode.enforce_grad_layout_policy.clone*
+
+clone()
     Create a copy of this class
 
     Return type: ~
@@ -23458,7 +23582,9 @@ class torch.autograd.grad_mode.inference_mode(mode=True)
         False
 <
 
-clone()  *torch.autograd.grad_mode.inference_mode.clone*
+                               *torch.autograd.grad_mode.inference_mode.clone*
+
+clone()
     Create a copy of this class
 
     Return type: ~
@@ -23510,7 +23636,9 @@ class torch.autograd.grad_mode.set_grad_enabled(mode)
         False
 <
 
-clone()  *torch.autograd.grad_mode.set_grad_enabled.clone*
+                             *torch.autograd.grad_mode.set_grad_enabled.clone*
+
+clone()
     Create a copy of this class
 
     Return type: ~
@@ -23543,7 +23671,8 @@ class torch.autograd.grad_mode.set_multithreading_enabled(mode)
       This API does not apply to |autograd-forward-mode-ad|, which never
       uses multithreading.
 
-    clone() *torch.autograd.grad_mode.set_multithreading_enabled.clone*
+    clone()
+    *torch.autograd.grad_mode.set_multithreading_enabled.clone*
         Create a copy of this class
 
         Return type: ~
@@ -23780,7 +23909,7 @@ abstract Node.metadata()
 abstract Node.name()
     Return the name.
 
-    Example:
+    Example: ~
 
     >python
         >>> import torch
@@ -23835,7 +23964,7 @@ abstract Node.register_hook(fn)
       other factors). The hook can still optionally return a new gradient to
       be used in place of `grad_inputs` independent of `grad_outputs`.
 
-    Example:
+    Example: ~
 
     >python
         >>> import torch
@@ -23879,7 +24008,7 @@ abstract Node.register_prehook(fn)
       how when this hook is executed, and how its execution is ordered
       relative to other hooks.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.tensor([0., 0., 0.], requires_grad=True)
@@ -23929,7 +24058,8 @@ class torch.autograd.profiler.EnforceUnique(**kwargs)
 
       Deprecated since version This: ~
 
-    see(*key) *torch.autograd.profiler.EnforceUnique.see*
+    see(*key)
+    *torch.autograd.profiler.EnforceUnique.see*
         Observe a key and raise an error if it is seen multiple times.
 
 ----------------------------------------------------------------------------
@@ -24185,7 +24315,7 @@ class torch.autograd.profiler_util.EventList(*args, **kwargs)
 
     self_cpu_time_total: Sum of self CPU time across all events.
 
-Example:
+Example: ~
 
 >python
     import torch
@@ -24225,20 +24355,29 @@ Example:
   - |torch.autograd.profiler_util.EventList.key_averages|: Aggregate events
     by operation name
 
-append(object, /)  *torch.autograd.profiler_util.EventList.append*
+                               *torch.autograd.profiler_util.EventList.append*
+
+append(object, /)
     Append object to the end of the list.
 
-clear()  *torch.autograd.profiler_util.EventList.clear*
+                                *torch.autograd.profiler_util.EventList.clear*
+
+clear()
     Remove all items from list.
 
-copy()  *torch.autograd.profiler_util.EventList.copy*
+                                 *torch.autograd.profiler_util.EventList.copy*
+
+copy()
     Return a shallow copy of the list.
 
-count(value, /)  *torch.autograd.profiler_util.EventList.count*
+                                *torch.autograd.profiler_util.EventList.count*
+
+count(value, /)
     Return number of occurrences of value.
 
+                  *torch.autograd.profiler_util.EventList.export_chrome_trace*
+
 export_chrome_trace(path)
-    *torch.autograd.profiler_util.EventList.export_chrome_trace*
     Export an EventList as a Chrome tracing tools file.
 
     The checkpoint can be later loaded and inspected under
@@ -24247,21 +24386,27 @@ export_chrome_trace(path)
     Parameters: ~
         path (str) -- Path where the trace will be written.
 
-extend(iterable, /)  *torch.autograd.profiler_util.EventList.extend*
+                               *torch.autograd.profiler_util.EventList.extend*
+
+extend(iterable, /)
     Extend list by appending elements from the iterable.
 
+                                *torch.autograd.profiler_util.EventList.index*
+
 index(value, start=0, stop=9223372036854775807, /)
-    *torch.autograd.profiler_util.EventList.index*
     Return first index of value.
 
     Raises ValueError if the value is not present.
 
-insert(index, object, /)  *torch.autograd.profiler_util.EventList.insert*
+                               *torch.autograd.profiler_util.EventList.insert*
+
+insert(index, object, /)
     Insert object before index.
+
+                         *torch.autograd.profiler_util.EventList.key_averages*
 
 key_averages(group_by_input_shapes=False, group_by_stack_n=0,
     group_by_overload_name=False, include_python_functions=False)
-    *torch.autograd.profiler_util.EventList.key_averages*
     Averages all function events over their keys.
 
     Parameters: ~
@@ -24284,21 +24429,28 @@ key_averages(group_by_input_shapes=False, group_by_stack_n=0,
     Returns: ~
         An EventList containing FunctionEventAvg objects.
 
-pop(index=-1, /)  *torch.autograd.profiler_util.EventList.pop*
+                                  *torch.autograd.profiler_util.EventList.pop*
+
+pop(index=-1, /)
     Remove and return item at index (default last).
 
     Raises IndexError if list is empty or index is out of range.
 
-remove(value, /)  *torch.autograd.profiler_util.EventList.remove*
+                               *torch.autograd.profiler_util.EventList.remove*
+
+remove(value, /)
     Remove first occurrence of value.
 
     Raises ValueError if the value is not present.
 
-reverse()  *torch.autograd.profiler_util.EventList.reverse*
+                              *torch.autograd.profiler_util.EventList.reverse*
+
+reverse()
     Reverse IN PLACE.
 
+                                 *torch.autograd.profiler_util.EventList.sort*
+
 sort(*, key=None, reverse=False)
-    *torch.autograd.profiler_util.EventList.sort*
     Sort the list in ascending order and return None.
 
     The sort is in-place (i.e. the list itself is modified) and stable (i.e.
@@ -24309,10 +24461,11 @@ sort(*, key=None, reverse=False)
 
     The reverse flag can be set to sort in descending order.
 
+                                *torch.autograd.profiler_util.EventList.table*
+
 table(sort_by=None, row_limit=100, max_src_column_width=75,
     max_name_column_width=55, max_shapes_column_width=80, header=None,
     top_level_events_only=False, time_unit=None)
-    *torch.autograd.profiler_util.EventList.table*
     Print an EventList as a nicely formatted table.
 
     Parameters: ~
@@ -24335,7 +24488,9 @@ table(sort_by=None, row_limit=100, max_src_column_width=75,
     Returns: ~
         A string containing the table.
 
-total_average()  *torch.autograd.profiler_util.EventList.total_average*
+                        *torch.autograd.profiler_util.EventList.total_average*
+
+total_average()
     Compute aggregate statistics across all events.
 
     Accumulates statistics from all events into a single FunctionEventAvg
@@ -24480,15 +24635,17 @@ class torch.autograd.profiler_util.FunctionEvent(id, name, thread, start_us,
   - |torch.autograd.profiler_util.FunctionEventAvg|: Averaged statistics
     over multiple FunctionEvent objects
 
+                 *torch.autograd.profiler_util.FunctionEvent.append_cpu_child*
+
 append_cpu_child(child)
-    *torch.autograd.profiler_util.FunctionEvent.append_cpu_child*
     Append a CPU child of type FunctionEvent.
 
     One is supposed to append only direct children to the event to have
     correct self cpu time being reported.
 
+                   *torch.autograd.profiler_util.FunctionEvent.set_cpu_parent*
+
 set_cpu_parent(parent)
-    *torch.autograd.profiler_util.FunctionEvent.set_cpu_parent*
     Set the immediate CPU parent of type FunctionEvent.
 
     One profiling FunctionEvent should have only one CPU parent such that
@@ -24570,15 +24727,19 @@ class torch.autograd.profiler_util.FunctionEventAvg
 ----------------------------------------------------------------------------
 Interval                               *torch.autograd.profiler_util.Interval*
 
+                            *torch.autograd.profiler_util.Interval.elapsed_us*
+
 class torch.autograd.profiler_util.Interval(start, end)
-    elapsed_us() *torch.autograd.profiler_util.Interval.elapsed_us*
+    elapsed_us()
         Returns the length of the interval
 
 ----------------------------------------------------------------------------
 Kernel                                   *torch.autograd.profiler_util.Kernel*
 
+                                   *torch.autograd.profiler_util.Kernel.count*
+
 class torch.autograd.profiler_util.Kernel(name, device, duration)
-    count(value, /) *torch.autograd.profiler_util.Kernel.count*
+    count(value, /)
         Return number of occurrences of value.
 
     device *torch.autograd.profiler_util.Kernel.device*
@@ -24625,7 +24786,8 @@ class torch.autograd.profiler_util.StringTable
         Create a new dictionary with keys from iterable and values set to
         value.
 
-    get(key, default=None, /) *torch.autograd.profiler_util.StringTable.get*
+    get(key, default=None, /)
+    *torch.autograd.profiler_util.StringTable.get*
         Return the value for key if key is in the dictionary, else default.
 
     items() → a set-like object providing a view on D's items
@@ -24635,11 +24797,13 @@ class torch.autograd.profiler_util.StringTable
     *torch.autograd.profiler_util.StringTable.keys*
 
     pop(k[, d]) → v, remove specified key and return the corresponding
-    value. *torch.autograd.profiler_util.StringTable.pop*
+    value.
+    *torch.autograd.profiler_util.StringTable.pop*
         If the key is not found, return the default if given; otherwise,
         raise a KeyError.
 
-    popitem() *torch.autograd.profiler_util.StringTable.popitem*
+    popitem()
+    *torch.autograd.profiler_util.StringTable.popitem*
         Remove and return a (key, value) pair as a 2-tuple.
 
         Pairs are returned in LIFO (last-in, first-out) order. Raises
@@ -24699,7 +24863,7 @@ torch.avg_pool1d(input, kernel_size, stride=None, padding=0,
         - count_include_pad -- when True, will include the zero-padding in
           the averaging calculation. Default: `True`
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # pool of square window of size=3, stride=2
@@ -24752,7 +24916,7 @@ torch.baddbmm(input, batch1, batch2, *, beta=1, alpha=1, out=None) →
           `\text{batch1} \mathbin{@} \text{batch2}` (`\alpha`)
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> M = torch.randn(10, 3, 5)
@@ -24901,7 +25065,7 @@ torch.bernoulli(input: |torch.Tensor|, *, generator: |torch.Generator| |
           generator for sampling
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.empty(3, 3).uniform_(0, 1)  # generate a uniform random matrix with range [0, 1]
@@ -24933,7 +25097,7 @@ torch.bilinear(input1, input2, weight, bias=None) → |torch.Tensor|
     Applies a bilinear transformation to the incoming data:
     `y = x_1^T A x_2 + b`
 
-    Shape:
+    Shape: ~
 
       - input1: `(N, *, H_{in1})` where `H_{in1}=\text{in1\_features}` and
         `*` means any number of additional dimensions. All but the last
@@ -24978,7 +25142,7 @@ torch.bincount(input, weights=None, minlength=0) → |torch.Tensor|
     Return type: ~
         output (|torch.Tensor|)
 
-    Example:
+    Example: ~
 
     >python
         >>> input = torch.randint(0, 8, (5,), dtype=torch.int64)
@@ -25014,7 +25178,7 @@ torch.bitwise_and(input, other, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.bitwise_and(torch.tensor([-1, -2, 3], dtype=torch.int8), torch.tensor([1, 0, 3], dtype=torch.int8))
@@ -25043,7 +25207,7 @@ torch.bitwise_left_shift(input, other, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.bitwise_left_shift(torch.tensor([-1, -2, 3], dtype=torch.int8), torch.tensor([1, 0, 3], dtype=torch.int8))
@@ -25064,7 +25228,7 @@ torch.bitwise_not(input, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.bitwise_not(torch.tensor([-1, -2, 3], dtype=torch.int8))
@@ -25087,7 +25251,7 @@ torch.bitwise_or(input: |torch.Tensor|, other: |torch.Tensor|, *, out:
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.bitwise_or(torch.tensor([-1, -2, 3], dtype=torch.int8), torch.tensor([1, 0, 3], dtype=torch.int8))
@@ -25118,7 +25282,7 @@ torch.bitwise_right_shift(input, other, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.bitwise_right_shift(torch.tensor([-2, -7, 31], dtype=torch.int8), torch.tensor([1, 0, 3], dtype=torch.int8))
@@ -25140,7 +25304,7 @@ torch.bitwise_xor(input, other, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.bitwise_xor(torch.tensor([-1, -2, 3], dtype=torch.int8), torch.tensor([1, 0, 3], dtype=torch.int8))
@@ -25219,7 +25383,7 @@ torch.block_diag(*tensors)
     Return type: ~
         |torch.Tensor|
 
-    Example:
+    Example: ~
 
     >python
         >>> import torch
@@ -25275,7 +25439,7 @@ torch.bmm(input, mat2, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> input = torch.randn(10, 3, 4)
@@ -25312,7 +25476,7 @@ torch.broadcast_shapes(*shapes) → |torch.Size|
     tensors of common batch shape but different rightmost shape, e.g. to
     broadcast mean vectors with covariance matrices.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.broadcast_shapes((2,), (3, 1), (1, 1, 1))
@@ -25349,7 +25513,7 @@ torch.broadcast_tensors(*tensors) → List of Tensors
       that are vectorized) may result in incorrect behavior. If you need to
       write to the tensors, please clone them first.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.arange(3).view(1, 3)
@@ -25373,7 +25537,7 @@ torch.broadcast_to(input, shape) → |torch.Tensor|
         - input (|torch.Tensor|) -- the input tensor.
         - shape (list, tuple, or |torch.Size|) -- the new shape.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([1, 2, 3])
@@ -25397,7 +25561,7 @@ torch.bucketize(input, boundaries, *, out_int32=False, right=False,
     More formally, the returned index satisfies the following rules:
 
     right  returned index satisfies
-    -----  -----------------------------------------------------------------------
+    -----  -------------------------------------------------------------------
     False  boundaries[i-1] < input[m][n]...[l][x] <= boundaries[i]
     True   boundaries[i-1] <= input[m][n]...[l][x] < boundaries[i]
 
@@ -25416,7 +25580,7 @@ torch.bucketize(input, boundaries, *, out_int32=False, right=False,
         - out (|torch.Tensor|, optional) -- the output tensor, must be the
           same size as `input` if provided.
 
-    Example:
+    Example: ~
 
     >python
         >>> boundaries = torch.tensor([1, 3, 5, 7, 9])
@@ -25445,7 +25609,7 @@ torch.can_cast(from_, to) → bool
         - from_ (|torch.dtype|) -- The original |torch.dtype|.
         - to (|torch.dtype|) -- The target |torch.dtype|.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.can_cast(torch.double, torch.float)
@@ -25472,7 +25636,7 @@ torch.cartesian_prod(*tensors)
     Return type: ~
         |torch.Tensor|
 
-    Example:
+    Example: ~
 
     >python
         >>> import itertools
@@ -25517,7 +25681,7 @@ torch.cat(tensors, dim=0, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.randn(2, 3)
@@ -25623,7 +25787,7 @@ torch.ceil(input, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -25678,7 +25842,7 @@ torch.chain_matmul(*matrices, out=None)
     Return type: ~
         |torch.Tensor|
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(3, 4)
@@ -25707,7 +25871,7 @@ torch.channel_shuffle(input, groups) → |torch.Tensor|
         - groups (int) -- number of groups to divide channels in and
           rearrange.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> input = torch.randn(1, 4, 2, 2)
@@ -25767,7 +25931,7 @@ torch.cholesky_inverse(L, upper=False, *, out=None) → |torch.Tensor|
         out (|torch.Tensor|, optional) -- output tensor. Ignored if None.
         Default: None.
 
-    Example:
+    Example: ~
 
     >python
         >>> A = torch.randn(3, 3)
@@ -25827,7 +25991,7 @@ torch.cholesky_solve(B, L, upper=False, *, out=None) → |torch.Tensor|
         out (|torch.Tensor|, optional) -- output tensor. Ignored if None.
         Default: None.
 
-    Example:
+    Example: ~
 
     >python
         >>> A = torch.randn(3, 3)
@@ -25939,7 +26103,7 @@ torch.clamp(input, min=None, max=None, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -26033,7 +26197,7 @@ torch.column_stack(tensors, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.tensor([1, 2, 3])
@@ -26076,7 +26240,7 @@ torch.combinations(input: |torch.Tensor|, r: int = 2, with_replacement: bool
     Return type: ~
         |torch.Tensor|
 
-    Example:
+    Example: ~
 
     >python
         >>> a = [1, 2, 3]
@@ -26243,7 +26407,7 @@ torch.compile(model: Callable[[_InputT], _RetT], *, fullgraph: bool = False,
           does NOT bleed into isolated regions --- each region manages its
           own RUN_ONLY state. Default False.
 
-    Example:
+    Example: ~
 
     >python
         @torch.compile(options={"triton.cudagraphs": True}, fullgraph=True)
@@ -26292,11 +26456,11 @@ torch.compiler.allow_in_graph(fn)
     box throughout the torch.compile stack. The following table compares
     these mechanisms.
 
-    Mechanism         Frontend (Dynamo)     Backend (AOTAutograd+Inductor)
-    ----------------  --------------------  --------------------------------------
-    no decorator      trace inside          trace inside
-    allow_in_graph    opaque callable       trace inside
-    custom op         opaque callable       opaque callable
+    Mechanism         Frontend (Dynamo)    Backend (AOTAutograd+Inductor)
+    ----------------  -------------------  -----------------------------------
+    no decorator      trace inside         trace inside
+    allow_in_graph    opaque callable      trace inside
+    custom op         opaque callable      opaque callable
 
     One common use case for |torch.compiler.allow_in_graph| is as an escape
     hatch for the compiler frontend: if you know the function works w.r.t.
@@ -26328,7 +26492,7 @@ torch.compiler.allow_in_graph(fn)
         applies |torch.compiler.allow_in_graph| to each function and returns
         a new list or tuple containing the modified functions.
 
-    Example:
+    Example: ~
 
     >python
         torch.compiler.allow_in_graph(my_custom_function)
@@ -26450,7 +26614,7 @@ torch.compiler.is_compiling()
     - torch._dynamo.external_utils.is_compiling()
     - torch._utils.is_compiling()
 
-Example:
+Example: ~
 
 >python
     >>> def forward(self, x):
@@ -26471,7 +26635,7 @@ torch.compiler.is_dynamo_compiling()
     It's stricter than is_compiling() flag, as it would only be set to True
     when TorchDynamo is used.
 
-    Example:
+    Example: ~
 
     >python
         >>> def forward(self, x):
@@ -26492,7 +26656,7 @@ torch.compiler.is_exporting()
     It's stricter than is_compiling() flag, as it would only be set to True
     when torch.export is used.
 
-    Example:
+    Example: ~
 
     >python
         >>> def forward(self, x):
@@ -26552,7 +26716,7 @@ torch.compiler.load_cache_artifacts(serialized_artifacts)
     Hot loads cache artifacts that were previously serialized via
     save_cache_artifacts
 
-    Example:
+    Example: ~
 
     # From a previous invocation artifacts =
     torch.compiler.save_cache_artifacts()
@@ -26724,7 +26888,7 @@ torch.compiler.nonstrict_trace(traceable_fn)
           back to them. Pass tensors as explicit arguments if gradients are
           needed.
 
-    Example:
+    Example: ~
 
     >python
         >>> import torch
@@ -26768,7 +26932,7 @@ torch.compiler.save_cache_artifacts()
     Serializes all the cache artifacts that were created during the
     compilation
 
-    Example:
+    Example: ~
 
     - Execute torch.compile
     - Call torch.compiler.save_cache_artifacts()
@@ -26789,7 +26953,7 @@ torch.compiler.set_default_backend(backend)
         backend (str | Callable[[...], Any] | None) -- A backend name
         (string), a callable backend, or `None`.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.compiler.set_default_backend("eager")
@@ -26994,7 +27158,7 @@ torch.compiler.substitute_in_graph(original_fn, *,
     Return type: ~
         Callable[[Callable[[~_P], _R]], Callable[[~_P], _R]]
 
-    Example:
+    Example: ~
 
     >python
         >>> import binascii
@@ -27030,7 +27194,7 @@ torch.compiler.wrap_numpy(fn)
 
       This decorator does not work without |torch.compile|.
 
-    Example:
+    Example: ~
 
     >python
         >>> # Compile a NumPy function as a Tensor -> Tensor function
@@ -27064,7 +27228,7 @@ torch.complex(real, imag, *, out=None) → |torch.Tensor|
         `torch.complex64`. If the inputs are `torch.float64`, must be
         `torch.complex128`.
 
-    Example:
+    Example: ~
 
     >python
         >>> real = torch.tensor([1, 2], dtype=torch.float32)
@@ -27136,7 +27300,7 @@ torch.cond(pred, true_fn, false_fn, operands=())
     Return type: ~
         Any
 
-    Example:
+    Example: ~
 
     >python
         def true_fn(x: torch.Tensor):
@@ -27173,7 +27337,7 @@ torch.cond(pred, true_fn, false_fn, operands=())
         outputs will always be new tensors that do not share object identity
         with the original inputs.
 
-        Example:
+        Example: ~
 
         >python
             def true_fn(x):
@@ -27216,7 +27380,7 @@ torch.conj(input) → |torch.Tensor|
     Parameters: ~
         input (|torch.Tensor|) -- the input tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
@@ -27254,7 +27418,7 @@ torch.conj_physical(input, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.conj_physical(torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j]))
@@ -27322,7 +27486,7 @@ torch.conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1,
         - groups -- split input into groups, `\text{in\_channels}` should be
           divisible by the number of groups. Default: 1
 
-    Examples:
+    Examples: ~
 
     >python
         >>> inputs = torch.randn(33, 16, 30)
@@ -27385,7 +27549,7 @@ torch.conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1,
         - groups -- split input into groups, `\text{in\_channels}` should be
           divisible by the number of groups. Default: 1
 
-    Examples:
+    Examples: ~
 
     >python
         >>> filters = torch.randn(33, 16, 3, 3, 3)
@@ -27449,7 +27613,7 @@ torch.conv_transpose1d(input, weight, bias=None, stride=1, padding=0,
         - dilation -- the spacing between kernel elements. Can be a single
           number or a tuple `(dW,)`. Default: 1
 
-    Examples:
+    Examples: ~
 
     >python
         >>> inputs = torch.randn(20, 16, 50)
@@ -27498,7 +27662,7 @@ torch.conv_transpose2d(input, weight, bias=None, stride=1, padding=0,
         - dilation -- the spacing between kernel elements. Can be a single
           number or a tuple `(dH, dW)`. Default: 1
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # With square kernels and equal stride
@@ -27548,7 +27712,7 @@ torch.conv_transpose3d(input, weight, bias=None, stride=1, padding=0,
         - dilation -- the spacing between kernel elements. Can be a single
           number or a tuple (dT, dH, dW). Default: 1
 
-    Examples:
+    Examples: ~
 
     >python
         >>> inputs = torch.randn(20, 16, 50, 10, 20)
@@ -27581,7 +27745,7 @@ torch.copysign(input, other, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(5)
@@ -27645,7 +27809,7 @@ torch.corrcoef(input) → |torch.Tensor|
 
       |torch.cov| covariance matrix.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([[0, 1, 2], [2, 1, 0]])
@@ -27678,7 +27842,7 @@ torch.cos(input, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -27709,7 +27873,7 @@ torch.cosh(input, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -27752,7 +27916,7 @@ torch.cosine_similarity(x1, x2, dim=1, eps=1e-8) → |torch.Tensor|
         - eps (float, optional) -- Small value to avoid division by zero.
           Default: 1e-8
 
-    Example:
+    Example: ~
 
     >python
         >>> input1 = torch.randn(100, 128)
@@ -27774,7 +27938,7 @@ torch.count_nonzero(input, dim=None) → |torch.Tensor|
         - dim (int or tuple of ints, optional) -- Dim or tuple of dims along
           which to count non-zeros.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.zeros(3,3)
@@ -27852,7 +28016,7 @@ torch.cov(input, *, correction=1, fweights=None, aweights=None) →
 
       |torch.corrcoef| normalized covariance matrix.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.tensor([[0, 2], [1, 1], [2, 0]]).T
@@ -28065,7 +28229,7 @@ torch.cross(input, other, dim=None, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4, 3)
@@ -28141,7 +28305,8 @@ class torch.cuda.CUDAGraph(keep_graph=False)
       This API is in beta and may change in future releases.
 
     capture_begin(pool=None, capture_error_mode='global',
-    check_input_liveness=False) *torch.cuda.CUDAGraph.capture_begin*
+    check_input_liveness=False)
+    *torch.cuda.CUDAGraph.capture_begin*
         Begin capturing CUDA work on the current stream.
 
         Typically, you shouldn't call `capture_begin` yourself. Use
@@ -28176,7 +28341,8 @@ class torch.cuda.CUDAGraph(keep_graph=False)
                 Custom CUDA kernels added outside PyTorch (e.g., via
                 cuLaunchKernel or DLPack) are not tracked by this mechanism.
 
-    capture_end() *torch.cuda.CUDAGraph.capture_end*
+    capture_end()
+    *torch.cuda.CUDAGraph.capture_end*
         End CUDA graph capture on the current stream.
 
         After `capture_end`, `replay` may be called on this instance.
@@ -28185,18 +28351,24 @@ class torch.cuda.CUDAGraph(keep_graph=False)
         |torch.cuda.graph| or |torch.cuda.make_graphed_callables|, which
         call `capture_end` internally.
 
-capture_end_post()  *torch.cuda.CUDAGraph.capture_end_post*
+                                       *torch.cuda.CUDAGraph.capture_end_post*
+
+capture_end_post()
     Finalize a capture started by |torch.cuda.CUDAGraph.capture_end_pre|:
     destroy the template when `keep_graph=False` (the graph must already be
     instantiated; |torch.cuda.CUDAGraph.capture_end| and the context manager
     do so).
 
-capture_end_pre()  *torch.cuda.CUDAGraph.capture_end_pre*
+                                        *torch.cuda.CUDAGraph.capture_end_pre*
+
+capture_end_pre()
     End capture but do not finalize: leaves the captured `cudaGraph_t` live
     (for both `keep_graph` modes) so it can be inspected before
     |torch.cuda.CUDAGraph.capture_end_post| instantiates and/or destroys it.
 
-debug_dump(debug_path, *, verbose=True)  *torch.cuda.CUDAGraph.debug_dump*
+                                             *torch.cuda.CUDAGraph.debug_dump*
+
+debug_dump(debug_path, *, verbose=True)
     Dump the captured graph to `debug_path` in Graphviz DOT format.
 
     The graph's template must be live: `keep_graph=True` (or
@@ -28208,12 +28380,16 @@ debug_dump(debug_path, *, verbose=True)  *torch.cuda.CUDAGraph.debug_dump*
         - verbose (bool) -- If `True` (default), use the most verbose DOT
           output.
 
-enable_debug_mode()  *torch.cuda.CUDAGraph.enable_debug_mode*
+                                      *torch.cuda.CUDAGraph.enable_debug_mode*
+
+enable_debug_mode()
     Retain the captured graph (equivalent to `keep_graph=True`) so it can be
     inspected, e.g. via |torch.cuda.CUDAGraph.debug_dump|. Kept for backward
     compatibility.
 
-get_graph_data()  *torch.cuda.CUDAGraph.get_graph_data*
+                                         *torch.cuda.CUDAGraph.get_graph_data*
+
+get_graph_data()
     Return a dictionary describing the graph's topology and node metadata.
 
     `keep_graph` must be True. The graph must have been instantiated (via
@@ -28301,13 +28477,17 @@ get_graph_data()  *torch.cuda.CUDAGraph.get_graph_data*
     Return type: ~
         dict
 
-instantiate()  *torch.cuda.CUDAGraph.instantiate*
+                                            *torch.cuda.CUDAGraph.instantiate*
+
+instantiate()
     Instantiate the CUDA graph. Will be called by `capture_end` if
     `keep_graph=False`, or by `replay` if `keep_graph=True` and
     `instantiate` has not already been explicitly called. Does not destroy
     the cudaGraph_t returned by `raw_cuda_graph`.
 
-pool()  *torch.cuda.CUDAGraph.pool*
+                                                   *torch.cuda.CUDAGraph.pool*
+
+pool()
     Return an opaque token representing the id of this graph's memory pool.
 
     This id can optionally be passed to another graph's `capture_begin`,
@@ -28316,13 +28496,17 @@ pool()  *torch.cuda.CUDAGraph.pool*
     Return type: ~
         _POOL_HANDLE
 
-pools()  *torch.cuda.CUDAGraph.pools*
+                                                  *torch.cuda.CUDAGraph.pools*
+
+pools()
     Return opaque tokens for all memory pools retained by this graph.
 
     Return type: ~
         list[_POOL_HANDLE]
 
-raw_cuda_graph()  *torch.cuda.CUDAGraph.raw_cuda_graph*
+                                         *torch.cuda.CUDAGraph.raw_cuda_graph*
+
+raw_cuda_graph()
     Returns the underlying cudaGraph_t. The template must be live: this
     requires `keep_graph=True` (it persists after `capture_end`), or access
     from within a capture-end hook (before the template is destroyed for
@@ -28337,7 +28521,9 @@ raw_cuda_graph()  *torch.cuda.CUDAGraph.raw_cuda_graph*
     Return type: ~
         int
 
-raw_cuda_graph_exec()  *torch.cuda.CUDAGraph.raw_cuda_graph_exec*
+                                    *torch.cuda.CUDAGraph.raw_cuda_graph_exec*
+
+raw_cuda_graph_exec()
     Returns the underlying cudaGraphExec_t. `instantiate` must have been
     called if `keep_graph` is True, or `capture_end` must have been called
     if `keep_graph` is False. If you call `instantiate()` after
@@ -28354,8 +28540,9 @@ raw_cuda_graph_exec()  *torch.cuda.CUDAGraph.raw_cuda_graph_exec*
     Return type: ~
         int
 
+                              *torch.cuda.CUDAGraph.register_capture_end_hook*
+
 register_capture_end_hook(hook)
-    *torch.cuda.CUDAGraph.register_capture_end_hook*
     Register `hook(graph)` to run when capture ends, after capture completes
     but before the graph is finalized. The captured `cudaGraph_t` is live
     (via |torch.cuda.CUDAGraph.raw_cuda_graph|) for both `keep_graph` modes.
@@ -28373,8 +28560,9 @@ register_capture_end_hook(hook)
     Return type: ~
         RemovableHandle
 
+                            *torch.cuda.CUDAGraph.register_capture_start_hook*
+
 register_capture_start_hook(hook)
-    *torch.cuda.CUDAGraph.register_capture_start_hook*
     Register `hook(graph)` to run when capture begins on this graph, right
     after capture is under way on the current stream. Hooks fire in
     registration order. Returns a handle whose `remove()` deregisters the
@@ -28390,8 +28578,9 @@ register_capture_start_hook(hook)
     Return type: ~
         RemovableHandle
 
+                              *torch.cuda.CUDAGraph.register_destroy_callback*
+
 register_destroy_callback(cb, *, synchronize_before_release=False)
-    *torch.cuda.CUDAGraph.register_destroy_callback*
     Register `cb()` to run when this graph is destroyed (finalized) or
     explicitly |torch.cuda.CUDAGraph.reset|, just before its CUDA resources
     are freed. Callbacks fire once per capture cycle, in registration order;
@@ -28411,8 +28600,9 @@ register_destroy_callback(cb, *, synchronize_before_release=False)
     Return type: ~
         RemovableHandle
 
+                         *torch.cuda.CUDAGraph.register_post_instantiate_hook*
+
 register_post_instantiate_hook(hook)
-    *torch.cuda.CUDAGraph.register_post_instantiate_hook*
     Register `hook(graph)` to run after each instantiation (including
     re-instantiation, which produces a fresh exec graph). The instantiated
     graph is available via |torch.cuda.CUDAGraph.raw_cuda_graph_exec|. Hooks
@@ -28422,8 +28612,9 @@ register_post_instantiate_hook(hook)
     Return type: ~
         RemovableHandle
 
+                               *torch.cuda.CUDAGraph.register_replay_end_hook*
+
 register_replay_end_hook(hook)
-    *torch.cuda.CUDAGraph.register_replay_end_hook*
     Register `hook(graph)` to run at the end of every
     |torch.cuda.CUDAGraph.replay|, just after the graph is launched. The
     launch is asynchronous, so the hook runs once the replay is enqueued,
@@ -28438,8 +28629,9 @@ register_replay_end_hook(hook)
     Return type: ~
         RemovableHandle
 
+                             *torch.cuda.CUDAGraph.register_replay_start_hook*
+
 register_replay_start_hook(hook)
-    *torch.cuda.CUDAGraph.register_replay_start_hook*
     Register `hook(graph)` to run at the start of every
     |torch.cuda.CUDAGraph.replay|, just before the graph is launched (after
     any on-demand instantiation, so
@@ -28456,14 +28648,19 @@ register_replay_start_hook(hook)
     Return type: ~
         RemovableHandle
 
-replay()  *torch.cuda.CUDAGraph.replay*
+                                                 *torch.cuda.CUDAGraph.replay*
+
+replay()
     Replay the CUDA work captured by this graph.
 
-reset()  *torch.cuda.CUDAGraph.reset*
+                                                  *torch.cuda.CUDAGraph.reset*
+
+reset()
     Delete the graph currently held by this instance.
 
+                                          *torch.cuda.CUDAGraph.retain_object*
+
 retain_object(obj, *, synchronize_before_release=False)
-    *torch.cuda.CUDAGraph.retain_object*
     Keep `obj` alive for this graph's current capture cycle and release it
     when the graph is destroyed (finalized) or explicitly
     |torch.cuda.CUDAGraph.reset|. No callback runs; normal refcounting drops
@@ -28517,7 +28714,8 @@ class torch.cuda.Event(enable_timing=False, blocking=False,
           for more information about internal vs. external events. (default:
           `False`)
 
-    elapsed_time(end_event) *torch.cuda.Event.elapsed_time*
+    elapsed_time(end_event)
+    *torch.cuda.Event.elapsed_time*
         Return the time elapsed.
 
         Time reported in milliseconds after the event was recorded and
@@ -28530,19 +28728,22 @@ class torch.cuda.Event(enable_timing=False, blocking=False,
     *torch.cuda.Event.from_ipc_handle*
         Reconstruct an event from an IPC handle on the given device.
 
-    ipc_handle() *torch.cuda.Event.ipc_handle*
+    ipc_handle()
+    *torch.cuda.Event.ipc_handle*
         Return an IPC handle of this event.
 
         If not recorded yet, the event will use the current device.
 
-    query() *torch.cuda.Event.query*
+    query()
+    *torch.cuda.Event.query*
         Check if all work currently captured by event has completed.
 
         Returns: ~
             A boolean indicating if all work currently captured by event has
             completed.
 
-    record(stream=None) *torch.cuda.Event.record*
+    record(stream=None)
+    *torch.cuda.Event.record*
         Record the event in a given stream.
 
         Parameters: ~
@@ -28552,7 +28753,8 @@ class torch.cuda.Event(enable_timing=False, blocking=False,
             if no stream is specified. The stream's device must match the
             event's device.
 
-    synchronize() *torch.cuda.Event.synchronize*
+    synchronize()
+    *torch.cuda.Event.synchronize*
         Wait for the event to complete.
 
         Waits until the completion of all work currently captured in this
@@ -28566,7 +28768,9 @@ class torch.cuda.Event(enable_timing=False, blocking=False,
             https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__EVENT.html
             for more info.
 
-wait(stream=None)  *torch.cuda.Event.wait*
+                                                       *torch.cuda.Event.wait*
+
+wait(stream=None)
     Make all future work submitted to the given stream wait for this event.
 
     Parameters: ~
@@ -28604,7 +28808,8 @@ class torch.cuda.ExternalStream(stream_ptr, device=None, **kwargs)
           stream was originally allocated. If device is specified
           incorrectly, subsequent launches using this stream may fail.
 
-    query() *torch.cuda.ExternalStream.query*
+    query()
+    *torch.cuda.ExternalStream.query*
         Check if all the work submitted has been completed.
 
         Returns: ~
@@ -28614,7 +28819,8 @@ class torch.cuda.ExternalStream(stream_ptr, device=None, **kwargs)
         Return type: ~
             bool
 
-    record_event(event=None) *torch.cuda.ExternalStream.record_event*
+    record_event(event=None)
+    *torch.cuda.ExternalStream.record_event*
         Record an event.
 
         Parameters: ~
@@ -28624,7 +28830,8 @@ class torch.cuda.ExternalStream(stream_ptr, device=None, **kwargs)
         Returns: ~
             Recorded event.
 
-    synchronize() *torch.cuda.ExternalStream.synchronize*
+    synchronize()
+    *torch.cuda.ExternalStream.synchronize*
         Wait for all the kernels in this stream to complete.
 
           Note: ~
@@ -28634,7 +28841,9 @@ class torch.cuda.ExternalStream(stream_ptr, device=None, **kwargs)
           https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__STREAM.html
           for more info.
 
-wait_event(event)  *torch.cuda.ExternalStream.wait_event*
+                                        *torch.cuda.ExternalStream.wait_event*
+
+wait_event(event)
     Make all future work submitted to the stream wait for an event.
 
     Parameters: ~
@@ -28650,7 +28859,9 @@ wait_event(event)  *torch.cuda.ExternalStream.wait_event*
       This function returns without waiting for `event`: only future
       operations are affected.
 
-wait_stream(stream)  *torch.cuda.ExternalStream.wait_stream*
+                                       *torch.cuda.ExternalStream.wait_stream*
+
+wait_stream(stream)
     Synchronize with another stream.
 
     All future work submitted to this stream will wait until all kernels
@@ -29128,7 +29339,7 @@ class torch.cuda.gds.GdsFile(filename, flags)
         - flags (int) -- Flags to pass to `os.open` when opening the file.
           `os.O_DIRECT` will be added automatically.
 
-    Example:
+    Example: ~
 
     >python
         >>> src1 = torch.randn(1024, device="cuda")
@@ -29145,13 +29356,16 @@ class torch.cuda.gds.GdsFile(filename, flags)
         >>> torch.equal(src2, dest2)
         True
 <
-    deregister_handle() *torch.cuda.gds.GdsFile.deregister_handle*
+    deregister_handle()
+    *torch.cuda.gds.GdsFile.deregister_handle*
         Deregisters file descriptor from the GDS driver.
 
         This is a wrapper around `cuFileHandleDeregister` (CUDA) /
         `hipFileHandleDeregister` (ROCm).
 
-load_storage(storage, offset=0)  *torch.cuda.gds.GdsFile.load_storage*
+                                         *torch.cuda.gds.GdsFile.load_storage*
+
+load_storage(storage, offset=0)
     Loads data from the file into the storage.
 
     This is a wrapper around `cuFileRead` (CUDA) / `hipFileRead` (ROCm).
@@ -29163,13 +29377,17 @@ load_storage(storage, offset=0)  *torch.cuda.gds.GdsFile.load_storage*
         - offset (int, optional) -- Offset into the file to start loading
           from. (Default: 0)
 
-register_handle()  *torch.cuda.gds.GdsFile.register_handle*
+                                      *torch.cuda.gds.GdsFile.register_handle*
+
+register_handle()
     Registers file descriptor to the GDS driver.
 
     This is a wrapper around `cuFileHandleRegister` (CUDA) /
     `hipFileHandleRegister` (ROCm).
 
-save_storage(storage, offset=0)  *torch.cuda.gds.GdsFile.save_storage*
+                                         *torch.cuda.gds.GdsFile.save_storage*
+
+save_storage(storage, offset=0)
     Saves data from the storage into the file.
 
     This is a wrapper around `cuFileWrite` (CUDA) / `hipFileWrite` (ROCm).
@@ -29189,7 +29407,7 @@ torch.cuda.gds.gds_deregister_buffer(s)
     This is a wrapper around `cuFileBufDeregister` (CUDA) /
     `hipFileBufDeregister` (ROCm).
 
-    Example:
+    Example: ~
 
     >python
         >>> src = torch.randn(1024, device="cuda")
@@ -29209,7 +29427,7 @@ torch.cuda.gds.gds_register_buffer(s)
     This is a wrapper around `cuFileBufRegister` (CUDA) /
     `hipFileBufRegister` (ROCm).
 
-    Example:
+    Example: ~
 
     >python
         >>> src = torch.randn(1024, device="cuda")
@@ -29544,7 +29762,7 @@ torch.cuda.graph_annotations.get_kernel_annotations() → Mapping[int, list]
 
       This API is in prototype and may change in future releases.
 
-    Example:
+    Example: ~
 
     >python
         >>> annotations = torch.cuda.graph_annotations.get_kernel_annotations()
@@ -29673,7 +29891,7 @@ torch.cuda.graph_annotations.mark_kernels(annotation, *, backward=True)
 
       This API is in prototype and may change in future releases.
 
-    Example:
+    Example: ~
 
     >python
         >>> g = torch.cuda.CUDAGraph()
@@ -29729,7 +29947,8 @@ class torch.cuda.graphs.CUDAGraph(keep_graph=False)
       This API is in beta and may change in future releases.
 
     capture_begin(pool=None, capture_error_mode='global',
-    check_input_liveness=False) *torch.cuda.graphs.CUDAGraph.capture_begin*
+    check_input_liveness=False)
+    *torch.cuda.graphs.CUDAGraph.capture_begin*
         Begin capturing CUDA work on the current stream.
 
         Typically, you shouldn't call `capture_begin` yourself. Use
@@ -29764,7 +29983,8 @@ class torch.cuda.graphs.CUDAGraph(keep_graph=False)
                 Custom CUDA kernels added outside PyTorch (e.g., via
                 cuLaunchKernel or DLPack) are not tracked by this mechanism.
 
-    capture_end() *torch.cuda.graphs.CUDAGraph.capture_end*
+    capture_end()
+    *torch.cuda.graphs.CUDAGraph.capture_end*
         End CUDA graph capture on the current stream.
 
         After `capture_end`, `replay` may be called on this instance.
@@ -29773,21 +29993,26 @@ class torch.cuda.graphs.CUDAGraph(keep_graph=False)
         |torch.cuda.graph| or |torch.cuda.make_graphed_callables|, which
         call `capture_end` internally.
 
-capture_end_post()  *torch.cuda.graphs.CUDAGraph.capture_end_post*
+                                *torch.cuda.graphs.CUDAGraph.capture_end_post*
+
+capture_end_post()
     Finalize a capture started by
     |torch.cuda.graphs.CUDAGraph.capture_end_pre|: destroy the template when
     `keep_graph=False` (the graph must already be instantiated;
     |torch.cuda.graphs.CUDAGraph.capture_end| and the context manager do
     so).
 
-capture_end_pre()  *torch.cuda.graphs.CUDAGraph.capture_end_pre*
+                                 *torch.cuda.graphs.CUDAGraph.capture_end_pre*
+
+capture_end_pre()
     End capture but do not finalize: leaves the captured `cudaGraph_t` live
     (for both `keep_graph` modes) so it can be inspected before
     |torch.cuda.graphs.CUDAGraph.capture_end_post| instantiates and/or
     destroys it.
 
+                                      *torch.cuda.graphs.CUDAGraph.debug_dump*
+
 debug_dump(debug_path, *, verbose=True)
-    *torch.cuda.graphs.CUDAGraph.debug_dump*
     Dump the captured graph to `debug_path` in Graphviz DOT format.
 
     The graph's template must be live: `keep_graph=True` (or
@@ -29799,12 +30024,16 @@ debug_dump(debug_path, *, verbose=True)
         - verbose (bool) -- If `True` (default), use the most verbose DOT
           output.
 
-enable_debug_mode()  *torch.cuda.graphs.CUDAGraph.enable_debug_mode*
+                               *torch.cuda.graphs.CUDAGraph.enable_debug_mode*
+
+enable_debug_mode()
     Retain the captured graph (equivalent to `keep_graph=True`) so it can be
     inspected, e.g. via |torch.cuda.graphs.CUDAGraph.debug_dump|. Kept for
     backward compatibility.
 
-get_graph_data()  *torch.cuda.graphs.CUDAGraph.get_graph_data*
+                                  *torch.cuda.graphs.CUDAGraph.get_graph_data*
+
+get_graph_data()
     Return a dictionary describing the graph's topology and node metadata.
 
     `keep_graph` must be True. The graph must have been instantiated (via
@@ -29892,13 +30121,17 @@ get_graph_data()  *torch.cuda.graphs.CUDAGraph.get_graph_data*
     Return type: ~
         dict
 
-instantiate()  *torch.cuda.graphs.CUDAGraph.instantiate*
+                                     *torch.cuda.graphs.CUDAGraph.instantiate*
+
+instantiate()
     Instantiate the CUDA graph. Will be called by `capture_end` if
     `keep_graph=False`, or by `replay` if `keep_graph=True` and
     `instantiate` has not already been explicitly called. Does not destroy
     the cudaGraph_t returned by `raw_cuda_graph`.
 
-pool()  *torch.cuda.graphs.CUDAGraph.pool*
+                                            *torch.cuda.graphs.CUDAGraph.pool*
+
+pool()
     Return an opaque token representing the id of this graph's memory pool.
 
     This id can optionally be passed to another graph's `capture_begin`,
@@ -29907,13 +30140,17 @@ pool()  *torch.cuda.graphs.CUDAGraph.pool*
     Return type: ~
         _POOL_HANDLE
 
-pools()  *torch.cuda.graphs.CUDAGraph.pools*
+                                           *torch.cuda.graphs.CUDAGraph.pools*
+
+pools()
     Return opaque tokens for all memory pools retained by this graph.
 
     Return type: ~
         list[_POOL_HANDLE]
 
-raw_cuda_graph()  *torch.cuda.graphs.CUDAGraph.raw_cuda_graph*
+                                  *torch.cuda.graphs.CUDAGraph.raw_cuda_graph*
+
+raw_cuda_graph()
     Returns the underlying cudaGraph_t. The template must be live: this
     requires `keep_graph=True` (it persists after `capture_end`), or access
     from within a capture-end hook (before the template is destroyed for
@@ -29928,7 +30165,9 @@ raw_cuda_graph()  *torch.cuda.graphs.CUDAGraph.raw_cuda_graph*
     Return type: ~
         int
 
-raw_cuda_graph_exec()  *torch.cuda.graphs.CUDAGraph.raw_cuda_graph_exec*
+                             *torch.cuda.graphs.CUDAGraph.raw_cuda_graph_exec*
+
+raw_cuda_graph_exec()
     Returns the underlying cudaGraphExec_t. `instantiate` must have been
     called if `keep_graph` is True, or `capture_end` must have been called
     if `keep_graph` is False. If you call `instantiate()` after
@@ -29945,8 +30184,9 @@ raw_cuda_graph_exec()  *torch.cuda.graphs.CUDAGraph.raw_cuda_graph_exec*
     Return type: ~
         int
 
+                       *torch.cuda.graphs.CUDAGraph.register_capture_end_hook*
+
 register_capture_end_hook(hook)
-    *torch.cuda.graphs.CUDAGraph.register_capture_end_hook*
     Register `hook(graph)` to run when capture ends, after capture completes
     but before the graph is finalized. The captured `cudaGraph_t` is live
     (via |torch.cuda.graphs.CUDAGraph.raw_cuda_graph|) for both `keep_graph`
@@ -29964,8 +30204,9 @@ register_capture_end_hook(hook)
     Return type: ~
         RemovableHandle
 
+                     *torch.cuda.graphs.CUDAGraph.register_capture_start_hook*
+
 register_capture_start_hook(hook)
-    *torch.cuda.graphs.CUDAGraph.register_capture_start_hook*
     Register `hook(graph)` to run when capture begins on this graph, right
     after capture is under way on the current stream. Hooks fire in
     registration order. Returns a handle whose `remove()` deregisters the
@@ -29981,8 +30222,9 @@ register_capture_start_hook(hook)
     Return type: ~
         RemovableHandle
 
+                       *torch.cuda.graphs.CUDAGraph.register_destroy_callback*
+
 register_destroy_callback(cb, *, synchronize_before_release=False)
-    *torch.cuda.graphs.CUDAGraph.register_destroy_callback*
     Register `cb()` to run when this graph is destroyed (finalized) or
     explicitly |torch.cuda.graphs.CUDAGraph.reset|, just before its CUDA
     resources are freed. Callbacks fire once per capture cycle, in
@@ -30003,8 +30245,9 @@ register_destroy_callback(cb, *, synchronize_before_release=False)
     Return type: ~
         RemovableHandle
 
+                  *torch.cuda.graphs.CUDAGraph.register_post_instantiate_hook*
+
 register_post_instantiate_hook(hook)
-    *torch.cuda.graphs.CUDAGraph.register_post_instantiate_hook*
     Register `hook(graph)` to run after each instantiation (including
     re-instantiation, which produces a fresh exec graph). The instantiated
     graph is available via
@@ -30015,8 +30258,9 @@ register_post_instantiate_hook(hook)
     Return type: ~
         RemovableHandle
 
+                        *torch.cuda.graphs.CUDAGraph.register_replay_end_hook*
+
 register_replay_end_hook(hook)
-    *torch.cuda.graphs.CUDAGraph.register_replay_end_hook*
     Register `hook(graph)` to run at the end of every
     |torch.cuda.graphs.CUDAGraph.replay|, just after the graph is launched.
     The launch is asynchronous, so the hook runs once the replay is
@@ -30032,8 +30276,9 @@ register_replay_end_hook(hook)
     Return type: ~
         RemovableHandle
 
+                      *torch.cuda.graphs.CUDAGraph.register_replay_start_hook*
+
 register_replay_start_hook(hook)
-    *torch.cuda.graphs.CUDAGraph.register_replay_start_hook*
     Register `hook(graph)` to run at the start of every
     |torch.cuda.graphs.CUDAGraph.replay|, just before the graph is launched
     (after any on-demand instantiation, so
@@ -30050,14 +30295,19 @@ register_replay_start_hook(hook)
     Return type: ~
         RemovableHandle
 
-replay()  *torch.cuda.graphs.CUDAGraph.replay*
+                                          *torch.cuda.graphs.CUDAGraph.replay*
+
+replay()
     Replay the CUDA work captured by this graph.
 
-reset()  *torch.cuda.graphs.CUDAGraph.reset*
+                                           *torch.cuda.graphs.CUDAGraph.reset*
+
+reset()
     Delete the graph currently held by this instance.
 
+                                   *torch.cuda.graphs.CUDAGraph.retain_object*
+
 retain_object(obj, *, synchronize_before_release=False)
-    *torch.cuda.graphs.CUDAGraph.retain_object*
     Keep `obj` alive for this graph's current capture cycle and release it
     when the graph is destroyed (finalized) or explicitly
     |torch.cuda.graphs.CUDAGraph.reset|. No callback runs; normal
@@ -30429,7 +30679,9 @@ class torch.cuda.green_contexts.GreenContext(*, num_sms=None,
     other streams is the user's responsibility and should be handled with
     CUDA events, as with any other custom stream.
 
-Stream()  *torch.cuda.green_contexts.GreenContext.Stream*
+                               *torch.cuda.green_contexts.GreenContext.Stream*
+
+Stream()
     Return a CUDA stream associated with this green context.
 
     Use the returned stream with |torch.cuda.stream| to run work on the
@@ -30450,11 +30702,14 @@ workqueue_concurrency_limit=None, device_id=None)
     Return type: ~
         |torch.cuda.green_contexts.GreenContext|
 
-property device_id : int *torch.cuda.green_contexts.GreenContext.device_id*
+                            *torch.cuda.green_contexts.GreenContext.device_id*
+
+property device_id : int
     The device index of this green context.
 
+                   *torch.cuda.green_contexts.GreenContext.locality_domain_id*
+
 property locality_domain_id : int | None
-*torch.cuda.green_contexts.GreenContext.locality_domain_id*
     The locality domain reported by CUDA for this context, if specified.
 
     Requires CUDA driver and bindings 13.4+.
@@ -30473,7 +30728,9 @@ static max_workqueue_concurrency(device_id=None)
     Return type: ~
         int
 
-pop_context()  *torch.cuda.green_contexts.GreenContext.pop_context*
+                          *torch.cuda.green_contexts.GreenContext.pop_context*
+
+pop_context()
     Assuming the green context is the current context, pop it from the
     context stack and restore the previous context.
 
@@ -30481,18 +30738,23 @@ pop_context()  *torch.cuda.green_contexts.GreenContext.pop_context*
     |torch.cuda.green_contexts.GreenContext.Stream| and use
     |torch.cuda.stream| instead.
 
-set_context()  *torch.cuda.green_contexts.GreenContext.set_context*
+                          *torch.cuda.green_contexts.GreenContext.set_context*
+
+set_context()
     Make the green context the current context.
 
     Deprecated. Create streams with
     |torch.cuda.green_contexts.GreenContext.Stream| and use
     |torch.cuda.stream| instead.
 
-property sm_count : int *torch.cuda.green_contexts.GreenContext.sm_count*
+                             *torch.cuda.green_contexts.GreenContext.sm_count*
+
+property sm_count : int
     The actual number of SMs available to this context.
 
+                         *torch.cuda.green_contexts.GreenContext.sm_partition*
+
 property sm_partition : |torch.cuda.green_contexts.SMPartition|
-*torch.cuda.green_contexts.GreenContext.sm_partition*
     The context's actual SM resource, which can be subdivided.
 
     The returned resource keeps this context alive while it is in use.
@@ -30509,7 +30771,7 @@ workqueue_scope=None, workqueue_concurrency_limit=None, device_id=None)
     |torch.cuda.green_contexts.SMPartition.split| to retain the remainder
     for later use.
 
-    Example:
+    Example: ~
 
     >python
         >>> a, b = GreenContext.split(
@@ -30538,11 +30800,14 @@ class torch.cuda.green_contexts.SMPartition(_resource, _device_id,
     other contexts. Reusing a partition for multiple contexts shares those
     SMs.
 
+                  *torch.cuda.green_contexts.SMPartition.coscheduled_sm_count*
+
 property coscheduled_sm_count : int
-*torch.cuda.green_contexts.SMPartition.coscheduled_sm_count*
     The co-scheduled SM alignment reported by CUDA for this resource.
 
-property device_id : int *torch.cuda.green_contexts.SMPartition.device_id*
+                             *torch.cuda.green_contexts.SMPartition.device_id*
+
+property device_id : int
     The device index of this SM resource.
 
 classmethod from_device(device_id=None)
@@ -30555,19 +30820,23 @@ classmethod from_device(device_id=None)
     Return type: ~
         |torch.cuda.green_contexts.SMPartition|
 
+                    *torch.cuda.green_contexts.SMPartition.locality_domain_id*
+
 property locality_domain_id : int | None
-*torch.cuda.green_contexts.SMPartition.locality_domain_id*
     The locality domain reported by CUDA, or `None` if unspecified.
 
     Requires CUDA driver and bindings 13.4+. This reads the resource's
     metadata rather than inferring a domain from the requested split.
 
-property sm_count : int *torch.cuda.green_contexts.SMPartition.sm_count*
+                              *torch.cuda.green_contexts.SMPartition.sm_count*
+
+property sm_count : int
     The actual number of SMs in this resource.
 
-split(*, num_sms=0, coscheduled_sm_count=0,
-    preferred_coscheduled_sm_count=0, backfill=False, locality_domain_ids=None)
-    *torch.cuda.green_contexts.SMPartition.split*
+                                 *torch.cuda.green_contexts.SMPartition.split*
+
+split(*, num_sms=0, coscheduled_sm_count=0, preferred_coscheduled_sm_count=0,
+    backfill=False, locality_domain_ids=None)
     Split this resource into disjoint groups and an optional remainder.
 
     Requires CUDA driver and bindings 13.1+. CUDA checks the requested
@@ -30616,7 +30885,7 @@ split(*, num_sms=0, coscheduled_sm_count=0,
     operation, including the remainder, are disjoint. Results from separate
     splits on the same or overlapping input resources may overlap.
 
-    Example:
+    Example: ~
 
     >python
         >>> sms = SMPartition.from_device(device_id=0)
@@ -30784,7 +31053,7 @@ torch.cuda.jiterator._create_jit_fn(code_string, **kwargs)
     Return type: ~
         Callable
 
-    Example:
+    Example: ~
 
     >python
         code_string = "template <typename T> T my_kernel(T x, T y, T alpha) { return -x + alpha * y; }"
@@ -30797,7 +31066,7 @@ torch.cuda.jiterator._create_jit_fn(code_string, **kwargs)
     code_string also allows multiple function definitions, and the last
     function will be treated as the entry function.
 
-    Example:
+    Example: ~
 
     >python
         code_string = (
@@ -30814,7 +31083,7 @@ torch.cuda.jiterator._create_jit_fn(code_string, **kwargs)
     operator's cuda kernel. Following example is overriding gelu's cuda
     kernel with relu.
 
-    Example:
+    Example: ~
 
     >python
         code_string = "template <typename T> T my_gelu(T a) { return a > 0 ? a : 0; }"
@@ -30855,7 +31124,7 @@ torch.cuda.jiterator._create_multi_output_jit_fn(code_string, num_outputs,
     Return type: ~
         Callable
 
-    Example:
+    Example: ~
 
     >python
         code_string = "template <typename T> void my_kernel(T x, T y, T alpha, T& out) { out = -x + alpha * y; }"
@@ -31048,10 +31317,12 @@ class torch.cuda.memory.MemPool(*args, **kwargs)
         - no_split (bool) -- a bool that indicates if this pool should not
           split a segment. This is False by default.
 
-    property id : tuple[int, int] *torch.cuda.memory.MemPool.id*
+    property id : tuple[int, int]
+    *torch.cuda.memory.MemPool.id*
         Returns the ID of this pool as a tuple of two ints.
 
-    snapshot(include_traces=True) *torch.cuda.memory.MemPool.snapshot*
+    snapshot(include_traces=True)
+    *torch.cuda.memory.MemPool.snapshot*
         Return a snapshot of the CUDA memory allocator pool state across all
         devices.
 
@@ -31069,7 +31340,8 @@ class torch.cuda.memory.MemPool(*args, **kwargs)
           See |notes-cuda-cuda-memory-management| for more details about GPU
           memory management.
 
-    use_count() *torch.cuda.memory.MemPool.use_count*
+    use_count()
+    *torch.cuda.memory.MemPool.use_count*
         Returns the reference count of this pool.
 
         Return type: ~
@@ -32181,7 +32453,7 @@ torch.cummax(input, dim, *, out=None)
         out (tuple, optional) -- the result tuple of two output tensors
         (values, indices)
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(10)
@@ -32214,7 +32486,7 @@ torch.cummin(input, dim, *, out=None)
         out (tuple, optional) -- the result tuple of two output tensors
         (values, indices)
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(10)
@@ -32251,7 +32523,7 @@ torch.cumprod(input, dim, *, dtype=None, out=None) → |torch.Tensor|
           for preventing data type overflows. Default: None.
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(10)
@@ -32291,7 +32563,7 @@ torch.cumsum(input, dim, *, dtype=None, out=None) → |torch.Tensor|
           for preventing data type overflows. Default: None.
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randint(1, 20, (10,))
@@ -32330,7 +32602,7 @@ torch.cumulative_trapezoid(y, x=None, *, dx=None, dim=-1) → |torch.Tensor|
         - dim (int) -- The dimension along which to compute the trapezoidal
           rule. The last (inner-most) dimension by default.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # Cumulatively computes the trapezoidal rule in 1D, spacing is implicitly 1.
@@ -32407,7 +32679,7 @@ torch.deg2rad(input, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.tensor([[180.0, -180.0], [360.0, -360.0], [90.0, -90.0]])
@@ -32492,7 +32764,7 @@ torch.diag(input, diagonal=0, *, out=None) → |torch.Tensor|
       |torch.diagflat| always constructs a tensor with diagonal elements
       specified by the input.
 
-    Examples:
+    Examples: ~
 
     Get the square matrix where the input vector is the diagonal:
 
@@ -32559,7 +32831,7 @@ torch.diag_embed(input, offset=0, dim1=-2, dim2=-1) → |torch.Tensor|
         - dim2 (int, optional) -- second dimension with respect to which to
           take diagonal. Default: -1.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(2, 3)
@@ -32605,7 +32877,7 @@ torch.diagflat(input, offset=0) → |torch.Tensor|
         - offset (int, optional) -- the diagonal to consider. Default: 0
           (main diagonal).
 
-    Examples:
+    Examples: ~
 
     >python
         >>> a = torch.randn(3)
@@ -32665,7 +32937,7 @@ torch.diagonal(input, offset=0, dim1=0, dim2=1) → |torch.Tensor|
 
       To take a batch diagonal, pass in dim1=-2, dim2=-1.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> a = torch.randn(3, 3)
@@ -32740,7 +33012,7 @@ torch.diagonal_scatter(input, src, offset=0, dim1=0, dim2=1) →
       Specifically, it should have the same shape as
       `torch.diagonal(input, offset, dim1, dim2)`
 
-    Examples:
+    Examples: ~
 
     >python
         >>> a = torch.zeros(3, 3)
@@ -32788,7 +33060,7 @@ torch.diff(input, n=1, dim=-1, prepend=None, append=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.tensor([1, 3, 2])
@@ -32825,7 +33097,7 @@ torch.dist(input, other, p=2) → |torch.Tensor|
         - other (|torch.Tensor|) -- the Right-hand-side input tensor
         - p (float, optional) -- the norm to be computed
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.randn(4)
@@ -33028,7 +33300,7 @@ torch.div(input, other, *, rounding_mode=None, out=None) → |torch.Tensor|
 
         - out (|torch.Tensor|, optional) -- the output tensor.
 
-    Examples:
+    Examples: ~
 
     >python
         >>> x = torch.tensor([ 0.3810,  1.2774, -0.2972, -0.3719,  0.4637])
@@ -33085,7 +33357,7 @@ torch.dot(input, tensor, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.dot(torch.tensor([2, 3]), torch.tensor([2, 1]))
@@ -33127,7 +33399,7 @@ torch.dsplit(input, indices_or_sections) → List of Tensors
         - indices_or_sections (int or list or tuple of ints) -- See argument
           in |torch.tensor_split|.
 
-    Example:
+    Example: ~
 
     >python
         >>> t = torch.arange(16.0).reshape(2, 2, 4)
@@ -33173,7 +33445,7 @@ torch.dstack(tensors, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.tensor([1, 2, 3])
@@ -33309,7 +33581,7 @@ torch.einsum(equation, *operands) → |torch.Tensor|
     Return type: ~
         |torch.Tensor|
 
-    Examples:
+    Examples: ~
 
     >python
         >>> # trace
@@ -33432,7 +33704,7 @@ torch.empty(*size, *, out=None, dtype=None, layout=torch.strided,
           memory format of returned Tensor. Default:
           `torch.contiguous_format`.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.empty((2,3), dtype=torch.int64)
@@ -33483,7 +33755,7 @@ torch.empty_like(input, *, dtype=None, layout=None, device=None,
           memory format of returned Tensor. Default:
           `torch.preserve_format`.
 
-    Example:
+    Example: ~
 
     >python
         >>> a=torch.empty((2,3), dtype=torch.int32, device = 'cuda')
@@ -33607,7 +33879,7 @@ torch.empty_strided(size, stride, *, dtype=None, layout=None, device=None,
           allocated in the pinned memory. Works only for CPU tensors.
           Default: `False`.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.empty_strided((2, 3), (1, 2))
@@ -33696,7 +33968,7 @@ torch.eq(input, other, *, out=None) → |torch.Tensor|
         A boolean tensor that is True where `input` is equal to `other` and
         False elsewhere
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.eq(torch.tensor([[1, 2], [3, 4]]), torch.tensor([[1, 1], [4, 4]]))
@@ -33718,7 +33990,7 @@ torch.equal(input, other) → bool
       tensors during comparison. For more thorough tensor checks, use
       |torch.testing.assert_close|.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.equal(torch.tensor([1, 2]), torch.tensor([1, 2]))
@@ -33774,7 +34046,7 @@ torch.exp(input, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.exp(torch.tensor([0, math.log(2.)]))
@@ -33850,7 +34122,7 @@ torch.eye(n, m=None, *, out=None, dtype=None, layout=torch.strided,
     Return type: ~
         |torch.Tensor|
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.eye(3)
@@ -33886,7 +34158,7 @@ torch.fake_quantize_per_channel_affine(input, scale, zero_point, axis,
     Return type: ~
         |torch.Tensor|
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.randn(2, 2, 2)
@@ -33935,7 +34207,7 @@ torch.fake_quantize_per_tensor_affine(input, scale, zero_point, quant_min,
     Return type: ~
         |torch.Tensor|
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.randn(4)
@@ -35639,7 +35911,7 @@ torch.flatten(input, start_dim=0, end_dim=-1) → |torch.Tensor|
         - start_dim (int) -- the first dim to flatten
         - end_dim (int) -- the last dim to flatten
 
-    Example:
+    Example: ~
 
     >python
         >>> t = torch.tensor([[[1, 2],
@@ -35670,7 +35942,7 @@ torch.flip(input, dims) → |torch.Tensor|
         - input (|torch.Tensor|) -- the input tensor.
         - dims (a list or tuple) -- axis to flip on
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.arange(8).view(2, 2, 2)
@@ -35711,7 +35983,7 @@ torch.fliplr(input) → |torch.Tensor|
     Parameters: ~
         input (|torch.Tensor|) -- Must be at least 2-dimensional.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.arange(4).view(2, 2)
@@ -35746,7 +36018,7 @@ torch.flipud(input) → |torch.Tensor|
     Parameters: ~
         input (|torch.Tensor|) -- Must be at least 1-dimensional.
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.arange(4).view(2, 2)
@@ -35783,7 +36055,7 @@ torch.float_power(input, exponent, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randint(10, (4,))
@@ -35820,7 +36092,7 @@ torch.floor(input, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.randn(4)
@@ -35860,7 +36132,7 @@ torch.floor_divide(input, other, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.tensor([4.0, 3.0])
@@ -35896,7 +36168,7 @@ torch.fmax(input, other, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.tensor([9.7, float('nan'), 3.1, float('nan')])
@@ -35930,7 +36202,7 @@ torch.fmin(input, other, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = torch.tensor([2.2, float('nan'), 2.1, float('nan')])
@@ -35980,7 +36252,7 @@ torch.fmod(input, other, *, out=None) → |torch.Tensor|
     Keyword Arguments: ~
         out (|torch.Tensor|, optional) -- the output tensor.
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.fmod(torch.tensor([-3., -2, -1, 1, 2, 3]), 2)
@@ -38188,7 +38460,7 @@ torch.frac(input, *, out=None) → |torch.Tensor|
 
     \text{out}_{i} = \text{input}_{i} - \left\lfloor |\text{input}_{i}| \right\rfloor * \operatorname{sgn}(\text{input}_{i})
 
-    Example:
+    Example: ~
 
     >python
         >>> torch.frac(torch.tensor([1, 2.5, -3.2]))
@@ -38218,7 +38490,7 @@ torch.frexp(input, *, out=None) -> (Tensor mantissa, Tensor exponent)
     Keyword Arguments: ~
         out (tuple, optional) -- the output tensors
 
-    Example:
+    Example: ~
 
     >python
         >>> x = torch.arange(9.)
@@ -38265,7 +38537,7 @@ torch.from_dlpack(ext_tensor) → |torch.Tensor|
     Return type: ~
         |torch.Tensor|
 
-    Examples:
+    Examples: ~
 
     >python
         >>> import torch.utils.dlpack
@@ -38341,7 +38613,7 @@ torch.from_file(filename, shared=None, size=0, *, dtype=None, layout=None,
           allocated in the pinned memory. Works only for CPU tensors.
           Default: `False`.
 
-    Example:
+    Example: ~
 
     >python
         >>> t = torch.randn(2, 5, dtype=torch.float64)
@@ -38370,7 +38642,7 @@ torch.from_numpy(ndarray) → |torch.Tensor|
       Writing to a tensor created from a read-only NumPy array is not
       supported and will result in undefined behavior.
 
-    Example:
+    Example: ~
 
     >python
         >>> a = numpy.array([1, 2, 3])
@@ -38380,85 +38652,6 @@ torch.from_numpy(ndarray) → |torch.Tensor|
         >>> t[0] = -1
         >>> a
         array([-1,  2,  3])
-<
-
-----------------------------------------------------------------------------
-                                                            *torch.frombuffer*
-
-torch.frombuffer(buffer, *, dtype, count=-1, offset=0, requires_grad=False)
-    → |torch.Tensor|
-    Creates a 1-dimensional |torch.Tensor| from an object that implements
-    the Python buffer protocol.
-
-    Skips the first `offset` bytes in the buffer, and interprets the rest of
-    the raw bytes as a 1-dimensional tensor of type |torch.dtype| with
-    `count` elements.
-
-    Note that either of the following must be true:
-
-    1. `count` is a positive non-zero number, and the total number of bytes
-    in the buffer is more than `offset` plus `count` times the size (in
-    bytes) of |torch.dtype|.
-    2. `count` is negative, and the length (number of bytes) of the buffer
-    subtracted by the `offset` is a multiple of the size (in bytes) of
-    |torch.dtype|.
-
-    The returned tensor and buffer share the same memory. Modifications to
-    the tensor will be reflected in the buffer and vice versa. The returned
-    tensor is not resizable.
-
-      Note: ~
-
-      This function increments the reference count for the object that owns
-      the shared memory. Therefore, such memory will not be deallocated
-      before the returned tensor goes out of scope.
-
-      Warning: ~
-
-      This function's behavior is undefined when passed an object
-      implementing the buffer protocol whose data is not on the CPU. Doing
-      so is likely to cause a segmentation fault.
-
-      Warning: ~
-
-      This function does not try to infer the |torch.dtype| (hence, it is
-      not optional). Passing a different |torch.dtype| than its source may
-      result in unexpected behavior.
-
-    Parameters: ~
-        buffer (object
-        https://docs.python.org/3/builtins/functions.html#object) -- a
-        Python object that exposes the buffer interface.
-
-    Keyword Arguments: ~
-        - dtype (|torch.dtype|) -- the desired data type of returned tensor.
-        - count (int, optional) -- the number of desired elements to be
-          read. If negative, all the elements (until the end of the buffer)
-          will be read. Default: -1.
-        - offset (int, optional) -- the number of bytes to skip at the start
-          of the buffer. Default: 0.
-        - requires_grad (bool, optional) -- If autograd should record
-          operations on the returned tensor. Default: `False`.
-
-    Example:
-
-    >python
-        >>> import array
-        >>> a = array.array('i', [1, 2, 3])
-        >>> t = torch.frombuffer(a, dtype=torch.int32)
-        >>> t
-        tensor([ 1,  2,  3])
-        >>> t[0] = -1
-        >>> a
-        array([-1,  2,  3])
-
-        >>> # Interprets the signed char bytes as 32-bit integers.
-        >>> # Each 4 signed char elements will be interpreted as
-        >>> # 1 signed 32-bit integer.
-        >>> import array
-        >>> a = array.array('b', [-1, 0, 0, 0])
-        >>> torch.frombuffer(a, dtype=torch.int32)
-        tensor([255], dtype=torch.int32)
 <
 
  vim:tw=78:ts=8:ft=help:norl:

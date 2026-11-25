@@ -183,7 +183,7 @@ torch._higher_order_ops.associative_scan.associative_scan(combine_fn, xs,
     Return type: ~
         |torch.Tensor|
 
-    Example:
+    Example: ~
 
     >python
         def add(x: torch.Tensor, y: torch.Tensor):
@@ -377,7 +377,7 @@ torch._higher_order_ops.cond.cond(pred, true_fn, false_fn, operands=())
     Return type: ~
         Any
 
-    Example:
+    Example: ~
 
     >python
         def true_fn(x: torch.Tensor):
@@ -414,7 +414,7 @@ torch._higher_order_ops.cond.cond(pred, true_fn, false_fn, operands=())
         outputs will always be new tensors that do not share object identity
         with the original inputs.
 
-        Example:
+        Example: ~
 
         >python
             def true_fn(x):
@@ -643,7 +643,7 @@ torch._higher_order_ops.map.map(f, xs, *args)
     Returns: ~
         the stacked output for each step of f
 
-    Example:
+    Example: ~
 
     >python
         def f(xs):
@@ -815,7 +815,7 @@ torch._higher_order_ops.scan.scan(combine_fn, init, xs, *, dim=0,
     The combine_fn's init carry should match the next_carry in pytree
     structure and in tensor metadata.
 
-Example:
+Example: ~
 
 >python
     def add(x: torch.Tensor, y: torch.Tensor):

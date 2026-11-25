@@ -248,7 +248,7 @@ along an axis *glossary-term-along-an-axis*
     as if its argument were an array containing slices of each row:
 
     >python
-        >>> np.array((a[0,:], a[1,:], a[2,:])) 
+        >>> np.array((a[0,:], a[1,:], a[2,:]))
 <
     To make it concrete, we can pick the operation to be the array-reversal
     function |numpy.flip|, which accepts an `axis` argument. We construct a

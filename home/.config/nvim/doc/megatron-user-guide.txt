@@ -130,43 +130,66 @@ Once the cache is ready, enable the fast-path flags:
 
 Flag reference                        *user-guide-data-loading-flag-reference*
 
-Flag                               Default  Recommendation  What it does
----------------------------------  -------  --------------  ------------------------------------
---dataloader-fast-cache-load       off      On              Skips the rank-0 barrier by assuming
-                                                            the cache already exists. All ranks
-                                                            build their dataset views in
-                                                            parallel. This is the single biggest
-                                                            win at scale.
---dataloader-defer-npy-index-mmap  off      On              Defers memory-mapping of .npy index
-                                                            files until first access. When
-                                                            combined with --num-workers > 0,
-                                                            index loading is overlapped with the
-                                                            training iteration rather than
-                                                            blocking startup.
---per-dataset-sequences-path       None     Set when        Points to a JSON file mapping each
-                                            blending many   dataset path to its (sequence_count,
-                                            datasets        document_count). Replaces per-file
-                                                            metadata reads with a single JSON
-                                                            lookup. Generate with
-                                                            tools/build_sequences_per_dataset.py.
---data-cache-path                  None     Set             Directory where index .npy files are
-                                                            cached. Must be on shared storage
-                                                            for multi-node jobs so all ranks can
-                                                            read it.
---num-workers                      2        Keep as small   Number of DataLoader worker
-                                            as necessary    processes. The goal is to satisfy:
-                                                            time to process a batch > time to
-                                                            prepare a batch. This hides
-                                                            dataloader work behind the training
-                                                            step. Increasing beyond what's
-                                                            needed wastes CPU and memory.
---no-mmap-bin-files                mmap on  Test both       Memory-mapping .bin files leverages
-                                                            the OS page cache, but the optimal
-                                                            setting is filesystem-dependent.
-                                                            Some large-scale production
-                                                            configurations disable mmap. Test
-                                                            with and without to determine what
-                                                            works best for your storage.
+Flag                   Default  Recommendation          What it does
+---------------------  -------  ----------------------  ----------------------
+--dataloader-fast-     off      On                      Skips the rank-0
+cache-load                                              barrier by assuming
+                                                        the cache already
+                                                        exists. All ranks
+                                                        build their dataset
+                                                        views in parallel.
+                                                        This is the single
+                                                        biggest win at scale.
+--dataloader-defer-    off      On                      Defers memory-mapping
+npy-index-mmap                                          of .npy index files
+                                                        until first access.
+                                                        When combined with
+                                                        --num-workers > 0,
+                                                        index loading is
+                                                        overlapped with the
+                                                        training iteration
+                                                        rather than blocking
+                                                        startup.
+--per-dataset-         None     Set when blending many  Points to a JSON file
+sequences-path                  datasets                mapping each dataset
+                                                        path to its
+                                                        (sequence_count,
+                                                        document_count).
+                                                        Replaces per-file
+                                                        metadata reads with a
+                                                        single JSON lookup.
+                                                        Generate with
+                                                        tools/build_sequences_
+                                                        per_dataset.py.
+--data-cache-path      None     Set                     Directory where index
+                                                        .npy files are cached.
+                                                        Must be on shared
+                                                        storage for multi-node
+                                                        jobs so all ranks can
+                                                        read it.
+--num-workers          2        Keep as small as        Number of DataLoader
+                                necessary               worker processes. The
+                                                        goal is to satisfy:
+                                                        time to process a
+                                                        batch > time to
+                                                        prepare a batch. This
+                                                        hides dataloader work
+                                                        behind the training
+                                                        step. Increasing
+                                                        beyond what's needed
+                                                        wastes CPU and memory.
+--no-mmap-bin-files    mmap on  Test both               Memory-mapping .bin
+                                                        files leverages the OS
+                                                        page cache, but the
+                                                        optimal setting is
+                                                        filesystem-dependent.
+                                                        Some large-scale
+                                                        production
+                                                        configurations disable
+                                                        mmap. Test with and
+                                                        without to determine
+                                                        what works best for
+                                                        your storage.
 
               *user-guide-data-loading-object-storage-s3-multi-storage-client*
 Object storage (S3 / Multi-Storage Client)
@@ -183,23 +206,27 @@ When data lives on S3 or MSC rather than a POSIX filesystem:
 
 SCALING CHARACTERISTICS      *user-guide-data-loading-scaling-characteristics*
 
-Aspect                  Behavior                Why it works
-----------------------  ----------------------  ------------------------------
-Cross-rank contention   None after init         All index files are read-only;
-                                                numpy.memmap uses OS page
-                                                cache with no locking
-Sampling determinism    All ranks produce the   Shared
-                        same permutation        numpy.random.RandomState(seed)
-                                                with epoch-based seed
-                                                variation
-Data-parallel sharding  Each DP rank gets a     No overlap during training;
-                        disjoint subset of      assignment happens in the
-                        samples                 sampler rather than via extra
-                                                dataset coordination
-Index broadcast         Via shared filesystem,  Rank 0 writes .npy files;
-                        not collectives         other ranks read them. No
-                                                explicit
-                                                torch.distributed.broadcast
+Aspect                  Behavior                    Why it works
+----------------------  --------------------------  --------------------------
+Cross-rank contention   None after init             All index files are
+                                                    read-only; numpy.memmap
+                                                    uses OS page cache with no
+                                                    locking
+Sampling determinism    All ranks produce the same  Shared
+                        permutation                 numpy.random.
+                                                    RandomState(seed)
+                                                    with epoch-based seed
+                                                    variation
+Data-parallel sharding  Each DP rank gets a         No overlap during
+                        disjoint subset of samples  training; assignment
+                                                    happens in the sampler
+                                                    rather than via extra
+                                                    dataset coordination
+Index broadcast         Via shared filesystem, not  Rank 0 writes .npy files;
+                        collectives                 other ranks read them. No
+                                                    explicit
+                                                    torch.distributed.
+                                                    broadcast
 
 TROUBLESHOOTING                      *user-guide-data-loading-troubleshooting*
 
@@ -467,53 +494,106 @@ canonical default (except `MAMBA_DETERMINISTIC` and
 first cuBLAS / Transformer Engine call --- `apply_determinism_to_args` runs
 early in `validate_args` to guarantee this.
 
-Variable                          Accepted values    Default filled if unset     Reason
-                                  (or unset)
---------------------------------  -----------------  --------------------------  ------------------------------------
-NCCL_ALGO                         subset of {Ring,   Ring                        Conservative default --- Ring's
-                                  CollnetDirect,                                 reduction order is fixed by
-                                  CollnetChain,                                  topology, so it is bit-exact across
-                                  ^NVLS}                                         runs on every supported NCCL version
-NVTE_ALLOW_NONDETERMINISTIC_ALGO  0                  0                           Forces Transformer Engine to use
-                                                                                 deterministic algorithms
-CUBLAS_WORKSPACE_CONFIG           :4096:8 or :16:8   :4096:8                     Deterministic cuBLAS workspace (both
-                                                                                 sizes are reproducible per NVIDIA
-                                                                                 docs; :4096:8 is faster, :16:8 uses
-                                                                                 less memory)
-TRITON_CACHE_AUTOTUNING           0 or 1             (none --- opt-in)             Persists Triton autotune winners for
-                                                                                 autotuners outside the pinned scope,
-                                                                                 so ranks reuse one choice instead of
-                                                                                 re-timing it. Kernels inside the
-                                                                                 scope are pinned without timing
-                                                                                 either way --- see Triton autotuning
-TRITON_CACHE_DIR                  any                (none --- required only with  No safe default exists: unset,
-                                  shared-filesystem  TRITON_CACHE_AUTOTUNING=1)  Triton uses a node-local directory
-                                  path                                           and each node autotunes on its own.
-                                                                                 Required rather than filled in
-TRITON_PRINT_AUTOTUNING           1                  (none --- not set)            Logs the config Triton times, which
-                                                                                 only happens for autotuners outside
-                                                                                 the pinned scope. For pinned kernels
-                                                                                 use
-                                                                                 --triton-autotune-enumerate-autotuners
-                                                                                 and --triton-autotune-verify-every ---
-                                                                                 see Verifying kernel-config
-                                                                                 agreement
-MAMBA_DETERMINISTIC               any string         (none --- SSM auto-detects)   Controls the external mamba_ssm
-                                  starting with '1'                              package, which auto-follows
-                                                                                 torch.are_deterministic_algorithms_enabled()
-                                                                                 when unset; only an explicit
-                                                                                 non-deterministic override is
-                                                                                 rejected. Megatron's in-tree SSM
-                                                                                 kernels (megatron.core.ssm.ops) do
-                                                                                 not read it and follow
-                                                                                 --deterministic-mode instead
-CAUSAL_CONV1D_DETERMINISTIC       any string         (none --- the kernel          causal_conv1d ≥ 1.6.0 auto-follows
-                                  starting with '1'  auto-detects)               torch.are_deterministic_algorithms_enabled()
-                                                                                 when unset, reducing the conv
-                                                                                 weight/bias gradients through a
-                                                                                 workspace instead of atomicAdd; the
-                                                                                 Mamba and GDP mixers reject a
-                                                                                 deterministic run without it
+Variable            Accepted values     Default filled if   Reason
+                    (or unset)          unset
+------------------  ------------------  ------------------  ------------------
+NCCL_ALGO           subset of {Ring,    Ring                Conservative
+                    CollnetDirect,                          default --- Ring's
+                    CollnetChain,                           reduction order is
+                    ^NVLS}                                  fixed by topology,
+                                                            so it is bit-exact
+                                                            across runs on
+                                                            every supported
+                                                            NCCL version
+NVTE_ALLOW_         0                   0                   Forces Transformer
+NONDETERMINISTIC_                                           Engine to use
+ALGO                                                        deterministic
+                                                            algorithms
+CUBLAS_WORKSPACE_   :4096:8 or :16:8    :4096:8             Deterministic
+CONFIG                                                      cuBLAS workspace
+                                                            (both sizes are
+                                                            reproducible per
+                                                            NVIDIA docs;
+                                                            :4096:8 is faster,
+                                                            :16:8 uses less
+                                                            memory)
+TRITON_CACHE_       0 or 1              (none --- opt-in)     Persists Triton
+AUTOTUNING                                                  autotune winners
+                                                            for autotuners
+                                                            outside the pinned
+                                                            scope, so ranks
+                                                            reuse one choice
+                                                            instead of
+                                                            re-timing it.
+                                                            Kernels inside the
+                                                            scope are pinned
+                                                            without timing
+                                                            either way --- see
+                                                            Triton autotuning
+TRITON_CACHE_DIR    any                 (none --- required    No safe default
+                    shared-filesystem   only with           exists: unset,
+                    path                TRITON_CACHE_       Triton uses a
+                                        AUTOTUNING=1)       node-local
+                                                            directory and each
+                                                            node autotunes on
+                                                            its own. Required
+                                                            rather than filled
+                                                            in
+TRITON_PRINT_       1                   (none --- not set)    Logs the config
+AUTOTUNING                                                  Triton times,
+                                                            which only happens
+                                                            for autotuners
+                                                            outside the pinned
+                                                            scope. For pinned
+                                                            kernels use
+                                                            --triton-autotune-
+                                                            enumerate-
+                                                            autotuners
+                                                            and
+                                                            --triton-autotune-
+                                                            verify-every
+                                                            --- see Verifying
+                                                            kernel-config
+                                                            agreement
+MAMBA_              any string          (none --- SSM         Controls the
+DETERMINISTIC       starting with '1'   auto-detects)       external mamba_ssm
+                                                            package, which
+                                                            auto-follows
+                                                            torch.are_
+                                                            deterministic_
+                                                            algorithms_
+                                                            enabled()
+                                                            when unset; only
+                                                            an explicit
+                                                            non-deterministic
+                                                            override is
+                                                            rejected.
+                                                            Megatron's in-tree
+                                                            SSM kernels
+                                                            (megatron.core.
+                                                            ssm.ops)
+                                                            do not read it and
+                                                            follow
+                                                            --deterministic-
+                                                            mode
+                                                            instead
+CAUSAL_CONV1D_      any string          (none --- the kernel  causal_conv1d ≥
+DETERMINISTIC       starting with '1'   auto-detects)       1.6.0 auto-follows
+                                                            torch.are_
+                                                            deterministic_
+                                                            algorithms_
+                                                            enabled()
+                                                            when unset,
+                                                            reducing the conv
+                                                            weight/bias
+                                                            gradients through
+                                                            a workspace
+                                                            instead of
+                                                            atomicAdd; the
+                                                            Mamba and GDP
+                                                            mixers reject a
+                                                            deterministic run
+                                                            without it
 
 If you override `NCCL_ALGO`, the value must be a subset of
 `{Ring, CollnetDirect, CollnetChain, ^NVLS}`. `Tree` is intentionally
@@ -531,19 +611,18 @@ Incompatible options are rejected with an explicit error rather than
 silently flipped off --- you must disable them yourself so the run matches
 the config you asked for:
 
-Flag                                  Behavior under --deterministic-mode
-------------------------------------  ----------------------------------------
---cross-entropy-loss-fusion           Must be off --- asserted (fused CE is
-                                      non-deterministic); drop the flag
-                                      yourself
---tp-comm-overlap                     Must be off --- asserted (the overlap path
-                                      is not bit-exact); drop the flag
-                                      yourself
-moe_router_aux_loss_fusion            Must be off --- asserted (TE's fused
-                                      aux-loss kernel is non-deterministic);
-                                      follows moe_router_fusion when unset
-torch.use_deterministic_algorithms    Set to True
-torch.utils.deterministic.fill_uninitialized_memory  Set to False --- see below
+Flag                                Behavior under --deterministic-mode
+----------------------------------  ------------------------------------------
+--cross-entropy-loss-fusion         Must be off --- asserted (fused CE is
+                                    non-deterministic); drop the flag yourself
+--tp-comm-overlap                   Must be off --- asserted (the overlap path
+                                    is not bit-exact); drop the flag yourself
+moe_router_aux_loss_fusion          Must be off --- asserted (TE's fused
+                                    aux-loss kernel is non-deterministic);
+                                    follows moe_router_fusion when unset
+torch.use_deterministic_algorithms  Set to True
+torch.utils.deterministic.fill_     Set to False --- see below
+uninitialized_memory
 
 Flash attention is permitted: Transformer Engine's flash-attention backend
 is deterministic when `NVTE_ALLOW_NONDETERMINISTIC_ALGO=0` (see the
@@ -1253,37 +1332,41 @@ OVERVIEW                             *user-guide-features-cuda_graph-overview*
 
 CUDA graph behavior is set by three orthogonal flags:
 
-Flag                          Values                   Purpose
-----------------------------  -----------------------  -----------------------
---cuda-graph-impl             none / local /           Which capture backend
-                              transformer_engine /     or strategy to use
-                              full_iteration
---cuda-graph-modules          attn / mlp / moe /       Per-layer training
-                              moe_router /             capture coverage;
-                              moe_preprocess / mamba   multi-valued and only
-                                                       meaningful for local
-                                                       and transformer_engine
---inference-cuda-graph-scope  none / layer / block     Granularity of CUDA
-                                                       graphs during
-                                                       inference; only local
-                                                       supports non-none
-                                                       values
+Flag                      Values                     Purpose
+------------------------  -------------------------  -------------------------
+--cuda-graph-impl         none / local /             Which capture backend or
+                          transformer_engine /       strategy to use
+                          full_iteration
+--cuda-graph-modules      attn / mlp / moe /         Per-layer training
+                          moe_router /               capture coverage;
+                          moe_preprocess / mamba     multi-valued and only
+                                                     meaningful for local and
+                                                     transformer_engine
+--inference-cuda-graph-   none / layer / block       Granularity of CUDA
+scope                                                graphs during inference;
+                                                     only local supports
+                                                     non-none values
 
 Supported combinations:
 
---cuda-graph-impl   Backend                   Training capture      Inference capture
-------------------  ------------------------  --------------------  ----------------------------
-none                ---                         off                   off
-local               MCore CudaGraphManager    per-layer,            layer (default) or block,
-                                              controlled by         controlled by
-                                              --cuda-graph-modules  --inference-cuda-graph-scope
-transformer_engine  TE                        per-layer,            not supported (none only)
-                    make_graphed_callables()  controlled by
-                                              --cuda-graph-modules
-full_iteration      MCore                     one graph per         not supported (none only)
-                    FullCudaGraphWrapper      training iteration;
-                                              --cuda-graph-modules
-                                              must be empty
+--cuda-graph-impl   Backend               Training capture   Inference capture
+------------------  --------------------  -----------------  -----------------
+none                ---                     off                off
+local               MCore                 per-layer,         layer (default)
+                    CudaGraphManager      controlled by      or block,
+                                          --cuda-graph-      controlled by
+                                          modules            --inference-cuda-
+                                                             graph-scope
+transformer_engine  TE                    per-layer,         not supported
+                    make_graphed_         controlled by      (none only)
+                    callables()           --cuda-graph-
+                                          modules
+full_iteration      MCore                 one graph per      not supported
+                    FullCudaGraphWrapper  training           (none only)
+                                          iteration;
+                                          --cuda-graph-
+                                          modules
+                                          must be empty
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1671,26 +1754,26 @@ Offloadable Modules
 Each module offloads its input activation to CPU during forward and reloads
 it before backward:
 
-Module              Description             Notes
-------------------  ----------------------  ----------------------------------
-attn_norm           Input layernorm of      Skipped if using IdentityOp
-                    attention
+Module              Description                   Notes
+------------------  ----------------------------  ----------------------------
+attn_norm           Input layernorm of attention  Skipped if using IdentityOp
 qkv_linear          QKV linear projection
-core_attn           Core attention
-                    (softmax + matmul)
-attn_proj           Output projection of    Must be used together with
-                    attention               core_attn
-mlp_norm            Pre-MLP layernorm       Skipped if using IdentityOp
-expert_fc1          First FC layer in MoE   MoE models only
+core_attn           Core attention (softmax +
+                    matmul)
+attn_proj           Output projection of          Must be used together with
+                    attention                     core_attn
+mlp_norm            Pre-MLP layernorm             Skipped if using IdentityOp
+expert_fc1          First FC layer in MoE         MoE models only
                     experts
-moe_act             Activation function in  MoE models only
-                    MoE experts
-fused_group_mlp     Whole fused grouped     Requires
-                    MLP                     --use-transformer-engine-op-fuser;
-                                            cannot be combined with expert_fc1
-                                            or moe_act
-shortcut_post_norm  Shortcut post-combine   Requires --moe-shortcut-connection
-                    normalization
+moe_act             Activation function in MoE    MoE models only
+                    experts
+fused_group_mlp     Whole fused grouped MLP       Requires
+                                                  --use-transformer-engine-op-
+                                                  fuser;
+                                                  cannot be combined with
+                                                  expert_fc1 or moe_act
+shortcut_post_norm  Shortcut post-combine         Requires
+                    normalization                 --moe-shortcut-connection
 
 When selective `residual_stream` replay is active, its shared checkpoint
 manager owns the connected ShortcutMoE post-norm. In that case
@@ -2119,34 +2202,37 @@ balance throughput, memory, and stability.
 *user-guide-features-low_precision_training-hardware-and-recipe-compatibility*
 HARDWARE AND RECIPE COMPATIBILITY
 
-Recipe         Format flag    Required      Transformer  Typical use
-(--fp8-recipe                 architecture  Engine
+Recipe         Format flag    Required        Transformer     Typical use
+(--fp8-recipe                 architecture    Engine
 /
 --fp4-recipe)
--------------  -------------  ------------  -----------  -----------------------
-delayed        --fp8-format   Hopper, Ada,  Broadly      Stable baseline FP8,
-(default)      {e4m3,hybrid}  Blackwell     available;   supports CPU offload
-                                            see TE
-                                            release
-                                            notes
-tensorwise     --fp8-format   Hopper, Ada,  See TE       Current-scaling FP8, no
-               {e4m3,hybrid}  Blackwell     release      amax history
-                                            notes
-mxfp8          --fp8-format   Blackwell     See TE       Block-scaled E4M3,
-               e4m3                         release      optimized for
-                                            notes        B200/GB200
-blockwise      --fp8-format   Hopper,       See TE       1×128 / 128×128 block
-               {e4m3,hybrid}  Blackwell     release      scaling
-                                            notes        (DeepSeek-style)
-nvfp4          --fp4-format   Blackwell     ≥            NVFP4 block-scaling for
-               e2m1                         2.7.0.dev0   additional memory /
-                                            (enforced    bandwidth savings
-                                            at startup)
-custom         --fp8-format   depends on    depends on   User-supplied quantizer
-               or             quantizer     quantizer    via
-               --fp4-format                              --fp8-quantizer-factory
-                                                         /
-                                                         --fp4-quantizer-factory
+-------------  -------------  --------------  --------------  ----------------
+delayed        --fp8-format   Hopper, Ada,    Broadly         Stable baseline
+(default)      {e4m3,hybrid}  Blackwell       available; see  FP8, supports
+                                              TE release      CPU offload
+                                              notes
+tensorwise     --fp8-format   Hopper, Ada,    See TE release  Current-scaling
+               {e4m3,hybrid}  Blackwell       notes           FP8, no amax
+                                                              history
+mxfp8          --fp8-format   Blackwell       See TE release  Block-scaled
+               e4m3                           notes           E4M3, optimized
+                                                              for B200/GB200
+blockwise      --fp8-format   Hopper,         See TE release  1×128 / 128×128
+               {e4m3,hybrid}  Blackwell       notes           block scaling
+                                                              (DeepSeek-style)
+nvfp4          --fp4-format   Blackwell       ≥ 2.7.0.dev0    NVFP4
+               e2m1                           (enforced at    block-scaling
+                                              startup)        for additional
+                                                              memory /
+                                                              bandwidth
+                                                              savings
+custom         --fp8-format   depends on      depends on      User-supplied
+               or             quantizer       quantizer       quantizer via
+               --fp4-format                                   --fp8-quantizer-
+                                                              factory
+                                                              /
+                                                              --fp4-quantizer-
+                                                              factory
 
 Only the NVFP4 minimum (`Transformer Engine >= 2.7.0.dev0`) is enforced by
 Megatron at startup (see `arguments.py`
@@ -2307,28 +2393,30 @@ NUMERICAL STABILITY KNOBS
 Beyond picking a recipe, the following options are the main levers when a
 run diverges or shows higher loss than the BF16 baseline.
 
-Flag                           Effect                    When to enable
------------------------------  ------------------------  ---------------------
---first-last-layers-bf16       Keep the first / last N   First defense against
-                               transformer blocks in     early-training
-                               BF16.                     instability under any
-                                                         FP8/FP4 recipe.
---num-layers-at-start-in-bf16  Controls how many layers  Increase to 2--4 for
-N /                            --first-last-layers-bf16  FP4 or very deep
---num-layers-at-end-in-bf16 N  covers (default 1 each).  models.
---fp8-margin M                 Adds M bits of headroom   Loss spikes despite
-                               to the scaling factor.    recipe / first-last
-                                                         mitigation.
---fp8-amax-history-len /       Controls delayed recipe   Tune when delayed is
---fp8-amax-compute-algo        warm-up behavior.         required (e.g. for
-                                                         CPU offload).
---fp8-wgrad (set False)        Keeps wgrad GEMM in       Final fallback when
-                               higher precision.         MoE / long-context
-                                                         runs show gradient
-                                                         noise.
---tp-only-amax-red             Restricts amax            Large DP scales where
-                               all-reduce to the TP/CP   global amax reduction
-                               domain.                   is expensive.
+Flag                      Effect                     When to enable
+------------------------  -------------------------  -------------------------
+--first-last-layers-bf16  Keep the first / last N    First defense against
+                          transformer blocks in      early-training
+                          BF16.                      instability under any
+                                                     FP8/FP4 recipe.
+--num-layers-at-start-    Controls how many layers   Increase to 2--4 for FP4
+in-bf16                   --first-last-layers-bf16   or very deep models.
+N /                       covers (default 1 each).
+--num-layers-at-end-in-
+bf16
+N
+--fp8-margin M            Adds M bits of headroom    Loss spikes despite
+                          to the scaling factor.     recipe / first-last
+                                                     mitigation.
+--fp8-amax-history-len /  Controls delayed recipe    Tune when delayed is
+--fp8-amax-compute-algo   warm-up behavior.          required (e.g. for CPU
+                                                     offload).
+--fp8-wgrad (set False)   Keeps wgrad GEMM in        Final fallback when MoE /
+                          higher precision.          long-context runs show
+                                                     gradient noise.
+--tp-only-amax-red        Restricts amax all-reduce  Large DP scales where
+                          to the TP/CP domain.       global amax reduction is
+                                                     expensive.
 
 MEMORY KNOBS         *user-guide-features-low_precision_training-memory-knobs*
 
@@ -2435,18 +2523,23 @@ Layer on top of any recipe above:
      *user-guide-features-low_precision_training-feature-compatibility-matrix*
 FEATURE COMPATIBILITY MATRIX
 
-Recipe      Distributed    Megatron-FSDP  Pipeline  CUDA Graph                           Optimizer   Inference
-            optimizer                     parallel                                       CPU
-                                                                                         offload
-----------  -------------  -------------  --------  -----------------------------------  ----------  ---------
-delayed     ✓              ✓              ✓         ✓                                    ✓           ✓
-                                                                                         (required)
-tensorwise  ✓              ✓              ✓         ✓                                    ✗           ✓
-mxfp8       ✓              ✓              ✓         ✓                                    ✗           ✓
-            (recommended)                           (--inference-cuda-graph-scope=block
-                                                    is mxfp8-only)
-blockwise   ✓              ✓              ✓         ✓                                    ✗           ✓
-nvfp4       ✓              ✓              ✓         partial --- see roadmap                ✗           partial
+Recipe      Distributed    Megatron-FSDP  Pipeline  CUDA Graph   Optimizer   Inference
+            optimizer                     parallel               CPU
+                                                                 offload
+----------  -------------  -------------  --------  -----------  ----------  ---------
+delayed     ✓              ✓              ✓         ✓            ✓           ✓
+                                                                 (required)
+tensorwise  ✓              ✓              ✓         ✓            ✗           ✓
+mxfp8       ✓              ✓              ✓         ✓            ✗           ✓
+            (recommended)                           (--
+                                                    inference-
+                                                    cuda-graph-
+                                                    scope=block
+                                                    is
+                                                    mxfp8-only)
+blockwise   ✓              ✓              ✓         ✓            ✗           ✓
+nvfp4       ✓              ✓              ✓         partial ---    ✗           partial
+                                                    see roadmap
 
 `--fp8-param-gather` / `--fp4-param-gather` additionally require the
 distributed optimizer, Torch FSDP2, Megatron-FSDP, or inference mode.
@@ -2454,19 +2547,20 @@ distributed optimizer, Torch FSDP2, Megatron-FSDP, or inference mode.
               *user-guide-features-low_precision_training-end-to-end-examples*
 END-TO-END EXAMPLES
 
-Example                               Recipe               Notes
-------------------------------------  -------------------  -------------------
-examples/llama/train_llama3_8b_h100_fp8.sh  delayed, hybrid      Reference H100
-                                                           single-node FP8
-                                                           run.
-examples/megatron_fsdp/train_llama3_8b_fsdp_h100_fp8.sh  delayed, hybrid      FP8 +
-                                                           Megatron-FSDP.
-examples/gptoss/02_train.sh           hybrid +             GPT-OSS Megatron
-                                      --fp8-param-gather   Bridge example.
-examples/rl/model_configs/nemotron5_56b.sh  tensorwise, hybrid   RL workload, large
-                                                           MoE.
-examples/rl/model_configs/nemotron5p5_12b_H.sh  blockwise, e4m3      DeepSeek-style
-                                                           blockwise FP8.
+Example                   Recipe                     Notes
+------------------------  -------------------------  -------------------------
+examples/llama/train_     delayed, hybrid            Reference H100
+llama3_8b_h100_fp8.sh                                single-node FP8 run.
+examples/megatron_fsdp/   delayed, hybrid            FP8 + Megatron-FSDP.
+train_llama3_8b_fsdp_
+h100_fp8.sh
+examples/gptoss/02_       hybrid +                   GPT-OSS Megatron Bridge
+train.sh                  --fp8-param-gather         example.
+examples/rl/model_        tensorwise, hybrid         RL workload, large MoE.
+configs/nemotron5_56b.sh
+examples/rl/model_        blockwise, e4m3            DeepSeek-style blockwise
+configs/nemotron5p5_12b_                             FP8.
+H.sh
 
 TROUBLESHOOTING   *user-guide-features-low_precision_training-troubleshooting*
 
@@ -3026,28 +3120,35 @@ using the `param_to_param_group_map.json`:
            *user-guide-features-megatron_fsdp-megatron-fsdp-feature-guide-api*
 MEGATRON-FSDP FEATURE GUIDE & API
 
-Optimization    Description                Megatron-Core Config           fully_shard Config
---------------  -------------------------  -----------------------------  ------------------------------------
-Megatron-FSDP   Use Megatron-FSDP in       --use-megatron-fsdp            fully_shard_model(module)
-                Megatron-LM.
-Megatron-FSDP   Save and load un-even      --ckpt-format fsdp_dtensor     preproc_state_dict_for_dcp_ckpt=True
-Checkpointing   DTensor checkpoints using
-                Torch Distributed
-                Checkpoint (DCP).
-Meta Device     Megatron-FSDP initializes  --init-model-with-meta-device  init_model_with_meta_device=True
-Initialization  a meta-initialized model
-                to the CUDA device in
-                shards to avoid OOM on
-                large models. Requires
-                implementation of
-                Module.reset_parameters()
-                for per-Module sharded
-                initialization.
-Distributed     Megatron-FSDP uses         --use-distributed-optimizer    fully_shard_optimizer(optimizer)
-Optimizer       Megatron-Core's
-                DistributedOptimizer.
-                Automatically set when
-                using Megatron-FSDP.
+Optimization     Description            Megatron-Core     fully_shard Config
+                                        Config
+---------------  ---------------------  ----------------  --------------------
+Megatron-FSDP    Use Megatron-FSDP in   --use-megatron-   fully_shard_
+                 Megatron-LM.           fsdp              model(module)
+Megatron-FSDP    Save and load un-even  --ckpt-format     preproc_state_dict_
+Checkpointing    DTensor checkpoints    fsdp_dtensor      for_dcp_ckpt=True
+                 using Torch
+                 Distributed
+                 Checkpoint (DCP).
+Meta Device      Megatron-FSDP          --init-model-     init_model_with_
+Initialization   initializes a          with-meta-device  meta_device=True
+                 meta-initialized
+                 model to the CUDA
+                 device in shards to
+                 avoid OOM on large
+                 models. Requires
+                 implementation of
+                 Module.reset_
+                 parameters()
+                 for per-Module
+                 sharded
+                 initialization.
+Distributed      Megatron-FSDP uses     --use-            fully_shard_
+Optimizer        Megatron-Core's        distributed-      optimizer(optimizer)
+                 DistributedOptimizer.  optimizer
+                 Automatically set
+                 when using
+                 Megatron-FSDP.
 
 FSDP Fundamentals        *user-guide-features-megatron_fsdp-fsdp-fundamentals*
 
@@ -3173,85 +3274,96 @@ https://docs.pytorch.org/tutorials/intermediate/FSDP_tutorial.html.
 
 FSDP Unit Modules        *user-guide-features-megatron_fsdp-fsdp-unit-modules*
 
-Optimization    Description            Megatron-Core Config                  fully_shard Config
---------------  ---------------------  ------------------------------------  --------------------------
-FSDP Unit       A list of str or       Defaults to supported Megatron-Core   fsdp_unit_modules=[...]
-Modules         class import paths     modules (TransformerLayer, etc.) in
-                for                    Megatron-LM.
-                torch.nn.Module(s)
-                that are considered
-                FSDP unit modules and
-                sharded by
-                Megatron-FSDP.
-                Parameters and
-                sub-modules that are
-                not members of an
-                FSDP unit are not
-                sharded.
-FSDP Double     Megatron-FSDP uses     --fsdp-double-buffer                  fsdp_double_buffer=True
-Buffer          the double-buffer
-Allocator       allocator, which
-                persistently
-                allocates a buffer
-                pair assigned to
-                alternating FSDP
-                units that
-                temporarily stores
-                parameters and
-                gradients.
-                Automatically used
-                with NCCL user buffer
-                registration.
-FSDP Max Pool   Megatron-FSDP uses     --megatron-fsdp-max-pool-double-buffer  maxpool_double_buffer=True
-Allocator       the MaxPoolAllocator,
-                which supports double
-                buffering hybrid /
-                asymmetrical model
-                architectures by
-                taking the maximum of
-                all layers.
-                Automatically sets
-                --fsdp-double-buffer.
-Param           Whether to overlap     --overlap-param-gather                overlap_param_gather=True
-All-Gather      parameter all-gather
-Overlap         with compute.
-                Automatically
-                activated for the
-                ZeRO-3 sharding
-                strategy.
-Gradient        Whether to overlap     --overlap-grad-reduce                 overlap_grad_reduce=True
-Reduce-Scatter  gradient
-Overlap         reduce-scatter or
-                all-reduce with
-                compute.
-                Automatically
-                activated for ZeRO-2
-                and ZeRO-3 sharding
-                strategies.
-FSDP            Customize the size     --suggested-communication-unit-size   N/A (Megatron-Core Only)
-Communication   (in numel() elements)  <num-elements>
-Size            of AG and RS
-                communications in
-                Megatron-FSDP, by
-                limiting how many
-                elements are
-                concurrently
-                pre-fetched or
-                reduced for AG and
-                RS. Effectively
-                suggests how many
-                FSDP units are
-                processed
-                concurrently, which
-                may launch
-                collectives earlier
-                and improve
-                performance.
-                Optionally, tune this
-                value depending on
-                system memory and
-                performance
-                requirements.
+Optimization        Description         Megatron-Core       fully_shard Config
+                                        Config
+------------------  ------------------  ------------------  ------------------
+FSDP Unit Modules   A list of str or    Defaults to         fsdp_unit_modules=
+                    class import paths  supported           [...]
+                    for                 Megatron-Core
+                    torch.nn.Module(s)  modules
+                    that are            (TransformerLayer,
+                    considered FSDP     etc.) in
+                    unit modules and    Megatron-LM.
+                    sharded by
+                    Megatron-FSDP.
+                    Parameters and
+                    sub-modules that
+                    are not members of
+                    an FSDP unit are
+                    not sharded.
+FSDP Double Buffer  Megatron-FSDP uses  --fsdp-double-      fsdp_double_
+Allocator           the double-buffer   buffer              buffer=True
+                    allocator, which
+                    persistently
+                    allocates a buffer
+                    pair assigned to
+                    alternating FSDP
+                    units that
+                    temporarily stores
+                    parameters and
+                    gradients.
+                    Automatically used
+                    with NCCL user
+                    buffer
+                    registration.
+FSDP Max Pool       Megatron-FSDP uses  --megatron-fsdp-    maxpool_double_
+Allocator           the                 max-pool-double-    buffer=True
+                    MaxPoolAllocator,   buffer
+                    which supports
+                    double buffering
+                    hybrid /
+                    asymmetrical model
+                    architectures by
+                    taking the maximum
+                    of all layers.
+                    Automatically sets
+                    --fsdp-double-
+                    buffer.
+Param All-Gather    Whether to overlap  --overlap-param-    overlap_param_
+Overlap             parameter           gather              gather=True
+                    all-gather with
+                    compute.
+                    Automatically
+                    activated for the
+                    ZeRO-3 sharding
+                    strategy.
+Gradient            Whether to overlap  --overlap-grad-     overlap_grad_
+Reduce-Scatter      gradient            reduce              reduce=True
+Overlap             reduce-scatter or
+                    all-reduce with
+                    compute.
+                    Automatically
+                    activated for
+                    ZeRO-2 and ZeRO-3
+                    sharding
+                    strategies.
+FSDP Communication  Customize the size  --suggested-        N/A (Megatron-Core
+Size                (in numel()         communication-      Only)
+                    elements) of AG     unit-size
+                    and RS              <num-elements>
+                    communications in
+                    Megatron-FSDP, by
+                    limiting how many
+                    elements are
+                    concurrently
+                    pre-fetched or
+                    reduced for AG and
+                    RS. Effectively
+                    suggests how many
+                    FSDP units are
+                    processed
+                    concurrently,
+                    which may launch
+                    collectives
+                    earlier and
+                    improve
+                    performance.
+                    Optionally, tune
+                    this value
+                    depending on
+                    system memory and
+                    performance
+                    requirements.
 
   Only a small depth-wise fraction of the model state can exist un-sharded
   at any point in time.
@@ -3457,28 +3569,53 @@ the model.
          *user-guide-features-megatron_fsdp-data-parallel-sharding-strategies*
 Data-Parallel Sharding Strategies
 
-Optimization  Description                          Megatron-Core Config                  fully_shard Config
-------------  -----------------------------------  ------------------------------------  ------------------------------------
-Data          Primary data-parallel sharding       --data-parallel-sharding-strategy     zero_dp_strategy={no_shard, optim,
-Parallel      strategy for FSDP, which supports    {no_shard, optim, optim_grads,        optim_grads, optim_grads_params, 0,
-Sharding      DDP, ZeRO-1 (optimizer), ZeRO-2      optim_grads_params}                   1, 2, 3}
-Strategy      (optimizer and gradients), and
-              ZeRO-3 (optimizer, gradients, and
-              parameters). Typically uses
-              intra-node communications, i.e.
-              “inner” or “intra” DP.
-DP-Outer      Secondary data-parallel sharding     --outer-dp-sharding-strategy          outer_dp_sharding_strategy={no_shard,
-Sharding      strategy for HSDP, which supports    {no_shard, optim}                     optim, 0, 1}
-Strategy      Hybrid-Sharded Data Parallel (HSDP
-              / no_shard) and Hybrid-FSDP (HFSDP
-              / optim). Typically uses inter-node
-              communications, i.e. “outer” or
-              “inter” DP.
-Hybrid Data   Specify the DP-Outer / Inter-DP      --num-distributed-optimizer-instances  dp_outer_dim=<str> (Cumulative DP
-Parallelism   parallel size. DP-Inner / Intra-DP   <int>                                 groups hybrid_fsdp_group /
-Size          sizes will be deduced from the                                             hybrid_fsdp_expt_group are required
-              sizes of other parallelisms and                                            for HFSDP.)
-              torch.distributed.get_world_size().
+Optimization        Description         Megatron-Core       fully_shard Config
+                                        Config
+------------------  ------------------  ------------------  ------------------
+Data Parallel       Primary             --data-parallel-    zero_dp_strategy=
+Sharding Strategy   data-parallel       sharding-strategy   {no_shard,
+                    sharding strategy   {no_shard, optim,   optim,
+                    for FSDP, which     optim_grads,        optim_grads,
+                    supports DDP,       optim_grads_        optim_grads_
+                    ZeRO-1              params}             params,
+                    (optimizer),                            0, 1, 2, 3}
+                    ZeRO-2 (optimizer
+                    and gradients),
+                    and ZeRO-3
+                    (optimizer,
+                    gradients, and
+                    parameters).
+                    Typically uses
+                    intra-node
+                    communications,
+                    i.e. “inner” or
+                    “intra” DP.
+DP-Outer Sharding   Secondary           --outer-dp-         outer_dp_sharding_
+Strategy            data-parallel       sharding-strategy   strategy={no_
+                    sharding strategy   {no_shard, optim}   shard,
+                    for HSDP, which                         optim, 0, 1}
+                    supports
+                    Hybrid-Sharded
+                    Data Parallel
+                    (HSDP / no_shard)
+                    and Hybrid-FSDP
+                    (HFSDP / optim).
+                    Typically uses
+                    inter-node
+                    communications,
+                    i.e. “outer” or
+                    “inter” DP.
+Hybrid Data         Specify the         --num-distributed-  dp_outer_dim=<str>
+Parallelism Size    DP-Outer /          optimizer-          (Cumulative DP
+                    Inter-DP parallel   instances           groups
+                    size. DP-Inner /    <int>               hybrid_fsdp_group
+                    Intra-DP sizes                          /
+                    will be deduced                         hybrid_fsdp_expt_
+                    from the sizes of                       group
+                    other parallelisms                      are required for
+                    and                                     HFSDP.)
+                    torch.distributed.
+                    get_world_size().
 
 Megatron-FSDP supports a variety of sharding strategies over a variety of
 distributed topologies:
@@ -3801,61 +3938,117 @@ leverage this locality and contiguity.
               *user-guide-features-megatron_fsdp-mixed-precision-quantization*
 Mixed-Precision & Quantization
 
-Optimization     Description                         Megatron-Core Config               fully_shard Config
----------------  ----------------------------------  ---------------------------------  ------------------------------------
-Quantized        Megatron-FSDP will shard and        --fp8-param-gather                 TransformerEngine
-Parameters       all-gather                                                             quantized_model_init()
-                 TransformerEngine-quantized
-                 parameters for computation.
-                 Quantized parameters are updated
-                 every optimization step, and both
-                 row-wise (FWD) and column-wise
-                 (BWD) data are managed for
-                 non-transposable 1-D quantization
-                 recipes like MXFP8. Otherwise,
-                 only activations are quantized.
-Main Parameter   Data-type for optimization and      --megatron-fsdp-main-params-dtype  MixedPrecisionPolicy(main_params_dtype=...)
-(Optimization /  checkpointing parameters. If set    {fp32, bf16, fp16, auto}
-Checkpoint)      to auto, model compute weights are
-Data-Type        utilized instead. Required for
-                 --fp8-param-gather. Defaults to
-                 FP32.
-Main Gradient    Data-type for gradient              --megatron-fsdp-main-grads-dtype   MixedPrecisionPolicy(main_grads_dtype=...)
-(Accumulation)   accumulation. If set to auto, main  {fp32, bf16, fp16, auto}
-Data-Type        gradient precision will be derived
-                 from model parameter precision.
+Optimization     Description         Megatron-Core       fully_shard Config
+                                     Config
+---------------  ------------------  ------------------  --------------------------
+Quantized        Megatron-FSDP will  --fp8-param-gather  TransformerEngine
+Parameters       shard and                               quantized_model_init()
+                 all-gather
+                 TransformerEngine-
+                 quantized
+                 parameters for
+                 computation.
+                 Quantized
+                 parameters are
+                 updated every
+                 optimization step,
+                 and both row-wise
+                 (FWD) and
+                 column-wise (BWD)
+                 data are managed
+                 for
+                 non-transposable
+                 1-D quantization
+                 recipes like
+                 MXFP8. Otherwise,
+                 only activations
+                 are quantized.
+Main Parameter   Data-type for       --megatron-fsdp-    MixedPrecisionPolicy(main_
+(Optimization /  optimization and    main-params-dtype   params_dtype=...)
+Checkpoint)      checkpointing       {fp32, bf16, fp16,
+Data-Type        parameters. If set  auto}
+                 to auto, model
+                 compute weights
+                 are utilized
+                 instead. Required
+                 for
+                 --fp8-param-
+                 gather.
+                 Defaults to FP32.
+Main Gradient    Data-type for       --megatron-fsdp-    MixedPrecisionPolicy(main_
+(Accumulation)   gradient            main-grads-dtype    grads_dtype=...)
+Data-Type        accumulation. If    {fp32, bf16, fp16,
+                 set to auto, main   auto}
+                 gradient precision
+                 will be derived
+                 from model
+                 parameter
+                 precision.
                  Defaults to auto.
-Gradient         Data-type for gradient              --megatron-fsdp-grad-comm-dtype    MixedPrecisionPolicy(grad_comm_dtype=...)
-Communication    communication and reduction. If     {fp32, bf16, fp16, auto}
-(Reduction)      set to auto, the main gradient
-Data-Type        precision will be used for
-                 communication. (When using NCCL
-                 symmetric registration,
-                 low-precision gradients are
-                 reduced in FP32 over-the-wire.)
+Gradient         Data-type for       --megatron-fsdp-    MixedPrecisionPolicy(grad_
+Communication    gradient            grad-comm-dtype     comm_dtype=...)
+(Reduction)      communication and   {fp32, bf16, fp16,
+Data-Type        reduction. If set   auto}
+                 to auto, the main
+                 gradient precision
+                 will be used for
+                 communication.
+                 (When using NCCL
+                 symmetric
+                 registration,
+                 low-precision
+                 gradients are
+                 reduced in FP32
+                 over-the-wire.)
                  Defaults to auto.
-Weight Gradient  When using TransformerEngine        --no-gradient-accumulation-fusion  N/A (Megatron-Core Only)
-Accumulation     modules, Megatron-FSDP implements
-Fusion           get_main_grad to allocate
-                 un-sharded gradient buffers called
-                 by TransformerEngine, to avoid
-                 COPY-ing the gradient to
-                 Megatron-FSDP communication
-                 buffers. Used by default and can
-                 be deactivated with
-                 --no-gradient-accumulation-fusion.
-Precision-Aware  Use the TransformerEngine           --use-precision-aware-optimizer    use_decoupled_grad=True
-Optimizer        FusedAdam optimizer, and
-                 Megatron-FSDP will install the
-                 gradient in a temporary attribute
-                 Parameter.decoupled_grad which is
-                 consumed by FusedAdam.
-                 Megatron-FSDP manages the main
-                 parameters, but the optimizer
-                 state precision can be customized
-                 with --exp-avg-dtype and
-                 --exp-avg-sq-dtype, which both
-                 support fp8 optimization state.
+Weight Gradient  When using          --no-gradient-      N/A (Megatron-Core Only)
+Accumulation     TransformerEngine   accumulation-
+Fusion           modules,            fusion
+                 Megatron-FSDP
+                 implements
+                 get_main_grad to
+                 allocate
+                 un-sharded
+                 gradient buffers
+                 called by
+                 TransformerEngine,
+                 to avoid COPY-ing
+                 the gradient to
+                 Megatron-FSDP
+                 communication
+                 buffers. Used by
+                 default and can be
+                 deactivated with
+                 --no-gradient-
+                 accumulation-
+                 fusion.
+Precision-Aware  Use the             --use-precision-    use_decoupled_grad=True
+Optimizer        TransformerEngine   aware-optimizer
+                 FusedAdam
+                 optimizer, and
+                 Megatron-FSDP will
+                 install the
+                 gradient in a
+                 temporary
+                 attribute
+                 Parameter.
+                 decoupled_grad
+                 which is consumed
+                 by FusedAdam.
+                 Megatron-FSDP
+                 manages the main
+                 parameters, but
+                 the optimizer
+                 state precision
+                 can be customized
+                 with
+                 --exp-avg-dtype
+                 and
+                 --exp-avg-sq-
+                 dtype,
+                 which both support
+                 fp8 optimization
+                 state.
 
 Quantization                  *user-guide-features-megatron_fsdp-quantization*
 
@@ -3979,52 +4172,44 @@ wrapped in a `MixedPrecisionPolicy` dataclass.
 
 NCCL                                  *user-guide-features-megatron_fsdp-nccl*
 
-Optimization  Description     Megatron-Core Config              fully_shard Config
-------------  --------------  --------------------------------  -----------------------------------
-NCCL User     Allocate and    --use-nccl-ub                     nccl_ub=True
-Buffers       register
-              Megatron-FSDP
-              communication
-              buffers with
-              NCCL, which
-              enables
-              zero-COPY,
-              high-precision
-              reduction,
-              copy-engine
-              collectives,
-              and symmetric
-              kernels. Uses
-              double
-              buffering.
-NCCL Manual   Instead of      --fsdp-manual-registration        N/A (Megatron-Core Only)
-Registration  registering
-              NCCL user
-              buffers on
-              first
-              allocation,
-              batch
-              registration
-              of all
-              communication
-              buffers at the
-              end of the
-              initial
-              training step.
-              Reduces
-              registration
-              latency.
-Disable       Disable         --disable-symmetric-registration  disable_symmetric_registration=True
-Symmetric     symmetric
-Registration  registration
-              with NCCL.
-              Optional, as
-              symmetric
-              registration
-              failure
-              defaults to
-              normal
-              registration.
+Optimization        Description         Megatron-Core       fully_shard Config
+                                        Config
+------------------  ------------------  ------------------  ------------------
+NCCL User Buffers   Allocate and        --use-nccl-ub       nccl_ub=True
+                    register
+                    Megatron-FSDP
+                    communication
+                    buffers with NCCL,
+                    which enables
+                    zero-COPY,
+                    high-precision
+                    reduction,
+                    copy-engine
+                    collectives, and
+                    symmetric kernels.
+                    Uses double
+                    buffering.
+NCCL Manual         Instead of          --fsdp-manual-      N/A (Megatron-Core
+Registration        registering NCCL    registration        Only)
+                    user buffers on
+                    first allocation,
+                    batch registration
+                    of all
+                    communication
+                    buffers at the end
+                    of the initial
+                    training step.
+                    Reduces
+                    registration
+                    latency.
+Disable Symmetric   Disable symmetric   --disable-          disable_symmetric_
+Registration        registration with   symmetric-          registration=True
+                    NCCL. Optional, as  registration
+                    symmetric
+                    registration
+                    failure defaults
+                    to normal
+                    registration.
 
 NVIDIA Collective Communications Library (NCCL)
 https://developer.nvidia.com/nccl implements multi-device and multi-node
@@ -4475,15 +4660,18 @@ degrees to avoid OOM.
 
 Solutions:
 
-Optimization    Overhead  Config                                Reference
---------------  --------  ------------------------------------  --------------
-Selective       Low       --recompute-granularity selective     Fine-grained
-Recomputation             --recompute-modules ...               Recomputation
-Activation      Medium    --fine-grained-activation-offloading  Fine-grained
-Offloading                --offload-modules ...                 Activation
-                                                                Offloading
-Optimizer       Medium    --optimizer-cpu-offload               ---
-Offloading
+Optimization           Overhead  Config                 Reference
+---------------------  --------  ---------------------  ----------------------
+Selective              Low       --recompute-           Fine-grained
+Recomputation                    granularity            Recomputation
+                                 selective
+                                 --recompute-modules
+                                 ...
+Activation Offloading  Medium    --fine-grained-        Fine-grained
+                                 activation-offloading  Activation Offloading
+                                 --offload-modules ...
+Optimizer Offloading   Medium    --optimizer-cpu-       ---
+                                 offload
 
 Communication Bottleneck    *user-guide-features-moe-communication-bottleneck*
 
@@ -4556,26 +4744,27 @@ Router score function  Score function to           --moe-router-score-function
 
 Load Balancing Strategies  *user-guide-features-moe-load-balancing-strategies*
 
-Strategy         Description                  Config
----------------  ---------------------------  --------------------------------
-aux_loss         Auxiliary loss for           --moe-router-load-balancing-type
-                 balancing expert usage on a  aux_loss
-                 micro-batch
-seq_aux_loss     Sequence-level auxiliary     --moe-router-load-balancing-type
-                 loss for balancing expert    seq_aux_loss
-                 usage on each sequence
-global_aux_loss  Global auxiliary loss for    --moe-router-load-balancing-type
-                 balancing expert usage on a  global_aux_loss
-                 global batch across all
-                 ranks
-sinkhorn         Optimal transport            --moe-router-load-balancing-type
-                 formulation for balancing    sinkhorn
-                 expert usage
-aux loss free    Dynamic bias-based load      --moe-router-enable-expert-bias
-                 balancing strategy without   --moe-router-bias-update-rate
-                 auxiliary loss               1e-3
-none             No load balancing            --moe-router-load-balancing-type
-                                              none
+Strategy         Description                    Config
+---------------  -----------------------------  ------------------------------
+aux_loss         Auxiliary loss for balancing   --moe-router-load-balancing-
+                 expert usage on a micro-batch  type
+                                                aux_loss
+seq_aux_loss     Sequence-level auxiliary loss  --moe-router-load-balancing-
+                 for balancing expert usage on  type
+                 each sequence                  seq_aux_loss
+global_aux_loss  Global auxiliary loss for      --moe-router-load-balancing-
+                 balancing expert usage on a    type
+                 global batch across all ranks  global_aux_loss
+sinkhorn         Optimal transport formulation  --moe-router-load-balancing-
+                 for balancing expert usage     type
+                                                sinkhorn
+aux loss free    Dynamic bias-based load        --moe-router-enable-expert-
+                 balancing strategy without     bias
+                 auxiliary loss                 --moe-router-bias-update-rate
+                                                1e-3
+none             No load balancing              --moe-router-load-balancing-
+                                                type
+                                                none
 
 Token Dispatching                  *user-guide-features-moe-token-dispatching*
 
@@ -4583,40 +4772,36 @@ After routing, tokens are dispatched to the GPU hosting the assigned expert.
 After expert computation, tokens are sent back and combined to restore the
 original sequence.
 
-Dispatcher      Description       Best For       Config
---------------  ----------------  -------------  -----------------------------
-alltoall        NCCL-based        Standard EP >  --moe-token-dispatcher-type
-                All-to-All        1 setups       alltoall
-                communication
-                for token
-                exchange
-FlexDispatcher  Removes           Cross-node     --moe-token-dispatcher-type
-with DeepEP     redundant tokens  EP,            flex
-backend         during            fine-grained   --moe-flex-dispatcher-backend
-                cross-node        MoE            deepep
-                communication,    (DeepSeek-V3)
-                fuses
-                intra/inter-node
-                communication
-                into single
-                kernel
-FlexDispatcher  Uses the NCCL     Expert         --moe-token-dispatcher-type
-with DeepEP v2  Gin-based         parallelism    flex
-backend         ElasticBuffer     with a DeepEP  --moe-flex-dispatcher-backend
-                dispatch/combine  v2 container   deepepv2
-                API
-FlexDispatcher  NVIDIA's          GB200 NVL72,   --moe-token-dispatcher-type
-with HybridEP   optimized         Multi-Node     flex
-backend         dispatcher using  NVLink         --moe-flex-dispatcher-backend
-                TMA and IBGDA,                   hybridep
-                fewer SMs,
-                native MNNVL
-                support
-allgather       Gathers all       TP-only        --moe-token-dispatcher-type
-                tokens to each    setups, small  allgather
-                GPU, no           EP, large
-                inter-GPU token   Top-K
-                movement
+Dispatcher          Description         Best For            Config
+------------------  ------------------  ------------------  ------------------
+alltoall            NCCL-based          Standard EP > 1     --moe-token-
+                    All-to-All          setups              dispatcher-type
+                    communication for                       alltoall
+                    token exchange
+FlexDispatcher      Removes redundant   Cross-node EP,      --moe-token-
+with DeepEP         tokens during       fine-grained MoE    dispatcher-type
+backend             cross-node          (DeepSeek-V3)       flex
+                    communication,                          --moe-flex-
+                    fuses                                   dispatcher-backend
+                    intra/inter-node                        deepep
+                    communication into
+                    single kernel
+FlexDispatcher      Uses the NCCL       Expert parallelism  --moe-token-
+with DeepEP v2      Gin-based           with a DeepEP v2    dispatcher-type
+backend             ElasticBuffer       container           flex
+                    dispatch/combine                        --moe-flex-
+                    API                                     dispatcher-backend
+                                                            deepepv2
+FlexDispatcher      NVIDIA's optimized  GB200 NVL72,        --moe-token-
+with HybridEP       dispatcher using    Multi-Node NVLink   dispatcher-type
+backend             TMA and IBGDA,                          flex
+                    fewer SMs, native                       --moe-flex-
+                    MNNVL support                           dispatcher-backend
+                                                            hybridep
+allgather           Gathers all tokens  TP-only setups,     --moe-token-
+                    to each GPU, no     small EP, large     dispatcher-type
+                    inter-GPU token     Top-K               allgather
+                    movement
 
 Upcycling                                  *user-guide-features-moe-upcycling*
 
@@ -4702,29 +4887,24 @@ Memory optimization is critical for large-scale MoE training, as MoE models
 maintain all expert parameters even though only a subset is activated per
 token.
 
-Optimization         Description          Config
--------------------  -------------------  ------------------------------------
-Fine-grained         Selectively          --recompute-granularity selective
-Recomputation        recomputes specific  --recompute-modules mla_up_proj
-                     modules (e.g.,       layernorm moe_act
-                     mla_up_proj,
-                     layernorm, moe_act)
-                     instead of full
-                     layers
-Fine-grained         Offloads             See
-Activation           activations to CPU   docs/user-guide/features/fine_grained_activation_offloading.md
-Offloading           memory, overlapping
-                     D2H/H2D transfers
-                     with computation
-Precision-aware      Stores optimizer     --use-precision-aware-optimizer
-Optimizer            states (exp_avg,     --exp-avg-dtype bf16
-                     exp_avg_sq) in BF16  --exp-avg-sq-dtype bf16
-                     instead of FP32,
-                     reducing optimizer
-                     memory by 50%
-Optimizer            Offloads optimizer   --optimizer-cpu-offload
-Offloading           states to CPU
-                     memory.
+Optimization              Description                Config
+------------------------  -------------------------  -------------------------
+Fine-grained              Selectively recomputes     --recompute-granularity
+Recomputation             specific modules (e.g.,    selective
+                          mla_up_proj, layernorm,    --recompute-modules
+                          moe_act) instead of full   mla_up_proj layernorm
+                          layers                     moe_act
+Fine-grained Activation   Offloads activations to    See
+Offloading                CPU memory, overlapping    docs/user-guide/features/
+                          D2H/H2D transfers with     fine_grained_activation_
+                          computation                offloading.md
+Precision-aware           Stores optimizer states    --use-precision-aware-
+Optimizer                 (exp_avg, exp_avg_sq) in   optimizer
+                          BF16 instead of FP32,      --exp-avg-dtype bf16
+                          reducing optimizer memory  --exp-avg-sq-dtype bf16
+                          by 50%
+Optimizer Offloading      Offloads optimizer states  --optimizer-cpu-offload
+                          to CPU memory.
 
                           *user-guide-features-moe-fine-grained-recomputation*
 Fine-grained Recomputation
@@ -4824,16 +5004,14 @@ Pipeline Parallel (PP) Communication Overlap
 PP introduces P2P activation sends/receives between pipeline stages. Overlap
 is automatic in the 1F1B pipelining phase when VPP is enabled.
 
-Optimization         Description          Config
--------------------  -------------------  ------------------------------------
-P2P Comm Overlap     Overlaps PP P2P      --overlap-p2p-comm (auto-enabled
-                     communications with  with VPP)
-                     non-dependent
-                     computations
-VPP for Better       Increases overlap    --num-layers-per-virtual-pipeline-stage
-Overlap              opportunities by
-                     reducing layers per
-                     virtual stage
+Optimization            Description                 Config
+----------------------  --------------------------  --------------------------
+P2P Comm Overlap        Overlaps PP P2P             --overlap-p2p-comm
+                        communications with         (auto-enabled with VPP)
+                        non-dependent computations
+VPP for Better Overlap  Increases overlap           --num-layers-per-virtual-
+                        opportunities by reducing   pipeline-stage
+                        layers per virtual stage
 
             *user-guide-features-moe-expert-parallel-ep-communication-overlap*
 Expert Parallel (EP) Communication Overlap
@@ -4841,17 +5019,15 @@ Expert Parallel (EP) Communication Overlap
 EP All-to-All can consume 30-40% of training time without optimization.
 These features hide or reduce EP communication overhead.
 
-Optimization          Description           Config
---------------------  --------------------  ----------------------------------
-EP A2A Overlap        Overlaps All-to-All   --overlap-moe-expert-parallel-comm
-                      with computation by   --delay-wgrad-compute
-                      merging FWD-BWD
-                      passes of adjacent
-                      microbatches
-Shared Expert         Runs shared expert    --moe-shared-expert-overlap
-Overlap               computation
-                      concurrently with EP
-                      token transfer
+Optimization           Description                 Config
+---------------------  --------------------------  ---------------------------
+EP A2A Overlap         Overlaps All-to-All with    --overlap-moe-expert-
+                       computation by merging      parallel-comm
+                       FWD-BWD passes of adjacent  --delay-wgrad-compute
+                       microbatches
+Shared Expert Overlap  Runs shared expert          --moe-shared-expert-overlap
+                       computation concurrently
+                       with EP token transfer
 
   Requirements for EP A2A Overlap: `expert_model_parallel_size > 1`,
   CUDA_DEVICE_MAX_CONNECTIONS > 1.
@@ -4917,19 +5093,18 @@ MXFP8       1×32            E4M3 + E8M0     Blackwell        Native hardware
                       *user-guide-features-moe-moe-specific-fp8-optimizations*
 MoE-Specific FP8 Optimizations
 
-Optimization         Description           Config
--------------------  --------------------  -----------------------------------
-Routing Map Padding  Pads routing map      --moe-router-padding-for-fp8
-                     (not tokens) to
-                     align M dimension to
-                     16/32, avoiding
-                     per-tensor padding
+Optimization         Description                  Config
+-------------------  ---------------------------  ----------------------------
+Routing Map Padding  Pads routing map (not        --moe-router-padding-for-fp8
+                     tokens) to align M
+                     dimension to 16/32,
+                     avoiding per-tensor padding
                      overhead
-FP8 Primary Weights  Casts FP32 master     --fp8-param-gather (Need additional
-                     weights directly to   --reuse-grad-buf-for-mxfp8-param-ag
-                     FP8, eliminating      for MXFP8)
-                     BF16 intermediate
-                     copy
+FP8 Primary Weights  Casts FP32 master weights    --fp8-param-gather (Need
+                     directly to FP8,             additional
+                     eliminating BF16             --reuse-grad-buf-for-mxfp8-
+                     intermediate copy            param-ag
+                                                  for MXFP8)
 
 Example Configuration          *user-guide-features-moe-example-configuration*
 
@@ -4944,7 +5119,7 @@ Example Configuration          *user-guide-features-moe-example-configuration*
     --fp8-format e4m3
     --fp8-recipe mxfp8
     --moe-router-padding-for-fp8
-    --fp8-param-gather 
+    --fp8-param-gather
     --reuse-grad-buf-for-mxfp8-param-ag
 <
   Note: For blockwise and MXFP8 recipes with current scaling, training loss
@@ -5078,20 +5253,18 @@ MOE ARGUMENTS REFERENCE      *user-guide-features-moe-moe-arguments-reference*
 
 Core Arguments                        *user-guide-features-moe-core-arguments*
 
-Argument                      Description              Default
-----------------------------  -----------------------  -----------------------
---num-experts                  Number of Experts in     None
-                              MoE
---expert-model-parallel-size   Degree of expert model   1
-                              parallelism
---moe-ffn-hidden-size          MoE FFN hidden size      FFN hidden size of the
-                                                       dense model
---expert-tensor-parallel-size  Expert layer tensor      Same as TP(Recommended
-                              parallelism              to set to 1 for
-                                                       fine-grained MoE
-                                                       models)
---moe-layer-freq               MoE layer frequency      1
-                              pattern
+Argument                  Description                Default
+------------------------  -------------------------  -------------------------
+--num-experts              Number of Experts in MoE   None
+--expert-model-parallel-   Degree of expert model     1
+size                      parallelism
+--moe-ffn-hidden-size      MoE FFN hidden size        FFN hidden size of the
+                                                     dense model
+--expert-tensor-parallel-  Expert layer tensor        Same as TP(Recommended to
+size                      parallelism                set to 1 for fine-grained
+                                                     MoE models)
+--moe-layer-freq           MoE layer frequency        1
+                          pattern
 
 Router Arguments                    *user-guide-features-moe-router-arguments*
 
@@ -5121,15 +5294,16 @@ Argument                       Description                             Default
 
 Token Dispatching                                *user-guide-features-moe-id1*
 
-Argument                           Description                       Default
----------------------------------  --------------------------------  ---------
---moe-token-dispatcher-type         Dispatcher: allgather, alltoall,  allgather
-                                   flex
---moe-enable-deepep                 Enable DeepEP (with flex)         False
---moe-expert-capacity-factor        Capacity factor                   None
---moe-pad-expert-input-to-capacity  Pad to capacity                   False
---moe-token-drop-policy             Drop policy: probs, position      probs
---moe-permute-fusion                Fuse permutation ops              False
+Argument                          Description                        Default
+--------------------------------  ---------------------------------  ---------
+--moe-token-dispatcher-type        Dispatcher: allgather, alltoall,   allgather
+                                  flex
+--moe-enable-deepep                Enable DeepEP (with flex)          False
+--moe-expert-capacity-factor       Capacity factor                    None
+--moe-pad-expert-input-to-         Pad to capacity                    False
+capacity
+--moe-token-drop-policy            Drop policy: probs, position       probs
+--moe-permute-fusion               Fuse permutation ops               False
 
 Performance Optimization    *user-guide-features-moe-performance-optimization*
 
@@ -5295,7 +5469,7 @@ If you use Megatron Core MoE in your research, please cite:
     }
 
     @article{moe-parallel-folding,
-        title={MoE Parallel Folding: Heterogeneous Parallelism Mappings for Efficient Large-Scale MoE Model Training with Megatron Core}, 
+        title={MoE Parallel Folding: Heterogeneous Parallelism Mappings for Efficient Large-Scale MoE Model Training with Megatron Core},
         author={Liu, Dennis and Yan, Zijie and Yao, Xin and Liu, Tong and Korthikanti, Vijay and Wu, Evan and Fan, Shiqing and Deng, Gao and Bai, Hongxiao and Chang, Jianbin and Aithal, Ashwath and Andersch, Michael and Shoeybi, Mohammad and Yao, Jiajie and Zhou, Chandler and Wu, David and Li, Xipeng and Yang, June},
         year={2025},
         journal={arXiv preprint arXiv:2504.14960},
@@ -6357,34 +6531,34 @@ Setting `MEGATRON_OTEL_ENABLED=1` is equivalent to setting
 prefix/fallback model lets Megatron scope its own env vars while still
 inheriting lens defaults from a shared environment.
 
-Variable                          Default      Description
---------------------------------  -----------  -------------------------------
-MEGATRON_OTEL_ENABLED             0            Master toggle; must be set to 1
-                                               to activate
-MEGATRON_OTEL_RANK_STRATEGY       single_rank  single_rank, all_ranks,
-                                               sampled, first_rank_per_node,
-                                               or any name registered via
-                                               register_rank_strategy()
-MEGATRON_OTEL_EXPORT_RANK         -1           For single_rank: which rank
-                                               exports. -1 = last rank
-MEGATRON_OTEL_EXPORT_SAMPLE_RATE  1.0          For sampled: fraction in [0.0,
-                                               1.0]
-MEGATRON_OTEL_SAMPLING_STRATEGY   (empty)      rank_aware or any name
-                                               registered via
-                                               register_sampling_strategy().
-                                               Empty leaves the OTel SDK
-                                               default sampler in place.
-MEGATRON_OTEL_TRACES_ENABLED      1            Enable trace spans
-MEGATRON_OTEL_METRICS_ENABLED     1            Enable metrics instruments
-MEGATRON_OTEL_LOGS_ENABLED        0            Enable OTel log bridge
-MEGATRON_OTEL_SPAN_GROUPS         default      Span granularity spec (see Span
-                                               Groups)
-MEGATRON_OTEL_EXPORTER            otlp         Exporter backend: otlp or
-                                               console
-NEMO_LENS_RUN_ID                  (auto)       Unique run identifier.
-                                               Auto-detected from SLURM_JOB_ID
-                                               or generated UUID
-NEMO_LENS_USER_ID                 (empty)      Optional user/team label
+Variable                         Default      Description
+-------------------------------  -----------  --------------------------------
+MEGATRON_OTEL_ENABLED            0            Master toggle; must be set to 1
+                                              to activate
+MEGATRON_OTEL_RANK_STRATEGY      single_rank  single_rank, all_ranks, sampled,
+                                              first_rank_per_node, or any name
+                                              registered via
+                                              register_rank_strategy()
+MEGATRON_OTEL_EXPORT_RANK        -1           For single_rank: which rank
+                                              exports. -1 = last rank
+MEGATRON_OTEL_EXPORT_SAMPLE_     1.0          For sampled: fraction in [0.0,
+RATE                                          1.0]
+MEGATRON_OTEL_SAMPLING_STRATEGY  (empty)      rank_aware or any name
+                                              registered via
+                                              register_sampling_strategy().
+                                              Empty leaves the OTel SDK
+                                              default sampler in place.
+MEGATRON_OTEL_TRACES_ENABLED     1            Enable trace spans
+MEGATRON_OTEL_METRICS_ENABLED    1            Enable metrics instruments
+MEGATRON_OTEL_LOGS_ENABLED       0            Enable OTel log bridge
+MEGATRON_OTEL_SPAN_GROUPS        default      Span granularity spec (see Span
+                                              Groups)
+MEGATRON_OTEL_EXPORTER           otlp         Exporter backend: otlp or
+                                              console
+NEMO_LENS_RUN_ID                 (auto)       Unique run identifier.
+                                              Auto-detected from SLURM_JOB_ID
+                                              or generated UUID
+NEMO_LENS_USER_ID                (empty)      Optional user/team label
 
 For the full config model, field semantics, and validation rules, see
 lens: configuration
@@ -6571,18 +6745,19 @@ https://github.com/NVIDIA-NeMo/Lens/blob/main/docs/design/optional-dependency.md
 
 NAMING CONVENTIONS     *user-guide-observability-extending-naming-conventions*
 
-Kind                Convention                     Example
-------------------  -----------------------------  ---------------------------
-Span name           megatron.<subsystem>.<op>      megatron.train_step,
-                                                   megatron.microbatch.forward
-Span attribute      megatron.<attr> for            megatron.iteration, dl.rank
+Kind                Convention                    Example
+------------------  ----------------------------  ----------------------------
+Span name           megatron.<subsystem>.<op>     megatron.train_step,
+                                                  megatron.microbatch.forward
+Span attribute      megatron.<attr> for           megatron.iteration, dl.rank
                     Megatron-specific, dl.<attr>
                     for shared
-Resource attribute  megatron.<attr> for            megatron.num_layers,
-                    Megatron-specific, dl.<attr>   dl.tensor_parallel.size,
-                    for shared, standard for       host.name
+Resource attribute  megatron.<attr> for           megatron.num_layers,
+                    Megatron-specific, dl.<attr>  dl.tensor_parallel.size,
+                    for shared, standard for      host.name
                     host/SLURM/K8s
-Metric name         megatron.<subsystem>.<metric>  megatron.training.loss
+Metric name         megatron.<subsystem>.         megatron.training.loss
+                    <metric>
 
 Use the constants in `nemo.lens.semconv` when a name is shared across
 consumers (`DL_RANK`, `NEMO_RUN_ID`, etc.). For Megatron-specific names,
@@ -6748,24 +6923,30 @@ profiling individual steps, or `all` for fine-grained debugging.
 
 WHAT GETS INSTRUMENTED *user-guide-observability-index-what-gets-instrumented*
 
-Subsystem      File                                  Spans
--------------  ------------------------------------  ------------------------------------
-Training loop  megatron/training/training.py         megatron.pretrain, megatron.train,
-                                                     megatron.train_step,
-                                                     megatron.forward_backward,
-                                                     megatron.optimizer_step
-Pipeline       megatron/core/pipeline_parallel/schedules.py  megatron.microbatch.forward,
-schedules                                            megatron.microbatch.backward,
-                                                     megatron.pp.recv_forward.linked
-P2P            megatron/core/pipeline_parallel/p2p_communication.py  megatron.p2p.{send,recv}_{forward,backward}
-communication
-Gradient sync  megatron/core/distributed/distributed_data_parallel.py  megatron.grad_sync.{start,finish}
-(DDP)
-Checkpointing  megatron/training/checkpointing.py    megatron.save_checkpoint.*,
-                                                     megatron.load_checkpoint.*
-Model init     megatron/training/training.py         megatron.model_init
-Evaluation     megatron/training/training.py         megatron.evaluate,
-                                                     megatron.evaluate.step
+Subsystem            File                         Spans
+-------------------  ---------------------------  ----------------------------
+Training loop        megatron/training/training.  megatron.pretrain,
+                     py                           megatron.train,
+                                                  megatron.train_step,
+                                                  megatron.forward_backward,
+                                                  megatron.optimizer_step
+Pipeline schedules   megatron/core/pipeline_      megatron.microbatch.forward,
+                     parallel/schedules.py        megatron.microbatch.
+                                                  backward,
+                                                  megatron.pp.recv_forward.
+                                                  linked
+P2P communication    megatron/core/pipeline_      megatron.p2p.{send,recv}_
+                     parallel/p2p_communication.  {forward,backward}
+                     py
+Gradient sync (DDP)  megatron/core/distributed/   megatron.grad_sync.{start,
+                     distributed_data_parallel.   finish}
+                     py
+Checkpointing        megatron/training/           megatron.save_checkpoint.*,
+                     checkpointing.py             megatron.load_checkpoint.*
+Model init           megatron/training/training.  megatron.model_init
+                     py
+Evaluation           megatron/training/training.  megatron.evaluate,
+                     py                           megatron.evaluate.step
 
 Each span is tagged with a span group that controls whether it's emitted at
 runtime. See |module-core-user-guide-observability-span-groups|.
@@ -6811,28 +6992,23 @@ Training has no OTel standard, so Megatron uses a project-specific
 namespace. Emission is tied to `--log-interval` (same cadence as TensorBoard
 and W&B loggers).
 
-Metric                                Type       Unit      Description
-------------------------------------  ---------  --------  -------------------
-megatron.training.step_duration_ms    Histogram  ms        Duration of one
-                                                           training step in
-                                                           milliseconds
-megatron.training.loss                Gauge      ---         Training loss (last
-                                                           value per log
-                                                           interval)
-megatron.training.throughput_tflops   Gauge      TFLOP/s   Training throughput
-                                                           in TFLOP/s/GPU
-megatron.training.tokens_per_sec      Gauge      tokens/s  Training throughput
-                                                           in tokens per
-                                                           second
-megatron.training.grad_norm           Gauge      ---         Global gradient
-                                                           norm
-megatron.training.skipped_iters       Counter    ---         Optimizer steps
-                                                           skipped (NaN/inf
-                                                           loss)
-megatron.training.learning_rate       Gauge      ---         Current learning
-                                                           rate
-megatron.training.memory_allocated_gb  Gauge      GB        Peak GPU memory
-                                                           allocated
+Metric                       Type       Unit      Description
+---------------------------  ---------  --------  ----------------------------
+megatron.training.step_      Histogram  ms        Duration of one training
+duration_ms                                       step in milliseconds
+megatron.training.loss       Gauge      ---         Training loss (last value
+                                                  per log interval)
+megatron.training.           Gauge      TFLOP/s   Training throughput in
+throughput_tflops                                 TFLOP/s/GPU
+megatron.training.tokens_    Gauge      tokens/s  Training throughput in
+per_sec                                           tokens per second
+megatron.training.grad_norm  Gauge      ---         Global gradient norm
+megatron.training.skipped_   Counter    ---         Optimizer steps skipped
+iters                                             (NaN/inf loss)
+megatron.training.learning_  Gauge      ---         Current learning rate
+rate
+megatron.training.memory_    Gauge      GB        Peak GPU memory allocated
+allocated_gb
 
 Loss, throughput, grad norm, and learning rate are Gauges (point-in-time
 value), not Histograms --- this produces a Prometheus `gauge` which is
@@ -6850,14 +7026,15 @@ PROMETHEUS METRIC NAMES
 
 The OTel SDK may append a unit suffix when exporting to Prometheus.
 
-OTel instrument name                 Prometheus metric (example)
------------------------------------  -----------------------------------------
-megatron.training.loss               megatron_training_loss (Gauge)
-megatron.training.step_duration_ms   megatron_training_step_duration_ms_milliseconds
-megatron.training.throughput_tflops  megatron_training_throughput_tflops
-                                     (Gauge)
-megatron.training.tokens_per_sec     megatron_training_tokens_per_sec (Gauge)
-megatron.training.skipped_iters      megatron_training_skipped_iters_total
+OTel instrument name                Prometheus metric (example)
+----------------------------------  ------------------------------------------
+megatron.training.loss              megatron_training_loss (Gauge)
+megatron.training.step_duration_ms  megatron_training_step_duration_ms_
+                                    milliseconds
+megatron.training.throughput_       megatron_training_throughput_tflops
+tflops                              (Gauge)
+megatron.training.tokens_per_sec    megatron_training_tokens_per_sec (Gauge)
+megatron.training.skipped_iters     megatron_training_skipped_iters_total
 
 Dashboards use regex patterns (e.g.
 `{__name__=~"megatron_training_loss.*"}`) to match regardless of suffix. If
@@ -7141,33 +7318,40 @@ all       everything including microbatch,        Highest --- dev/debug only
 Defined in `megatron/core/telemetry/span_groups.py`. Extends lens's base
 `SpanGroup` with Megatron-specific groups:
 
-Group               Spans emitted                         Typical frequency
-------------------  ------------------------------------  --------------------
-job                 megatron.pretrain, megatron.train     once per job
-checkpoint          megatron.save_checkpoint,             every checkpoint
-                    megatron.save_checkpoint.state_dict,
-                    megatron.save_checkpoint.io_write
-evaluate            megatron.evaluate,                    every eval interval
+Group               Spans emitted                   Typical frequency
+------------------  ------------------------------  --------------------------
+job                 megatron.pretrain,              once per job
+                    megatron.train
+checkpoint          megatron.save_checkpoint,       every checkpoint
+                    megatron.save_checkpoint.
+                    state_dict,
+                    megatron.save_checkpoint.io_
+                    write
+evaluate            megatron.evaluate,              every eval interval
                     megatron.evaluate.step
-model_init          megatron.model_init                   once at startup
-load_checkpoint     megatron.load_checkpoint,             once at startup
-                    megatron.load_checkpoint.io_read
-step                megatron.train_step                   every iteration
-forward_backward    megatron.forward_backward             every iteration
-optimizer           megatron.optimizer_step               every iteration
-microbatch          megatron.microbatch.forward,          every microbatch
+model_init          megatron.model_init             once at startup
+load_checkpoint     megatron.load_checkpoint,       once at startup
+                    megatron.load_checkpoint.io_
+                    read
+step                megatron.train_step             every iteration
+forward_backward    megatron.forward_backward       every iteration
+optimizer           megatron.optimizer_step         every iteration
+microbatch          megatron.microbatch.forward,    every microbatch
                     megatron.microbatch.backward
-layer               megatron.layer.forward,               every layer per
-                    megatron.layer.self_attention,        microbatch
+layer               megatron.layer.forward,         every layer per microbatch
+                    megatron.layer.self_attention,
                     megatron.layer.mlp
-communication       megatron.p2p.{recv,send}_{forward,backward},  every iteration
-                    megatron.grad_sync.{start,finish},
-                    megatron.pp.recv_forward.linked
-activation_offload  megatron.activation.offload,          every microbatch
+communication       megatron.p2p.{recv,send}_       every iteration
+                    {forward,backward},
+                    megatron.grad_sync.{start,
+                    finish},
+                    megatron.pp.recv_forward.
+                    linked
+activation_offload  megatron.activation.offload,    every microbatch
                     megatron.activation.reload
-data_loading        (reserved for future use)             every iteration
-inference           (reserved for the inference server)   every inference
-                                                          request
+data_loading        (reserved for future use)       every iteration
+inference           (reserved for the inference     every inference request
+                    server)
 
 EXAMPLES                       *user-guide-observability-span-groups-examples*
 

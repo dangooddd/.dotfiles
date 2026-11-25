@@ -247,8 +247,9 @@ class.__array_ufunc__(ufunc, method, *inputs, **kwargs)
         have a hierarchy of subclasses that extend the behaviour. See
         |user-basics.subclassing-basics-subclassing| for details.
 
+                                              *numpy.class.__array_function__*
+
 class.__array_function__(func, types, args, kwargs)
-    *numpy.class.__array_function__*
     - `func` is an arbitrary callable exposed by NumPy's public API, which
       was called in the form `func(*args, **kwargs)`.
     - `types` is a collection `collections.abc.Collection`
@@ -349,7 +350,9 @@ class.__array_function__(func, types, args, kwargs)
     this ensures that checking overloads has acceptable performance even
     when there are a large number of overloaded arguments.
 
-class.__array_finalize__(obj)  *numpy.class.__array_finalize__*
+                                              *numpy.class.__array_finalize__*
+
+class.__array_finalize__(obj)
     This method is called whenever the system internally allocates a new
     array from obj, where obj is a subclass (subtype) of the
     |numpy.ndarray|. It can be used to change attributes of self after
@@ -357,8 +360,9 @@ class.__array_finalize__(obj)  *numpy.class.__array_finalize__*
     meta-information from the “parent.” Subclasses inherit a default
     implementation of this method that does nothing.
 
+                                                  *numpy.class.__array_wrap__*
+
 class.__array_wrap__(array, context=None, return_scalar=False)
-    *numpy.class.__array_wrap__*
     At the end of every |user-basics.ufuncs-ufuncs-output-type|, this method
     is called on the input object with the highest array priority, or the
     output object if one was specified. The ufunc-computed array is passed
@@ -395,7 +399,9 @@ class.__array_priority__ *numpy.class.__array_priority__*
       For ufuncs, it is hoped to eventually deprecate this method in favour
       of |numpy.class.__array_ufunc__|.
 
-class.__array__(dtype=None, copy=None)  *numpy.class.__array__*
+                                                       *numpy.class.__array__*
+
+class.__array__(dtype=None, copy=None)
     If defined on an object, it must return a NumPy `ndarray`. This method
     is called by array-coercion functions like `np.array()` if an object
     implementing this interface is passed to those functions.
@@ -609,7 +615,7 @@ memmap(filename[, dtype, mode,      Create a memory-map to an array stored in
     memmap.flush()                      Write any changes in the array to the file
                                     on disk.
 
-Example:
+Example: ~
 
 >python
     >>> import numpy as np
@@ -723,8 +729,9 @@ is included by default. It is not documented here beyond mentioning its
 existence because you are encouraged to use the ndarray class directly if
 you can.
 
-numpy.lib.user_array.container(data[,  Standard container-class for easy
-    ...])                                 multiple-inheritance.
+numpy.lib.user_array.               Standard container-class for easy
+container(data[,                    multiple-inheritance.
+    ...])
 
 ARRAY ITERATORS                     *reference-arrays.classes-array-iterators*
 
@@ -1367,7 +1374,9 @@ When performance is important for manipulating many business dates with one
 particular choice of weekmask and holidays, there is an object
 |numpy.busdaycalendar| which stores the data necessary in an optimized form.
 
-np.is_busday():  *reference-arrays.datetime-np-is-busday*
+                                      *reference-arrays.datetime-np-is-busday*
+
+np.is_busday():
 
 To test a |numpy.datetime64| value to see if it is a valid day, use
 |numpy.is_busday|.
@@ -1389,7 +1398,9 @@ To test a |numpy.datetime64| value to see if it is a valid day, use
       array([ True,  True,  True,  True,  True, False, False])
 <
 
-np.busday_count():  *reference-arrays.datetime-np-busday-count*
+                                   *reference-arrays.datetime-np-busday-count*
+
+np.busday_count():
 
 To find how many valid days there are in a specified range of datetime64
 dates, use |numpy.busday_count|:
@@ -1731,11 +1742,11 @@ Generic types
     The generic hierarchical type objects convert to corresponding type
     objects according to the associations:
 
-    number, inexact, floating                                           float64
-    complexfloating                                                     complex128
-    integer, signedinteger                                              int_
-    unsignedinteger                                                     uint
-    generic, flexible                                                   void
+    number, inexact, floating                                       float64
+    complexfloating                                                 complex128
+    integer, signedinteger                                          int_
+    unsignedinteger                                                 uint
+    generic, flexible                                               void
 
       Deprecated since version 1.19: ~
 
@@ -1747,16 +1758,16 @@ Built-in Python types
     Several Python types are equivalent to a corresponding array scalar when
     used to generate a |numpy.dtype| object:
 
-    Python type                                                         NumPy type
-    ------------------------------------------------------------------  ----------
-    int                                                                 int_
-    bool                                                                bool_
-    float                                                               float64
-    complex                                                             complex128
-    bytes                                                               bytes_
-    str                                                                 str_
-    memoryview                                                          void
-    (all others)                                                        object_
+    Python type                                                     NumPy type
+    --------------------------------------------------------------  ----------
+    int                                                             int_
+    bool                                                            bool_
+    float                                                           float64
+    complex                                                         complex128
+    bytes                                                           bytes_
+    str                                                             str_
+    memoryview                                                      void
+    (all others)                                                    object_
 
     Note that `str_` corresponds to UCS4 encoded unicode strings.
 
@@ -2398,7 +2409,8 @@ object.__array_interface__
 
         The basic type character codes are:
 
-        t  Bit field (following integer gives the number of bits in the bit field).
+        t  Bit field (following integer gives the number of bits in the bit
+           field).
         b  Boolean (integer type where all values are only True or False)
         i  Integer
         u  Unsigned integer
@@ -4141,11 +4153,11 @@ native Python/NumPy code did.
   Example: ~: ~
 
   >python
-      >>> from sum_squares import sum_squares_cy 
+      >>> from sum_squares import sum_squares_cy
       >>> a = np.arange(6).reshape(2,3)
-      >>> sum_squares_cy(a) 
+      >>> sum_squares_cy(a)
       array(55.0)
-      >>> sum_squares_cy(a, axis=-1) 
+      >>> sum_squares_cy(a, axis=-1)
       array([  5.,  50.])
 <
 
@@ -4673,7 +4685,9 @@ class numpy.int_ *numpy.int_*
                                                                   *numpy.long*
     alias of |numpy.int_|
 
-class numpy.longlong(value=0, /)  *numpy.longlong*
+                                                              *numpy.longlong*
+
+class numpy.longlong(value=0, /)
     Signed integer type, compatible with C `long long`.
 
     Character code: ~
@@ -4749,7 +4763,9 @@ class numpy.uint *numpy.uint*
                                                                  *numpy.ulong*
     alias of |numpy.uint|
 
-class numpy.ulonglong(value=0, /)  *numpy.ulonglong*
+                                                             *numpy.ulonglong*
+
+class numpy.ulonglong(value=0, /)
     Unsigned integer type, compatible with C `unsigned long long`.
 
     Character code: ~
@@ -4838,7 +4854,9 @@ class numpy.single *numpy.single*
         |numpy.float32|: 32-bit-precision floating-point number type: sign
         bit, 8 bits exponent, 23 bits mantissa.
 
-class numpy.double(x=0, /)  *numpy.double*
+                                                                *numpy.double*
+
+class numpy.double(x=0, /)
     float64(value=0, /) --
 
     Double-precision floating-point number type, compatible with Python
@@ -4854,7 +4872,9 @@ class numpy.double(x=0, /)  *numpy.double*
         |numpy.float64|: 64-bit precision floating-point number type: sign
         bit, 11 bits exponent, 52 bits mantissa.
 
-class numpy.longdouble(value=0, /)  *numpy.longdouble*
+                                                            *numpy.longdouble*
+
+class numpy.longdouble(value=0, /)
     Extended-precision floating-point number type, compatible with C
     `long double` but not necessarily with IEEE 754 quadruple-precision.
 
@@ -4888,7 +4908,9 @@ class numpy.csingle *numpy.csingle*
         |numpy.complex64|: Complex number type composed of 2
         32-bit-precision floating-point numbers.
 
-class numpy.cdouble(real=0, imag=0)  *numpy.cdouble*
+                                                               *numpy.cdouble*
+
+class numpy.cdouble(real=0, imag=0)
     complex128(real=0, imag=0, /) --
 
     Complex number type composed of two double-precision floating-point
@@ -4904,7 +4926,9 @@ class numpy.cdouble(real=0, imag=0)  *numpy.cdouble*
         |numpy.complex128|: Complex number type composed of 2
         64-bit-precision floating-point numbers.
 
-class numpy.clongdouble(real=0, imag=0, /)  *numpy.clongdouble*
+                                                           *numpy.clongdouble*
+
+class numpy.clongdouble(real=0, imag=0, /)
     Complex number type composed of two extended-precision floating-point
     numbers.
 
@@ -4920,7 +4944,9 @@ Other types                             *reference-arrays.scalars-other-types*
                                                                  *numpy.bool_*
     alias of bool
 
-class numpy.bool(value=False, /)  *numpy.bool*
+                                                                  *numpy.bool*
+
+class numpy.bool(value=False, /)
     Boolean type (True or False), stored as a byte.
 
       Warning: ~
@@ -4932,7 +4958,9 @@ class numpy.bool(value=False, /)  *numpy.bool*
     Character code: ~
         `'?'`
 
-class numpy.datetime64(value=None, *args)  *numpy.datetime64*
+                                                            *numpy.datetime64*
+
+class numpy.datetime64(value=None, *args)
     If created from a 64-bit integer, it represents an offset from
     `1970-01-01T00:00:00`. If created from string, the string can be in ISO
     8601 date or datetime format.
@@ -4957,7 +4985,9 @@ class numpy.datetime64(value=None, *args)  *numpy.datetime64*
     Character code: ~
         `'M'`
 
-class numpy.timedelta64(value=0, *args)  *numpy.timedelta64*
+                                                           *numpy.timedelta64*
+
+class numpy.timedelta64(value=0, *args)
     A timedelta stored as a 64-bit integer.
 
     See |reference-arrays.datetime-arrays-datetime| for more information.
@@ -4965,7 +4995,9 @@ class numpy.timedelta64(value=0, *args)  *numpy.timedelta64*
     Character code: ~
         `'m'`
 
-class numpy.object_(value=None, /)  *numpy.object_*
+                                                               *numpy.object_*
+
+class numpy.object_(value=None, /)
     Any Python object.
 
     Character code: ~
@@ -4997,7 +5029,9 @@ class numpy.flexible *numpy.flexible*
 class numpy.character *numpy.character*
     Abstract base class of all character string scalar types.
 
-class numpy.bytes_(value='', *args, **kwargs)  *numpy.bytes_*
+                                                                *numpy.bytes_*
+
+class numpy.bytes_(value='', *args, **kwargs)
     A byte string.
 
     When used in arrays, this type strips trailing null bytes.
@@ -5005,7 +5039,9 @@ class numpy.bytes_(value='', *args, **kwargs)  *numpy.bytes_*
     Character code: ~
         `'S'`
 
-class numpy.str_(value='', *args, **kwargs)  *numpy.str_*
+                                                                  *numpy.str_*
+
+class numpy.str_(value='', *args, **kwargs)
     A unicode string.
 
     This type strips trailing null codepoints.
@@ -5029,7 +5065,9 @@ class numpy.str_(value='', *args, **kwargs)  *numpy.str_*
     Character code: ~
         `'U'`
 
-class numpy.void(length_or_data, /, dtype=None)  *numpy.void*
+                                                                  *numpy.void*
+
+class numpy.void(length_or_data, /, dtype=None)
     Create a new structured or unstructured void scalar.
 
     Parameters: ~
@@ -5624,7 +5662,8 @@ class numpy.__array_namespace_info__
     capabilities()               Return a dictionary of array API library
                                  capabilities.
     default_device()             The default device used for new NumPy arrays.
-    default_dtypes(*[, device])  The default data types used for new NumPy arrays.
+    default_dtypes(*[, device])  The default data types used for new NumPy
+                                 arrays.
     devices()                    The devices supported by NumPy.
     dtypes(*[, device, kind])    The array API data types supported by NumPy.
 
@@ -6362,7 +6401,7 @@ numpy.any(a, axis=None, out=None, keepdims=<no value>, *, where=<no value>)
         >>> # Check now that z is a reference to o
         >>> z is o
         True
-        >>> id(z), id(o) # identity of z and o              
+        >>> id(z), id(o) # identity of z and o
         (191614240, 191614240)
 <
 
@@ -7227,7 +7266,7 @@ numpy.arctan2(x1, x2, /, out=None, *, where=True, casting='same_kind',
     |reference-numpy.arctan2-r73eacd397847-1|
 
     x1      x2      arctan2(x1,x2)
-    ------  ------  --------------------------------------------------------------
+    ------  ------  ----------------------------------------------------------
     +/- 0   +0      +/- 0
     +/- 0   -0      +/- pi
     > 0     +/-inf  +0 / +pi
@@ -7889,9 +7928,11 @@ numpy.array(object, dtype=None, *, copy=True, order='K', subok=False,
             order (column major). If object is an array the following holds.
 
             order  no copy    copy=True
-            -----  ---------  ------------------------------------------------------------
-            ‘K'    unchanged  F & C order preserved, otherwise most similar order
-            ‘A'    unchanged  F order if input is F and not C, otherwise C order
+            -----  ---------  ------------------------------------------------
+            ‘K'    unchanged  F & C order preserved, otherwise most similar
+                              order
+            ‘A'    unchanged  F order if input is F and not C, otherwise C
+                              order
             ‘C'    C order    C order
             ‘F'    F order    F order
 
@@ -9287,7 +9328,7 @@ numpy.atan2(x1, x2, /, out=None, *, where=True, casting='same_kind',
     |reference-numpy.atan2-r20c8bad59052-1|
 
     x1      x2      arctan2(x1,x2)
-    ------  ------  --------------------------------------------------------------
+    ------  ------  ----------------------------------------------------------
     +/- 0   +0      +/- 0
     +/- 0   -0      +/- pi
     > 0     +/-inf  +0 / +pi
@@ -9529,7 +9570,7 @@ numpy.atleast_3d(*arys)
 <
     >python
         >>> for arr in np.atleast_3d([1, 2], [[1, 2]], [[[1, 2]]]):
-        ...     print(arr, arr.shape) 
+        ...     print(arr, arr.shape)
         ...
         [[[1]
           [2]]] (1, 2, 1)
@@ -12383,8 +12424,8 @@ char.expandtabs(a, tabsize=8)
     >python
         >>> import numpy as np
         >>> a = np.array(['         Hello   world'])
-        >>> np.strings.expandtabs(a, tabsize=4)  
-        array(['        Hello   world'], dtype='<U21')  
+        >>> np.strings.expandtabs(a, tabsize=4)
+        array(['        Hello   world'], dtype='<U21')
 <
 
 ----------------------------------------------------------------------------
@@ -13015,12 +13056,12 @@ char.join(sep, seq)
 
     >python
         >>> import numpy as np
-        >>> np.strings.join('-', 'osd')  
-        array('o-s-d', dtype='<U5')  
+        >>> np.strings.join('-', 'osd')
+        array('o-s-d', dtype='<U5')
 <
     >python
-        >>> np.strings.join(['-', '.'], ['ghc', 'osd'])  
-        array(['g-h-c', 'o.s.d'], dtype='<U5')  
+        >>> np.strings.join(['-', '.'], ['ghc', 'osd'])
+        array(['g-h-c', 'o.s.d'], dtype='<U5')
 <
 
 ----------------------------------------------------------------------------
@@ -13596,9 +13637,9 @@ char.rsplit(a, sep=None, maxsplit=None)
     >python
         >>> import numpy as np
         >>> a = np.array(['aAaAaA', 'abBABba'])
-        >>> np.strings.rsplit(a, 'A')  
-        array([list(['a', 'a', 'a', '']),  
-               list(['abB', 'Bba'])], dtype=object)  
+        >>> np.strings.rsplit(a, 'A')
+        array([list(['a', 'a', 'a', '']),
+               list(['abB', 'Bba'])], dtype=object)
 <
 
 ----------------------------------------------------------------------------
@@ -13674,12 +13715,12 @@ char.split(a, sep=None, maxsplit=None)
     >python
         >>> import numpy as np
         >>> x = np.array("Numpy is nice!")
-        >>> np.strings.split(x, " ")  
-        array(list(['Numpy', 'is', 'nice!']), dtype=object)  
+        >>> np.strings.split(x, " ")
+        array(list(['Numpy', 'is', 'nice!']), dtype=object)
 <
     >python
-        >>> np.strings.split(x, " ", 1)  
-        array(list(['Numpy', 'is nice!']), dtype=object)  
+        >>> np.strings.split(x, " ", 1)
+        array(list(['Numpy', 'is nice!']), dtype=object)
 <
 
 ----------------------------------------------------------------------------
@@ -14898,7 +14939,7 @@ numpy.copy(a, order='K', subok=False)
     This is equivalent to:
 
     >python
-        >>> np.array(a, copy=True)  
+        >>> np.array(a, copy=True)
 <
     The copy made of the data is shallow, i.e., for arrays with object
     dtype, the new array will point to the same objects. See Examples from
@@ -16786,12 +16827,12 @@ numpy.digitize(x, bins, right=False)
     Return the indices of the bins to which each value in input array
     belongs.
 
-    right  order of bins            returned index i satisfies
-    -----  -----------------------  ----------------------------------------------
-    False  increasing               bins[i-1] <= x < bins[i]
-    True   increasing               bins[i-1] < x <= bins[i]
-    False  decreasing               bins[i-1] > x >= bins[i]
-    True   decreasing               bins[i-1] >= x > bins[i]
+    right  order of bins          returned index i satisfies
+    -----  ---------------------  --------------------------------------------
+    False  increasing             bins[i-1] <= x < bins[i]
+    True   increasing             bins[i-1] < x <= bins[i]
+    False  decreasing             bins[i-1] > x >= bins[i]
+    True   decreasing             bins[i-1] >= x > bins[i]
 
     If values in x are beyond the bounds of bins, 0 or `len(bins)` is
     returned as appropriate.
@@ -17655,7 +17696,7 @@ class numpy.dtype(dtype, align=False, copy=False, **kwargs)
 
     Methods: ~
 
-    newbyteorder([new_order])   Return a new dtype with a different byte order.
+    newbyteorder([new_order])  Return a new dtype with a different byte order.
 
       See also: ~
 
@@ -17752,9 +17793,9 @@ dtype.isbuiltin
 
     0  if this is a structured array type, with fields
     1  if this is a dtype compiled into numpy (such as ints, floats etc)
-    2  if the dtype is for a user-defined numpy type A user-defined type uses the
-       numpy C-API machinery to extend numpy to handle a new array type. See
-       User-defined data-types in the NumPy manual.
+    2  if the dtype is for a user-defined numpy type A user-defined type uses
+       the numpy C-API machinery to extend numpy to handle a new array type.
+       See User-defined data-types in the NumPy manual.
 
     Examples: ~
 
@@ -19390,7 +19431,7 @@ class numpy.errstate(**kwargs)
 
     Methods: ~
 
-    __call__(func)                Call self as a function.
+    __call__(func)              Call self as a function.
 
       See also: ~
 
@@ -19545,7 +19586,7 @@ exception exceptions.DTypePromotionError
 
     >python
         >>> import numpy as np
-        >>> np.result_type(np.dtype("M8[s]"), np.complex128)  
+        >>> np.result_type(np.dtype("M8[s]"), np.complex128)
         Traceback (most recent call last):
          ...
         DTypePromotionError: The DType <class 'numpy.dtype[datetime64]'> could not
@@ -19561,7 +19602,7 @@ exception exceptions.DTypePromotionError
     >python
         >>> dtype1 = np.dtype([("field1", np.float64), ("field2", np.int64)])
         >>> dtype2 = np.dtype([("field1", np.float64)])
-        >>> np.promote_types(dtype1, dtype2)  
+        >>> np.promote_types(dtype1, dtype2)
         Traceback (most recent call last):
          ...
         DTypePromotionError: field names `('field1', 'field2')` and `('field1',)`
@@ -23445,10 +23486,10 @@ numpy.from_dlpack(x, /, *, device=None, copy=None)
     Examples: ~
 
     >python
-        >>> import torch  
-        >>> x = torch.arange(10)  
+        >>> import torch
+        >>> x = torch.arange(10)
         >>> # create a view of the torch tensor "x" in NumPy
-        >>> y = np.from_dlpack(x)  
+        >>> y = np.from_dlpack(x)
 <
 
 ----------------------------------------------------------------------------
@@ -23497,7 +23538,7 @@ numpy.frombuffer(buffer, dtype=np.float64, count=-1, offset=0, *, like=None)
     >python
         >>> dt = np.dtype(np.int_)
         >>> dt = dt.newbyteorder('>')
-        >>> np.frombuffer(buf, dtype=dt) 
+        >>> np.frombuffer(buf, dtype=dt)
 <
     The data of the resulting array will not be byteswapped, but will be
     interpreted correctly.
@@ -24667,7 +24708,7 @@ numpy.geterr()
         >>> import numpy as np
         >>> np.geterr()
         {'divide': 'warn', 'over': 'warn', 'under': 'ignore', 'invalid': 'warn'}
-        >>> np.arange(3.) / np.arange(3.)  
+        >>> np.arange(3.) / np.arange(3.)
         array([nan,  1.,  1.])
         RuntimeWarning: invalid value encountered in divide
 <
@@ -26514,7 +26555,7 @@ numpy.info(object=None, maxwidth=76, output=None, toplevel='numpy')
     Examples: ~
 
     >python
-        >>> np.info(np.polyval) 
+        >>> np.info(np.polyval)
            polyval(p, x)
              Evaluate the polynomial p at x.
              ...
@@ -26522,7 +26563,7 @@ numpy.info(object=None, maxwidth=76, output=None, toplevel='numpy')
     When using a string for object it is possible to get multiple results.
 
     >python
-        >>> np.info('fft') 
+        >>> np.info('fft')
              *** Found in numpy ***
         Core FFT routines
         ...
@@ -28042,17 +28083,18 @@ numpy.isscalar(element)
     functions in the style of the `dx` arguments to |numpy.gradient| and the
     `bins` argument to |numpy.histogram|. Some key differences:
 
-    x                                                 isscalar(x)  np.ndim(x) == 0
-    ------------------------------------------------  -----------  ---------------
-    PEP 3141 numeric objects (including builtins)     True         True
-    builtin string and buffer objects                 True         True
-    other builtin objects, like pathlib.Path,         False        True
+    x                                             isscalar(x)  np.ndim(x) == 0
+    --------------------------------------------  -----------  ---------------
+    PEP 3141 numeric objects (including           True         True
+    builtins)
+    builtin string and buffer objects             True         True
+    other builtin objects, like pathlib.Path,     False        True
     Exception, the result of re.compile
-    third-party objects like                          False        True
+    third-party objects like                      False        True
     matplotlib.figure.Figure
-    zero-dimensional numpy arrays                     False        True
-    other numpy arrays                                False        False
-    list, tuple, and other sequence objects           False        False
+    zero-dimensional numpy arrays                 False        True
+    other numpy arrays                            False        False
+    list, tuple, and other sequence objects       False        False
 
     Examples: ~
 
@@ -28302,7 +28344,7 @@ numpy.kaiser(M, beta)
     parameter.
 
     beta  Window shape
-    ----  ------------------------------------------------------------------------
+    ----  --------------------------------------------------------------------
     0     Rectangular
     5     Similar to a Hamming
     6     Similar to a Hanning
@@ -29027,7 +29069,7 @@ class numpy.lib.Arrayterator(var, buf_size=None)
     >python
         >>> for subarr in a_itor:
         ...     if not subarr.all():
-        ...         print(subarr, subarr.shape) 
+        ...         print(subarr, subarr.shape)
         >>> # [[[[0 1]]]] (1, 1, 1, 2)
 <
 
@@ -29687,12 +29729,12 @@ class numpy.lib.npyio.NpzFile(fid)
 
     close()              Close the file.
     get(key[, default])  D.get(k,[,d]) returns D[k] if k in D, else d.
-    items()              D.items() returns a set-like object providing a view on
-                         the items
-    keys()               D.keys() returns a set-like object providing a view on
-                         the keys
-    values()             D.values() returns a set-like object providing a view on
-                         the values
+    items()              D.items() returns a set-like object providing a view
+                         on the items
+    keys()               D.keys() returns a set-like object providing a view
+                         on the keys
+    values()             D.values() returns a set-like object providing a view
+                         on the values
 
     Examples: ~
 
@@ -29942,8 +29984,6 @@ lib.stride_tricks.sliding_window_view(x, window_shape, axis=None, *,
 
       |numpy.broadcast_to|
           broadcast an array to a given shape.
-
-    Notes: ~
 
       Warning: ~
 
@@ -30318,7 +30358,7 @@ linalg.cond(x, p=None)
             Order of the norm used in the condition number computation:
 
             p      norm for matrices
-            -----  -----------------------------------------------------------------------
+            -----  -----------------------------------------------------------
             None   2-norm, computed directly using the SVD
             ‘fro'  Frobenius norm
             inf    max(sum(abs(x), axis=1))
@@ -31774,19 +31814,19 @@ linalg.norm(x, ord=None, axis=None, keepdims=False)
 
     The following norms can be calculated:
 
-    ord    norm for matrices                     norm for vectors
-    -----  ------------------------------------  ---------------------------------
-    None   Frobenius norm                        2-norm
-    ‘fro'  Frobenius norm                        --
-    ‘nuc'  nuclear norm                          --
-    inf    max(sum(abs(x), axis=1))              max(abs(x))
-    -inf   min(sum(abs(x), axis=1))              min(abs(x))
-    0      --                                     sum(x != 0)
-    1      max(sum(abs(x), axis=0))              as below
-    -1     min(sum(abs(x), axis=0))              as below
-    2      2-norm (largest sing. value)          as below
-    -2     smallest singular value               as below
-    other  --                                     sum(abs(x)**ord)**(1./ord)
+    ord    norm for matrices                   norm for vectors
+    -----  ----------------------------------  -------------------------------
+    None   Frobenius norm                      2-norm
+    ‘fro'  Frobenius norm                      --
+    ‘nuc'  nuclear norm                        --
+    inf    max(sum(abs(x), axis=1))            max(abs(x))
+    -inf   min(sum(abs(x), axis=1))            min(abs(x))
+    0      --                                   sum(x != 0)
+    1      max(sum(abs(x), axis=0))            as below
+    -1     min(sum(abs(x), axis=0))            as below
+    2      2-norm (largest sing. value)        as below
+    -2     smallest singular value             as below
+    other  --                                   sum(abs(x)**ord)**(1./ord)
 
     The Frobenius norm is given by
     |reference-numpy.linalg.norm-rac1c834adb66-1|:
@@ -34309,9 +34349,9 @@ numpy.logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None,
 
     >python
         >>> y = np.linspace(start, stop, num=num, endpoint=endpoint)
-        ... 
+        ...
         >>> power(base, y).astype(dtype)
-        ... 
+        ...
 <
     Examples: ~
 
@@ -39370,7 +39410,7 @@ ma.atleast_3d(*arys)
 <
     >python
         >>> for arr in np.atleast_3d([1, 2], [[1, 2]], [[[1, 2]]]):
-        ...     print(arr, arr.shape) 
+        ...     print(arr, arr.shape)
         ...
         [[[1]
           [2]]] (1, 2, 1)
@@ -40558,15 +40598,15 @@ ma.default_fill_value(obj)
     The default filling value depends on the datatype of the input array or
     the type of the input scalar:
 
-      datatype                                      default
-      --------------------------------------------  --------------------------------
-      bool                                          True
-      int                                           999999
-      float                                         1.e20
-      complex                                       1.e20+0j
-      object                                        ‘?'
-      string                                        ‘N/A'
-      StringDType                                   ‘N/A'
+      datatype                                   default
+      -----------------------------------------  -----------------------------
+      bool                                       True
+      int                                        999999
+      float                                      1.e20
+      complex                                    1.e20+0j
+      object                                     ‘?'
+      string                                     ‘N/A'
+      StringDType                                ‘N/A'
 
     For structured types, a structured scalar is returned, with each field
     the default fill value for its type.
@@ -41514,7 +41554,7 @@ ma.frombuffer(buffer, dtype=np.float64, count=-1, offset=0, *, like=None)
     >python
         >>> dt = np.dtype(np.int_)
         >>> dt = dt.newbyteorder('>')
-        >>> np.frombuffer(buf, dtype=dt) 
+        >>> np.frombuffer(buf, dtype=dt)
 <
     The data of the resulting array will not be byteswapped, but will be
     interpreted correctly.
@@ -43476,34 +43516,6 @@ ma.masked_less_equal(x, value, copy=True)
         >>> ma.masked_less_equal(a, 2)
         masked_array(data=[--, --, --, 3],
                      mask=[ True,  True,  True, False],
-               fill_value=999999)
-<
-
-----------------------------------------------------------------------------
-                                                   *numpy.ma.masked_not_equal*
-
-ma.masked_not_equal(x, value, copy=True)
-    Mask an array where not equal to a given value.
-
-    This function is a shortcut to `masked_where`, with condition = (x !=
-    value).
-
-      See also: ~
-
-      |numpy.ma.masked_where|
-          Mask where a condition is met.
-
-    Examples: ~
-
-    >python
-        >>> import numpy as np
-        >>> import numpy.ma as ma
-        >>> a = np.arange(4)
-        >>> a
-        array([0, 1, 2, 3])
-        >>> ma.masked_not_equal(a, 2)
-        masked_array(data=[--, --, 2, --],
-                     mask=[ True,  True, False,  True],
                fill_value=999999)
 <
 

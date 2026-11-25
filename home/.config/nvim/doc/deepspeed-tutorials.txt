@@ -591,17 +591,21 @@ apply. For Qwen2.5-0.5B (151,936-token vocabulary, tied embeddings) with
 `Trainer`, TP=2, ZeRO-1, BF16, gradient checkpointing, 4 x 2,048 tokens per
 micro-batch with half of each sequence masked as prompt, on two GPUs:
 
-tensor_parallel setting     Peak memory per  Step time (2x    Step time (2x
-                            rank             NVIDIA L20)      Intel Arc Pro
-                                                              B70)
---------------------------  ---------------  ---------------  ----------------
-vocab_parallel_lm_head:     18,860 MiB       558 ms           715 ms
-false (gathered logits)
-vocab_parallel_ce_backend:  13,201 MiB       514 ms           653 ms
+tensor_parallel     Peak memory per     Step time (2x       Step time (2x
+setting             rank                NVIDIA L20)         Intel Arc Pro B70)
+------------------  ------------------  ------------------  ------------------
+vocab_parallel_lm_  18,860 MiB          558 ms              715 ms
+head:
+false (gathered
+logits)
+vocab_parallel_ce_  13,201 MiB          514 ms              653 ms
+backend:
 "torch"
-vocab_parallel_ce_backend:  8,456 MiB        477 ms           -
+vocab_parallel_ce_  8,456 MiB           477 ms              -
+backend:
 "liger"
-vocab_parallel_ce_backend:  5,200 MiB        467 ms           590 ms
+vocab_parallel_ce_  5,200 MiB           467 ms              590 ms
+backend:
 "fused_linear"
 
 Peak memory is from the L20 runs; the B70 runs are within 20 MiB. Loss and
@@ -1306,7 +1310,7 @@ examples.
     --ckpt_type TF \
     --origin_bert_config_file /test/tensorflow/bert_config.json \
 <
-Note:
+Note: ~
 
 1. `--deepspeed_transformer_kernel` flag is required for using HuggingFace
    or TensorFlow pretrained models.
@@ -1720,7 +1724,7 @@ All configuration settings come from the DeepSpeed configuration file and
 command arguments and thus we must pass the `args` variable to here in this
 model.
 
-Note:
+Note: ~
 
 1. `batch_size` is the maximum bath size of input data, all fine-tuning
    training data or prediction data shouldn't exceed this threshold,

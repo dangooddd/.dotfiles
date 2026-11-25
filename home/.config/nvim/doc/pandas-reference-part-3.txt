@@ -4035,8 +4035,6 @@ Styler.hide(subset=None, axis=0, level=None, names=False)
       |pandas.io.formats.style.Styler.map|
           Apply a CSS-styling function elementwise.
 
-    Notes: ~
-
       Warning: ~
 
       This method only works with the output methods `to_html`, `to_string`,
@@ -4053,22 +4051,22 @@ Styler.hide(subset=None, axis=0, level=None, names=False)
     Caption: Argument combinations
 
     subset  level           names    Effect
-    ------  --------------  -------  ---------------------------------------------
+    ------  --------------  -------  -----------------------------------------
     None    None            False    The axis-Index is hidden entirely.
     None    None            True     Only the axis-Index names are hidden.
-    None    Int, Str, List  False    Specified axis-MultiIndex levels are hidden
-                                     entirely.
-    None    Int, Str, List  True     Specified axis-MultiIndex levels are hidden
-                                     entirely and the names of remaining
-                                     axis-MultiIndex levels.
-    Subset  None            False    The specified data rows/columns are hidden,
-                                     but the axis-Index itself, and names, remain
-                                     unchanged.
+    None    Int, Str, List  False    Specified axis-MultiIndex levels are
+                                     hidden entirely.
+    None    Int, Str, List  True     Specified axis-MultiIndex levels are
+                                     hidden entirely and the names of
+                                     remaining axis-MultiIndex levels.
+    Subset  None            False    The specified data rows/columns are
+                                     hidden, but the axis-Index itself, and
+                                     names, remain unchanged.
     Subset  None            True     The specified data rows/columns and
                                      axis-Index names are hidden, but the
                                      axis-Index itself remains unchanged.
-    Subset  Int, Str, List  Boolean  ValueError: cannot supply subset and level
-                                     simultaneously.
+    Subset  Int, Str, List  Boolean  ValueError: cannot supply subset and
+                                     level simultaneously.
 
     Note this method only hides the identified elements so can be chained to
     hide multiple elements in sequence.
@@ -4595,22 +4593,20 @@ class pandas.io.formats.style.Styler(data, precision=None,
 
     Attributes: ~
 
-    index                            (data.index Index)
-    columns                          (data.columns Index)
-    env                              (Jinja2 jinja2.Environment)
-    template_html                    (Jinja2 Template)
-    template_html_table              (Jinja2 Template)
-    template_html_style              (Jinja2 Template)
-    template_latex                   (Jinja2 Template)
-    loader                           (Jinja2 Loader)
+    index                          (data.index Index)
+    columns                        (data.columns Index)
+    env                            (Jinja2 jinja2.Environment)
+    template_html                  (Jinja2 Template)
+    template_html_table            (Jinja2 Template)
+    template_html_style            (Jinja2 Template)
+    template_latex                 (Jinja2 Template)
+    loader                         (Jinja2 Loader)
 
       See also: ~
 
       `DataFrame.style`
           Return a Styler object containing methods for building a styled
           HTML representation for the DataFrame.
-
-    Notes: ~
 
       Warning: ~
 
@@ -4679,32 +4675,33 @@ class pandas.io.formats.style.Styler(data, precision=None,
 
     Methods: ~
 
-    apply(func[, axis, subset])         Apply a CSS-styling function column-wise,
-                                        row-wise, or table-wise.
-    apply_index(func[, axis, level])    Apply a CSS-styling function to the index
-                                        or column headers, level-wise.
-    background_gradient([cmap, low,     Color the background in a gradient style.
-    high, axis, ...])
-    bar([subset, axis, color, cmap,     Draw bar chart in the cell backgrounds.
-    width, ...])
-    clear()                             Reset the Styler, removing any previously
-                                        applied styles.
+    apply(func[, axis, subset])         Apply a CSS-styling function
+                                        column-wise, row-wise, or table-wise.
+    apply_index(func[, axis, level])    Apply a CSS-styling function to the
+                                        index or column headers, level-wise.
+    background_gradient([cmap, low,     Color the background in a gradient
+    high, axis, ...])                   style.
+    bar([subset, axis, color, cmap,     Draw bar chart in the cell
+    width, ...])                        backgrounds.
+    clear()                             Reset the Styler, removing any
+                                        previously applied styles.
     concat(other)                       Append another Styler to combine the
                                         output into a single table.
-    export()                            Export the styles applied to the current
-                                        Styler.
-    format([formatter, subset, na_rep,  Format the text display value of cells.
-    ...])
+    export()                            Export the styles applied to the
+                                        current Styler.
+    format([formatter, subset, na_rep,  Format the text display value of
+    ...])                               cells.
     format_index([formatter, axis,      Format the text display value of index
     level, ...])                        labels or column headers.
     format_index_names([formatter,      Format the text display value of index
     axis, level, ...])                  names or column names.
-    from_custom_template(searchpath[,   Factory function for creating a subclass
-    ...])                               of Styler.
-    hide([subset, axis, level, names])  Hide the entire index / column headers, or
-                                        specific rows / columns from display.
-    highlight_between([subset, color,   Highlight a defined range with a style.
-    axis, ...])
+    from_custom_template(searchpath[,   Factory function for creating a
+    ...])                               subclass of Styler.
+    hide([subset, axis, level, names])  Hide the entire index / column
+                                        headers, or specific rows / columns
+                                        from display.
+    highlight_between([subset, color,   Highlight a defined range with a
+    axis, ...])                         style.
     highlight_max([subset, color,       Highlight the maximum with a style.
     axis, props])
     highlight_min([subset, color,       Highlight the minimum with a style.
@@ -4713,41 +4710,45 @@ class pandas.io.formats.style.Styler(data, precision=None,
     props])
     highlight_quantile([subset, color,  Highlight values defined by a quantile
     axis, ...])                         with a style.
-    map(func[, subset])                 Apply a CSS-styling function elementwise.
-    map_index(func[, axis, level])      Apply a CSS-styling function to the index
-                                        or column headers, elementwise.
+    map(func[, subset])                 Apply a CSS-styling function
+                                        elementwise.
+    map_index(func[, axis, level])      Apply a CSS-styling function to the
+                                        index or column headers, elementwise.
     pipe(func, *args, **kwargs)         Apply func(self, *args, **kwargs), and
                                         return the result.
-    relabel_index(labels[, axis,        Relabel the index, or column header, keys
-    level])                             to display a set of specified values.
+    relabel_index(labels[, axis,        Relabel the index, or column header,
+    level])                             keys to display a set of specified
+                                        values.
     set_caption(caption)                Set the text added to a <caption> HTML
                                         element.
-    set_properties([subset])            Set defined CSS-properties to each <td>
-                                        HTML element for the given subset.
-    set_sticky([axis, pixel_size,       Add CSS to permanently display the index
-    levels])                            or column headers in a scrolling frame.
+    set_properties([subset])            Set defined CSS-properties to each
+                                        <td> HTML element for the given
+                                        subset.
+    set_sticky([axis, pixel_size,       Add CSS to permanently display the
+    levels])                            index or column headers in a scrolling
+                                        frame.
     set_table_attributes(attributes)    Set the table attributes added to the
                                         <table> HTML element.
-    set_table_styles([table_styles,     Set the table styles included within the
-    axis, ...])                         <style> HTML element.
+    set_table_styles([table_styles,     Set the table styles included within
+    axis, ...])                         the <style> HTML element.
     set_td_classes(classes)             Set the class attribute of <td> HTML
                                         elements.
     set_tooltips(ttips[, props,         Set the DataFrame of strings on Styler
     css_class, ...])                    generating :hover tooltips.
-    set_uuid(uuid)                      Set the uuid applied to id attributes of
-                                        HTML elements.
+    set_uuid(uuid)                      Set the uuid applied to id attributes
+                                        of HTML elements.
     text_gradient([cmap, low, high,     Color the text in a gradient style.
     axis, ...])
     to_excel(excel_writer[,             Write Styler to an Excel sheet.
     sheet_name, na_rep, ...])
-    to_html([buf, table_uuid,           Write Styler to a file, buffer or string
-    table_attributes, ...])             in HTML-CSS format.
-    to_latex([buf, column_format,       Write Styler to a file, buffer or string
-    position, ...])                     in LaTeX format.
-    to_string([buf, encoding,           Write Styler to a file, buffer or string
-    sparse_index, ...])                 in text format.
-    to_typst([buf, encoding,            Write Styler to a file, buffer or string
-    sparse_index, ...])                 in Typst format.
+    to_html([buf, table_uuid,           Write Styler to a file, buffer or
+    table_attributes, ...])             string in HTML-CSS format.
+    to_latex([buf, column_format,       Write Styler to a file, buffer or
+    position, ...])                     string in LaTeX format.
+    to_string([buf, encoding,           Write Styler to a file, buffer or
+    sparse_index, ...])                 string in text format.
+    to_typst([buf, encoding,            Write Styler to a file, buffer or
+    sparse_index, ...])                 string in Typst format.
     use(styles)                         Set the styles on the current Styler.
 
 ----------------------------------------------------------------------------
@@ -6255,7 +6256,7 @@ Styler.to_latex(buf=None, *, column_format=None, position=None,
     For the following features we recommend the following LaTeX inclusions:
 
     Feature                Inclusion
-    ---------------------  -------------------------------------------------------
+    ---------------------  ---------------------------------------------------
     sparse columns         none: included within default {tabular} environment
     sparse rows            \usepackage{multirow}
     hrules                 \usepackage{booktabs}
@@ -6265,8 +6266,8 @@ Styler.to_latex(buf=None, *, column_format=None, position=None,
                            \sisetup{detect-all = true} (within {document})
     italic (with siunitx)  \usepackage{etoolbox} \robustify\itshape
                            \sisetup{detect-all = true} (within {document})
-    environment            \usepackage{longtable} if arg is “longtable” | or any
-                           other relevant environment package
+    environment            \usepackage{longtable} if arg is “longtable” | or
+                           any other relevant environment package
     hyperlinks             \usepackage{hyperref}
 
     Cell Styles
@@ -6306,14 +6307,14 @@ Styler.to_latex(buf=None, *, column_format=None, position=None,
     added to the `<options>`, within the tuple, to result in different
     positions of required braces (the default being the same as `--nowrap`):
 
-    Tuple Format                       Output Structure
-    ---------------------------------  -------------------------------------------
-    (<command>,<options>)              \<command><options> <display_value>
-    (<command>,<options> --nowrap)     \<command><options> <display_value>
-    (<command>,<options> --rwrap)      \<command><options>{<display_value>}
-    (<command>,<options> --wrap)       {\<command><options> <display_value>}
-    (<command>,<options> --lwrap)      {\<command><options>} <display_value>
-    (<command>,<options> --dwrap)      {\<command><options>}{<display_value>}
+    Tuple Format                     Output Structure
+    -------------------------------  -----------------------------------------
+    (<command>,<options>)            \<command><options> <display_value>
+    (<command>,<options> --nowrap)   \<command><options> <display_value>
+    (<command>,<options> --rwrap)    \<command><options>{<display_value>}
+    (<command>,<options> --wrap)     {\<command><options> <display_value>}
+    (<command>,<options> --lwrap)    {\<command><options>} <display_value>
+    (<command>,<options> --dwrap)    {\<command><options>}{<display_value>}
 
     For example the textbf command for font-weight should always be used
     with --rwrap so `('textbf', '--rwrap')` will render a working cell,
@@ -6424,22 +6425,27 @@ Styler.to_latex(buf=None, *, column_format=None, position=None,
     This method can convert a Styler constructed with HTML-CSS to LaTeX
     using the following limited conversions.
 
-    CSS Attribute     CSS value          LaTeX Command     LaTeX Options
-    ----------------  -----------------  ----------------  -----------------------
-    font-weight       bold bolder        bfseries
-                                         bfseries
+    CSS Attribute     CSS value          LaTeX Command      LaTeX Options
+    ----------------  -----------------  -----------------  ------------------
+    font-weight       bold bolder        bfseries bfseries
     font-style        italic oblique     itshape slshape
-    background-color  red #fe01ea #f0e   cellcolor         {red}--lwrap
-                      rgb(128,255,0)                       [HTML]{FE01EA}--lwrap
-                      rgba(128,0,0,0.5)                    [HTML]{FF00EE}--lwrap
-                      rgb(25%,255,50%)                     [rgb]{0.5,1,0}--lwrap
-                                                           [rgb]{0.5,0,0}--lwrap
-                                                           [rgb]{0.25,1,0.5}--lwrap
-    color             red #fe01ea #f0e   color             {red} [HTML]{FE01EA}
-                      rgb(128,255,0)                       [HTML]{FF00EE}
-                      rgba(128,0,0,0.5)                    [rgb]{0.5,1,0}
-                      rgb(25%,255,50%)                     [rgb]{0.5,0,0}
-                                                           [rgb]{0.25,1,0.5}
+    background-color  red #fe01ea #f0e   cellcolor          {red}--lwrap
+                      rgb(128,255,0)                        [HTML]
+                      rgba(128,0,0,0.5)                     {FE01EA}--lwrap
+                      rgb(25%,255,50%)                      [HTML]
+                                                            {FF00EE}--lwrap
+                                                            [rgb]{0.5,1,
+                                                            0}--lwrap
+                                                            [rgb]{0.5,0,
+                                                            0}--lwrap
+                                                            [rgb]{0.25,1,0.
+                                                            5}--lwrap
+    color             red #fe01ea #f0e   color              {red}
+                      rgb(128,255,0)                        [HTML]{FE01EA}
+                      rgba(128,0,0,0.5)                     [HTML]{FF00EE}
+                      rgb(25%,255,50%)                      [rgb]{0.5,1,0}
+                                                            [rgb]{0.5,0,0}
+                                                            [rgb]{0.25,1,0.5}
 
     It is also possible to add user-defined LaTeX only styles to an HTML-CSS
     Styler using the `--latex` flag, and to add LaTeX parsing options that
@@ -6947,9 +6953,9 @@ class pandas.io.parsers.TextFileReader(f, engine=None, **kwds)
 <
     Methods: ~
 
-    close()              Close the underlying file handle and parser engine.
-    get_chunk([size])    Read the next chunk of rows from the file.
-    read([nrows])        Read rows from the file into a DataFrame.
+    close()             Close the underlying file handle and parser engine.
+    get_chunk([size])   Read the next chunk of rows from the file.
+    read([nrows])       Read rows from the file into a DataFrame.
 
 ----------------------------------------------------------------------------
                                        *pandas.io.parsers.TextFileReader.read*
@@ -15372,8 +15378,8 @@ class pandas.tseries.holiday.AbstractHolidayCalendar(name='', rules=None)
     return_name])                       start_date and end_date.
     merge(other[, inplace])             Merge holiday calendars together.
     merge_class(base, other)            Merge holiday calendars together.
-    rule_from_name(name)                Return the rule for the holiday with the
-                                        given name.
+    rule_from_name(name)                Return the rule for the holiday with
+                                        the given name.
 
 ----------------------------------------------------------------------------
                         *pandas.tseries.holiday.AbstractHolidayCalendar.merge*
@@ -15642,12 +15648,10 @@ class pandas.tseries.holiday.Holiday(name, year=None, month=None, day=None,
         >>> July3rd
         Holiday: July 3rd (month=7, day=3, )
 <
-    Attributes: ~
-
     Methods: ~
 
-    dates(start_date, end_date[,        Calculate holidays observed between start
-    return_name])                       date and end date.
+    dates(start_date, end_date[,        Calculate holidays observed between
+    return_name])                       start date and end date.
 
 ----------------------------------------------------------------------------
                                *pandas.tseries.holiday.HolidayCalendarFactory*
@@ -15759,8 +15763,8 @@ class pandas.tseries.holiday.USFederalHolidayCalendar(name='', rules=None)
     return_name])                       start_date and end_date.
     merge(other[, inplace])             Merge holiday calendars together.
     merge_class(base, other)            Merge holiday calendars together.
-    rule_from_name(name)                Return the rule for the holiday with the
-                                        given name.
+    rule_from_name(name)                Return the rule for the holiday with
+                                        the given name.
 
 ----------------------------------------------------------------------------
                                 *pandas.tseries.holiday.after_nearest_workday*
@@ -16273,7 +16277,7 @@ class pandas.tseries.offsets.BHalfYearBegin
 
     Attributes: ~
 
-    startingMonth   Return the month of the year that anchors the half-years.
+    startingMonth  Return the month of the year that anchors the half-years.
 
       See also: ~
 
@@ -16360,7 +16364,7 @@ class pandas.tseries.offsets.BHalfYearEnd
 
     Attributes: ~
 
-    startingMonth   Return the month of the year that anchors the half-years.
+    startingMonth  Return the month of the year that anchors the half-years.
 
       See also: ~
 
@@ -16459,7 +16463,7 @@ class pandas.tseries.offsets.BQuarterBegin
 
     Attributes: ~
 
-    startingMonth   Return the month of the year that anchors the quarters.
+    startingMonth  Return the month of the year that anchors the quarters.
 
       See also: ~
 
@@ -16547,7 +16551,7 @@ class pandas.tseries.offsets.BQuarterEnd
 
     Attributes: ~
 
-    startingMonth   Return the month of the year that anchors the quarters.
+    startingMonth  Return the month of the year that anchors the quarters.
 
       See also: ~
 
@@ -16888,8 +16892,8 @@ class pandas.tseries.offsets.BaseOffset
 <
     Attributes: ~
 
-    base       Returns a copy of the calling offset object with n=1 and all other
-               attributes equal.
+    base       Returns a copy of the calling offset object with n=1 and all
+               other attributes equal.
     freqstr    Return a string representing the frequency.
     kwds       Return a dict of extra parameters for the offset.
     n          Return the count of the number of periods.
@@ -16901,24 +16905,24 @@ class pandas.tseries.offsets.BaseOffset
     Methods: ~
 
     copy()                Return a copy of the frequency.
-    is_month_end(ts)      Return boolean whether a timestamp occurs on the month
-                          end.
-    is_month_start(ts)    Return boolean whether a timestamp occurs on the month
-                          start.
-    is_on_offset(dt)      Return boolean whether a timestamp intersects with this
-                          frequency.
-    is_quarter_end(ts)    Return boolean whether a timestamp occurs on the quarter
-                          end.
-    is_quarter_start(ts)  Return boolean whether a timestamp occurs on the quarter
-                          start.
-    is_year_end(ts)       Return boolean whether a timestamp occurs on the year
-                          end.
-    is_year_start(ts)     Return boolean whether a timestamp occurs on the year
-                          start.
-    rollback(dt)          Roll provided date backward to next offset only if not
-                          on offset.
-    rollforward(dt)       Roll provided date forward to next offset only if not on
-                          offset.
+    is_month_end(ts)      Return boolean whether a timestamp occurs on the
+                          month end.
+    is_month_start(ts)    Return boolean whether a timestamp occurs on the
+                          month start.
+    is_on_offset(dt)      Return boolean whether a timestamp intersects with
+                          this frequency.
+    is_quarter_end(ts)    Return boolean whether a timestamp occurs on the
+                          quarter end.
+    is_quarter_start(ts)  Return boolean whether a timestamp occurs on the
+                          quarter start.
+    is_year_end(ts)       Return boolean whether a timestamp occurs on the
+                          year end.
+    is_year_start(ts)     Return boolean whether a timestamp occurs on the
+                          year start.
+    rollback(dt)          Roll provided date backward to next offset only if
+                          not on offset.
+    rollforward(dt)       Roll provided date forward to next offset only if
+                          not on offset.
 
 ----------------------------------------------------------------------------
                               *pandas.tseries.offsets.BaseOffset.is_month_end*
@@ -20009,14 +20013,15 @@ class pandas.tseries.offsets.FY5253
 
     Attributes: ~
 
-    weekday            Return the weekday used by the fiscal year.
-    startingMonth      Return the starting month of the fiscal year.
-    variation          Return the variation of the fiscal year.
+    weekday           Return the weekday used by the fiscal year.
+    startingMonth     Return the starting month of the fiscal year.
+    variation         Return the variation of the fiscal year.
 
     Methods: ~
 
     get_rule_code_suffix()  Return the suffix component of the rule code.
-    get_year_end(dt)        Get the fiscal year end date for the given datetime.
+    get_year_end(dt)        Get the fiscal year end date for the given
+                            datetime.
 
       See also: ~
 
@@ -20276,8 +20281,8 @@ class pandas.tseries.offsets.FY5253Quarter
 
     weekday              Return the weekday used by the fiscal year.
     startingMonth        Return the starting month of the fiscal year.
-    qtr_with_extra_week  Return the quarter number that has the leap or 14 week
-                         when needed.
+    qtr_with_extra_week  Return the quarter number that has the leap or 14
+                         week when needed.
     variation            Return the variation of the fiscal year.
 
     Methods: ~
@@ -20285,8 +20290,8 @@ class pandas.tseries.offsets.FY5253Quarter
     get_rule_code_suffix()   Return the suffix component of the rule code.
     get_weeks(dt)            Get the number of weeks in each quarter for the
                              fiscal year containing dt.
-    year_has_extra_week(dt)  Return whether the fiscal year containing the given
-                             date has 53 weeks.
+    year_has_extra_week(dt)  Return whether the fiscal year containing the
+                             given date has 53 weeks.
 
       See also: ~
 
@@ -20501,7 +20506,7 @@ class pandas.tseries.offsets.HalfYearBegin
 
     Attributes: ~
 
-    startingMonth   Return the month of the year that anchors the half-years.
+    startingMonth  Return the month of the year that anchors the half-years.
 
       See also: ~
 
@@ -20581,7 +20586,7 @@ class pandas.tseries.offsets.HalfYearEnd
 
     Attributes: ~
 
-    startingMonth   Return the month of the year that anchors the half-years.
+    startingMonth  Return the month of the year that anchors the half-years.
 
       See also: ~
 
@@ -21079,7 +21084,7 @@ class pandas.tseries.offsets.QuarterBegin
 
     Attributes: ~
 
-    startingMonth   Return the month of the year that anchors the quarters.
+    startingMonth  Return the month of the year that anchors the quarters.
 
       See also: ~
 
@@ -21160,7 +21165,7 @@ class pandas.tseries.offsets.QuarterEnd
 
     Attributes: ~
 
-    startingMonth   Return the month of the year that anchors the quarters.
+    startingMonth  Return the month of the year that anchors the quarters.
 
       See also: ~
 
@@ -21310,7 +21315,7 @@ class pandas.tseries.offsets.SemiMonthBegin
 
     Attributes: ~
 
-    day_of_month   Return the day of the month for the semi-monthly offset.
+    day_of_month  Return the day of the month for the semi-monthly offset.
 
       See also: ~
 
@@ -21385,7 +21390,7 @@ class pandas.tseries.offsets.SemiMonthEnd
 
     Attributes: ~
 
-    day_of_month   Return the day of the month for the semi-monthly offset.
+    day_of_month  Return the day of the month for the semi-monthly offset.
 
       See also: ~
 
@@ -22585,85 +22590,85 @@ Timestamp.year              Return the year of the Timestamp.
 
 Methods                                             *reference-arrays-methods*
 
-Timestamp.as_unit(unit[, round_ok])   Convert the underlying int64
-                                      representation to the given unit.
-Timestamp.astimezone(tz)              Convert timezone-aware Timestamp to
-                                      another time zone.
-Timestamp.ceil(freq[, ambiguous,      Return a new Timestamp ceiled to this
-    nonexistent])                         resolution.
-    Timestamp.combine(date, time)         Combine a date and time into a single
-                                      Timestamp object.
-Timestamp.ctime()                     Return a ctime() style string
-                                      representing the Timestamp.
-Timestamp.date()                      Returns datetime.date with the same
-                                      year, month, and day.
-Timestamp.day_name([locale])          Return the day name of the Timestamp
-                                      with specified locale.
-Timestamp.dst()                       Return the daylight saving time (DST)
-                                      adjustment.
-Timestamp.floor(freq[, ambiguous,     Return a new Timestamp floored to this
-    nonexistent])                         resolution.
-    Timestamp.fromisocalendar(year,       Construct a Timestamp from an ISO year,
-    week, day)                            week number, and weekday.
-    Timestamp.fromisoformat(date_string)  Construct a Timestamp from a string in
-                                      ISO 8601 format.
-Timestamp.fromordinal(ordinal[, tz])  Construct a timestamp from a proleptic
-                                      Gregorian ordinal.
-Timestamp.fromtimestamp(ts[, tz])     Create a Timestamp object from a POSIX
-                                      timestamp.
-Timestamp.isocalendar()               Return a named tuple containing ISO
-                                      year, week number, and weekday.
-Timestamp.isoformat([sep, timespec])  Return the time formatted according to
-                                      ISO 8601.
-Timestamp.isoweekday()                Return the day of the week represented
-                                      by the date.
-Timestamp.month_name([locale])        Return the month name of the Timestamp
-                                      with specified locale.
-Timestamp.normalize()                 Normalize Timestamp to midnight,
-                                      preserving tz information.
-Timestamp.now([tz])                   Return new Timestamp object representing
-                                      current time local to tz.
-Timestamp.replace([year, month, day,  Implements datetime.replace, handles
-    hour, ...])                           nanoseconds.
-    Timestamp.round(freq[, ambiguous,     Round the Timestamp to the specified
-    nonexistent])                         resolution.
-    Timestamp.strftime(format)            Return a formatted string of the
-                                      Timestamp.
-Timestamp.strptime(date_string,       Convert string argument to datetime.
+Timestamp.as_unit(unit[,            Convert the underlying int64
+    round_ok])                          representation to the given unit.
+    Timestamp.astimezone(tz)            Convert timezone-aware Timestamp to
+                                    another time zone.
+Timestamp.ceil(freq[, ambiguous,    Return a new Timestamp ceiled to this
+    nonexistent])                       resolution.
+    Timestamp.combine(date, time)       Combine a date and time into a single
+                                    Timestamp object.
+Timestamp.ctime()                   Return a ctime() style string representing
+                                    the Timestamp.
+Timestamp.date()                    Returns datetime.date with the same year,
+                                    month, and day.
+Timestamp.day_name([locale])        Return the day name of the Timestamp with
+                                    specified locale.
+Timestamp.dst()                     Return the daylight saving time (DST)
+                                    adjustment.
+Timestamp.floor(freq[, ambiguous,   Return a new Timestamp floored to this
+    nonexistent])                       resolution.
+    Timestamp.fromisocalendar(year,     Construct a Timestamp from an ISO year,
+    week, day)                          week number, and weekday.
+    Timestamp.fromisoformat(date_       Construct a Timestamp from a string in ISO
+    string)                             8601 format.
+    Timestamp.fromordinal(ordinal[,     Construct a timestamp from a proleptic
+    tz])                                Gregorian ordinal.
+    Timestamp.fromtimestamp(ts[, tz])   Create a Timestamp object from a POSIX
+                                    timestamp.
+Timestamp.isocalendar()             Return a named tuple containing ISO year,
+                                    week number, and weekday.
+Timestamp.isoformat([sep,           Return the time formatted according to ISO
+    timespec])                          8601.
+    Timestamp.isoweekday()              Return the day of the week represented by
+                                    the date.
+Timestamp.month_name([locale])      Return the month name of the Timestamp
+                                    with specified locale.
+Timestamp.normalize()               Normalize Timestamp to midnight,
+                                    preserving tz information.
+Timestamp.now([tz])                 Return new Timestamp object representing
+                                    current time local to tz.
+Timestamp.replace([year, month,     Implements datetime.replace, handles
+    day, hour, ...])                    nanoseconds.
+    Timestamp.round(freq[, ambiguous,   Round the Timestamp to the specified
+    nonexistent])                       resolution.
+    Timestamp.strftime(format)          Return a formatted string of the
+                                    Timestamp.
+Timestamp.strptime(date_string,     Convert string argument to datetime.
     format)
-    Timestamp.time()                      Return time object with same time but
-                                      with tzinfo=None.
-Timestamp.timestamp()                 Return POSIX timestamp as float.
-    Timestamp.timetuple()                 Return time tuple, compatible with
-                                      time.localtime().
-Timestamp.timetz()                    Return time object with same time and
-                                      tzinfo.
-Timestamp.to_datetime64()             Return a NumPy datetime64 object with
-                                      same precision.
-Timestamp.to_numpy([dtype, copy])     Convert the Timestamp to a NumPy
-                                      datetime64.
-Timestamp.to_julian_date()            Convert Timestamp to a Julian Date.
-    Timestamp.to_period([freq])           Return a period of which this timestamp
-                                      is an observation.
-Timestamp.to_pydatetime([warn])       Convert a Timestamp object to a native
-                                      Python datetime object.
-Timestamp.today([tz])                 Return the current time in the local
-                                      timezone.
-Timestamp.toordinal()                 Return proleptic Gregorian ordinal.
-    Timestamp.tz_convert(tz)              Convert timezone-aware Timestamp to
-                                      another time zone.
-Timestamp.tz_localize(tz[,            Attach or detach a time zone on a
-    ambiguous, ...])                      Timestamp.
-    Timestamp.tzname()                    Return time zone name.
-    Timestamp.utcfromtimestamp(ts)        Construct a timezone-aware UTC datetime
-                                      from a POSIX timestamp.
-Timestamp.utcnow()                    (DEPRECATED) Return a new Timestamp
-                                      representing UTC day and time.
-Timestamp.utcoffset()                 Return utc offset.
-    Timestamp.utctimetuple()              Return UTC time tuple, compatible with
-                                      time.localtime().
-Timestamp.weekday()                   Return the day of the week represented
-                                      by the date.
+    Timestamp.time()                    Return time object with same time but with
+                                    tzinfo=None.
+Timestamp.timestamp()               Return POSIX timestamp as float.
+    Timestamp.timetuple()               Return time tuple, compatible with
+                                    time.localtime().
+Timestamp.timetz()                  Return time object with same time and
+                                    tzinfo.
+Timestamp.to_datetime64()           Return a NumPy datetime64 object with same
+                                    precision.
+Timestamp.to_numpy([dtype, copy])   Convert the Timestamp to a NumPy
+                                    datetime64.
+Timestamp.to_julian_date()          Convert Timestamp to a Julian Date.
+    Timestamp.to_period([freq])         Return a period of which this timestamp is
+                                    an observation.
+Timestamp.to_pydatetime([warn])     Convert a Timestamp object to a native
+                                    Python datetime object.
+Timestamp.today([tz])               Return the current time in the local
+                                    timezone.
+Timestamp.toordinal()               Return proleptic Gregorian ordinal.
+    Timestamp.tz_convert(tz)            Convert timezone-aware Timestamp to
+                                    another time zone.
+Timestamp.tz_localize(tz[,          Attach or detach a time zone on a
+    ambiguous, ...])                    Timestamp.
+    Timestamp.tzname()                  Return time zone name.
+    Timestamp.utcfromtimestamp(ts)      Construct a timezone-aware UTC datetime
+                                    from a POSIX timestamp.
+Timestamp.utcnow()                  (DEPRECATED) Return a new Timestamp
+                                    representing UTC day and time.
+Timestamp.utcoffset()               Return utc offset.
+    Timestamp.utctimetuple()            Return UTC time tuple, compatible with
+                                    time.localtime().
+Timestamp.weekday()                 Return the day of the week represented by
+                                    the date.
 
 A collection of timestamps may be stored in a |pandas.arrays.DatetimeArray|.
 For timezone-aware data, the `.dtype` of a |pandas.arrays.DatetimeArray| is
@@ -22912,18 +22917,23 @@ can be used to change the categorical data. See
 
 More methods are available on |pandas.Categorical|:
 
-Categorical.as_ordered()              Set the Categorical to be ordered.
-    Categorical.as_unordered()            Set the Categorical to be unordered.
-    Categorical.set_categories(new_categories[,  Set the categories to the specified new
-    ...])                                 categories.
-    Categorical.rename_categories(new_categories)  Rename categories.
-    Categorical.reorder_categories(new_categories)  Reorder categories as specified in
-                                      new_categories.
-Categorical.add_categories(new_categories)  Add new categories.
-    Categorical.remove_categories(removals)  Remove the specified categories.
-    Categorical.remove_unused_categories()  Remove categories which are not used.
-    Categorical.map(mapper[, na_action])  Map categories using an input mapping or
-                                      function.
+Categorical.as_ordered()            Set the Categorical to be ordered.
+    Categorical.as_unordered()          Set the Categorical to be unordered.
+    Categorical.set_categories(new_     Set the categories to the specified new
+    categories[,                        categories.
+    ...])
+    Categorical.rename_categories(new_  Rename categories.
+    categories)
+    Categorical.reorder_                Reorder categories as specified in
+    categories(new_categories)          new_categories.
+    Categorical.add_categories(new_     Add new categories.
+    categories)
+    Categorical.remove_                 Remove the specified categories.
+    categories(removals)
+    Categorical.remove_unused_          Remove categories which are not used.
+    categories()
+    Categorical.map(mapper[,            Map categories using an input mapping or
+    na_action])                         function.
 
 Sparse                                               *reference-arrays-sparse*
 
@@ -22978,61 +22988,62 @@ UTILITIES                                         *reference-arrays-utilities*
 
 Constructors                                   *reference-arrays-constructors*
 
-api.types.union_categoricals(to_union[,  Combine list-like of Categorical-like,
-    ...])                                 unioning categories.
-    api.types.infer_dtype(value[,         Return a string label of the type of the
-    skipna])                              elements in a list-like input.
-    api.types.pandas_dtype(dtype)         Convert input into a pandas only dtype
-                                      object or a numpy dtype object.
+api.types.union_categoricals(to_    Combine list-like of Categorical-like,
+    union[,                             unioning categories.
+    ...])
+    api.types.infer_dtype(value[,       Return a string label of the type of the
+    skipna])                            elements in a list-like input.
+    api.types.pandas_dtype(dtype)       Convert input into a pandas only dtype
+                                    object or a numpy dtype object.
 
 Data type introspection             *reference-arrays-data-type-introspection*
 
-api.types.is_any_real_numeric_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of a real number dtype.
-api.types.is_bool_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of a boolean dtype.
-api.types.is_categorical_dtype(arr_or_dtype)  (DEPRECATED) Check whether an array-like
-                                      or dtype is of the Categorical dtype.
-api.types.is_complex_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of a complex dtype.
-api.types.is_datetime64_any_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of the datetime64 dtype.
-api.types.is_datetime64_dtype(arr_or_dtype)  Check whether an array-like or dtype is
-                                      of the datetime64 dtype.
-api.types.is_datetime64_ns_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of the datetime64[ns] dtype.
-api.types.is_datetime64tz_dtype(arr_or_dtype)  (DEPRECATED) Check whether an array-like
-                                      or dtype is of a DatetimeTZDtype dtype.
-api.types.is_dtype_equal(source,      Check if two dtypes are equal.
+api.types.is_any_real_numeric_      Check whether the provided array or dtype
+dtype(arr_or_dtype)                 is of a real number dtype.
+    api.types.is_bool_dtype(arr_or_     Check whether the provided array or dtype
+    dtype)                              is of a boolean dtype.
+    api.types.is_categorical_           (DEPRECATED) Check whether an array-like
+    dtype(arr_or_dtype)                 or dtype is of the Categorical dtype.
+    api.types.is_complex_dtype(arr_or_  Check whether the provided array or dtype
+    dtype)                              is of a complex dtype.
+    api.types.is_datetime64_any_        Check whether the provided array or dtype
+    dtype(arr_or_dtype)                 is of the datetime64 dtype.
+    api.types.is_datetime64_dtype(arr_  Check whether an array-like or dtype is of
+    or_dtype)                           the datetime64 dtype.
+    api.types.is_datetime64_ns_         Check whether the provided array or dtype
+    dtype(arr_or_dtype)                 is of the datetime64[ns] dtype.
+    api.types.is_datetime64tz_          (DEPRECATED) Check whether an array-like
+    dtype(arr_or_dtype)                 or dtype is of a DatetimeTZDtype dtype.
+    api.types.is_dtype_equal(source,    Check if two dtypes are equal.
     target)
-    api.types.is_extension_array_dtype(arr_or_dtype)  Check if an object is a pandas extension
-                                      array type.
-api.types.is_float_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of a float dtype.
-api.types.is_int64_dtype(arr_or_dtype)  (DEPRECATED) Check whether the provided
-                                      array or dtype is of the int64 dtype.
-api.types.is_integer_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of an integer dtype.
-api.types.is_interval_dtype(arr_or_dtype)  (DEPRECATED) Check whether an array-like
-                                      or dtype is of the Interval dtype.
-api.types.is_numeric_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of a numeric dtype.
-api.types.is_object_dtype(arr_or_dtype)  Check whether an array-like or dtype is
-                                      of the object dtype.
-api.types.is_period_dtype(arr_or_dtype)  (DEPRECATED) Check whether an array-like
-                                      or dtype is of the Period dtype.
-api.types.is_signed_integer_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of a signed integer dtype.
-api.types.is_string_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of the string dtype.
-api.types.is_timedelta64_dtype(arr_or_dtype)  Check whether an array-like or dtype is
-                                      of the timedelta64 dtype.
-api.types.is_timedelta64_ns_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of the timedelta64[ns] dtype.
-api.types.is_unsigned_integer_dtype(arr_or_dtype)  Check whether the provided array or
-                                      dtype is of an unsigned integer dtype.
-api.types.is_sparse(arr)              (DEPRECATED) Check whether an array-like
-                                      is a 1-D pandas sparse array.
+    api.types.is_extension_array_       Check if an object is a pandas extension
+    dtype(arr_or_dtype)                 array type.
+    api.types.is_float_dtype(arr_or_    Check whether the provided array or dtype
+    dtype)                              is of a float dtype.
+    api.types.is_int64_dtype(arr_or_    (DEPRECATED) Check whether the provided
+    dtype)                              array or dtype is of the int64 dtype.
+    api.types.is_integer_dtype(arr_or_  Check whether the provided array or dtype
+    dtype)                              is of an integer dtype.
+    api.types.is_interval_dtype(arr_    (DEPRECATED) Check whether an array-like
+    or_dtype)                           or dtype is of the Interval dtype.
+    api.types.is_numeric_dtype(arr_or_  Check whether the provided array or dtype
+    dtype)                              is of a numeric dtype.
+    api.types.is_object_dtype(arr_or_   Check whether an array-like or dtype is of
+    dtype)                              the object dtype.
+    api.types.is_period_dtype(arr_or_   (DEPRECATED) Check whether an array-like
+    dtype)                              or dtype is of the Period dtype.
+    api.types.is_signed_integer_        Check whether the provided array or dtype
+    dtype(arr_or_dtype)                 is of a signed integer dtype.
+    api.types.is_string_dtype(arr_or_   Check whether the provided array or dtype
+    dtype)                              is of the string dtype.
+    api.types.is_timedelta64_           Check whether an array-like or dtype is of
+    dtype(arr_or_dtype)                 the timedelta64 dtype.
+    api.types.is_timedelta64_ns_        Check whether the provided array or dtype
+    dtype(arr_or_dtype)                 is of the timedelta64[ns] dtype.
+    api.types.is_unsigned_integer_      Check whether the provided array or dtype
+    dtype(arr_or_dtype)                 is of an unsigned integer dtype.
+    api.types.is_sparse(arr)            (DEPRECATED) Check whether an array-like
+                                    is a 1-D pandas sparse array.
 
 Iterable introspection               *reference-arrays-iterable-introspection*
 
@@ -23066,27 +23077,29 @@ Extensions                                       *pandas-reference-extensions*
 These are primarily intended for library authors looking to extend pandas
 objects.
 
-api.extensions.register_extension_dtype(cls)  Register an ExtensionType with pandas as
-                                      class decorator.
-api.extensions.register_dataframe_accessor(name)  Register a custom accessor on DataFrame
-                                      objects.
-api.extensions.register_series_accessor(name)  Register a custom accessor on Series
-                                      objects.
-api.extensions.register_index_accessor(name)  Register a custom accessor on Index
-                                      objects.
+api.extensions.register_extension_  Register an ExtensionType with pandas as
+dtype(cls)                          class decorator.
+    api.extensions.register_dataframe_  Register a custom accessor on DataFrame
+    accessor(name)                      objects.
+    api.extensions.register_series_     Register a custom accessor on Series
+    accessor(name)                      objects.
+    api.extensions.register_index_      Register a custom accessor on Index
+    accessor(name)                      objects.
 
-api.extensions.ExtensionDtype()      A custom data type, to be paired with an
-                                     ExtensionArray.
-api.extensions.ExtensionArray()      Abstract base class for custom 1-D array
-                                     types.
-arrays.NumpyExtensionArray(values[,  A pandas ExtensionArray for NumPy data.
+api.extensions.ExtensionDtype()     A custom data type, to be paired with an
+                                    ExtensionArray.
+api.extensions.ExtensionArray()     Abstract base class for custom 1-D array
+                                    types.
+arrays.                             A pandas ExtensionArray for NumPy data.
+NumpyExtensionArray(values[,
     copy])
 
 Additionally, we have some utility methods for ensuring your object behaves
 correctly.
 
-api.indexers.check_array_indexer(array,  Check if indexer is a valid array
-    indexer)                              indexer for array.
+api.indexers.check_array_           Check if indexer is a valid array indexer
+indexer(array,                      for array.
+    indexer)
 
 The sentinel `pandas.api.extensions.no_default` is used as the default value
 in some methods. Use an `is` comparison to check if the user provides a
@@ -23138,15 +23151,16 @@ DataFrame.set_flags(*[, copy,       Return a new object with updated flags.
 
 CONVERSION                                        *reference-frame-conversion*
 
-DataFrame.astype(dtype[, copy,        Cast a pandas object to a specified
-    errors])                              dtype dtype.
-    DataFrame.convert_dtypes([infer_objects,  Convert columns from numpy dtypes to the
-    ...])                                 best dtypes that support pd.NA.
-    DataFrame.infer_objects([copy])       Attempt to infer better dtypes for
-                                      object columns.
-DataFrame.copy([deep])                Make a copy of this object's indices and
-                                      data.
-DataFrame.to_numpy([dtype, copy,      Convert the DataFrame to a NumPy array.
+DataFrame.astype(dtype[, copy,      Cast a pandas object to a specified dtype
+    errors])                            dtype.
+    DataFrame.convert_dtypes([infer_    Convert columns from numpy dtypes to the
+    objects,                            best dtypes that support pd.NA.
+    ...])
+    DataFrame.infer_objects([copy])     Attempt to infer better dtypes for object
+                                    columns.
+DataFrame.copy([deep])              Make a copy of this object's indices and
+                                    data.
+DataFrame.to_numpy([dtype, copy,    Convert the DataFrame to a NumPy array.
     na_value])
 
 INDEXING, ITERATION                       *reference-frame-indexing-iteration*
@@ -23570,59 +23584,60 @@ Sparse-dtype specific methods and attributes are provided under the
 DataFrame.sparse.density  Ratio of non-sparse points to total (dense) data
                           points.
 
-DataFrame.sparse.from_spmatrix(data[,  Create a new DataFrame from a scipy
-    ...])                                 sparse matrix.
-    DataFrame.sparse.to_coo()             Return the contents of the frame as a
-                                      sparse SciPy COO matrix.
-DataFrame.sparse.to_dense()           Convert a DataFrame with sparse values
-                                      to dense.
+DataFrame.sparse.from_              Create a new DataFrame from a scipy sparse
+spmatrix(data[,                     matrix.
+    ...])
+    DataFrame.sparse.to_coo()           Return the contents of the frame as a
+                                    sparse SciPy COO matrix.
+DataFrame.sparse.to_dense()         Convert a DataFrame with sparse values to
+                                    dense.
 
 SERIALIZATION / IO / CONVERSION  *reference-frame-serialization-io-conversion*
 
-DataFrame.from_arrow(data)            Construct a DataFrame from a tabular
-                                      Arrow object.
-DataFrame.from_dict(data[, orient,    Construct DataFrame from dict of
-    dtype, ...])                          array-like or dicts.
-    DataFrame.from_records(data[, index,  Convert structured or record ndarray to
-    ...])                                 DataFrame.
-    DataFrame.to_orc([path, engine,       Write a DataFrame to the Optimized Row
-    index, ...])                          Columnar (ORC) format.
-    DataFrame.to_parquet([path, engine,   Write a DataFrame to the binary parquet
-    ...])                                 format.
-    DataFrame.to_pickle(path, *[,         Pickle (serialize) object to file.
+DataFrame.from_arrow(data)          Construct a DataFrame from a tabular Arrow
+                                    object.
+DataFrame.from_dict(data[, orient,  Construct DataFrame from dict of
+    dtype, ...])                        array-like or dicts.
+    DataFrame.from_records(data[,       Convert structured or record ndarray to
+    index, ...])                        DataFrame.
+    DataFrame.to_orc([path, engine,     Write a DataFrame to the Optimized Row
+    index, ...])                        Columnar (ORC) format.
+    DataFrame.to_parquet([path,         Write a DataFrame to the binary parquet
+    engine, ...])                       format.
+    DataFrame.to_pickle(path, *[,       Pickle (serialize) object to file.
     compression, ...])
-    DataFrame.to_csv([path_or_buf, sep,   Write object to a comma-separated values
-    na_rep, ...])                         (csv) file.
-    DataFrame.to_hdf(path_or_buf, *,      Write the contained data to an HDF5 file
-    key[, ...])                           using HDFStore.
-    DataFrame.to_sql(name, con, *[,       Write records stored in a DataFrame to a
-    schema, ...])                         SQL database.
-    DataFrame.to_dict([orient, into,      Convert the DataFrame to a dictionary.
+    DataFrame.to_csv([path_or_buf,      Write object to a comma-separated values
+    sep, na_rep, ...])                  (csv) file.
+    DataFrame.to_hdf(path_or_buf, *,    Write the contained data to an HDF5 file
+    key[, ...])                         using HDFStore.
+    DataFrame.to_sql(name, con, *[,     Write records stored in a DataFrame to a
+    schema, ...])                       SQL database.
+    DataFrame.to_dict([orient, into,    Convert the DataFrame to a dictionary.
     index])
-    DataFrame.to_excel(excel_writer, *[,  Write object to an Excel sheet.
-    ...])
-    DataFrame.to_json([path_or_buf,       Convert the object to a JSON string.
+    DataFrame.to_excel(excel_writer,    Write object to an Excel sheet.
+    *[, ...])
+    DataFrame.to_json([path_or_buf,     Convert the object to a JSON string.
     orient, ...])
-    DataFrame.to_html([buf, columns,      Render a DataFrame as an HTML table.
+    DataFrame.to_html([buf, columns,    Render a DataFrame as an HTML table.
     col_space, ...])
-    DataFrame.to_feather(path, **kwargs)  Write a DataFrame to the binary Feather
-                                      format.
-DataFrame.to_latex([buf, columns,     Render object to a LaTeX tabular,
-    header, ...])                         longtable, or nested table.
-    DataFrame.to_stata(path, *[,          Export DataFrame object to Stata dta
-    convert_dates, ...])                  format.
-    DataFrame.to_records([index,          Convert DataFrame to a NumPy record
-    column_dtypes, ...])                  array.
-    DataFrame.to_string([buf, columns,    Render a DataFrame to a console-friendly
-    ...])                                 tabular output.
-    DataFrame.to_clipboard(*[, excel,     Copy object to the system clipboard.
+    DataFrame.to_feather(path,          Write a DataFrame to the binary Feather
+    **kwargs)                           format.
+    DataFrame.to_latex([buf, columns,   Render object to a LaTeX tabular,
+    header, ...])                       longtable, or nested table.
+    DataFrame.to_stata(path, *[,        Export DataFrame object to Stata dta
+    convert_dates, ...])                format.
+    DataFrame.to_records([index,        Convert DataFrame to a NumPy record array.
+    column_dtypes, ...])
+    DataFrame.to_string([buf, columns,  Render a DataFrame to a console-friendly
+    ...])                               tabular output.
+    DataFrame.to_clipboard(*[, excel,   Copy object to the system clipboard.
     sep])
-    DataFrame.to_markdown([buf, mode,     Print DataFrame in Markdown-friendly
-    index, ...])                          format.
-    DataFrame.style                       Returns a Styler object.
-    DataFrame.__dataframe__([nan_as_null,  (DEPRECATED) Return the dataframe
-    ...])                                 interchange object implementing the
-                                      interchange protocol.
+    DataFrame.to_markdown([buf, mode,   Print DataFrame in Markdown-friendly
+    index, ...])                        format.
+    DataFrame.style                     Returns a Styler object.
+    DataFrame.__dataframe__([nan_as_    (DEPRECATED) Return the dataframe
+    null,                               interchange object implementing the
+    ...])                               interchange protocol.
 
 ----------------------------------------------------------------------------
 General functions                         *pandas-reference-general_functions*
@@ -23716,8 +23731,9 @@ api.typing.Expression(func,         Class representing a deferred expression
 
 DATETIME FORMATS                *reference-general_functions-datetime-formats*
 
-tseries.api.guess_datetime_format(dt_str[,  Guess the datetime format of a given
-    ...])                                 datetime string.
+tseries.api.guess_datetime_         Guess the datetime format of a given
+format(dt_str[,                     datetime string.
+    ...])
 
 HASHING                                  *reference-general_functions-hashing*
 
@@ -23729,8 +23745,9 @@ util.hash_array(vals[, encoding,    Given a 1d array, return an array of
         *reference-general_functions-importing-from-other-dataframe-libraries*
 IMPORTING FROM OTHER DATAFRAME LIBRARIES
 
-api.interchange.from_dataframe(df[,  Build a pd.DataFrame from any DataFrame
-    allow_copy])                         supporting the interchange protocol.
+api.interchange.from_               Build a pd.DataFrame from any DataFrame
+dataframe(df[,                      supporting the interchange protocol.
+    allow_copy])
 
 ----------------------------------------------------------------------------
 GroupBy                                             *pandas-reference-groupby*
@@ -23796,208 +23813,231 @@ SeriesGroupBy.apply(func, *args,    Apply function func group-wise and combine
            *reference-groupby-dataframegroupby-computations-descriptive-stats*
 `DataFrameGroupBy` COMPUTATIONS / DESCRIPTIVE STATS
 
-DataFrameGroupBy.all([skipna])        Return True if all values in the group
-                                      are truthful, else False.
-DataFrameGroupBy.any([skipna])        Return True if any value in the group is
-                                      truthful, else False.
-DataFrameGroupBy.bfill([limit])       Backward fill the values.
-    DataFrameGroupBy.corr([method,        Compute pairwise correlation of columns,
-    min_periods, ...])                    excluding NA/null values.
-    DataFrameGroupBy.corrwith(other[,     (DEPRECATED) Compute pairwise
-    drop, ...])                           correlation.
-    DataFrameGroupBy.count()              Compute count of group, excluding
-                                      missing values.
-DataFrameGroupBy.cov([min_periods,    Compute pairwise covariance of columns,
-    ddof, ...])                           excluding NA/null values.
-    DataFrameGroupBy.cumcount([ascending])  Number each item in each group from 0 to
-                                      the length of that group - 1.
-DataFrameGroupBy.cummax([numeric_only,  Cumulative max for each group.
+DataFrameGroupBy.all([skipna])      Return True if all values in the group are
+                                    truthful, else False.
+DataFrameGroupBy.any([skipna])      Return True if any value in the group is
+                                    truthful, else False.
+DataFrameGroupBy.bfill([limit])     Backward fill the values.
+    DataFrameGroupBy.corr([method,      Compute pairwise correlation of columns,
+    min_periods, ...])                  excluding NA/null values.
+    DataFrameGroupBy.corrwith(other[,   (DEPRECATED) Compute pairwise correlation.
+    drop, ...])
+    DataFrameGroupBy.count()            Compute count of group, excluding missing
+                                    values.
+DataFrameGroupBy.cov([min_periods,  Compute pairwise covariance of columns,
+    ddof, ...])                         excluding NA/null values.
+    DataFrameGroupBy.                   Number each item in each group from 0 to
+    cumcount([ascending])               the length of that group - 1.
+    DataFrameGroupBy.cummax([numeric_   Cumulative max for each group.
+    only,
     skipna])
-    DataFrameGroupBy.cummin([numeric_only,  Cumulative min for each group.
+    DataFrameGroupBy.cummin([numeric_   Cumulative min for each group.
+    only,
     skipna])
-    DataFrameGroupBy.cumprod([numeric_only,  Cumulative product for each group.
+    DataFrameGroupBy.cumprod([numeric_  Cumulative product for each group.
+    only,
     skipna])
-    DataFrameGroupBy.cumsum([numeric_only,  Cumulative sum for each group.
+    DataFrameGroupBy.cumsum([numeric_   Cumulative sum for each group.
+    only,
     skipna])
-    DataFrameGroupBy.describe([percentiles,  Generate descriptive statistics for each
-    ...])                                 group.
-    DataFrameGroupBy.diff([periods])      First discrete difference of element.
-    DataFrameGroupBy.ewm([com, span,      Return an ewm grouper, providing ewm
-    halflife, ...])                       functionality per group.
-    DataFrameGroupBy.expanding([min_periods,  Return an expanding grouper, providing
-    method])                              expanding functionality per group.
-    DataFrameGroupBy.ffill([limit])       Forward fill the values.
-    DataFrameGroupBy.first([numeric_only,  Compute the first entry of each column
-    ...])                                 within each group.
-    DataFrameGroupBy.head([n])            Return first n rows of each group.
-    DataFrameGroupBy.idxmax([skipna,      Return index of first occurrence of
-    numeric_only])                        maximum in each group.
-    DataFrameGroupBy.idxmin([skipna,      Return index of first occurrence of
-    numeric_only])                        minimum in each group.
-    DataFrameGroupBy.last([numeric_only,  Compute the last entry of each column
-    ...])                                 within each group.
-    DataFrameGroupBy.max([numeric_only,   Compute max of group values.
+    DataFrameGroupBy.                   Generate descriptive statistics for each
+    describe([percentiles,              group.
     ...])
-    DataFrameGroupBy.mean([numeric_only,  Compute mean of groups, excluding
-    ...])                                 missing values.
-    DataFrameGroupBy.median([numeric_only,  Compute median of groups, excluding
-    skipna])                              missing values.
-    DataFrameGroupBy.min([numeric_only,   Compute min of group values.
+    DataFrameGroupBy.diff([periods])    First discrete difference of element.
+    DataFrameGroupBy.ewm([com, span,    Return an ewm grouper, providing ewm
+    halflife, ...])                     functionality per group.
+    DataFrameGroupBy.expanding([min_    Return an expanding grouper, providing
+    periods,                            expanding functionality per group.
+    method])
+    DataFrameGroupBy.ffill([limit])     Forward fill the values.
+    DataFrameGroupBy.first([numeric_    Compute the first entry of each column
+    only,                               within each group.
     ...])
-    DataFrameGroupBy.ngroup([ascending])  Number each group from 0 to the number
-                                      of groups - 1.
-DataFrameGroupBy.nth                  (DEPRECATED) Take the nth row from each
-                                      group if n is an int, otherwise a subset
-                                      of rows.
-DataFrameGroupBy.nunique([dropna])    Return DataFrame with counts of unique
-                                      elements in each position.
-DataFrameGroupBy.ohlc()               Compute open, high, low and close values
-                                      of a group, excluding missing values.
-DataFrameGroupBy.pct_change([periods,  Calculate pct_change of each value to
-    ...])                                 previous entry in group.
-    DataFrameGroupBy.prod([numeric_only,  Compute prod of group values.
+    DataFrameGroupBy.head([n])          Return first n rows of each group.
+    DataFrameGroupBy.idxmax([skipna,    Return index of first occurrence of
+    numeric_only])                      maximum in each group.
+    DataFrameGroupBy.idxmin([skipna,    Return index of first occurrence of
+    numeric_only])                      minimum in each group.
+    DataFrameGroupBy.last([numeric_     Compute the last entry of each column
+    only,                               within each group.
     ...])
-    DataFrameGroupBy.quantile([q, ...])   Return group values at the given
-                                      quantile, a la numpy.percentile.
-DataFrameGroupBy.rank([method,        Provide the rank of values within each
-    ascending, ...])                      group.
-    DataFrameGroupBy.resample(rule[,      Provide resampling within each group of
-    closed, ...])                         a groupby.
-    DataFrameGroupBy.rolling(window[,     Return a rolling grouper, providing
-    ...])                                 rolling functionality per group.
-    DataFrameGroupBy.sample([n, frac,     Return a random sample of items from
-    replace, ...])                        each group.
-    DataFrameGroupBy.sem([ddof,           Compute standard error of the mean of
-    numeric_only, ...])                   groups, excluding missing values.
-    DataFrameGroupBy.shift([periods,      Shift each group by periods
-    freq, ...])                           observations.
-    DataFrameGroupBy.size()               Compute group sizes.
-    DataFrameGroupBy.skew([skipna,        Return unbiased skew within groups.
+    DataFrameGroupBy.max([numeric_      Compute max of group values.
+    only,
+    ...])
+    DataFrameGroupBy.mean([numeric_     Compute mean of groups, excluding missing
+    only,                               values.
+    ...])
+    DataFrameGroupBy.median([numeric_   Compute median of groups, excluding
+    only,                               missing values.
+    skipna])
+    DataFrameGroupBy.min([numeric_      Compute min of group values.
+    only,
+    ...])
+    DataFrameGroupBy.                   Number each group from 0 to the number of
+    ngroup([ascending])                 groups - 1.
+    DataFrameGroupBy.nth                (DEPRECATED) Take the nth row from each
+                                    group if n is an int, otherwise a subset
+                                    of rows.
+DataFrameGroupBy.nunique([dropna])  Return DataFrame with counts of unique
+                                    elements in each position.
+DataFrameGroupBy.ohlc()             Compute open, high, low and close values
+                                    of a group, excluding missing values.
+DataFrameGroupBy.pct_               Calculate pct_change of each value to
+change([periods,                    previous entry in group.
+    ...])
+    DataFrameGroupBy.prod([numeric_     Compute prod of group values.
+    only,
+    ...])
+    DataFrameGroupBy.quantile([q,       Return group values at the given quantile,
+    ...])                               a la numpy.percentile.
+    DataFrameGroupBy.rank([method,      Provide the rank of values within each
+    ascending, ...])                    group.
+    DataFrameGroupBy.resample(rule[,    Provide resampling within each group of a
+    closed, ...])                       groupby.
+    DataFrameGroupBy.rolling(window[,   Return a rolling grouper, providing
+    ...])                               rolling functionality per group.
+    DataFrameGroupBy.sample([n, frac,   Return a random sample of items from each
+    replace, ...])                      group.
+    DataFrameGroupBy.sem([ddof,         Compute standard error of the mean of
+    numeric_only, ...])                 groups, excluding missing values.
+    DataFrameGroupBy.shift([periods,    Shift each group by periods observations.
+    freq, ...])
+    DataFrameGroupBy.size()             Compute group sizes.
+    DataFrameGroupBy.skew([skipna,      Return unbiased skew within groups.
     numeric_only])
-    DataFrameGroupBy.kurt([skipna,        Return unbiased kurtosis within groups.
+    DataFrameGroupBy.kurt([skipna,      Return unbiased kurtosis within groups.
     numeric_only])
-    DataFrameGroupBy.std([ddof, engine,   Compute standard deviation of groups,
-    ...])                                 excluding missing values.
-    DataFrameGroupBy.sum([numeric_only,   Compute sum of group values.
+    DataFrameGroupBy.std([ddof,         Compute standard deviation of groups,
+    engine, ...])                       excluding missing values.
+    DataFrameGroupBy.sum([numeric_      Compute sum of group values.
+    only,
     ...])
-    DataFrameGroupBy.var([ddof, engine,   Compute variance of groups, excluding
-    ...])                                 missing values.
-    DataFrameGroupBy.tail([n])            Return last n rows of each group.
-    DataFrameGroupBy.take(indices,        Return the elements in the given
-    **kwargs)                             positional indices in each group.
-    DataFrameGroupBy.value_counts([subset,  Return a Series or DataFrame containing
-    ...])                                 counts of unique rows.
+    DataFrameGroupBy.var([ddof,         Compute variance of groups, excluding
+    engine, ...])                       missing values.
+    DataFrameGroupBy.tail([n])          Return last n rows of each group.
+    DataFrameGroupBy.take(indices,      Return the elements in the given
+    **kwargs)                           positional indices in each group.
+    DataFrameGroupBy.value_             Return a Series or DataFrame containing
+    counts([subset,                     counts of unique rows.
+    ...])
 
               *reference-groupby-seriesgroupby-computations-descriptive-stats*
 `SeriesGroupBy` COMPUTATIONS / DESCRIPTIVE STATS
 
-SeriesGroupBy.all([skipna])           Return True if all values in the group
-                                      are truthful, else False.
-SeriesGroupBy.any([skipna])           Return True if any value in the group is
-                                      truthful, else False.
-SeriesGroupBy.bfill([limit])          Backward fill the values.
-    SeriesGroupBy.corr(other[, method,    Compute correlation between each group
-    min_periods])                         and another Series.
-    SeriesGroupBy.count()                 Compute count of group, excluding
-                                      missing values.
-SeriesGroupBy.cov(other[,             Compute covariance between each group
-    min_periods, ddof])                   and another Series.
-    SeriesGroupBy.cumcount([ascending])   Number each item in each group from 0 to
-                                      the length of that group - 1.
-SeriesGroupBy.cummax([numeric_only,   Cumulative max for each group.
+SeriesGroupBy.all([skipna])         Return True if all values in the group are
+                                    truthful, else False.
+SeriesGroupBy.any([skipna])         Return True if any value in the group is
+                                    truthful, else False.
+SeriesGroupBy.bfill([limit])        Backward fill the values.
+    SeriesGroupBy.corr(other[, method,  Compute correlation between each group and
+    min_periods])                       another Series.
+    SeriesGroupBy.count()               Compute count of group, excluding missing
+                                    values.
+SeriesGroupBy.cov(other[,           Compute covariance between each group and
+    min_periods, ddof])                 another Series.
+    SeriesGroupBy.cumcount([ascending]  Number each item in each group from 0 to
+)                                   the length of that group - 1.
+    SeriesGroupBy.cummax([numeric_      Cumulative max for each group.
+    only,
     skipna])
-    SeriesGroupBy.cummin([numeric_only,   Cumulative min for each group.
+    SeriesGroupBy.cummin([numeric_      Cumulative min for each group.
+    only,
     skipna])
-    SeriesGroupBy.cumprod([numeric_only,  Cumulative product for each group.
+    SeriesGroupBy.cumprod([numeric_     Cumulative product for each group.
+    only,
     skipna])
-    SeriesGroupBy.cumsum([numeric_only,   Cumulative sum for each group.
+    SeriesGroupBy.cumsum([numeric_      Cumulative sum for each group.
+    only,
     skipna])
-    SeriesGroupBy.describe([percentiles,  Generate descriptive statistics for each
-    ...])                                 group.
-    SeriesGroupBy.diff([periods])         First discrete difference of element.
-    SeriesGroupBy.ewm([com, span,         Return an ewm grouper, providing ewm
-    halflife, ...])                       functionality per group.
-    SeriesGroupBy.expanding([min_periods,  Return an expanding grouper, providing
-    method])                              expanding functionality per group.
-    SeriesGroupBy.ffill([limit])          Forward fill the values.
-    SeriesGroupBy.first([numeric_only,    Compute the first entry of each column
-    ...])                                 within each group.
-    SeriesGroupBy.head([n])               Return first n rows of each group.
-    SeriesGroupBy.last([numeric_only,     Compute the last entry of each column
-    ...])                                 within each group.
-    SeriesGroupBy.idxmax([skipna])        Return the row label of the maximum
-                                      value.
-SeriesGroupBy.idxmin([skipna])        Return the row label of the minimum
-                                      value.
-SeriesGroupBy.is_monotonic_increasing  Return whether each group's values are
-                                      monotonically increasing.
-SeriesGroupBy.is_monotonic_decreasing  Return whether each group's values are
-                                      monotonically decreasing.
-SeriesGroupBy.max([numeric_only,      Compute max of group values.
-    min_count, ...])
-    SeriesGroupBy.mean([numeric_only,     Compute mean of groups, excluding
-    skipna, ...])                         missing values.
-    SeriesGroupBy.median([numeric_only,   Compute median of groups, excluding
-    skipna])                              missing values.
-    SeriesGroupBy.min([numeric_only,      Compute min of group values.
-    min_count, ...])
-    SeriesGroupBy.ngroup([ascending])     Number each group from 0 to the number
-                                      of groups - 1.
-SeriesGroupBy.nlargest([n, keep])     Return the largest n elements.
-    SeriesGroupBy.nsmallest([n, keep])    Return the smallest n elements.
-    SeriesGroupBy.nth                     (DEPRECATED) Take the nth row from each
-                                      group if n is an int, otherwise a subset
-                                      of rows.
-SeriesGroupBy.nunique([dropna])       Return number of unique elements in the
-                                      group.
-SeriesGroupBy.unique()                Return unique values for each group.
-    SeriesGroupBy.ohlc()                  Compute open, high, low and close values
-                                      of a group, excluding missing values.
-SeriesGroupBy.pct_change([periods,    Calculate pct_change of each value to
-    ...])                                 previous entry in group.
-    SeriesGroupBy.prod([numeric_only,     Compute prod of group values.
+    SeriesGroupBy.                      Generate descriptive statistics for each
+    describe([percentiles,              group.
     ...])
-    SeriesGroupBy.quantile([q,            Return group values at the given
-    interpolation, ...])                  quantile, a la numpy.percentile.
-    SeriesGroupBy.rank([method,           Provide the rank of values within each
-    ascending, ...])                      group.
-    SeriesGroupBy.resample(rule[,         Provide resampling within each group of
-    closed, ...])                         a groupby.
-    SeriesGroupBy.rolling(window[,        Return a rolling grouper, providing
-    min_periods, ...])                    rolling functionality per group.
-    SeriesGroupBy.sample([n, frac,        Return a random sample of items from
-    replace, ...])                        each group.
-    SeriesGroupBy.sem([ddof,              Compute standard error of the mean of
-    numeric_only, skipna])                groups, excluding missing values.
-    SeriesGroupBy.shift([periods, freq,   Shift each group by periods
-    ...])                                 observations.
-    SeriesGroupBy.size()                  Compute group sizes.
-    SeriesGroupBy.skew([skipna,           Return unbiased skew within groups.
-    numeric_only])
-    SeriesGroupBy.kurt([skipna,           Return unbiased kurtosis within groups.
-    numeric_only])
-    SeriesGroupBy.std([ddof, engine,      Compute standard deviation of groups,
-    ...])                                 excluding missing values.
-    SeriesGroupBy.sum([numeric_only,      Compute sum of group values.
+    SeriesGroupBy.diff([periods])       First discrete difference of element.
+    SeriesGroupBy.ewm([com, span,       Return an ewm grouper, providing ewm
+    halflife, ...])                     functionality per group.
+    SeriesGroupBy.expanding([min_       Return an expanding grouper, providing
+    periods,                            expanding functionality per group.
+    method])
+    SeriesGroupBy.ffill([limit])        Forward fill the values.
+    SeriesGroupBy.first([numeric_only,  Compute the first entry of each column
+    ...])                               within each group.
+    SeriesGroupBy.head([n])             Return first n rows of each group.
+    SeriesGroupBy.last([numeric_only,   Compute the last entry of each column
+    ...])                               within each group.
+    SeriesGroupBy.idxmax([skipna])      Return the row label of the maximum value.
+    SeriesGroupBy.idxmin([skipna])      Return the row label of the minimum value.
+    SeriesGroupBy.is_monotonic_         Return whether each group's values are
+    increasing                          monotonically increasing.
+    SeriesGroupBy.is_monotonic_         Return whether each group's values are
+    decreasing                          monotonically decreasing.
+    SeriesGroupBy.max([numeric_only,    Compute max of group values.
     min_count, ...])
-    SeriesGroupBy.var([ddof, engine,      Compute variance of groups, excluding
-    ...])                                 missing values.
-    SeriesGroupBy.tail([n])               Return last n rows of each group.
-    SeriesGroupBy.take(indices,           Return the elements in the given
-    **kwargs)                             positional indices in each group.
-    SeriesGroupBy.value_counts([normalize,  Return a Series or DataFrame containing
-    ...])                                 counts of unique rows.
+    SeriesGroupBy.mean([numeric_only,   Compute mean of groups, excluding missing
+    skipna, ...])                       values.
+    SeriesGroupBy.median([numeric_      Compute median of groups, excluding
+    only,                               missing values.
+    skipna])
+    SeriesGroupBy.min([numeric_only,    Compute min of group values.
+    min_count, ...])
+    SeriesGroupBy.ngroup([ascending])   Number each group from 0 to the number of
+                                    groups - 1.
+SeriesGroupBy.nlargest([n, keep])   Return the largest n elements.
+    SeriesGroupBy.nsmallest([n, keep])  Return the smallest n elements.
+    SeriesGroupBy.nth                   (DEPRECATED) Take the nth row from each
+                                    group if n is an int, otherwise a subset
+                                    of rows.
+SeriesGroupBy.nunique([dropna])     Return number of unique elements in the
+                                    group.
+SeriesGroupBy.unique()              Return unique values for each group.
+    SeriesGroupBy.ohlc()                Compute open, high, low and close values
+                                    of a group, excluding missing values.
+SeriesGroupBy.pct_change([periods,  Calculate pct_change of each value to
+    ...])                               previous entry in group.
+    SeriesGroupBy.prod([numeric_only,   Compute prod of group values.
+    ...])
+    SeriesGroupBy.quantile([q,          Return group values at the given quantile,
+    interpolation, ...])                a la numpy.percentile.
+    SeriesGroupBy.rank([method,         Provide the rank of values within each
+    ascending, ...])                    group.
+    SeriesGroupBy.resample(rule[,       Provide resampling within each group of a
+    closed, ...])                       groupby.
+    SeriesGroupBy.rolling(window[,      Return a rolling grouper, providing
+    min_periods, ...])                  rolling functionality per group.
+    SeriesGroupBy.sample([n, frac,      Return a random sample of items from each
+    replace, ...])                      group.
+    SeriesGroupBy.sem([ddof,            Compute standard error of the mean of
+    numeric_only, skipna])              groups, excluding missing values.
+    SeriesGroupBy.shift([periods,       Shift each group by periods observations.
+    freq, ...])
+    SeriesGroupBy.size()                Compute group sizes.
+    SeriesGroupBy.skew([skipna,         Return unbiased skew within groups.
+    numeric_only])
+    SeriesGroupBy.kurt([skipna,         Return unbiased kurtosis within groups.
+    numeric_only])
+    SeriesGroupBy.std([ddof, engine,    Compute standard deviation of groups,
+    ...])                               excluding missing values.
+    SeriesGroupBy.sum([numeric_only,    Compute sum of group values.
+    min_count, ...])
+    SeriesGroupBy.var([ddof, engine,    Compute variance of groups, excluding
+    ...])                               missing values.
+    SeriesGroupBy.tail([n])             Return last n rows of each group.
+    SeriesGroupBy.take(indices,         Return the elements in the given
+    **kwargs)                           positional indices in each group.
+    SeriesGroupBy.value_                Return a Series or DataFrame containing
+    counts([normalize,                  counts of unique rows.
+    ...])
 
 PLOTTING AND VISUALIZATION      *reference-groupby-plotting-and-visualization*
 
-DataFrameGroupBy.boxplot([subplots,  Make box plots from DataFrameGroupBy
-    column, ...])                        data.
-    DataFrameGroupBy.hist([column, by,   Draw histogram of the DataFrame's columns
-    grid, ...])                          for each group.
-    SeriesGroupBy.hist([by, ax, grid,    Draw histogram for each group's values
-    ...])                                using Series.hist() API.
-    DataFrameGroupBy.plot                Make plots of groups from a DataFrame.
-    SeriesGroupBy.plot                   Make plots of groups from a Series.
+DataFrameGroupBy.                   Make box plots from DataFrameGroupBy data.
+boxplot([subplots,
+    column, ...])
+    DataFrameGroupBy.hist([column, by,  Draw histogram of the DataFrame's columns
+    grid, ...])                         for each group.
+    SeriesGroupBy.hist([by, ax, grid,   Draw histogram for each group's values
+    ...])                               using Series.hist() API.
+    DataFrameGroupBy.plot               Make plots of groups from a DataFrame.
+    SeriesGroupBy.plot                  Make plots of groups from a Series.
 
 ----------------------------------------------------------------------------
 API reference                                         *pandas-reference-index*
@@ -24361,28 +24401,28 @@ Index.symmetric_difference(other[,  Compute the symmetric difference of two
 
 Selecting                                       *reference-indexing-selecting*
 
-Index.asof(label)                     Return the label from the index, or, if
-                                      not present, the previous one.
-Index.asof_locs(where, mask)          Return the locations (indices) of labels
-                                      in the index.
-Index.get_indexer(target[, method,    Compute indexer and mask for new index
-    limit, ...])                          given the current index.
-    Index.get_indexer_for(target)         Guaranteed return of an indexer even
-                                      when non-unique.
-Index.get_indexer_non_unique(target)  Compute indexer and mask for new index
-                                      given the current index.
-Index.get_level_values(level)         Return an Index of values for requested
-                                      level.
-Index.get_loc(key)                    Get integer location, slice or boolean
-                                      mask for requested label.
-Index.get_slice_bound(label, side)    Calculate slice bound that corresponds
-                                      to given label.
-Index.isin(values[, level])           Return a boolean array where the index
-                                      values are in values.
-Index.slice_indexer([start, end,      Compute the slice indexer for input
-    step])                                labels and step.
-    Index.slice_locs([start, end, step])  Compute slice locations for input
-                                      labels.
+Index.asof(label)                   Return the label from the index, or, if
+                                    not present, the previous one.
+Index.asof_locs(where, mask)        Return the locations (indices) of labels
+                                    in the index.
+Index.get_indexer(target[, method,  Compute indexer and mask for new index
+    limit, ...])                        given the current index.
+    Index.get_indexer_for(target)       Guaranteed return of an indexer even when
+                                    non-unique.
+Index.get_indexer_non_              Compute indexer and mask for new index
+unique(target)                      given the current index.
+    Index.get_level_values(level)       Return an Index of values for requested
+                                    level.
+Index.get_loc(key)                  Get integer location, slice or boolean
+                                    mask for requested label.
+Index.get_slice_bound(label, side)  Calculate slice bound that corresponds to
+                                    given label.
+Index.isin(values[, level])         Return a boolean array where the index
+                                    values are in values.
+Index.slice_indexer([start, end,    Compute the slice indexer for input labels
+    step])                              and step.
+    Index.slice_locs([start, end,       Compute slice locations for input labels.
+    step])
 
 NUMERIC INDEX                               *reference-indexing-numeric-index*
 
@@ -24408,24 +24448,28 @@ CategoricalIndex([data,             Index based on an underlying Categorical.
 
 Categorical components             *reference-indexing-categorical-components*
 
-CategoricalIndex.append(other)        Append a collection of Index options
-                                      together.
-CategoricalIndex.codes                The category codes of this categorical
-                                      index.
-CategoricalIndex.categories           The categories of this CategoricalIndex.
-CategoricalIndex.ordered              Whether the categories have an ordered
-                                      relationship.
-CategoricalIndex.rename_categories(...)  Rename categories.
-    CategoricalIndex.reorder_categories(...[,  Reorder categories as specified in
-    ...])                                 new_categories.
-    CategoricalIndex.add_categories(new_categories)  Add new categories.
-    CategoricalIndex.remove_categories(removals)  Remove the specified categories.
-    CategoricalIndex.remove_unused_categories()  Remove categories which are not used.
-    CategoricalIndex.set_categories(new_categories)  Set the categories to the specified new
-                                      categories.
-CategoricalIndex.as_ordered()         Set the CategoricalIndex to be ordered.
-    CategoricalIndex.as_unordered()       Set the CategoricalIndex to be
-                                      unordered.
+CategoricalIndex.append(other)      Append a collection of Index options
+                                    together.
+CategoricalIndex.codes              The category codes of this categorical
+                                    index.
+CategoricalIndex.categories         The categories of this CategoricalIndex.
+CategoricalIndex.ordered            Whether the categories have an ordered
+                                    relationship.
+CategoricalIndex.rename_            Rename categories.
+categories(...)
+    CategoricalIndex.reorder_           Reorder categories as specified in
+    categories(...[,                    new_categories.
+    ...])
+    CategoricalIndex.add_               Add new categories.
+    categories(new_categories)
+    CategoricalIndex.remove_            Remove the specified categories.
+    categories(removals)
+    CategoricalIndex.remove_unused_     Remove categories which are not used.
+    categories()
+    CategoricalIndex.set_               Set the categories to the specified new
+    categories(new_categories)          categories.
+    CategoricalIndex.as_ordered()       Set the CategoricalIndex to be ordered.
+    CategoricalIndex.as_unordered()     Set the CategoricalIndex to be unordered.
 
 Modifying and computations                            *reference-indexing-id1*
 
@@ -24443,51 +24487,50 @@ IntervalIndex(data[, closed,        Immutable index of intervals that are
 
 IntervalIndex components         *reference-indexing-intervalindex-components*
 
-IntervalIndex.from_arrays(left,       Construct from two arrays defining the
-    right[, ...])                         left and right bounds.
-    IntervalIndex.from_tuples(data[,      Construct an IntervalIndex from an
-    closed, ...])                         array-like of tuples.
-    IntervalIndex.from_breaks(breaks[,    Construct an IntervalIndex from an array
-    closed, ...])                         of splits.
-    IntervalIndex.left                    Return left bounds of the intervals in
-                                      the IntervalIndex.
-IntervalIndex.right                   Return right bounds of the intervals in
-                                      the IntervalIndex.
-IntervalIndex.mid                     Return the midpoint of each interval in
-                                      the IntervalIndex as an Index.
-IntervalIndex.closed                  String describing the inclusive side of
-                                      the intervals.
-IntervalIndex.closed_left             Check if the intervals are closed on the
-                                      left side.
-IntervalIndex.closed_right            Check if the intervals are closed on the
-                                      right side.
-IntervalIndex.open_left               Check if the intervals are open on the
-                                      left side.
-IntervalIndex.open_right              Check if the intervals are open on the
-                                      right side.
-IntervalIndex.length                  Calculate the length of each interval in
-                                      the IntervalIndex.
-IntervalIndex.values                  Return an array representing the data in
-                                      the Index.
-IntervalIndex.is_empty                Indicates if an interval is empty,
-                                      meaning it contains no points.
-IntervalIndex.is_non_overlapping_monotonic  Return True if the IntervalIndex is
-                                      non-overlapping and monotonic.
-IntervalIndex.is_overlapping          Return True if the IntervalIndex has
-                                      overlapping intervals, else False.
-IntervalIndex.get_loc(key)            Get integer location, slice or boolean
-                                      mask for requested label.
-IntervalIndex.get_indexer(target[,    Compute indexer and mask for new index
-    method, ...])                         given the current index.
-    IntervalIndex.set_closed(closed)      Return an identical IntervalIndex closed
-                                      on the specified side.
-IntervalIndex.contains(other)         Check elementwise if the Intervals
-                                      contain the value.
-IntervalIndex.overlaps(other)         Check elementwise if an Interval
-                                      overlaps the values in the
-                                      IntervalIndex.
-IntervalIndex.to_tuples([na_tuple])   Return an Index of tuples of the form
-                                      (left, right).
+IntervalIndex.from_arrays(left,     Construct from two arrays defining the
+    right[, ...])                       left and right bounds.
+    IntervalIndex.from_tuples(data[,    Construct an IntervalIndex from an
+    closed, ...])                       array-like of tuples.
+    IntervalIndex.from_breaks(breaks[,  Construct an IntervalIndex from an array
+    closed, ...])                       of splits.
+    IntervalIndex.left                  Return left bounds of the intervals in the
+                                    IntervalIndex.
+IntervalIndex.right                 Return right bounds of the intervals in
+                                    the IntervalIndex.
+IntervalIndex.mid                   Return the midpoint of each interval in
+                                    the IntervalIndex as an Index.
+IntervalIndex.closed                String describing the inclusive side of
+                                    the intervals.
+IntervalIndex.closed_left           Check if the intervals are closed on the
+                                    left side.
+IntervalIndex.closed_right          Check if the intervals are closed on the
+                                    right side.
+IntervalIndex.open_left             Check if the intervals are open on the
+                                    left side.
+IntervalIndex.open_right            Check if the intervals are open on the
+                                    right side.
+IntervalIndex.length                Calculate the length of each interval in
+                                    the IntervalIndex.
+IntervalIndex.values                Return an array representing the data in
+                                    the Index.
+IntervalIndex.is_empty              Indicates if an interval is empty, meaning
+                                    it contains no points.
+IntervalIndex.is_non_overlapping_   Return True if the IntervalIndex is
+monotonic                           non-overlapping and monotonic.
+IntervalIndex.is_overlapping        Return True if the IntervalIndex has
+                                    overlapping intervals, else False.
+IntervalIndex.get_loc(key)          Get integer location, slice or boolean
+                                    mask for requested label.
+IntervalIndex.get_indexer(target[,  Compute indexer and mask for new index
+    method, ...])                       given the current index.
+    IntervalIndex.set_closed(closed)    Return an identical IntervalIndex closed
+                                    on the specified side.
+IntervalIndex.contains(other)       Check elementwise if the Intervals contain
+                                    the value.
+IntervalIndex.overlaps(other)       Check elementwise if an Interval overlaps
+                                    the values in the IntervalIndex.
+IntervalIndex.to_tuples([na_tuple]  Return an Index of tuples of the form
+)                                   (left, right).
 
 MULTIINDEX                                     *reference-indexing-multiindex*
 
@@ -24498,13 +24541,14 @@ MultiIndex([levels, codes,          A multi-level, or hierarchical, index
 
 MultiIndex constructors           *reference-indexing-multiindex-constructors*
 
-MultiIndex.from_arrays(arrays[,      Convert arrays to MultiIndex.
+MultiIndex.from_arrays(arrays[,     Convert arrays to MultiIndex.
     sortorder, ...])
-    MultiIndex.from_tuples(tuples[,      Convert list of tuples to MultiIndex.
+    MultiIndex.from_tuples(tuples[,     Convert list of tuples to MultiIndex.
     sortorder, ...])
-    MultiIndex.from_product(iterables[,  Make a MultiIndex from the cartesian
-    ...])                                product of multiple iterables.
-    MultiIndex.from_frame(df[,           Make a MultiIndex from a DataFrame.
+    MultiIndex.from_                    Make a MultiIndex from the cartesian
+    product(iterables[,                 product of multiple iterables.
+    ...])
+    MultiIndex.from_frame(df[,          Make a MultiIndex from a DataFrame.
     sortorder, names])
 
 MultiIndex properties               *reference-indexing-multiindex-properties*
@@ -24615,32 +24659,34 @@ DatetimeIndex.unit              The precision unit of the datetime data.
 
 Selecting                                             *reference-indexing-id2*
 
-DatetimeIndex.indexer_at_time(time[,  Return index locations of values at
-    asof])                                particular time of day.
-    DatetimeIndex.indexer_between_time(...[,  Return index locations of values between
-    ...])                                 particular times of day.
+DatetimeIndex.indexer_at_           Return index locations of values at
+time(time[,                         particular time of day.
+    asof])
+    DatetimeIndex.indexer_between_      Return index locations of values between
+    time(...[,                          particular times of day.
+    ...])
 
 Time-specific operations                              *reference-indexing-id3*
 
-DatetimeIndex.normalize()            Convert times to midnight.
-    DatetimeIndex.strftime(date_format)  Convert to Index using specified
-                                     date_format.
-DatetimeIndex.snap([freq])           Snap time stamps to nearest occurring
-                                     frequency.
-DatetimeIndex.tz_convert(tz)         Convert tz-aware Datetime Array/Index
-                                     from one time zone to another.
-DatetimeIndex.tz_localize(tz[,       Localize tz-naive Datetime Array/Index to
-    ambiguous, ...])                     tz-aware Datetime Array/Index.
-    DatetimeIndex.round(freq[,           Perform round operation on the data to
-    ambiguous, ...])                     the specified freq.
-    DatetimeIndex.floor(freq[,           Perform floor operation on the data to
-    ambiguous, ...])                     the specified freq.
-    DatetimeIndex.ceil(freq[,            Perform ceil operation on the data to the
-    ambiguous, ...])                     specified freq.
-    DatetimeIndex.month_name([locale])   Return the month names with specified
-                                     locale.
-DatetimeIndex.day_name([locale])     Return the day names with specified
-                                     locale.
+DatetimeIndex.normalize()           Convert times to midnight.
+    DatetimeIndex.strftime(date_        Convert to Index using specified
+    format)                             date_format.
+    DatetimeIndex.snap([freq])          Snap time stamps to nearest occurring
+                                    frequency.
+DatetimeIndex.tz_convert(tz)        Convert tz-aware Datetime Array/Index from
+                                    one time zone to another.
+DatetimeIndex.tz_localize(tz[,      Localize tz-naive Datetime Array/Index to
+    ambiguous, ...])                    tz-aware Datetime Array/Index.
+    DatetimeIndex.round(freq[,          Perform round operation on the data to the
+    ambiguous, ...])                    specified freq.
+    DatetimeIndex.floor(freq[,          Perform floor operation on the data to the
+    ambiguous, ...])                    specified freq.
+    DatetimeIndex.ceil(freq[,           Perform ceil operation on the data to the
+    ambiguous, ...])                    specified freq.
+    DatetimeIndex.month_name([locale])  Return the month names with specified
+                                    locale.
+DatetimeIndex.day_name([locale])    Return the day names with specified
+                                    locale.
 
 Conversion                                            *reference-indexing-id4*
 
@@ -24745,15 +24791,16 @@ PeriodIndex.asi8           Return Integer representation of the values.
 
 Methods                                               *reference-indexing-id8*
 
-PeriodIndex.asfreq([freq, how])      Convert the PeriodIndex to the specified
-                                     frequency freq.
-PeriodIndex.strftime(date_format)    Convert to Index using specified
-                                     date_format.
-PeriodIndex.to_timestamp([freq,      Cast to DatetimeIndex.
+PeriodIndex.asfreq([freq, how])     Convert the PeriodIndex to the specified
+                                    frequency freq.
+PeriodIndex.strftime(date_format)   Convert to Index using specified
+                                    date_format.
+PeriodIndex.to_timestamp([freq,     Cast to DatetimeIndex.
     how])
-    PeriodIndex.from_fields(*[, year,    Construct a PeriodIndex from fields
-    quarter, ...])                       (year, month, day, etc.).
-    PeriodIndex.from_ordinals(ordinals,  Construct a PeriodIndex from ordinals.
+    PeriodIndex.from_fields(*[, year,   Construct a PeriodIndex from fields (year,
+    quarter, ...])                      month, day, etc.).
+    PeriodIndex.from_                   Construct a PeriodIndex from ordinals.
+    ordinals(ordinals,
     *, freq)
 
 ----------------------------------------------------------------------------
@@ -24857,41 +24904,41 @@ Styler.to_latex([buf,               Write Styler to a file, buffer or string
 
 HDFSTORE: PYTABLES (HDF5)                *reference-io-hdfstore-pytables-hdf5*
 
-read_hdf(path_or_buf[, key, mode,     Read from the store, close it if we
-    errors, ...])                         opened it.
-    HDFStore.put(key, value[, format,     Store object in HDFStore.
+read_hdf(path_or_buf[, key, mode,   Read from the store, close it if we opened
+    errors, ...])                       it.
+    HDFStore.put(key, value[, format,   Store object in HDFStore.
     index, ...])
-    HDFStore.append(key, value[, format,  Append to Table in file.
-    axes, ...])
-    HDFStore.append_to_multiple(d,        Append to multiple tables.
+    HDFStore.append(key, value[,        Append to Table in file.
+    format, axes, ...])
+    HDFStore.append_to_multiple(d,      Append to multiple tables.
     value, selector)
-    HDFStore.get(key)                     Retrieve pandas object stored in file.
-    HDFStore.select(key[, where, start,   Retrieve pandas object stored in file,
-    stop, ...])                           optionally based on where criteria.
-    HDFStore.select_as_coordinates(key[,  Return the selection as an Index.
+    HDFStore.get(key)                   Retrieve pandas object stored in file.
+    HDFStore.select(key[, where,        Retrieve pandas object stored in file,
+    start, stop, ...])                  optionally based on where criteria.
+    HDFStore.select_as_                 Return the selection as an Index.
+    coordinates(key[,
     where, ...])
-    HDFStore.select_as_multiple(keys[,    Retrieve pandas objects from multiple
-    where, ...])                          tables.
-    HDFStore.select_column(key, column[,  Return a single column from the table.
-    start, ...])
-    HDFStore.remove(key[, where, start,   Remove pandas object partially by
-    stop])                                specifying the where condition.
-    HDFStore.create_table_index(key[,     Create a pytables index on the table.
+    HDFStore.select_as_multiple(keys[,  Retrieve pandas objects from multiple
+    where, ...])                        tables.
+    HDFStore.select_column(key,         Return a single column from the table.
+    column[, start, ...])
+    HDFStore.remove(key[, where,        Remove pandas object partially by
+    start, stop])                       specifying the where condition.
+    HDFStore.create_table_index(key[,   Create a pytables index on the table.
     columns, ...])
-    HDFStore.copy(file[, mode,            Copy the existing store to a new file,
-    propindexes, ...])                    updating in place.
-    HDFStore.flush([fsync])               Force all buffered modifications to be
-                                      written to disk.
-HDFStore.info()                       Print detailed information on the store.
-    HDFStore.is_open                      Return a boolean indicating whether the
-                                      file is open.
-HDFStore.keys([include])              Return a list of keys corresponding to
-                                      objects stored in HDFStore.
-HDFStore.groups()                     Return a list of all the top-level
-                                      nodes.
-HDFStore.get_storer(key)              Return the storer object for a key.
-    HDFStore.walk([where])                Walk the pytables group hierarchy for
-                                      pandas objects.
+    HDFStore.copy(file[, mode,          Copy the existing store to a new file,
+    propindexes, ...])                  updating in place.
+    HDFStore.flush([fsync])             Force all buffered modifications to be
+                                    written to disk.
+HDFStore.info()                     Print detailed information on the store.
+    HDFStore.is_open                    Return a boolean indicating whether the
+                                    file is open.
+HDFStore.keys([include])            Return a list of keys corresponding to
+                                    objects stored in HDFStore.
+HDFStore.groups()                   Return a list of all the top-level nodes.
+    HDFStore.get_storer(key)            Return the storer object for a key.
+    HDFStore.walk([where])              Walk the pytables group hierarchy for
+                                    pandas objects.
 
   Warning: ~
 
@@ -24914,10 +24961,11 @@ read_parquet(path[, engine,         Load a parquet object from the file path,
 
 ICEBERG                                                 *reference-io-iceberg*
 
-read_iceberg(table_identifier[,       Read an Apache Iceberg table into a
-    ...])                                 pandas DataFrame.
-    DataFrame.to_iceberg(table_identifier[,  Write a DataFrame to an Apache Iceberg
-    ...])                                 table.
+read_iceberg(table_identifier[,     Read an Apache Iceberg table into a pandas
+    ...])                               DataFrame.
+    DataFrame.to_iceberg(table_         Write a DataFrame to an Apache Iceberg
+    identifier[,                        table.
+    ...])
 
   Warning: ~
 
@@ -25277,12 +25325,12 @@ FY5253Quarter.weekday              Return the weekday used by the fiscal year.
 
 Custom methods:
 
-FY5253Quarter.get_rule_code_suffix()  Return the suffix component of the rule
-                                      code.
-FY5253Quarter.get_weeks(dt)           Get the number of weeks in each quarter
-                                      for the fiscal year containing dt.
-FY5253Quarter.year_has_extra_week(dt)  Return whether the fiscal year
-                                      containing the given date has 53 weeks.
+FY5253Quarter.get_rule_code_        Return the suffix component of the rule
+suffix()                            code.
+    FY5253Quarter.get_weeks(dt)         Get the number of weeks in each quarter
+                                    for the fiscal year containing dt.
+FY5253Quarter.year_has_extra_       Return whether the fiscal year containing
+week(dt)                            the given date has 53 weeks.
 
 EASTER                                     *reference-offset_frequency-easter*
 
@@ -25332,14 +25380,17 @@ AbstractHolidayCalendar([name,      Abstract interface to create holidays
 
 Methods                                       *reference-offset_frequency-id2*
 
-AbstractHolidayCalendar.holidays([start,  Return a curve with holidays between
-    ...])                                 start_date and end_date.
-    AbstractHolidayCalendar.merge(other[,  Merge holiday calendars together.
+AbstractHolidayCalendar.            Return a curve with holidays between
+holidays([start,                    start_date and end_date.
+    ...])
+    AbstractHolidayCalendar.            Merge holiday calendars together.
+    merge(other[,
     inplace])
-    AbstractHolidayCalendar.merge_class(base,  Merge holiday calendars together.
+    AbstractHolidayCalendar.merge_      Merge holiday calendars together.
+    class(base,
     other)
-    AbstractHolidayCalendar.rule_from_name(name)  Return the rule for the holiday with the
-                                      given name.
+    AbstractHolidayCalendar.rule_from_  Return the rule for the holiday with the
+    name(name)                          given name.
 
 OBSERVANCE RULES                 *reference-offset_frequency-observance-rules*
 
@@ -25547,22 +25598,23 @@ Series.set_flags(*[, copy, ...])    Return a new object with updated flags.
 
 CONVERSION                                       *reference-series-conversion*
 
-Series.astype(dtype[, copy, errors])  Cast a pandas object to a specified
-                                      dtype dtype.
-Series.convert_dtypes([infer_objects,  Convert columns from numpy dtypes to the
-    ...])                                 best dtypes that support pd.NA.
-    Series.infer_objects([copy])          Attempt to infer better dtypes for
-                                      object columns.
-Series.copy([deep])                   Make a copy of this object's indices and
-                                      data.
-Series.to_numpy([dtype, copy,         A NumPy ndarray representing the values
-    na_value])                            in this Series or Index.
-    Series.to_period([freq, copy])        Convert Series from DatetimeIndex to
-                                      PeriodIndex.
-Series.to_timestamp([freq, how,       Cast to DatetimeIndex of Timestamps, at
-    copy])                                beginning of period.
-    Series.to_list()                      Return a list of the values.
-    Series.__array__([dtype, copy])       Return the values as a NumPy array.
+Series.astype(dtype[, copy,         Cast a pandas object to a specified dtype
+    errors])                            dtype.
+    Series.convert_dtypes([infer_       Convert columns from numpy dtypes to the
+    objects,                            best dtypes that support pd.NA.
+    ...])
+    Series.infer_objects([copy])        Attempt to infer better dtypes for object
+                                    columns.
+Series.copy([deep])                 Make a copy of this object's indices and
+                                    data.
+Series.to_numpy([dtype, copy,       A NumPy ndarray representing the values in
+    na_value])                          this Series or Index.
+    Series.to_period([freq, copy])      Convert Series from DatetimeIndex to
+                                    PeriodIndex.
+Series.to_timestamp([freq, how,     Cast to DatetimeIndex of Timestamps, at
+    copy])                              beginning of period.
+    Series.to_list()                    Return a list of the values.
+    Series.__array__([dtype, copy])     Return the values as a NumPy array.
 
 INDEXING, ITERATION                      *reference-series-indexing-iteration*
 
@@ -26149,16 +26201,21 @@ Series.cat.categories  The categories of this categorical.
 Series.cat.ordered     Whether the categories have an ordered relationship.
 Series.cat.codes       Return Series of codes as well as the index.
 
-Series.cat.rename_categories(new_categories)  Rename categories.
-    Series.cat.reorder_categories(new_categories)  Reorder categories as specified in
-                                      new_categories.
-Series.cat.add_categories(new_categories)  Add new categories.
-    Series.cat.remove_categories(removals)  Remove the specified categories.
-    Series.cat.remove_unused_categories()  Remove categories which are not used.
-    Series.cat.set_categories(new_categories[,  Set the categories to the specified new
-    ...])                                 categories.
-    Series.cat.as_ordered()               Set the Categorical to be ordered.
-    Series.cat.as_unordered()             Set the Categorical to be unordered.
+Series.cat.rename_categories(new_   Rename categories.
+    categories)
+    Series.cat.reorder_categories(new_  Reorder categories as specified in
+    categories)                         new_categories.
+    Series.cat.add_categories(new_      Add new categories.
+    categories)
+    Series.cat.remove_                  Remove the specified categories.
+    categories(removals)
+    Series.cat.remove_unused_           Remove categories which are not used.
+    categories()
+    Series.cat.set_categories(new_      Set the categories to the specified new
+    categories[,                        categories.
+    ...])
+    Series.cat.as_ordered()             Set the Categorical to be ordered.
+    Series.cat.as_unordered()           Set the Categorical to be unordered.
 
 Sparse accessor                             *reference-series-sparse-accessor*
 
@@ -26294,10 +26351,11 @@ Style                                                 *pandas-reference-style*
 
 STYLER CONSTRUCTOR                        *reference-style-styler-constructor*
 
-Styler(data[, precision,              Helps style a DataFrame or Series
-    table_styles, ...])                   according to the data with HTML and CSS.
-    Styler.from_custom_template(searchpath[,  Factory function for creating a subclass
-    ...])                                 of Styler.
+Styler(data[, precision,            Helps style a DataFrame or Series
+    table_styles, ...])                 according to the data with HTML and CSS.
+    Styler.from_custom_                 Factory function for creating a subclass
+    template(searchpath[,               of Styler.
+    ...])
 
 STYLER PROPERTIES                          *reference-style-styler-properties*
 
@@ -26312,47 +26370,47 @@ Styler.loader
 
 STYLE APPLICATION                          *reference-style-style-application*
 
-Styler.apply(func[, axis, subset])    Apply a CSS-styling function
-                                      column-wise, row-wise, or table-wise.
-Styler.map(func[, subset])            Apply a CSS-styling function
-                                      elementwise.
-Styler.apply_index(func[, axis,       Apply a CSS-styling function to the
-    level])                               index or column headers, level-wise.
-    Styler.map_index(func[, axis,         Apply a CSS-styling function to the
-    level])                               index or column headers, elementwise.
-    Styler.format([formatter, subset,     Format the text display value of cells.
+Styler.apply(func[, axis, subset])  Apply a CSS-styling function column-wise,
+                                    row-wise, or table-wise.
+Styler.map(func[, subset])          Apply a CSS-styling function elementwise.
+    Styler.apply_index(func[, axis,     Apply a CSS-styling function to the index
+    level])                             or column headers, level-wise.
+    Styler.map_index(func[, axis,       Apply a CSS-styling function to the index
+    level])                             or column headers, elementwise.
+    Styler.format([formatter, subset,   Format the text display value of cells.
     na_rep, ...])
-    Styler.format_index([formatter,       Format the text display value of index
-    axis, ...])                           labels or column headers.
-    Styler.format_index_names([formatter,  Format the text display value of index
-    axis, ...])                           names or column names.
-    Styler.relabel_index(labels[, axis,   Relabel the index, or column header,
-    level])                               keys to display a set of specified
-                                      values.
-Styler.hide([subset, axis, level,     Hide the entire index / column headers,
-    names])                               or specific rows / columns from display.
-    Styler.concat(other)                  Append another Styler to combine the
-                                      output into a single table.
-Styler.set_td_classes(classes)        Set the class attribute of <td> HTML
-                                      elements.
-Styler.set_table_styles([table_styles,  Set the table styles included within the
-    ...])                                 <style> HTML element.
-    Styler.set_table_attributes(attributes)  Set the table attributes added to the
-                                      <table> HTML element.
-Styler.set_tooltips(ttips[, props,    Set the DataFrame of strings on Styler
-    ...])                                 generating :hover tooltips.
-    Styler.set_caption(caption)           Set the text added to a <caption> HTML
-                                      element.
-Styler.set_sticky([axis, pixel_size,  Add CSS to permanently display the index
-    levels])                              or column headers in a scrolling frame.
-    Styler.set_properties([subset])       Set defined CSS-properties to each <td>
-                                      HTML element for the given subset.
-Styler.set_uuid(uuid)                 Set the uuid applied to id attributes of
-                                      HTML elements.
-Styler.clear()                        Reset the Styler, removing any
-                                      previously applied styles.
-Styler.pipe(func, *args, **kwargs)    Apply func(self, *args, **kwargs), and
-                                      return the result.
+    Styler.format_index([formatter,     Format the text display value of index
+    axis, ...])                         labels or column headers.
+    Styler.format_index_                Format the text display value of index
+    names([formatter,                   names or column names.
+    axis, ...])
+    Styler.relabel_index(labels[,       Relabel the index, or column header, keys
+    axis, level])                       to display a set of specified values.
+    Styler.hide([subset, axis, level,   Hide the entire index / column headers, or
+    names])                             specific rows / columns from display.
+    Styler.concat(other)                Append another Styler to combine the
+                                    output into a single table.
+Styler.set_td_classes(classes)      Set the class attribute of <td> HTML
+                                    elements.
+Styler.set_table_styles([table_     Set the table styles included within the
+    styles,                             <style> HTML element.
+    ...])
+    Styler.set_table_                   Set the table attributes added to the
+    attributes(attributes)              <table> HTML element.
+    Styler.set_tooltips(ttips[, props,  Set the DataFrame of strings on Styler
+    ...])                               generating :hover tooltips.
+    Styler.set_caption(caption)         Set the text added to a <caption> HTML
+                                    element.
+Styler.set_sticky([axis,            Add CSS to permanently display the index
+    pixel_size, levels])                or column headers in a scrolling frame.
+    Styler.set_properties([subset])     Set defined CSS-properties to each <td>
+                                    HTML element for the given subset.
+Styler.set_uuid(uuid)               Set the uuid applied to id attributes of
+                                    HTML elements.
+Styler.clear()                      Reset the Styler, removing any previously
+                                    applied styles.
+Styler.pipe(func, *args, **kwargs)  Apply func(self, *args, **kwargs), and
+                                    return the result.
 
 BUILTIN STYLES                                *reference-style-builtin-styles*
 
@@ -26398,113 +26456,111 @@ ASSERTION FUNCTIONS                    *reference-testing-assertion-functions*
 
 *reference-testing-api-general-testing*
 
-testing.assert_frame_equal(left,      Check that left and right DataFrame are
-    right[, ...])                         equal.
-    testing.assert_series_equal(left,     Check that left and right Series are
-    right[, ...])                         equal.
-    testing.assert_index_equal(left,      Check that left and right Index are
-    right[, ...])                         equal.
-    testing.assert_extension_array_equal(left,  Check that left and right
-    right)                                ExtensionArrays are equal.
+testing.assert_frame_equal(left,    Check that left and right DataFrame are
+    right[, ...])                       equal.
+    testing.assert_series_equal(left,   Check that left and right Series are
+    right[, ...])                       equal.
+    testing.assert_index_equal(left,    Check that left and right Index are equal.
+    right[, ...])
+    testing.assert_extension_array_     Check that left and right ExtensionArrays
+    equal(left,                         are equal.
+    right)
 
 EXCEPTIONS AND WARNINGS            *reference-testing-exceptions-and-warnings*
 
-errors.AbstractMethodError(class_instance[,  Raise this error instead of
-    ...])                                 NotImplementedError for abstract
-                                      methods.
-errors.AttributeConflictWarning       Warning raised when index attributes
-                                      conflict when using HDFStore.
-errors.CategoricalConversionWarning   Warning is raised when reading a partial
-                                      labeled Stata file using an iterator.
-errors.ChainedAssignmentError         Warning raised when trying to set using
-                                      chained assignment.
-errors.ClosedFileError                Exception is raised when trying to
-                                      perform an operation on a closed
-                                      HDFStore file.
-errors.CSSWarning                     Warning is raised when converting css
-                                      styling fails.
-errors.DatabaseError                  Error is raised when executing SQL with
-                                      bad syntax or SQL that throws an error.
-errors.DataError                      Exception raised when performing an
-                                      operation on non-numerical data.
-errors.DtypeWarning                   Warning raised when reading different
-                                      dtypes in a column from a file.
-errors.DuplicateLabelError            Error raised when an operation would
-                                      introduce duplicate labels.
-errors.EmptyDataError                 Exception raised in pd.read_csv when
-                                      empty data or header is encountered.
-errors.IncompatibilityWarning         Warning raised when trying to use where
-                                      criteria on an incompatible HDF5 file.
-errors.IncompatibleFrequency          Raised when trying to compare or operate
-                                      between Periods with different
-                                      frequencies.
-errors.IndexingError                  Exception is raised when trying to index
-                                      and there is a mismatch in dimensions.
-errors.InvalidColumnName              Warning raised by to_stata the column
-                                      contains a non-valid stata name.
-errors.InvalidComparison              Exception is raised by
-                                      _validate_comparison_value to indicate
-                                      an invalid comparison.
-errors.InvalidIndexError              Exception raised when attempting to use
-                                      an invalid index key.
-errors.InvalidVersion                 An invalid version was found, users
-                                      should refer to PEP 440.
-errors.IntCastingNaNError             Exception raised when converting
-                                      (astype) an array with NaN to an integer
-                                      type.
-errors.LossySetitemError              Raised when trying to do a __setitem__
-                                      on an np.ndarray that is not lossless.
-errors.MergeError                     Exception raised when merging data.
-errors.NoBufferPresent                Exception is raised in _get_data_buffer
-                                      to signal that there is no requested
-                                      buffer.
-errors.NullFrequencyError             Exception raised when a freq cannot be
-                                      null.
-errors.NumbaUtilError                 Error raised for unsupported Numba
-                                      engine routines.
-errors.NumExprClobberingError         Exception raised when trying to use a
-                                      built-in numexpr name as a variable
-                                      name.
-errors.OptionError                    Exception raised for pandas.options.
-errors.OutOfBoundsDatetime            Raised when the datetime is outside the
-                                      range that can be represented.
-errors.OutOfBoundsTimedelta           Raised when encountering a timedelta
-                                      value that cannot be represented.
-errors.PandasChangeWarning            Warning raised for any upcoming change.
-errors.Pandas4Warning                 Warning raised for an upcoming change
-                                      that will be enforced in pandas 4.0.
-errors.Pandas5Warning                 Warning raised for an upcoming change
-                                      that will be enforced in pandas 5.0.
-errors.PandasPendingDeprecationWarning  Warning raised for an upcoming change
-                                      that is a PendingDeprecationWarning.
-errors.PandasDeprecationWarning       Warning raised for an upcoming change
-                                      that is a DeprecationWarning.
-errors.PandasFutureWarning            Warning raised for an upcoming change
-                                      that is a FutureWarning.
-errors.ParserError                    Exception that is raised by an error
-                                      encountered in parsing file contents.
-errors.ParserWarning                  Warning raised when reading a file that
-                                      doesn't use the default 'c' parser.
-errors.PerformanceWarning             Warning raised when there is a possible
-                                      performance impact.
-errors.PossibleDataLossError          Exception raised when trying to open an
-                                      HDFStore file when already opened.
-errors.PossiblePrecisionLoss          Warning raised by to_stata on a column
-                                      with a value outside or equal to int64.
-errors.PyperclipException             Exception raised when clipboard
-                                      functionality is unsupported.
-errors.PyperclipWindowsException(message)  Exception raised when clipboard
-                                      functionality is unsupported by Windows.
-errors.SpecificationError             Exception raised by agg when the
-                                      functions are ill-specified.
-errors.UndefinedVariableError(name[,  Exception raised by query or eval when
-    is_local])                            using an undefined variable name.
-    errors.UnsortedIndexError             Error raised when slicing a MultiIndex
-                                      which has not been lexsorted.
-errors.UnsupportedFunctionCall        Exception raised when attempting to call
-                                      an unsupported numpy function.
-errors.ValueLabelTypeMismatch         Warning raised by to_stata on a category
-                                      column that contains non-string values.
+errors.AbstractMethodError(class_   Raise this error instead of
+    instance[,                          NotImplementedError for abstract methods.
+    ...])
+    errors.AttributeConflictWarning     Warning raised when index attributes
+                                    conflict when using HDFStore.
+errors.                             Warning is raised when reading a partial
+CategoricalConversionWarning        labeled Stata file using an iterator.
+errors.ChainedAssignmentError       Warning raised when trying to set using
+                                    chained assignment.
+errors.ClosedFileError              Exception is raised when trying to perform
+                                    an operation on a closed HDFStore file.
+errors.CSSWarning                   Warning is raised when converting css
+                                    styling fails.
+errors.DatabaseError                Error is raised when executing SQL with
+                                    bad syntax or SQL that throws an error.
+errors.DataError                    Exception raised when performing an
+                                    operation on non-numerical data.
+errors.DtypeWarning                 Warning raised when reading different
+                                    dtypes in a column from a file.
+errors.DuplicateLabelError          Error raised when an operation would
+                                    introduce duplicate labels.
+errors.EmptyDataError               Exception raised in pd.read_csv when empty
+                                    data or header is encountered.
+errors.IncompatibilityWarning       Warning raised when trying to use where
+                                    criteria on an incompatible HDF5 file.
+errors.IncompatibleFrequency        Raised when trying to compare or operate
+                                    between Periods with different
+                                    frequencies.
+errors.IndexingError                Exception is raised when trying to index
+                                    and there is a mismatch in dimensions.
+errors.InvalidColumnName            Warning raised by to_stata the column
+                                    contains a non-valid stata name.
+errors.InvalidComparison            Exception is raised by
+                                    _validate_comparison_value to indicate an
+                                    invalid comparison.
+errors.InvalidIndexError            Exception raised when attempting to use an
+                                    invalid index key.
+errors.InvalidVersion               An invalid version was found, users should
+                                    refer to PEP 440.
+errors.IntCastingNaNError           Exception raised when converting (astype)
+                                    an array with NaN to an integer type.
+errors.LossySetitemError            Raised when trying to do a __setitem__ on
+                                    an np.ndarray that is not lossless.
+errors.MergeError                   Exception raised when merging data.
+errors.NoBufferPresent              Exception is raised in _get_data_buffer to
+                                    signal that there is no requested buffer.
+errors.NullFrequencyError           Exception raised when a freq cannot be
+                                    null.
+errors.NumbaUtilError               Error raised for unsupported Numba engine
+                                    routines.
+errors.NumExprClobberingError       Exception raised when trying to use a
+                                    built-in numexpr name as a variable name.
+errors.OptionError                  Exception raised for pandas.options.
+errors.OutOfBoundsDatetime          Raised when the datetime is outside the
+                                    range that can be represented.
+errors.OutOfBoundsTimedelta         Raised when encountering a timedelta value
+                                    that cannot be represented.
+errors.PandasChangeWarning          Warning raised for any upcoming change.
+errors.Pandas4Warning               Warning raised for an upcoming change that
+                                    will be enforced in pandas 4.0.
+errors.Pandas5Warning               Warning raised for an upcoming change that
+                                    will be enforced in pandas 5.0.
+errors.                             Warning raised for an upcoming change that
+PandasPendingDeprecationWarning     is a PendingDeprecationWarning.
+errors.PandasDeprecationWarning     Warning raised for an upcoming change that
+                                    is a DeprecationWarning.
+errors.PandasFutureWarning          Warning raised for an upcoming change that
+                                    is a FutureWarning.
+errors.ParserError                  Exception that is raised by an error
+                                    encountered in parsing file contents.
+errors.ParserWarning                Warning raised when reading a file that
+                                    doesn't use the default 'c' parser.
+errors.PerformanceWarning           Warning raised when there is a possible
+                                    performance impact.
+errors.PossibleDataLossError        Exception raised when trying to open an
+                                    HDFStore file when already opened.
+errors.PossiblePrecisionLoss        Warning raised by to_stata on a column
+                                    with a value outside or equal to int64.
+errors.PyperclipException           Exception raised when clipboard
+                                    functionality is unsupported.
+errors.                             Exception raised when clipboard
+PyperclipWindowsException(message)  functionality is unsupported by Windows.
+    errors.SpecificationError           Exception raised by agg when the functions
+                                    are ill-specified.
+errors.                             Exception raised by query or eval when
+UndefinedVariableError(name[,       using an undefined variable name.
+    is_local])
+    errors.UnsortedIndexError           Error raised when slicing a MultiIndex
+                                    which has not been lexsorted.
+errors.UnsupportedFunctionCall      Exception raised when attempting to call
+                                    an unsupported numpy function.
+errors.ValueLabelTypeMismatch       Warning raised by to_stata on a category
+                                    column that contains non-string values.
 
 BUG REPORT FUNCTION                    *reference-testing-bug-report-function*
 
@@ -26637,18 +26693,22 @@ EXPONENTIALLY-WEIGHTED WINDOW FUNCTIONS
 
 *reference-window-api-functions-ewm*
 
-ExponentialMovingWindow.mean([numeric_only,  Calculate the ewm (exponential weighted
-    ...])                                 moment) mean.
-    ExponentialMovingWindow.sum([numeric_only,  Calculate the ewm (exponential weighted
-    ...])                                 moment) sum.
-    ExponentialMovingWindow.std([bias,    Calculate the ewm (exponential weighted
-    numeric_only])                        moment) standard deviation.
-    ExponentialMovingWindow.var([bias,    Calculate the ewm (exponential weighted
-    numeric_only])                        moment) variance.
-    ExponentialMovingWindow.corr([other,  Calculate the ewm (exponential weighted
-    ...])                                 moment) sample correlation.
-    ExponentialMovingWindow.cov([other,   Calculate the ewm (exponential weighted
-    ...])                                 moment) sample covariance.
+ExponentialMovingWindow.            Calculate the ewm (exponential weighted
+mean([numeric_only,                 moment) mean.
+    ...])
+    ExponentialMovingWindow.            Calculate the ewm (exponential weighted
+    sum([numeric_only,                  moment) sum.
+    ...])
+    ExponentialMovingWindow.std([bias,  Calculate the ewm (exponential weighted
+    numeric_only])                      moment) standard deviation.
+    ExponentialMovingWindow.var([bias,  Calculate the ewm (exponential weighted
+    numeric_only])                      moment) variance.
+    ExponentialMovingWindow.            Calculate the ewm (exponential weighted
+    corr([other,                        moment) sample correlation.
+    ...])
+    ExponentialMovingWindow.            Calculate the ewm (exponential weighted
+    cov([other,                         moment) sample covariance.
+    ...])
 
 WINDOW INDEXER                               *reference-window-window-indexer*
 
@@ -26656,12 +26716,12 @@ WINDOW INDEXER                               *reference-window-window-indexer*
 
 Base class for defining custom window boundaries.
 
-api.indexers.BaseIndexer([index_array,  Base class for window bounds
-    ...])                                 calculations.
-    api.indexers.FixedForwardWindowIndexer([...])  Creates window boundaries for
-                                      fixed-length windows that include the
-                                      current row.
-api.indexers.VariableOffsetWindowIndexer([...])  Calculate window boundaries based on a
-                                      non-fixed offset such as a BusinessDay.
+api.indexers.BaseIndexer([index_    Base class for window bounds calculations.
+    array,
+    ...])
+    api.indexers.                       Creates window boundaries for fixed-length
+    FixedForwardWindowIndexer([...])    windows that include the current row.
+    api.indexers.                       Calculate window boundaries based on a
+    VariableOffsetWindowIndexer([...])  non-fixed offset such as a BusinessDay.
 
  vim:tw=78:ts=8:ft=help:norl:

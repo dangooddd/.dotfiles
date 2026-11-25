@@ -449,7 +449,7 @@ The data plane is organized as follows:
       transfer_queue/
       ├── storage/
       │   ├── __init__.py
-      │   │── simple_backend.py             # Default distributed storage backend (SimpleStorageUnit) by TQ 
+      │   │── simple_backend.py             # Default distributed storage backend (SimpleStorageUnit) by TQ
       │   ├── managers/                     # Managers are upper level interfaces that encapsulate the interaction logic with TQ system.
       │   │   ├── __init__.py
       │   │   ├──base.py                    # StorageManager, KVStorageManager, StorageManagerFactory

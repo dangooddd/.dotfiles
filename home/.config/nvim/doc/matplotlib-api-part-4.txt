@@ -34,17 +34,18 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
     Valid keyword arguments are:
 
       Property                            Description
-      ----------------------------------  ------------------------------------------
-      agg_filter                          a filter function, which takes a (m, n, 3)
-                                          float array and a dpi value, and returns a
-                                          (m, n, 3) array and two offsets from the
-                                          bottom left corner of the image
+      ----------------------------------  ------------------------------------
+      agg_filter                          a filter function, which takes a (m,
+                                          n, 3) float array and a dpi value,
+                                          and returns a (m, n, 3) array and
+                                          two offsets from the bottom left
+                                          corner of the image
       alpha                               float or None
       animated                            bool
       antialiased                         bool
       backgroundcolor                     color
-      bbox                                dict with properties for FancyBboxPatch or
-                                          None
+      bbox                                dict with properties for
+                                          FancyBboxPatch or None
       clip_box                            unknown
       clip_on                             unknown
       clip_path                           unknown
@@ -52,23 +53,27 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
       figure                              Figure or SubFigure
       fontfamily or family or fontname    {FONTNAME, 'serif', 'sans-serif',
                                           'cursive', 'fantasy', 'monospace'}
-      fontfeatures                        list of str, or tuple of str, or None
-      fontproperties or font or           font_manager.FontProperties or str or
-      font_properties                     pathlib.Path
-      fontsize or size                    float or {'xx-small', 'x-small', 'small',
-                                          'medium', 'large', 'x-large', 'xx-large'}
+      fontfeatures                        list of str, or tuple of str, or
+                                          None
+      fontproperties or font or           font_manager.FontProperties or str
+      font_properties                     or pathlib.Path
+      fontsize or size                    float or {'xx-small', 'x-small',
+                                          'small', 'medium', 'large',
+                                          'x-large', 'xx-large'}
       fontstretch or stretch              {a numeric value in range 0-1000,
-                                          'ultra-condensed', 'extra-condensed',
-                                          'condensed', 'semi-condensed', 'normal',
+                                          'ultra-condensed',
+                                          'extra-condensed', 'condensed',
+                                          'semi-condensed', 'normal',
                                           'semi-expanded', 'expanded',
                                           'extra-expanded', 'ultra-expanded'}
       fontstyle or style                  {'normal', 'italic', 'oblique'}
       fontvariant or variant              {'normal', 'small-caps'}
       fontweight or weight                {a numeric value in range 0-1000,
                                           'ultralight', 'light', 'normal',
-                                          'regular', 'book', 'medium', 'roman',
-                                          'semibold', 'demibold', 'demi', 'bold',
-                                          'heavy', 'extra bold', 'black'}
+                                          'regular', 'book', 'medium',
+                                          'roman', 'semibold', 'demibold',
+                                          'demi', 'bold', 'heavy', 'extra
+                                          bold', 'black'}
       gid                                 str
       horizontalalignment or ha           {'left', 'center', 'right'}
       in_layout                           bool
@@ -86,15 +91,16 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
       rotation                            float or {'vertical', 'horizontal'}
       rotation_mode                       {None, 'default', 'anchor', 'xtick',
                                           'ytick'}
-      sketch_params                       (scale: float, length: float, randomness:
-                                          float)
+      sketch_params                       (scale: float, length: float,
+                                          randomness: float)
       snap                                bool or None
       text                                object
       transform                           Transform
       transform_rotates_text              bool
       url                                 str
-      usetex                              bool, default: rcParams["text.usetex"]
-                                          (default: False)
+      usetex                              bool, default:
+                                          rcParams["text.usetex"] (default:
+                                          False)
       verticalalignment or va             {'baseline', 'bottom', 'center',
                                           'center_baseline', 'top'}
       visible                             bool
@@ -103,11 +109,13 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
       y                                   float
       zorder                              float
 
-    contains(mouseevent) *matplotlib.text.Text.contains*
+    contains(mouseevent)
+    *matplotlib.text.Text.contains*
         Return whether the mouse event occurred inside the axis-aligned
         bounding-box of the text.
 
-    draw(renderer) *matplotlib.text.Text.draw*
+    draw(renderer)
+    *matplotlib.text.Text.draw*
         Draw the Artist (and its children) using the given renderer.
 
         This has no effect if the artist is not visible
@@ -120,92 +128,112 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
         This method is overridden in the Artist subclasses.
 
-    get_antialiased() *matplotlib.text.Text.get_antialiased*
+    get_antialiased()
+    *matplotlib.text.Text.get_antialiased*
         Return whether antialiased rendering is used.
 
-    get_bbox_patch() *matplotlib.text.Text.get_bbox_patch*
+    get_bbox_patch()
+    *matplotlib.text.Text.get_bbox_patch*
         Return the bbox Patch, or None if the
         |matplotlib.patches.FancyBboxPatch| is not made.
 
         For more details see |matplotlib.text.Text.set_bbox|.
 
-    get_c() *matplotlib.text.Text.get_c*
+    get_c()
+    *matplotlib.text.Text.get_c*
         Alias for |matplotlib.text.Text.get_color|.
 
-    get_color() *matplotlib.text.Text.get_color*
+    get_color()
+    *matplotlib.text.Text.get_color*
         Return the color of the text.
 
-    get_family() *matplotlib.text.Text.get_family*
+    get_family()
+    *matplotlib.text.Text.get_family*
         Alias for |matplotlib.text.Text.get_fontfamily|.
 
-    get_font() *matplotlib.text.Text.get_font*
+    get_font()
+    *matplotlib.text.Text.get_font*
         Alias for |matplotlib.text.Text.get_fontproperties|.
 
-    get_font_properties() *matplotlib.text.Text.get_font_properties*
+    get_font_properties()
+    *matplotlib.text.Text.get_font_properties*
         Alias for |matplotlib.text.Text.get_fontproperties|.
 
-    get_fontfamily() *matplotlib.text.Text.get_fontfamily*
+    get_fontfamily()
+    *matplotlib.text.Text.get_fontfamily*
         Return the list of font families used for font lookup.
 
           See also: ~
 
           |matplotlib.font_manager.FontProperties.get_family|
 
-    get_fontfeatures() *matplotlib.text.Text.get_fontfeatures*
+    get_fontfeatures()
+    *matplotlib.text.Text.get_fontfeatures*
         Return a tuple of font feature tags to enable.
 
-    get_fontname() *matplotlib.text.Text.get_fontname*
+    get_fontname()
+    *matplotlib.text.Text.get_fontname*
         Return the font name as a string.
 
           See also: ~
 
           |matplotlib.font_manager.FontProperties.get_name|
 
-    get_fontproperties() *matplotlib.text.Text.get_fontproperties*
+    get_fontproperties()
+    *matplotlib.text.Text.get_fontproperties*
         Return the |matplotlib.font_manager.FontProperties|.
 
-    get_fontsize() *matplotlib.text.Text.get_fontsize*
+    get_fontsize()
+    *matplotlib.text.Text.get_fontsize*
         Return the font size as an integer.
 
           See also: ~
 
           |matplotlib.font_manager.FontProperties.get_size_in_points|
 
-    get_fontstyle() *matplotlib.text.Text.get_fontstyle*
+    get_fontstyle()
+    *matplotlib.text.Text.get_fontstyle*
         Return the font style as a string.
 
           See also: ~
 
           |matplotlib.font_manager.FontProperties.get_style|
 
-    get_fontvariant() *matplotlib.text.Text.get_fontvariant*
+    get_fontvariant()
+    *matplotlib.text.Text.get_fontvariant*
         Return the font variant as a string.
 
           See also: ~
 
           |matplotlib.font_manager.FontProperties.get_variant|
 
-    get_fontweight() *matplotlib.text.Text.get_fontweight*
+    get_fontweight()
+    *matplotlib.text.Text.get_fontweight*
         Return the font weight as a string or a number.
 
           See also: ~
 
           |matplotlib.font_manager.FontProperties.get_weight|
 
-    get_ha() *matplotlib.text.Text.get_ha*
+    get_ha()
+    *matplotlib.text.Text.get_ha*
         Alias for |matplotlib.text.Text.get_horizontalalignment|.
 
-    get_horizontalalignment() *matplotlib.text.Text.get_horizontalalignment*
+    get_horizontalalignment()
+    *matplotlib.text.Text.get_horizontalalignment*
         Return the horizontal alignment as a string. Will be one of 'left',
         'center' or 'right'.
 
-    get_language() *matplotlib.text.Text.get_language*
+    get_language()
+    *matplotlib.text.Text.get_language*
         Return the language this Text is in.
 
-    get_linespacing() *matplotlib.text.Text.get_linespacing*
+    get_linespacing()
+    *matplotlib.text.Text.get_linespacing*
         Get the line spacing.
 
-    get_math_fontfamily() *matplotlib.text.Text.get_math_fontfamily*
+    get_math_fontfamily()
+    *matplotlib.text.Text.get_math_fontfamily*
         Return the font family name for math text rendered by Matplotlib.
 
         The default value is `rcParams["mathtext.fontset"]` (default:
@@ -215,39 +243,49 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
           |matplotlib.text.Text.set_math_fontfamily|
 
-    get_name() *matplotlib.text.Text.get_name*
+    get_name()
+    *matplotlib.text.Text.get_name*
         Alias for |matplotlib.text.Text.get_fontname|.
 
-    get_parse_math() *matplotlib.text.Text.get_parse_math*
+    get_parse_math()
+    *matplotlib.text.Text.get_parse_math*
         Return whether mathtext parsing is considered for this
         |matplotlib.text.Text|.
 
-    get_position() *matplotlib.text.Text.get_position*
+    get_position()
+    *matplotlib.text.Text.get_position*
         Return the (x, y) position of the text.
 
-    get_rotation() *matplotlib.text.Text.get_rotation*
+    get_rotation()
+    *matplotlib.text.Text.get_rotation*
         Return the text angle in degrees in the range [0, 360).
 
-    get_rotation_mode() *matplotlib.text.Text.get_rotation_mode*
+    get_rotation_mode()
+    *matplotlib.text.Text.get_rotation_mode*
         Return the text rotation mode.
 
-    get_size() *matplotlib.text.Text.get_size*
+    get_size()
+    *matplotlib.text.Text.get_size*
         Alias for |matplotlib.text.Text.get_fontsize|.
 
-    get_stretch() *matplotlib.text.Text.get_stretch*
+    get_stretch()
+    *matplotlib.text.Text.get_stretch*
         Return the font stretch as a string or a number.
 
           See also: ~
 
           |matplotlib.font_manager.FontProperties.get_stretch|
 
-    get_style() *matplotlib.text.Text.get_style*
+    get_style()
+    *matplotlib.text.Text.get_style*
         Alias for |matplotlib.text.Text.get_fontstyle|.
 
-    get_text() *matplotlib.text.Text.get_text*
+    get_text()
+    *matplotlib.text.Text.get_text*
         Return the text string.
 
-    get_tightbbox(renderer=None) *matplotlib.text.Text.get_tightbbox*
+    get_tightbbox(renderer=None)
+    *matplotlib.text.Text.get_tightbbox*
         Get the artist's bounding box in display space, taking clipping into
         account.
 
@@ -270,24 +308,30 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
     *matplotlib.text.Text.get_transform_rotates_text*
         Return whether rotations of the transform affect the text direction.
 
-    get_unitless_position() *matplotlib.text.Text.get_unitless_position*
+    get_unitless_position()
+    *matplotlib.text.Text.get_unitless_position*
         Return the (x, y) unitless position of the text.
 
-    get_usetex() *matplotlib.text.Text.get_usetex*
+    get_usetex()
+    *matplotlib.text.Text.get_usetex*
         Return whether this |matplotlib.text.Text| object uses TeX for
         rendering.
 
-    get_va() *matplotlib.text.Text.get_va*
+    get_va()
+    *matplotlib.text.Text.get_va*
         Alias for |matplotlib.text.Text.get_verticalalignment|.
 
-    get_variant() *matplotlib.text.Text.get_variant*
+    get_variant()
+    *matplotlib.text.Text.get_variant*
         Alias for |matplotlib.text.Text.get_fontvariant|.
 
-    get_verticalalignment() *matplotlib.text.Text.get_verticalalignment*
+    get_verticalalignment()
+    *matplotlib.text.Text.get_verticalalignment*
         Return the vertical alignment as a string. Will be one of 'top',
         'center', 'bottom', 'baseline' or 'center_baseline'.
 
-    get_weight() *matplotlib.text.Text.get_weight*
+    get_weight()
+    *matplotlib.text.Text.get_weight*
         Alias for |matplotlib.text.Text.get_fontweight|.
 
     get_window_extent(renderer=None, dpi=None)
@@ -315,7 +359,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
                 should be set e.g. if to match regions with a figure saved
                 with a custom dpi value.
 
-    get_wrap() *matplotlib.text.Text.get_wrap*
+    get_wrap()
+    *matplotlib.text.Text.get_wrap*
         Return whether the text can be wrapped.
 
     set(*, agg_filter=<UNSET>, alpha=<UNSET>, animated=<UNSET>,
@@ -332,7 +377,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
     sketch_params=<UNSET>, snap=<UNSET>, text=<UNSET>, transform=<UNSET>,
     transform_rotates_text=<UNSET>, url=<UNSET>, usetex=<UNSET>,
     verticalalignment=<UNSET>, visible=<UNSET>, wrap=<UNSET>, x=<UNSET>,
-    y=<UNSET>, zorder=<UNSET>) *matplotlib.text.Text.set*
+    y=<UNSET>, zorder=<UNSET>)
+    *matplotlib.text.Text.set*
         Set multiple properties at once.
 
         >python
@@ -356,15 +402,17 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         Supported properties are
 
           Property                Description
-          ----------------------  ------------------------------------------------------
-          agg_filter              a filter function, which takes a (m, n, 3) float array
-                                  and a dpi value, and returns a (m, n, 3) array and two
-                                  offsets from the bottom left corner of the image
+          ----------------------  --------------------------------------------
+          agg_filter              a filter function, which takes a (m, n, 3)
+                                  float array and a dpi value, and returns a
+                                  (m, n, 3) array and two offsets from the
+                                  bottom left corner of the image
           alpha                   float or None
           animated                bool
           antialiased             bool
           backgroundcolor         color
-          bbox                    dict with properties for FancyBboxPatch or None
+          bbox                    dict with properties for FancyBboxPatch or
+                                  None
           clip_box                unknown
           clip_on                 unknown
           clip_path               unknown
@@ -373,19 +421,22 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
           fontfamily or fontname  {FONTNAME, 'serif', 'sans-serif', 'cursive',
                                   'fantasy', 'monospace'}
           fontfeatures            list of str, or tuple of str, or None
-          fontproperties          font_manager.FontProperties or str or pathlib.Path
-          fontsize                float or {'xx-small', 'x-small', 'small', 'medium',
-                                  'large', 'x-large', 'xx-large'}
-          fontstretch             {a numeric value in range 0-1000, 'ultra-condensed',
-                                  'extra-condensed', 'condensed', 'semi-condensed',
-                                  'normal', 'semi-expanded', 'expanded',
+          fontproperties          font_manager.FontProperties or str or
+                                  pathlib.Path
+          fontsize                float or {'xx-small', 'x-small', 'small',
+                                  'medium', 'large', 'x-large', 'xx-large'}
+          fontstretch             {a numeric value in range 0-1000,
+                                  'ultra-condensed', 'extra-condensed',
+                                  'condensed', 'semi-condensed', 'normal',
+                                  'semi-expanded', 'expanded',
                                   'extra-expanded', 'ultra-expanded'}
           fontstyle               {'normal', 'italic', 'oblique'}
           fontvariant             {'normal', 'small-caps'}
-          fontweight              {a numeric value in range 0-1000, 'ultralight',
-                                  'light', 'normal', 'regular', 'book', 'medium',
-                                  'roman', 'semibold', 'demibold', 'demi', 'bold',
-                                  'heavy', 'extra bold', 'black'}
+          fontweight              {a numeric value in range 0-1000,
+                                  'ultralight', 'light', 'normal', 'regular',
+                                  'book', 'medium', 'roman', 'semibold',
+                                  'demibold', 'demi', 'bold', 'heavy', 'extra
+                                  bold', 'black'}
           gid                     str
           horizontalalignment     {'left', 'center', 'right'}
           in_layout               bool
@@ -401,24 +452,27 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
           position                (float, float)
           rasterized              bool
           rotation                float or {'vertical', 'horizontal'}
-          rotation_mode           {None, 'default', 'anchor', 'xtick', 'ytick'}
-          sketch_params           (scale: float, length: float, randomness: float)
+          rotation_mode           {None, 'default', 'anchor', 'xtick',
+                                  'ytick'}
+          sketch_params           (scale: float, length: float, randomness:
+                                  float)
           snap                    bool or None
           text                    object
           transform               Transform
           transform_rotates_text  bool
           url                     str
-          usetex                  bool, default: rcParams["text.usetex"] (default:
-                                  False)
-          verticalalignment       {'baseline', 'bottom', 'center', 'center_baseline',
-                                  'top'}
+          usetex                  bool, default: rcParams["text.usetex"]
+                                  (default: False)
+          verticalalignment       {'baseline', 'bottom', 'center',
+                                  'center_baseline', 'top'}
           visible                 bool
           wrap                    bool
           x                       float
           y                       float
           zorder                  float
 
-    set_antialiased(antialiased) *matplotlib.text.Text.set_antialiased*
+    set_antialiased(antialiased)
+    *matplotlib.text.Text.set_antialiased*
         Set whether to use antialiased rendering.
 
         Parameters: ~
@@ -430,7 +484,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         (default: `True`) and the parameter antialiased will have no effect
         if the text contains math expressions.
 
-    set_backgroundcolor(color) *matplotlib.text.Text.set_backgroundcolor*
+    set_backgroundcolor(color)
+    *matplotlib.text.Text.set_backgroundcolor*
         Set the background color of the text.
 
         This is realized through the bbox (see
@@ -444,7 +499,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
           |matplotlib.text.Text.set_bbox|
               To change the position of the bounding box
 
-    set_bbox(rectprops) *matplotlib.text.Text.set_bbox*
+    set_bbox(rectprops)
+    *matplotlib.text.Text.set_bbox*
         Draw a box behind/around the text.
 
         This can be used to set a background and/or a frame around the text.
@@ -466,10 +522,12 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
             t.set_bbox(dict(facecolor='red', alpha=0.5))
 <
 
-    set_c(color) *matplotlib.text.Text.set_c*
+    set_c(color)
+    *matplotlib.text.Text.set_c*
         Alias for |matplotlib.text.Text.set_color|.
 
-    set_clip_box(clipbox) *matplotlib.text.Text.set_clip_box*
+    set_clip_box(clipbox)
+    *matplotlib.text.Text.set_clip_box*
         Set the artist's clip |matplotlib.transforms.Bbox|.
 
         Parameters: ~
@@ -479,7 +537,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
                 `TransformedBbox(Bbox([[0, 0], [1, 1]]), ax.transAxes)` is
                 the default clipping for an artist added to an Axes.
 
-    set_clip_on(b) *matplotlib.text.Text.set_clip_on*
+    set_clip_on(b)
+    *matplotlib.text.Text.set_clip_on*
         Set whether the artist uses clipping.
 
         When False, artists will be visible outside the Axes which can lead
@@ -488,7 +547,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         Parameters: ~
             b bool
 
-    set_clip_path(path, transform=None) *matplotlib.text.Text.set_clip_path*
+    set_clip_path(path, transform=None)
+    *matplotlib.text.Text.set_clip_path*
         Set the artist's clip path.
 
         Parameters: ~
@@ -512,22 +572,27 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         For technical reasons (support of set), a tuple (path, transform) is
         also accepted as a single positional parameter.
 
-    set_color(color) *matplotlib.text.Text.set_color*
+    set_color(color)
+    *matplotlib.text.Text.set_color*
         Set the foreground color of the text
 
         Parameters: ~
             color |explain-colors-colors-colors-def|
 
-    set_family(fontname) *matplotlib.text.Text.set_family*
+    set_family(fontname)
+    *matplotlib.text.Text.set_family*
         Alias for |matplotlib.text.Text.set_fontfamily|.
 
-    set_font(fp) *matplotlib.text.Text.set_font*
+    set_font(fp)
+    *matplotlib.text.Text.set_font*
         Alias for |matplotlib.text.Text.set_fontproperties|.
 
-    set_font_properties(fp) *matplotlib.text.Text.set_font_properties*
+    set_font_properties(fp)
+    *matplotlib.text.Text.set_font_properties*
         Alias for |matplotlib.text.Text.set_fontproperties|.
 
-    set_fontfamily(fontname) *matplotlib.text.Text.set_fontfamily*
+    set_fontfamily(fontname)
+    *matplotlib.text.Text.set_fontfamily*
         Set the font family. Can be either a single string, or a list of
         strings in decreasing priority. Each string may be either a real
         font name or a generic font class name. If the latter, the specific
@@ -547,7 +612,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
           |matplotlib.font_manager.FontProperties.set_family|
 
-    set_fontfeatures(features) *matplotlib.text.Text.set_fontfeatures*
+    set_fontfeatures(features)
+    *matplotlib.text.Text.set_fontfeatures*
         Set the feature tags to enable on the font.
 
         Parameters: ~
@@ -574,7 +640,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
                 Available font feature tags may be found at
                 https://learn.microsoft.com/en-us/typography/opentype/spec/featurelist
 
-    set_fontname(fontname) *matplotlib.text.Text.set_fontname*
+    set_fontname(fontname)
+    *matplotlib.text.Text.set_fontname*
         Alias for |matplotlib.text.Text.set_fontfamily|.
 
         One-way alias only: the getter differs.
@@ -587,7 +654,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
           |matplotlib.font_manager.FontProperties.set_family|
 
-    set_fontproperties(fp) *matplotlib.text.Text.set_fontproperties*
+    set_fontproperties(fp)
+    *matplotlib.text.Text.set_fontproperties*
         Set the font properties that control the text.
 
         Parameters: ~
@@ -600,7 +668,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
                 https://docs.python.org/3/library/pathlib.html#pathlib.Path,
                 it is interpreted as the absolute path to a font file.
 
-    set_fontsize(fontsize) *matplotlib.text.Text.set_fontsize*
+    set_fontsize(fontsize)
+    *matplotlib.text.Text.set_fontsize*
         Set the font size.
 
         Parameters: ~
@@ -613,7 +682,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
           |matplotlib.font_manager.FontProperties.set_size|
 
-    set_fontstretch(stretch) *matplotlib.text.Text.set_fontstretch*
+    set_fontstretch(stretch)
+    *matplotlib.text.Text.set_fontstretch*
         Set the font stretch (horizontal condensation or expansion).
 
         Parameters: ~
@@ -625,7 +695,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
           |matplotlib.font_manager.FontProperties.set_stretch|
 
-    set_fontstyle(fontstyle) *matplotlib.text.Text.set_fontstyle*
+    set_fontstyle(fontstyle)
+    *matplotlib.text.Text.set_fontstyle*
         Set the font style.
 
         Parameters: ~
@@ -635,7 +706,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
           |matplotlib.font_manager.FontProperties.set_style|
 
-    set_fontvariant(variant) *matplotlib.text.Text.set_fontvariant*
+    set_fontvariant(variant)
+    *matplotlib.text.Text.set_fontvariant*
         Set the font variant.
 
         Parameters: ~
@@ -645,7 +717,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
           |matplotlib.font_manager.FontProperties.set_variant|
 
-    set_fontweight(weight) *matplotlib.text.Text.set_fontweight*
+    set_fontweight(weight)
+    *matplotlib.text.Text.set_fontweight*
         Set the font weight.
 
         Parameters: ~
@@ -657,7 +730,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
           |matplotlib.font_manager.FontProperties.set_weight|
 
-    set_ha(align) *matplotlib.text.Text.set_ha*
+    set_ha(align)
+    *matplotlib.text.Text.set_ha*
         Alias for |matplotlib.text.Text.set_horizontalalignment|.
 
     set_horizontalalignment(align)
@@ -670,7 +744,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         Parameters: ~
             align {'left', 'center', 'right'}
 
-    set_language(language) *matplotlib.text.Text.set_language*
+    set_language(language)
+    *matplotlib.text.Text.set_language*
         Set the language of the text.
 
         Parameters: ~
@@ -682,7 +757,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
                 If None, then defaults to `rcParams["text.language"]`
                 (default: `None`).
 
-    set_linespacing(spacing) *matplotlib.text.Text.set_linespacing*
+    set_linespacing(spacing)
+    *matplotlib.text.Text.set_linespacing*
         Set the line spacing.
 
         Parameters: ~
@@ -693,7 +769,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
                 If a float, then line spacing will be fixed to this multiple
                 of the font size for every line.
 
-    set_ma(align) *matplotlib.text.Text.set_ma*
+    set_ma(align)
+    *matplotlib.text.Text.set_ma*
         Alias for |matplotlib.text.Text.set_multialignment|.
 
     set_math_fontfamily(fontfamily)
@@ -714,7 +791,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
 
           |matplotlib.text.Text.get_math_fontfamily|
 
-    set_multialignment(align) *matplotlib.text.Text.set_multialignment*
+    set_multialignment(align)
+    *matplotlib.text.Text.set_multialignment*
         Set the text alignment for multiline texts.
 
         The layout of the bounding box of all the lines is determined by the
@@ -724,10 +802,12 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         Parameters: ~
             align {'left', 'right', 'center'}
 
-    set_name(fontname) *matplotlib.text.Text.set_name*
+    set_name(fontname)
+    *matplotlib.text.Text.set_name*
         Alias for |matplotlib.text.Text.set_fontname|.
 
-    set_parse_math(parse_math) *matplotlib.text.Text.set_parse_math*
+    set_parse_math(parse_math)
+    *matplotlib.text.Text.set_parse_math*
         Override switch to disable any mathtext parsing for this
         |matplotlib.text.Text|.
 
@@ -737,13 +817,15 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
                 mathtext. If True, mathtext will be used if there is an even
                 number of unescaped dollar signs.
 
-    set_position(xy) *matplotlib.text.Text.set_position*
+    set_position(xy)
+    *matplotlib.text.Text.set_position*
         Set the (x, y) position of the text.
 
         Parameters: ~
             xy (float, float)
 
-    set_rotation(s) *matplotlib.text.Text.set_rotation*
+    set_rotation(s)
+    *matplotlib.text.Text.set_rotation*
         Set the rotation of the text.
 
         Parameters: ~
@@ -752,7 +834,8 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
                 direction (counterclockwise). 'horizontal' equals 0,
                 'vertical' equals 90.
 
-    set_rotation_mode(m) *matplotlib.text.Text.set_rotation_mode*
+    set_rotation_mode(m)
+    *matplotlib.text.Text.set_rotation_mode*
         Set text rotation mode.
 
         Parameters: ~
@@ -766,16 +849,20 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
                 nicely towards their ticks. Passing `None` will set the
                 rotation mode to `"default"`.
 
-    set_size(fontsize) *matplotlib.text.Text.set_size*
+    set_size(fontsize)
+    *matplotlib.text.Text.set_size*
         Alias for |matplotlib.text.Text.set_fontsize|.
 
-    set_stretch(stretch) *matplotlib.text.Text.set_stretch*
+    set_stretch(stretch)
+    *matplotlib.text.Text.set_stretch*
         Alias for |matplotlib.text.Text.set_fontstretch|.
 
-    set_style(fontstyle) *matplotlib.text.Text.set_style*
+    set_style(fontstyle)
+    *matplotlib.text.Text.set_style*
         Alias for |matplotlib.text.Text.set_fontstyle|.
 
-    set_text(s) *matplotlib.text.Text.set_text*
+    set_text(s)
+    *matplotlib.text.Text.set_text*
         Set the text string s.
 
         It may contain newlines (`\n`) or math in LaTeX syntax.
@@ -792,16 +879,19 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         Parameters: ~
             t bool
 
-    set_usetex(usetex) *matplotlib.text.Text.set_usetex*
+    set_usetex(usetex)
+    *matplotlib.text.Text.set_usetex*
         Parameters: ~
             usetex bool or None
                 Whether to render using TeX, `None` means to use
                 `rcParams["text.usetex"]` (default: `False`).
 
-    set_va(align) *matplotlib.text.Text.set_va*
+    set_va(align)
+    *matplotlib.text.Text.set_va*
         Alias for |matplotlib.text.Text.set_verticalalignment|.
 
-    set_variant(variant) *matplotlib.text.Text.set_variant*
+    set_variant(variant)
+    *matplotlib.text.Text.set_variant*
         Alias for |matplotlib.text.Text.set_fontvariant|.
 
     set_verticalalignment(align)
@@ -814,10 +904,12 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         Parameters: ~
             align {'baseline', 'bottom', 'center', 'center_baseline', 'top'}
 
-    set_weight(weight) *matplotlib.text.Text.set_weight*
+    set_weight(weight)
+    *matplotlib.text.Text.set_weight*
         Alias for |matplotlib.text.Text.set_fontweight|.
 
-    set_wrap(wrap) *matplotlib.text.Text.set_wrap*
+    set_wrap(wrap)
+    *matplotlib.text.Text.set_wrap*
         Set whether the text can be wrapped.
 
         Wrapping makes sure the text is confined to the (sub)figure box. It
@@ -834,19 +926,22 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         rescales the canvas to accommodate all content and happens before
         wrapping.
 
-    set_x(x) *matplotlib.text.Text.set_x*
+    set_x(x)
+    *matplotlib.text.Text.set_x*
         Set the x position of the text.
 
         Parameters: ~
             x float
 
-    set_y(y) *matplotlib.text.Text.set_y*
+    set_y(y)
+    *matplotlib.text.Text.set_y*
         Set the y position of the text.
 
         Parameters: ~
             y float
 
-    update(kwargs) *matplotlib.text.Text.update*
+    update(kwargs)
+    *matplotlib.text.Text.update*
         [Discouraged] Update this artist's properties from the dictionary
         props.
 
@@ -873,14 +968,17 @@ class matplotlib.text.Text(x=0, y=0, text='', *, color=None,
         This method should be used when the position and size of the bbox
         needs to be updated before actually drawing the bbox.
 
-    update_from(other) *matplotlib.text.Text.update_from*
+    update_from(other)
+    *matplotlib.text.Text.update_from*
         Copy properties from other to self.
 
-    zorder  = 3 *matplotlib.text.Text.zorder*
+    zorder  = 3
+    *matplotlib.text.Text.zorder*
+
+                                                  *matplotlib.text.Annotation*
 
 class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
     textcoords=None, arrowprops=None, annotation_clip=None, **kwargs)
-    *matplotlib.text.Annotation*
     Bases: |matplotlib.text.Text|, `_AnnotationBase`
 
     An |matplotlib.text.Annotation| is a |matplotlib.text.Text| that can
@@ -926,7 +1024,7 @@ class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
             - One of the following strings:
 
               Value                 Description
-              --------------------  --------------------------------------------------------
+              --------------------  --------------------------------------------
               'figure points'       Points from the lower left of the figure
               'figure pixels'       Pixels from the lower left of the figure
               'figure fraction'     Fraction of figure from lower left
@@ -936,8 +1034,8 @@ class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
               'axes points'         Points from lower left corner of the Axes
               'axes pixels'         Pixels from lower left corner of the Axes
               'axes fraction'       Fraction of Axes from lower left
-              'data'                Use the coordinate system of the object being annotated
-                                    (default)
+              'data'                Use the coordinate system of the object
+                                    being annotated (default)
               'polar'               (theta, r) if not native 'data' coordinates
 
               Note that 'subfigure pixels' and 'figure pixels' are the same
@@ -976,11 +1074,11 @@ class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
 
             All xycoords values are valid as well as the following strings:
 
-            Value                 Description
-            --------------------  --------------------------------------------------------
-            'offset points'       Offset, in points, from the xy value
-            'offset pixels'       Offset, in pixels, from the xy value
-            'offset fontsize'     Offset, relative to fontsize, from the xy value
+            Value              Description
+            -----------------  -----------------------------------------------
+            'offset points'    Offset, in points, from the xy value
+            'offset pixels'    Offset, in pixels, from the xy value
+            'offset fontsize'  Offset, relative to fontsize, from the xy value
 
         arrowprops dict, optional
             The properties used to draw a
@@ -996,7 +1094,7 @@ class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
             keys are:
 
             Key         Description
-            ----------  ------------------------------------------------------------------
+            ----------  ------------------------------------------------------
             width       The width of the arrow in points
             headwidth   The width of the base of the arrow head in points
             headlength  The length of the arrow head in points
@@ -1014,18 +1112,18 @@ class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
             Valid keys are the following
             |matplotlib.patches.FancyArrowPatch| parameters:
 
-            Key                     Description
-            ----------------------  ------------------------------------------------------
-            arrowstyle              The arrow style
-            connectionstyle         The connection style
-            relpos                  See below; default is (0.5, 0.5)
-            patchA                  Default is bounding box of the text
-            patchB                  Default is None
-            shrinkA                 In points. Default is 2 points
-            shrinkB                 In points. Default is 2 points
-            mutation_scale          Default is text size (in points)
-            mutation_aspect         Default is 1
-            ?                       Any FancyArrowPatch property
+            Key                  Description
+            -------------------  ---------------------------------------------
+            arrowstyle           The arrow style
+            connectionstyle      The connection style
+            relpos               See below; default is (0.5, 0.5)
+            patchA               Default is bounding box of the text
+            patchB               Default is None
+            shrinkA              In points. Default is 2 points
+            shrinkB              In points. Default is 2 points
+            mutation_scale       Default is text size (in points)
+            mutation_aspect      Default is 1
+            ?                    Any FancyArrowPatch property
 
             The exact starting point position of the arrow is defined by
             relpos. It's a tuple of relative coordinates of the text box,
@@ -1053,14 +1151,17 @@ class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
 
       |explain-text-annotations-annotations|
 
-    property anncoords *matplotlib.text.Annotation.anncoords*
+    property anncoords
+    *matplotlib.text.Annotation.anncoords*
         The coordinate system to use for |matplotlib.text.Annotation.xyann|.
 
-    contains(mouseevent) *matplotlib.text.Annotation.contains*
+    contains(mouseevent)
+    *matplotlib.text.Annotation.contains*
         Return whether the mouse event occurred inside the axis-aligned
         bounding-box of the text.
 
-    draw(renderer) *matplotlib.text.Annotation.draw*
+    draw(renderer)
+    *matplotlib.text.Annotation.draw*
         Draw the Artist (and its children) using the given renderer.
 
         This has no effect if the artist is not visible
@@ -1073,13 +1174,15 @@ class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
 
         This method is overridden in the Artist subclasses.
 
-    get_anncoords() *matplotlib.text.Annotation.get_anncoords*
+    get_anncoords()
+    *matplotlib.text.Annotation.get_anncoords*
         Return the coordinate system to use for
         |matplotlib.text.Annotation.xyann|.
 
         See also xycoords in |matplotlib.text.Annotation|.
 
-    get_tightbbox(renderer=None) *matplotlib.text.Annotation.get_tightbbox*
+    get_tightbbox(renderer=None)
+    *matplotlib.text.Annotation.get_tightbbox*
         Get the artist's bounding box in display space, taking clipping into
         account.
 
@@ -1161,85 +1264,98 @@ class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
 
         Supported properties are
 
-          Property                            Description
-          ----------------------------------  ------------------------------------------
-          agg_filter                          a filter function, which takes a (m, n, 3)
-                                              float array and a dpi value, and returns a
-                                              (m, n, 3) array and two offsets from the
-                                              bottom left corner of the image
-          alpha                               float or None
-          animated                            bool
-          anncoords                           unknown
-          annotation_clip                     bool or None
-          antialiased                         bool
-          backgroundcolor                     color
-          bbox                                dict with properties for FancyBboxPatch or
-                                              None
-          clip_box                            BboxBase or None
-          clip_on                             bool
-          clip_path                           Patch or (Path, Transform) or None
-          color or c                          color
-          figure                              unknown
-          fontfamily or family or fontname    {FONTNAME, 'serif', 'sans-serif',
-                                              'cursive', 'fantasy', 'monospace'}
-          fontfeatures                        list of str, or tuple of str, or None
-          fontproperties or font or           font_manager.FontProperties or str or
-          font_properties                     pathlib.Path
-          fontsize or size                    float or {'xx-small', 'x-small', 'small',
-                                              'medium', 'large', 'x-large', 'xx-large'}
-          fontstretch or stretch              {a numeric value in range 0-1000,
-                                              'ultra-condensed', 'extra-condensed',
-                                              'condensed', 'semi-condensed', 'normal',
-                                              'semi-expanded', 'expanded',
-                                              'extra-expanded', 'ultra-expanded'}
-          fontstyle or style                  {'normal', 'italic', 'oblique'}
-          fontvariant or variant              {'normal', 'small-caps'}
-          fontweight or weight                {a numeric value in range 0-1000,
-                                              'ultralight', 'light', 'normal',
-                                              'regular', 'book', 'medium', 'roman',
-                                              'semibold', 'demibold', 'demi', 'bold',
-                                              'heavy', 'extra bold', 'black'}
-          gid                                 str
-          horizontalalignment or ha           {'left', 'center', 'right'}
-          in_layout                           bool
-          label                               object
-          language                            str or None
-          linespacing                         'normal' or float, default: 'normal'
-          math_fontfamily                     str
-          mouseover                           bool
-          multialignment or ma                {'left', 'right', 'center'}
-          parse_math                          bool
-          path_effects                        list of AbstractPathEffect
-          picker                              None or bool or float or callable
-          position                            (float, float)
-          rasterized                          bool
-          rotation                            float or {'vertical', 'horizontal'}
-          rotation_mode                       {None, 'default', 'anchor', 'xtick',
-                                              'ytick'}
-          sketch_params                       (scale: float, length: float, randomness:
-                                              float)
-          snap                                bool or None
-          text                                object
-          transform                           Transform
-          transform_rotates_text              bool
-          url                                 str
-          usetex                              bool, default: rcParams["text.usetex"]
-                                              (default: False)
-          verticalalignment or va             {'baseline', 'bottom', 'center',
-                                              'center_baseline', 'top'}
-          visible                             bool
-          wrap                                bool
-          x                                   float
-          y                                   float
-          zorder                              float
+          Property                           Description
+          ---------------------------------  ---------------------------------
+          agg_filter                         a filter function, which takes a
+                                             (m, n, 3) float array and a dpi
+                                             value, and returns a (m, n, 3)
+                                             array and two offsets from the
+                                             bottom left corner of the image
+          alpha                              float or None
+          animated                           bool
+          anncoords                          unknown
+          annotation_clip                    bool or None
+          antialiased                        bool
+          backgroundcolor                    color
+          bbox                               dict with properties for
+                                             FancyBboxPatch or None
+          clip_box                           BboxBase or None
+          clip_on                            bool
+          clip_path                          Patch or (Path, Transform) or
+                                             None
+          color or c                         color
+          figure                             unknown
+          fontfamily or family or fontname   {FONTNAME, 'serif', 'sans-serif',
+                                             'cursive', 'fantasy',
+                                             'monospace'}
+          fontfeatures                       list of str, or tuple of str, or
+                                             None
+          fontproperties or font or          font_manager.FontProperties or
+          font_properties                    str or pathlib.Path
+          fontsize or size                   float or {'xx-small', 'x-small',
+                                             'small', 'medium', 'large',
+                                             'x-large', 'xx-large'}
+          fontstretch or stretch             {a numeric value in range 0-1000,
+                                             'ultra-condensed',
+                                             'extra-condensed', 'condensed',
+                                             'semi-condensed', 'normal',
+                                             'semi-expanded', 'expanded',
+                                             'extra-expanded',
+                                             'ultra-expanded'}
+          fontstyle or style                 {'normal', 'italic', 'oblique'}
+          fontvariant or variant             {'normal', 'small-caps'}
+          fontweight or weight               {a numeric value in range 0-1000,
+                                             'ultralight', 'light', 'normal',
+                                             'regular', 'book', 'medium',
+                                             'roman', 'semibold', 'demibold',
+                                             'demi', 'bold', 'heavy', 'extra
+                                             bold', 'black'}
+          gid                                str
+          horizontalalignment or ha          {'left', 'center', 'right'}
+          in_layout                          bool
+          label                              object
+          language                           str or None
+          linespacing                        'normal' or float, default:
+                                             'normal'
+          math_fontfamily                    str
+          mouseover                          bool
+          multialignment or ma               {'left', 'right', 'center'}
+          parse_math                         bool
+          path_effects                       list of AbstractPathEffect
+          picker                             None or bool or float or callable
+          position                           (float, float)
+          rasterized                         bool
+          rotation                           float or {'vertical',
+                                             'horizontal'}
+          rotation_mode                      {None, 'default', 'anchor',
+                                             'xtick', 'ytick'}
+          sketch_params                      (scale: float, length: float,
+                                             randomness: float)
+          snap                               bool or None
+          text                               object
+          transform                          Transform
+          transform_rotates_text             bool
+          url                                str
+          usetex                             bool, default:
+                                             rcParams["text.usetex"] (default:
+                                             False)
+          verticalalignment or va            {'baseline', 'bottom', 'center',
+                                             'center_baseline', 'top'}
+          visible                            bool
+          wrap                               bool
+          x                                  float
+          y                                  float
+          zorder                             float
 
-    set_anncoords(coords) *matplotlib.text.Annotation.set_anncoords*
+    set_anncoords(coords)
+    *matplotlib.text.Annotation.set_anncoords*
         Set the coordinate system to use for
         |matplotlib.text.Annotation.xyann|.
 
         See also xycoords in |matplotlib.text.Annotation|.
 
-    set_figure(fig) *matplotlib.text.Annotation.set_figure*
+    set_figure(fig)
+    *matplotlib.text.Annotation.set_figure*
         Set the |matplotlib.figure.Figure| or |matplotlib.figure.SubFigure|
         instance the artist belongs to.
 
@@ -1259,19 +1375,23 @@ class matplotlib.text.Annotation(text, xy, xytext=None, xycoords='data',
         Parameters: ~
             fig |matplotlib.figure.Figure| or |matplotlib.figure.SubFigure|
 
-    update_positions(renderer) *matplotlib.text.Annotation.update_positions*
+    update_positions(renderer)
+    *matplotlib.text.Annotation.update_positions*
         Update the pixel positions of the annotation text and the arrow
         patch.
 
-    property xyann *matplotlib.text.Annotation.xyann*
+    property xyann
+    *matplotlib.text.Annotation.xyann*
         The text position.
 
         See also xytext in |matplotlib.text.Annotation|.
 
-    property xycoords *matplotlib.text.Annotation.xycoords*
+    property xycoords
+    *matplotlib.text.Annotation.xycoords*
+
+                                                  *matplotlib.text.OffsetFrom*
 
 class matplotlib.text.OffsetFrom(artist, ref_coord, unit='points')
-    *matplotlib.text.OffsetFrom*
     Bases: `object` https://docs.python.org/3/library/functions.html#object
 
     Callable helper class for working with |matplotlib.text.Annotation|.
@@ -1293,10 +1413,12 @@ class matplotlib.text.OffsetFrom(artist, ref_coord, unit='points')
         unit {'points, 'pixels'}, default: 'points'
             The screen units to use (pixels or points) for the offset input.
 
-    get_unit() *matplotlib.text.OffsetFrom.get_unit*
+    get_unit()
+    *matplotlib.text.OffsetFrom.get_unit*
         Return the unit for input to the transform used by `__call__`.
 
-    set_unit(unit) *matplotlib.text.OffsetFrom.set_unit*
+    set_unit(unit)
+    *matplotlib.text.OffsetFrom.set_unit*
         Set the unit for input to the transform used by `__call__`.
 
         Parameters: ~
@@ -1352,16 +1474,20 @@ class matplotlib.text.TextPath(xy, s, size=None, prop=None,
     Also see Using a text as a Path
     https://matplotlib.org/stable/gallery/text_labels_and_annotations/demo_text_path.html.
 
-    property codes *matplotlib.text.TextPath.codes*
+    property codes
+    *matplotlib.text.TextPath.codes*
         Return the codes
 
-    get_size() *matplotlib.text.TextPath.get_size*
+    get_size()
+    *matplotlib.text.TextPath.get_size*
         Get the text size.
 
-    set_size(size) *matplotlib.text.TextPath.set_size*
+    set_size(size)
+    *matplotlib.text.TextPath.set_size*
         Set the text size.
 
-    property vertices *matplotlib.text.TextPath.vertices*
+    property vertices
+    *matplotlib.text.TextPath.vertices*
         Return the cached path after updating it if necessary.
 
 class matplotlib.text.TextToPath *matplotlib.text.TextToPath*
@@ -1369,9 +1495,11 @@ class matplotlib.text.TextToPath *matplotlib.text.TextToPath*
 
     A class that converts strings to paths.
 
-    DPI  = 72 *matplotlib.text.TextToPath.DPI*
+    DPI  = 72
+    *matplotlib.text.TextToPath.DPI*
 
-    FONT_SCALE  = 100.0 *matplotlib.text.TextToPath.FONT_SCALE*
+    FONT_SCALE  = 100.0
+    *matplotlib.text.TextToPath.FONT_SCALE*
 
     get_glyphs_mathtext(prop, s, glyph_map=None,
     return_new_glyphs_only=False)
@@ -1613,14 +1741,16 @@ class matplotlib.ticker.AsinhLocator(linear_width, numticks=11,
             Multiples of the number base, typically used for the minor
             ticks, e.g. (2, 5) when base=10.
 
-    __call__() *matplotlib.ticker.AsinhLocator.__call__*
+    __call__()
+    *matplotlib.ticker.AsinhLocator.__call__*
         Return the locations of the ticks.
 
     set_params(numticks=None, symthresh=None, base=None, subs=None)
     *matplotlib.ticker.AsinhLocator.set_params*
         Set parameters within this locator.
 
-    tick_values(vmin, vmax) *matplotlib.ticker.AsinhLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.AsinhLocator.tick_values*
         Return the values of the located ticks given vmin and vmax.
 
           Note: ~
@@ -1648,8 +1778,9 @@ class matplotlib.ticker.AutoLocator *matplotlib.ticker.AutoLocator*
     To know the values of the non-public parameters, please have a look to
     the defaults of |matplotlib.ticker.MaxNLocator|.
 
+                                          *matplotlib.ticker.AutoMinorLocator*
+
 class matplotlib.ticker.AutoMinorLocator(n=None)
-    *matplotlib.ticker.AutoMinorLocator*
     Bases: |matplotlib.ticker.Locator|
 
     Place evenly spaced minor ticks, with the step size and maximum number
@@ -1669,10 +1800,12 @@ class matplotlib.ticker.AutoMinorLocator(n=None)
             perfectly divided in 5 equidistant sub-intervals with a length
             multiple of 0.05; otherwise, it is divided in 4 sub-intervals.
 
-    __call__() *matplotlib.ticker.AutoMinorLocator.__call__*
+    __call__()
+    *matplotlib.ticker.AutoMinorLocator.__call__*
         Return the locations of the ticks.
 
-    tick_values(vmin, vmax) *matplotlib.ticker.AutoMinorLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.AutoMinorLocator.tick_values*
         Return the values of the located ticks given vmin and vmax.
 
           Note: ~
@@ -1688,9 +1821,10 @@ class matplotlib.ticker.AutoMinorLocator(n=None)
               [1, 2, 3, 4]
 <
 
+                                              *matplotlib.ticker.EngFormatter*
+
 class matplotlib.ticker.EngFormatter(unit='', places=None, sep=' ', *,
     usetex=None, useMathText=None, useOffset=False)
-    *matplotlib.ticker.EngFormatter*
     Bases: |matplotlib.ticker.ScalarFormatter|
 
     Format axis values using engineering prefixes to represent powers of
@@ -1745,13 +1879,15 @@ class matplotlib.ticker.EngFormatter(unit='', places=None, sep=' ', *,
     12: 'T', 15: 'P', 18: 'E', 21: 'Z', 24: 'Y', 27: 'R', 30: 'Q'}
     *matplotlib.ticker.EngFormatter.ENG_PREFIXES*
 
-    __call__(x, pos=None) *matplotlib.ticker.EngFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.EngFormatter.__call__*
         Return the format for tick value x at position pos.
 
         If there is no currently offset in the data, it returns the best
         engineering formatting that fits the given argument, independently.
 
-    format_data(value) *matplotlib.ticker.EngFormatter.format_data*
+    format_data(value)
+    *matplotlib.ticker.EngFormatter.format_data*
         Format a number in engineering notation, appending a letter
         representing the power of 1000 of the original number. Some
         examples:
@@ -1769,20 +1905,24 @@ class matplotlib.ticker.EngFormatter(unit='', places=None, sep=' ', *,
             '-1.00 µ'
 <
 
-    format_eng(num) *matplotlib.ticker.EngFormatter.format_eng*
+    format_eng(num)
+    *matplotlib.ticker.EngFormatter.format_eng*
         Alias to EngFormatter.format_data
 
-    get_offset() *matplotlib.ticker.EngFormatter.get_offset*
+    get_offset()
+    *matplotlib.ticker.EngFormatter.get_offset*
         Return scientific notation, plus offset.
 
-    set_locs(locs) *matplotlib.ticker.EngFormatter.set_locs*
+    set_locs(locs)
+    *matplotlib.ticker.EngFormatter.set_locs*
         Set the locations of the ticks.
 
         This method is called before computing the tick labels because some
         formatters need to know all tick locations to do so.
 
+                                            *matplotlib.ticker.FixedFormatter*
+
 class matplotlib.ticker.FixedFormatter(seq)
-    *matplotlib.ticker.FixedFormatter*
     Bases: |matplotlib.ticker.Formatter|
 
     Return fixed strings for tick labels based only on position, not value.
@@ -1795,20 +1935,23 @@ class matplotlib.ticker.FixedFormatter(seq)
 
     Set the sequence seq of strings that will be used for labels.
 
-    __call__(x, pos=None) *matplotlib.ticker.FixedFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.FixedFormatter.__call__*
         Return the label that matches the position, regardless of the value.
 
         For positions `pos < len(seq)`, return `seq[i]` regardless of x.
         Otherwise return empty string. `seq` is the sequence of strings that
         this object was initialized with.
 
-    get_offset() *matplotlib.ticker.FixedFormatter.get_offset*
+    get_offset()
+    *matplotlib.ticker.FixedFormatter.get_offset*
 
     set_offset_string(ofs)
     *matplotlib.ticker.FixedFormatter.set_offset_string*
 
+                                              *matplotlib.ticker.FixedLocator*
+
 class matplotlib.ticker.FixedLocator(locs, nbins=None)
-    *matplotlib.ticker.FixedLocator*
     Bases: |matplotlib.ticker.Locator|
 
     Place ticks at a set of fixed values.
@@ -1819,21 +1962,25 @@ class matplotlib.ticker.FixedLocator(locs, nbins=None)
     smallest absolute value; for example, if zero is included in the array
     of possibilities, then it will be included in the chosen ticks.
 
-    __call__() *matplotlib.ticker.FixedLocator.__call__*
+    __call__()
+    *matplotlib.ticker.FixedLocator.__call__*
         Return the locations of the ticks.
 
-    set_params(nbins=None) *matplotlib.ticker.FixedLocator.set_params*
+    set_params(nbins=None)
+    *matplotlib.ticker.FixedLocator.set_params*
         Set parameters within this locator.
 
-    tick_values(vmin, vmax) *matplotlib.ticker.FixedLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.FixedLocator.tick_values*
         Return the locations of the ticks.
 
           Note: ~
 
           Because the values are fixed, vmin and vmax are not used.
 
+                                        *matplotlib.ticker.FormatStrFormatter*
+
 class matplotlib.ticker.FormatStrFormatter(fmt)
-    *matplotlib.ticker.FormatStrFormatter*
     Bases: |matplotlib.ticker.Formatter|
 
     Use an old-style ('%' operator) format string to format the tick.
@@ -1845,7 +1992,8 @@ class matplotlib.ticker.FormatStrFormatter(fmt)
     use mathtext to get a Unicode minus by wrapping the format specifier
     with $ (e.g. "$%g$").
 
-    __call__(x, pos=None) *matplotlib.ticker.FormatStrFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.FormatStrFormatter.__call__*
         Return the formatted label string.
 
         Only the value x is formatted. The position is ignored.
@@ -1869,7 +2017,8 @@ class matplotlib.ticker.Formatter *matplotlib.ticker.Formatter*
       representation of a single value for the interactive mouseover
       tooltip.
 
-    __call__(x, pos=None) *matplotlib.ticker.Formatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.Formatter.__call__*
         Return the tick label strings for value x at tick index pos.
 
         This is the low-level formatting primitive for a single tick in the
@@ -1890,7 +2039,8 @@ class matplotlib.ticker.Formatter *matplotlib.ticker.Formatter*
         helper method to perform such a replacement when it is enabled via
         `rcParams["axes.unicode_minus"]` (default: `True`).
 
-    format_data(value) *matplotlib.ticker.Formatter.format_data*
+    format_data(value)
+    *matplotlib.ticker.Formatter.format_data*
         Return the context-independent string representation of a single
         value.
 
@@ -1901,7 +2051,8 @@ class matplotlib.ticker.Formatter *matplotlib.ticker.Formatter*
 
         The output may contain mathtext or LaTeX markup.
 
-    format_data_short(value) *matplotlib.ticker.Formatter.format_data_short*
+    format_data_short(value)
+    *matplotlib.ticker.Formatter.format_data_short*
         Return a short string representation of value for the mouseover
         tooltip (the coordinate display in the interactive figure window).
 
@@ -1916,7 +2067,8 @@ class matplotlib.ticker.Formatter *matplotlib.ticker.Formatter*
         Note: The mouseover text can be customized by setting the
         `Axes.fmt_xdata` and `Axes.fmt_ydata` attributes.
 
-    format_ticks(values) *matplotlib.ticker.Formatter.format_ticks*
+    format_ticks(values)
+    *matplotlib.ticker.Formatter.format_ticks*
         Return the tick label strings for all values.
 
         This is the public API for generating tick labels. It calls
@@ -1930,23 +2082,27 @@ class matplotlib.ticker.Formatter *matplotlib.ticker.Formatter*
         all tick locations (e.g. to determine precision, offsets, or which
         date components to display) can work correctly.
 
-    get_offset() *matplotlib.ticker.Formatter.get_offset*
+    get_offset()
+    *matplotlib.ticker.Formatter.get_offset*
 
-    property locs *matplotlib.ticker.Formatter.locs*
+    property locs
+    *matplotlib.ticker.Formatter.locs*
         [Deprecated]
 
         Notes: ~
 
           Deprecated since version 3.11: ~
 
-    set_locs(locs) *matplotlib.ticker.Formatter.set_locs*
+    set_locs(locs)
+    *matplotlib.ticker.Formatter.set_locs*
         Set the locations of the ticks.
 
         This method is called before computing the tick labels because some
         formatters need to know all tick locations to do so.
 
+                                             *matplotlib.ticker.FuncFormatter*
+
 class matplotlib.ticker.FuncFormatter(func)
-    *matplotlib.ticker.FuncFormatter*
     Bases: |matplotlib.ticker.Formatter|
 
     Use a user-defined function for formatting.
@@ -1954,18 +2110,21 @@ class matplotlib.ticker.FuncFormatter(func)
     The function should take in two inputs (a tick value `x` and a position
     `pos`), and return a string containing the corresponding tick label.
 
-    __call__(x, pos=None) *matplotlib.ticker.FuncFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.FuncFormatter.__call__*
         Return the value of the user defined function.
 
         x and pos are passed through as-is.
 
-    get_offset() *matplotlib.ticker.FuncFormatter.get_offset*
+    get_offset()
+    *matplotlib.ticker.FuncFormatter.get_offset*
 
     set_offset_string(ofs)
     *matplotlib.ticker.FuncFormatter.set_offset_string*
 
+                                              *matplotlib.ticker.IndexLocator*
+
 class matplotlib.ticker.IndexLocator(base, offset)
-    *matplotlib.ticker.IndexLocator*
     Bases: |matplotlib.ticker.Locator|
 
     Place ticks at every nth point plotted.
@@ -1975,14 +2134,16 @@ class matplotlib.ticker.IndexLocator(base, offset)
 
     Place ticks every base data point, starting at offset.
 
-    __call__() *matplotlib.ticker.IndexLocator.__call__*
+    __call__()
+    *matplotlib.ticker.IndexLocator.__call__*
         Return the locations of the ticks
 
     set_params(base=None, offset=None)
     *matplotlib.ticker.IndexLocator.set_params*
         Set parameters within this locator
 
-    tick_values(vmin, vmax) *matplotlib.ticker.IndexLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.IndexLocator.tick_values*
         Return the values of the located ticks given vmin and vmax.
 
           Note: ~
@@ -1998,8 +2159,9 @@ class matplotlib.ticker.IndexLocator(base, offset)
               [1, 2, 3, 4]
 <
 
+                                             *matplotlib.ticker.LinearLocator*
+
 class matplotlib.ticker.LinearLocator(numticks=None, presets=None)
-    *matplotlib.ticker.LinearLocator*
     Bases: |matplotlib.ticker.Locator|
 
     Place ticks at evenly spaced values.
@@ -2017,16 +2179,19 @@ class matplotlib.ticker.LinearLocator(numticks=None, presets=None)
             Overrides numticks if there is an entry for the current
             `(vmin, vmax)`.
 
-    __call__() *matplotlib.ticker.LinearLocator.__call__*
+    __call__()
+    *matplotlib.ticker.LinearLocator.__call__*
         Return the locations of the ticks.
 
-    property numticks *matplotlib.ticker.LinearLocator.numticks*
+    property numticks
+    *matplotlib.ticker.LinearLocator.numticks*
 
     set_params(numticks=None, presets=None)
     *matplotlib.ticker.LinearLocator.set_params*
         Set parameters within this locator.
 
-    tick_values(vmin, vmax) *matplotlib.ticker.LinearLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.LinearLocator.tick_values*
         Return the values of the located ticks given vmin and vmax.
 
           Note: ~
@@ -2042,7 +2207,8 @@ class matplotlib.ticker.LinearLocator(numticks=None, presets=None)
               [1, 2, 3, 4]
 <
 
-    view_limits(vmin, vmax) *matplotlib.ticker.LinearLocator.view_limits*
+    view_limits(vmin, vmax)
+    *matplotlib.ticker.LinearLocator.view_limits*
         Try to choose the view limits intelligently.
 
 class matplotlib.ticker.Locator *matplotlib.ticker.Locator*
@@ -2054,12 +2220,15 @@ class matplotlib.ticker.Locator *matplotlib.ticker.Locator*
     |matplotlib.axis.Axis| because the locator stores references to the Axis
     data and view limits.
 
-    MAXTICKS  = 1000 *matplotlib.ticker.Locator.MAXTICKS*
+    MAXTICKS  = 1000
+    *matplotlib.ticker.Locator.MAXTICKS*
 
-    __call__() *matplotlib.ticker.Locator.__call__*
+    __call__()
+    *matplotlib.ticker.Locator.__call__*
         Return the locations of the ticks.
 
-    nonsingular(v0, v1) *matplotlib.ticker.Locator.nonsingular*
+    nonsingular(v0, v1)
+    *matplotlib.ticker.Locator.nonsingular*
         Adjust a range as needed to avoid singularities.
 
         This method gets called during autoscaling, with `(v0, v1)` set to
@@ -2072,7 +2241,8 @@ class matplotlib.ticker.Locator *matplotlib.ticker.Locator*
           default view limits.
         - Otherwise, `(v0, v1)` is returned without modification.
 
-    raise_if_exceeds(locs) *matplotlib.ticker.Locator.raise_if_exceeds*
+    raise_if_exceeds(locs)
+    *matplotlib.ticker.Locator.raise_if_exceeds*
         Log at WARNING level if locs is longer than
         |matplotlib.ticker.Locator.MAXTICKS|.
 
@@ -2083,11 +2253,13 @@ class matplotlib.ticker.Locator *matplotlib.ticker.Locator*
         The "strange" name of this method dates back to when it would raise
         an exception instead of emitting a log.
 
-    set_params(**kwargs) *matplotlib.ticker.Locator.set_params*
+    set_params(**kwargs)
+    *matplotlib.ticker.Locator.set_params*
         Do nothing, and raise a warning. Any locator class not supporting
         the set_params() function will call this.
 
-    tick_values(vmin, vmax) *matplotlib.ticker.Locator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.Locator.tick_values*
         Return the values of the located ticks given vmin and vmax.
 
           Note: ~
@@ -2103,7 +2275,8 @@ class matplotlib.ticker.Locator *matplotlib.ticker.Locator*
               [1, 2, 3, 4]
 <
 
-    view_limits(vmin, vmax) *matplotlib.ticker.Locator.view_limits*
+    view_limits(vmin, vmax)
+    *matplotlib.ticker.Locator.view_limits*
         Select a scale for the range from vmin to vmax.
 
         Subclasses should override this method to change locator behaviour.
@@ -2168,7 +2341,8 @@ class matplotlib.ticker.LogFormatter(base=10.0, labelOnlyBase=False,
     all of the ticks when zoomed in to 0.5 decades or less, use
     `minor_thresholds=(2, 0.5)`.
 
-    __call__(x, pos=None) *matplotlib.ticker.LogFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.LogFormatter.__call__*
         Return the tick label strings for value x at tick index pos.
 
         This is the low-level formatting primitive for a single tick in the
@@ -2183,7 +2357,8 @@ class matplotlib.ticker.LogFormatter(base=10.0, labelOnlyBase=False,
 
         Subclasses must override this method.
 
-    format_data(value) *matplotlib.ticker.LogFormatter.format_data*
+    format_data(value)
+    *matplotlib.ticker.LogFormatter.format_data*
         Return the context-independent string representation of a single
         value.
 
@@ -2210,7 +2385,8 @@ class matplotlib.ticker.LogFormatter(base=10.0, labelOnlyBase=False,
         Note: The mouseover text can be customized by setting the
         `Axes.fmt_xdata` and `Axes.fmt_ydata` attributes.
 
-    set_base(base) *matplotlib.ticker.LogFormatter.set_base*
+    set_base(base)
+    *matplotlib.ticker.LogFormatter.set_base*
         Change the base for labeling.
 
           Warning: ~
@@ -2226,26 +2402,30 @@ class matplotlib.ticker.LogFormatter(base=10.0, labelOnlyBase=False,
             labelOnlyBase bool
                 If True, label ticks only at integer powers of base.
 
-    set_locs(locs=None) *matplotlib.ticker.LogFormatter.set_locs*
+    set_locs(locs=None)
+    *matplotlib.ticker.LogFormatter.set_locs*
         Use axis view limits to control which ticks are labeled.
 
         The locs parameter is ignored in the present algorithm.
 
+                                      *matplotlib.ticker.LogFormatterExponent*
+
 class matplotlib.ticker.LogFormatterExponent(base=10.0, labelOnlyBase=False,
     minor_thresholds=None, linthresh=None)
-    *matplotlib.ticker.LogFormatterExponent*
     Bases: |matplotlib.ticker.LogFormatter|
 
     Format values for log axis using `exponent = log_base(value)`.
+
+                                      *matplotlib.ticker.LogFormatterMathtext*
 
 class matplotlib.ticker.LogFormatterMathtext(base=10.0, labelOnlyBase=False,
     minor_thresholds=None, linthresh=None)
-    *matplotlib.ticker.LogFormatterMathtext*
     Bases: |matplotlib.ticker.LogFormatter|
 
     Format values for log axis using `exponent = log_base(value)`.
 
-    __call__(x, pos=None) *matplotlib.ticker.LogFormatterMathtext.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.LogFormatterMathtext.__call__*
         Return the tick label strings for value x at tick index pos.
 
         This is the low-level formatting primitive for a single tick in the
@@ -2260,15 +2440,17 @@ class matplotlib.ticker.LogFormatterMathtext(base=10.0, labelOnlyBase=False,
 
         Subclasses must override this method.
 
+                                   *matplotlib.ticker.LogFormatterSciNotation*
+
 class matplotlib.ticker.LogFormatterSciNotation(base=10.0,
     labelOnlyBase=False, minor_thresholds=None, linthresh=None)
-    *matplotlib.ticker.LogFormatterSciNotation*
     Bases: |matplotlib.ticker.LogFormatterMathtext|
 
     Format values following scientific notation in a logarithmic axis.
 
+                                                *matplotlib.ticker.LogLocator*
+
 class matplotlib.ticker.LogLocator(base=10.0, subs=(1.0,), *, numticks=None)
-    *matplotlib.ticker.LogLocator*
     Bases: |matplotlib.ticker.Locator|
 
     Place logarithmically spaced ticks.
@@ -2297,10 +2479,12 @@ class matplotlib.ticker.LogLocator(base=10.0, subs=(1.0,), *, numticks=None)
             |matplotlib.axis.Axis.get_tick_space|, but otherwise falls back
             to 9.
 
-    __call__() *matplotlib.ticker.LogLocator.__call__*
+    __call__()
+    *matplotlib.ticker.LogLocator.__call__*
         Return the locations of the ticks.
 
-    nonsingular(vmin, vmax) *matplotlib.ticker.LogLocator.nonsingular*
+    nonsingular(vmin, vmax)
+    *matplotlib.ticker.LogLocator.nonsingular*
         Adjust a range as needed to avoid singularities.
 
         This method gets called during autoscaling, with `(v0, v1)` set to
@@ -2317,7 +2501,8 @@ class matplotlib.ticker.LogLocator(base=10.0, subs=(1.0,), *, numticks=None)
     *matplotlib.ticker.LogLocator.set_params*
         Set parameters within this locator.
 
-    tick_values(vmin, vmax) *matplotlib.ticker.LogLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.LogLocator.tick_values*
         Return the values of the located ticks given vmin and vmax.
 
           Note: ~
@@ -2333,12 +2518,14 @@ class matplotlib.ticker.LogLocator(base=10.0, subs=(1.0,), *, numticks=None)
               [1, 2, 3, 4]
 <
 
-    view_limits(vmin, vmax) *matplotlib.ticker.LogLocator.view_limits*
+    view_limits(vmin, vmax)
+    *matplotlib.ticker.LogLocator.view_limits*
         Try to choose the view limits intelligently.
+
+                                            *matplotlib.ticker.LogitFormatter*
 
 class matplotlib.ticker.LogitFormatter(*, use_overline=False,
     one_half='\\frac{1}{2}', minor=False, minor_threshold=25, minor_number=6)
-    *matplotlib.ticker.LogitFormatter*
     Bases: |matplotlib.ticker.Formatter|
 
     Probability formatter (using Math text).
@@ -2366,7 +2553,8 @@ class matplotlib.ticker.LogitFormatter(*, use_overline=False,
             Number of ticks which are labelled when the number of ticks is
             below the threshold.
 
-    __call__(x, pos=None) *matplotlib.ticker.LogitFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.LogitFormatter.__call__*
         Return the tick label strings for value x at tick index pos.
 
         This is the low-level formatting primitive for a single tick in the
@@ -2397,7 +2585,8 @@ class matplotlib.ticker.LogitFormatter(*, use_overline=False,
         Note: The mouseover text can be customized by setting the
         `Axes.fmt_xdata` and `Axes.fmt_ydata` attributes.
 
-    set_locs(locs) *matplotlib.ticker.LogitFormatter.set_locs*
+    set_locs(locs)
+    *matplotlib.ticker.LogitFormatter.set_locs*
         Set the locations of the ticks.
 
         This method is called before computing the tick labels because some
@@ -2422,7 +2611,8 @@ class matplotlib.ticker.LogitFormatter(*, use_overline=False,
                 Maximum number of locations for labelling some minor ticks.
                 This parameter have no effect if minor is False.
 
-    set_one_half(one_half) *matplotlib.ticker.LogitFormatter.set_one_half*
+    set_one_half(one_half)
+    *matplotlib.ticker.LogitFormatter.set_one_half*
         Set the way one half is displayed.
 
         one_half str
@@ -2438,8 +2628,9 @@ class matplotlib.ticker.LogitFormatter(*, use_overline=False,
                 displayed as $overline{v}$. The default is to display $1 -
                 v$.
 
+                                              *matplotlib.ticker.LogitLocator*
+
 class matplotlib.ticker.LogitLocator(minor=False, *, nbins='auto')
-    *matplotlib.ticker.LogitLocator*
     Bases: |matplotlib.ticker.MaxNLocator|
 
     Place ticks spaced evenly on a logit scale.
@@ -2451,9 +2642,11 @@ class matplotlib.ticker.LogitLocator(minor=False, *, nbins='auto')
         minor bool, default: False
             Indicate if this locator is for minor ticks or not.
 
-    property minor *matplotlib.ticker.LogitLocator.minor*
+    property minor
+    *matplotlib.ticker.LogitLocator.minor*
 
-    nonsingular(vmin, vmax) *matplotlib.ticker.LogitLocator.nonsingular*
+    nonsingular(vmin, vmax)
+    *matplotlib.ticker.LogitLocator.nonsingular*
         Adjust a range as needed to avoid singularities.
 
         This method gets called during autoscaling, with `(v0, v1)` set to
@@ -2470,7 +2663,8 @@ class matplotlib.ticker.LogitLocator(minor=False, *, nbins='auto')
     *matplotlib.ticker.LogitLocator.set_params*
         Set parameters within this locator.
 
-    tick_values(vmin, vmax) *matplotlib.ticker.LogitLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.LogitLocator.tick_values*
         Return the values of the located ticks given vmin and vmax.
 
           Note: ~
@@ -2486,8 +2680,9 @@ class matplotlib.ticker.LogitLocator(minor=False, *, nbins='auto')
               [1, 2, 3, 4]
 <
 
+                                               *matplotlib.ticker.MaxNLocator*
+
 class matplotlib.ticker.MaxNLocator(nbins=None, **kwargs)
-    *matplotlib.ticker.MaxNLocator*
     Bases: |matplotlib.ticker.Locator|
 
     Place evenly spaced ticks, with a cap on the total number of ticks.
@@ -2530,14 +2725,16 @@ class matplotlib.ticker.MaxNLocator(nbins=None, **kwargs)
             Relax nbins and integer constraints if necessary to obtain this
             minimum number of ticks.
 
-    __call__() *matplotlib.ticker.MaxNLocator.__call__*
+    __call__()
+    *matplotlib.ticker.MaxNLocator.__call__*
         Return the locations of the ticks.
 
     default_params = {'integer': False, 'min_n_ticks': 2, 'nbins': 10,
     'prune': None, 'steps': None, 'symmetric': False}
     *matplotlib.ticker.MaxNLocator.default_params*
 
-    set_params(**kwargs) *matplotlib.ticker.MaxNLocator.set_params*
+    set_params(**kwargs)
+    *matplotlib.ticker.MaxNLocator.set_params*
         Set parameters for this locator.
 
         Parameters: ~
@@ -2559,7 +2756,8 @@ class matplotlib.ticker.MaxNLocator(nbins=None, **kwargs)
             min_n_ticks int, optional
                 see |matplotlib.ticker.MaxNLocator|
 
-    tick_values(vmin, vmax) *matplotlib.ticker.MaxNLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.MaxNLocator.tick_values*
         Return the values of the located ticks given vmin and vmax.
 
           Note: ~
@@ -2575,13 +2773,15 @@ class matplotlib.ticker.MaxNLocator(nbins=None, **kwargs)
               [1, 2, 3, 4]
 <
 
-    view_limits(dmin, dmax) *matplotlib.ticker.MaxNLocator.view_limits*
+    view_limits(dmin, dmax)
+    *matplotlib.ticker.MaxNLocator.view_limits*
         Select a scale for the range from vmin to vmax.
 
         Subclasses should override this method to change locator behaviour.
 
+                                           *matplotlib.ticker.MultipleLocator*
+
 class matplotlib.ticker.MultipleLocator(base=1.0, offset=0.0)
-    *matplotlib.ticker.MultipleLocator*
     Bases: |matplotlib.ticker.Locator|
 
     Place ticks at every integer multiple of a base plus an offset.
@@ -2595,7 +2795,8 @@ class matplotlib.ticker.MultipleLocator(base=1.0, offset=0.0)
 
               Added in version 3.8.: ~
 
-    __call__() *matplotlib.ticker.MultipleLocator.__call__*
+    __call__()
+    *matplotlib.ticker.MultipleLocator.__call__*
         Return the locations of the ticks.
 
     set_params(base=None, offset=None)
@@ -2611,7 +2812,8 @@ class matplotlib.ticker.MultipleLocator(base=1.0, offset=0.0)
 
                   Added in version 3.8.: ~
 
-    tick_values(vmin, vmax) *matplotlib.ticker.MultipleLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.MultipleLocator.tick_values*
         Return the values of the located ticks given vmin and vmax.
 
           Note: ~
@@ -2627,7 +2829,8 @@ class matplotlib.ticker.MultipleLocator(base=1.0, offset=0.0)
               [1, 2, 3, 4]
 <
 
-    view_limits(dmin, dmax) *matplotlib.ticker.MultipleLocator.view_limits*
+    view_limits(dmin, dmax)
+    *matplotlib.ticker.MultipleLocator.view_limits*
         Set the view limits to the nearest tick values that contain the
         data.
 
@@ -2636,7 +2839,8 @@ class matplotlib.ticker.NullFormatter *matplotlib.ticker.NullFormatter*
 
     Always return the empty string.
 
-    __call__(x, pos=None) *matplotlib.ticker.NullFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.NullFormatter.__call__*
         Return the tick label strings for value x at tick index pos.
 
         This is the low-level formatting primitive for a single tick in the
@@ -2656,10 +2860,12 @@ class matplotlib.ticker.NullLocator *matplotlib.ticker.NullLocator*
 
     Place no ticks.
 
-    __call__() *matplotlib.ticker.NullLocator.__call__*
+    __call__()
+    *matplotlib.ticker.NullLocator.__call__*
         Return the locations of the ticks.
 
-    tick_values(vmin, vmax) *matplotlib.ticker.NullLocator.tick_values*
+    tick_values(vmin, vmax)
+    *matplotlib.ticker.NullLocator.tick_values*
         Return the locations of the ticks.
 
           Note: ~
@@ -2694,10 +2900,12 @@ class matplotlib.ticker.PercentFormatter(xmax=100, decimals=None,
         is_latex bool
             If False, reserved LaTeX characters in symbol will be escaped.
 
-    __call__(x, pos=None) *matplotlib.ticker.PercentFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.PercentFormatter.__call__*
         Format the tick as a percentage with the appropriate scaling.
 
-    convert_to_pct(x) *matplotlib.ticker.PercentFormatter.convert_to_pct*
+    convert_to_pct(x)
+    *matplotlib.ticker.PercentFormatter.convert_to_pct*
 
     format_pct(x, display_range)
     *matplotlib.ticker.PercentFormatter.format_pct*
@@ -2707,18 +2915,19 @@ class matplotlib.ticker.PercentFormatter(xmax=100, decimals=None,
         If `self.decimals` is None, the number of digits after the decimal
         point is set based on the display_range of the axis as follows:
 
-        display_range                decimals  sample
-        ---------------------------  --------  ---------------------------------------
-        >50                          0         x = 34.5 => 35%
-        >5                           1         x = 34.5 => 34.5%
-        >0.5                         2         x = 34.5 => 34.50%
-        ...                          ...       ...
+        display_range             decimals  sample
+        ------------------------  --------  ----------------------------------
+        >50                       0         x = 34.5 => 35%
+        >5                        1         x = 34.5 => 34.5%
+        >0.5                      2         x = 34.5 => 34.50%
+        ...                       ...       ...
 
         This method will not be very good for tiny axis ranges or extremely
         large ones. It assumes that the values on the chart are percentages
         displayed on a reasonable scale.
 
-    property symbol *matplotlib.ticker.PercentFormatter.symbol*
+    property symbol
+    *matplotlib.ticker.PercentFormatter.symbol*
         The configured percent symbol as a string.
 
         If LaTeX is enabled via `rcParams["text.usetex"]` (default:
@@ -2785,17 +2994,20 @@ class matplotlib.ticker.ScalarFormatter(useOffset=None, useMathText=None,
     `png`
     https://matplotlib.org/stable/_downloads/f6cbba761a6626c0a53b7ab33d8ee7ef/ticker_api-1.png)
 
-    __call__(x, pos=None) *matplotlib.ticker.ScalarFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.ScalarFormatter.__call__*
         Return the format for tick value x at position pos.
 
-    property format *matplotlib.ticker.ScalarFormatter.format*
+    property format
+    *matplotlib.ticker.ScalarFormatter.format*
         [Deprecated]
 
         Notes: ~
 
           Deprecated since version 3.11: ~
 
-    format_data(value) *matplotlib.ticker.ScalarFormatter.format_data*
+    format_data(value)
+    *matplotlib.ticker.ScalarFormatter.format_data*
         Return the context-independent string representation of a single
         value.
 
@@ -2822,24 +3034,28 @@ class matplotlib.ticker.ScalarFormatter(useOffset=None, useMathText=None,
         Note: The mouseover text can be customized by setting the
         `Axes.fmt_xdata` and `Axes.fmt_ydata` attributes.
 
-    get_offset() *matplotlib.ticker.ScalarFormatter.get_offset*
+    get_offset()
+    *matplotlib.ticker.ScalarFormatter.get_offset*
         Return scientific notation, plus offset.
 
-    get_useLocale() *matplotlib.ticker.ScalarFormatter.get_useLocale*
+    get_useLocale()
+    *matplotlib.ticker.ScalarFormatter.get_useLocale*
         Return whether locale settings are used for formatting.
 
           See also: ~
 
           |matplotlib.ticker.ScalarFormatter.set_useLocale|
 
-    get_useMathText() *matplotlib.ticker.ScalarFormatter.get_useMathText*
+    get_useMathText()
+    *matplotlib.ticker.ScalarFormatter.get_useMathText*
         Return whether to use fancy math formatting.
 
           See also: ~
 
           |matplotlib.ticker.ScalarFormatter.set_useMathText|
 
-    get_useOffset() *matplotlib.ticker.ScalarFormatter.get_useOffset*
+    get_useOffset()
+    *matplotlib.ticker.ScalarFormatter.get_useOffset*
         Return whether automatic mode for offset notation is active.
 
         This returns True if `set_useOffset(True)`; it returns False if an
@@ -2849,7 +3065,8 @@ class matplotlib.ticker.ScalarFormatter(useOffset=None, useMathText=None,
 
           |matplotlib.ticker.ScalarFormatter.set_useOffset|
 
-    get_usetex() *matplotlib.ticker.ScalarFormatter.get_usetex*
+    get_usetex()
+    *matplotlib.ticker.ScalarFormatter.get_usetex*
         Return whether TeX's math mode is enabled for rendering.
 
     property orderOfMagnitude
@@ -2860,7 +3077,8 @@ class matplotlib.ticker.ScalarFormatter(useOffset=None, useMathText=None,
 
           Deprecated since version 3.11: ~
 
-    set_locs(locs) *matplotlib.ticker.ScalarFormatter.set_locs*
+    set_locs(locs)
+    *matplotlib.ticker.ScalarFormatter.set_locs*
         Set the locations of the ticks.
 
         This method is called before computing the tick labels because some
@@ -2896,14 +3114,16 @@ class matplotlib.ticker.ScalarFormatter(useOffset=None, useMathText=None,
 
           |matplotlib.ticker.ScalarFormatter.set_scientific|
 
-    set_scientific(b) *matplotlib.ticker.ScalarFormatter.set_scientific*
+    set_scientific(b)
+    *matplotlib.ticker.ScalarFormatter.set_scientific*
         Turn scientific notation on or off.
 
           See also: ~
 
           |matplotlib.ticker.ScalarFormatter.set_powerlimits|
 
-    set_useLocale(val) *matplotlib.ticker.ScalarFormatter.set_useLocale*
+    set_useLocale(val)
+    *matplotlib.ticker.ScalarFormatter.set_useLocale*
         Set whether to use locale settings for decimal sign and positive
         sign.
 
@@ -2912,7 +3132,8 @@ class matplotlib.ticker.ScalarFormatter(useOffset=None, useMathText=None,
                 None resets to `rcParams["axes.formatter.use_locale"]`
                 (default: `False`).
 
-    set_useMathText(val) *matplotlib.ticker.ScalarFormatter.set_useMathText*
+    set_useMathText(val)
+    *matplotlib.ticker.ScalarFormatter.set_useMathText*
         Set whether to use fancy math formatting.
 
         If active, scientific notation is formatted as
@@ -2923,7 +3144,8 @@ class matplotlib.ticker.ScalarFormatter(useOffset=None, useMathText=None,
                 None resets to `rcParams["axes.formatter.use_mathtext"]`
                 (default: `False`).
 
-    set_useOffset(val) *matplotlib.ticker.ScalarFormatter.set_useOffset*
+    set_useOffset(val)
+    *matplotlib.ticker.ScalarFormatter.set_useOffset*
         Set whether to use offset notation.
 
         When formatting a set numbers whose value is large compared to their
@@ -2950,25 +3172,29 @@ class matplotlib.ticker.ScalarFormatter(useOffset=None, useMathText=None,
         will be formatted as `0, 2, 4, 6, 8` plus an offset `+1e5`, which is
         written to the edge of the axis.
 
-    set_usetex(val) *matplotlib.ticker.ScalarFormatter.set_usetex*
+    set_usetex(val)
+    *matplotlib.ticker.ScalarFormatter.set_usetex*
         Set whether to use TeX's math mode for rendering numbers in the
         formatter.
 
-    property useLocale *matplotlib.ticker.ScalarFormatter.useLocale*
+    property useLocale
+    *matplotlib.ticker.ScalarFormatter.useLocale*
         Return whether locale settings are used for formatting.
 
           See also: ~
 
           |matplotlib.ticker.ScalarFormatter.set_useLocale|
 
-    property useMathText *matplotlib.ticker.ScalarFormatter.useMathText*
+    property useMathText
+    *matplotlib.ticker.ScalarFormatter.useMathText*
         Return whether to use fancy math formatting.
 
           See also: ~
 
           |matplotlib.ticker.ScalarFormatter.set_useMathText|
 
-    property useOffset *matplotlib.ticker.ScalarFormatter.useOffset*
+    property useOffset
+    *matplotlib.ticker.ScalarFormatter.useOffset*
         Return whether automatic mode for offset notation is active.
 
         This returns True if `set_useOffset(True)`; it returns False if an
@@ -2978,11 +3204,13 @@ class matplotlib.ticker.ScalarFormatter(useOffset=None, useMathText=None,
 
           |matplotlib.ticker.ScalarFormatter.set_useOffset|
 
-    property usetex *matplotlib.ticker.ScalarFormatter.usetex*
+    property usetex
+    *matplotlib.ticker.ScalarFormatter.usetex*
         Return whether TeX's math mode is enabled for rendering.
 
+                                        *matplotlib.ticker.StrMethodFormatter*
+
 class matplotlib.ticker.StrMethodFormatter(fmt)
-    *matplotlib.ticker.StrMethodFormatter*
     Bases: |matplotlib.ticker.Formatter|
 
     Use a new-style format string (as used by `str.format`
@@ -3007,7 +3235,8 @@ class matplotlib.ticker.StrMethodFormatter(fmt)
         >>> formatter(10)
         "10 km"
 <
-    __call__(x, pos=None) *matplotlib.ticker.StrMethodFormatter.__call__*
+    __call__(x, pos=None)
+    *matplotlib.ticker.StrMethodFormatter.__call__*
         Return the formatted label string.
 
         x and pos are passed to `str.format`
@@ -3040,7 +3269,8 @@ class matplotlib.ticker.SymmetricalLogLocator(transform=None, subs=None,
 
     Either transform, or both base and linthresh, must be given.
 
-    __call__() *matplotlib.ticker.SymmetricalLogLocator.__call__*
+    __call__()
+    *matplotlib.ticker.SymmetricalLogLocator.__call__*
         Return the locations of the ticks.
 
     set_params(subs=None, numticks=None)
@@ -3071,12 +3301,14 @@ class matplotlib.ticker.SymmetricalLogLocator(transform=None, subs=None,
 class matplotlib.ticker.TickHelper *matplotlib.ticker.TickHelper*
     Bases: `object` https://docs.python.org/3/library/functions.html#object
 
-    axis  = None *matplotlib.ticker.TickHelper.axis*
+    axis  = None
+    *matplotlib.ticker.TickHelper.axis*
 
     create_dummy_axis(**kwargs)
     *matplotlib.ticker.TickHelper.create_dummy_axis*
 
-    set_axis(axis) *matplotlib.ticker.TickHelper.set_axis*
+    set_axis(axis)
+    *matplotlib.ticker.TickHelper.set_axis*
 
 Inheritance diagram of matplotlib.ticker
 
@@ -3242,44 +3474,47 @@ ART3D                                             *api-toolkits-mplot3d-art3d*
 
 *api-toolkits-mplot3d-module-mpl_toolkits.mplot3d.art3d*
 
-art3d.Line3D(xs, ys, zs, *args[,      3D line object.
+art3d.Line3D(xs, ys, zs, *args[,    3D line object.
     axlim_clip])
-    art3d.Line3DCollection(lines[,        A collection of 3D lines.
+    art3d.Line3DCollection(lines[,      A collection of 3D lines.
     axlim_clip])
-    art3d.Patch3D(*args[, zs, zdir,       3D patch object.
+    art3d.Patch3D(*args[, zs, zdir,     3D patch object.
     axlim_clip])
-    art3d.Patch3DCollection(*args[, zs,   A collection of 3D patches.
+    art3d.Patch3DCollection(*args[,     A collection of 3D patches.
+    zs, zdir, ...])
+    art3d.Path3DCollection(*args[, zs,  A collection of 3D paths.
     zdir, ...])
-    art3d.Path3DCollection(*args[, zs,    A collection of 3D paths.
+    art3d.PathPatch3D(path, *[, zs,     3D PathPatch object.
     zdir, ...])
-    art3d.PathPatch3D(path, *[, zs,       3D PathPatch object.
-    zdir, ...])
-    art3d.Poly3DCollection(verts,         A collection of 3D polygons.
+    art3d.Poly3DCollection(verts,       A collection of 3D polygons.
     *args[, ...])
-    art3d.Text3D([x, y, z, text, zdir,    Text object with 3D position and
-    axlim_clip])                          direction.
-    art3d.get_dir_vector(zdir)            Return a direction vector.
-    art3d.juggle_axes(xs, ys, zs, zdir)   Reorder coordinates so that 2D xs, ys
-                                      can be plotted in the plane orthogonal
-                                      to zdir.
-art3d.line_2d_to_3d(line[, zs, zdir,  Convert a Line2D to a Line3D object.
-    axlim_clip])
-    art3d.line_collection_2d_to_3d(col[,  Convert a LineCollection to a
-    zs, ...])                             Line3DCollection object.
-    art3d.patch_2d_to_3d(patch[, z,       Convert a Patch to a Patch3D object.
+    art3d.Text3D([x, y, z, text, zdir,  Text object with 3D position and
+    axlim_clip])                        direction.
+    art3d.get_dir_vector(zdir)          Return a direction vector.
+    art3d.juggle_axes(xs, ys, zs,       Reorder coordinates so that 2D xs, ys can
+    zdir)                               be plotted in the plane orthogonal to
+                                    zdir.
+art3d.line_2d_to_3d(line[, zs,      Convert a Line2D to a Line3D object.
+    zdir, axlim_clip])
+    art3d.line_collection_2d_to_        Convert a LineCollection to a
+    3d(col[,                            Line3DCollection object.
+    zs, ...])
+    art3d.patch_2d_to_3d(patch[, z,     Convert a Patch to a Patch3D object.
     zdir, ...])
-    art3d.patch_collection_2d_to_3d(col[,  Convert a PatchCollection into a
-    zs, ...])                             Patch3DCollection object (or a
-                                      PathCollection into a Path3DCollection
-                                      object).
-art3d.pathpatch_2d_to_3d(pathpatch[,  Convert a PathPatch to a PathPatch3D
-    z, zdir])                             object.
-    art3d.poly_collection_2d_to_3d(col[,  Convert a PolyCollection into a
-    zs, ...])                             Poly3DCollection object.
-    art3d.rotate_axes(xs, ys, zs, zdir)   Reorder coordinates so that the axes are
-                                      rotated with zdir along the original z
-                                      axis.
-art3d.text_2d_to_3d(obj[, z, zdir,    Convert a Text to a Text3D object.
+    art3d.patch_collection_2d_to_       Convert a PatchCollection into a
+    3d(col[,                            Patch3DCollection object (or a
+    zs, ...])                           PathCollection into a Path3DCollection
+                                    object).
+art3d.pathpatch_2d_to_              Convert a PathPatch to a PathPatch3D
+3d(pathpatch[,                      object.
+z, zdir])
+art3d.poly_collection_2d_to_        Convert a PolyCollection into a
+3d(col[,                            Poly3DCollection object.
+zs, ...])
+art3d.rotate_axes(xs, ys, zs,       Reorder coordinates so that the axes are
+    zdir)                               rotated with zdir along the original z
+                                    axis.
+art3d.text_2d_to_3d(obj[, z, zdir,  Convert a Text to a Text3D object.
     axlim_clip])
 
 PROJ3D                                           *api-toolkits-mplot3d-proj3d*
@@ -3300,10 +3535,11 @@ proj3d.inv_transform(xs, ys, zs,    Transform the points by the inverse of the
 ----------------------------------------------------------------------------
 mpl_toolkits.mplot3d.axes3d.Axes3D        *matplotlib-toolkits-mplot3d-axes3d*
 
+                  *toolkits-mplot3d-axes3d-mpl_toolkits.mplot3d.axes3d.Axes3D*
+
 class mpl_toolkits.mplot3d.axes3d.Axes3D(fig, rect=None, *args, elev=30,
     azim=-60, roll=0, shareview=None, sharez=None, proj_type='persp',
     focal_length=None, box_aspect=None, computed_zorder=True, **kwargs)
-    *toolkits-mplot3d-axes3d-mpl_toolkits.mplot3d.axes3d.Axes3D*
     Bases: |matplotlib.axes.Axes|
 
     3D Axes object.
@@ -3386,15 +3622,16 @@ class mpl_toolkits.mplot3d.axes3d.Axes3D(fig, rect=None, *args, elev=30,
             Other optional keyword arguments:
 
             Property                   Description
-            -------------------------  ---------------------------------------------------
+            -------------------------  ---------------------------------------
             adjustable                 {'box', 'datalim'}
-            agg_filter                 a filter function, which takes a (m, n, 3) float
-                                       array and a dpi value, and returns a (m, n, 3)
-                                       array and two offsets from the bottom left corner
-                                       of the image
+            agg_filter                 a filter function, which takes a (m, n,
+                                       3) float array and a dpi value, and
+                                       returns a (m, n, 3) array and two
+                                       offsets from the bottom left corner of
+                                       the image
             alpha                      float or None
-            anchor                     (float, float) or {'C', 'SW', 'S', 'SE', 'E', 'NE',
-                                       ...}
+            anchor                     (float, float) or {'C', 'SW', 'S',
+                                       'SE', 'E', 'NE', ...}
             animated                   bool
             aspect                     unknown
             autoscale_on               bool
@@ -3423,7 +3660,8 @@ class mpl_toolkits.mplot3d.axes3d.Axes3D(fig, rect=None, *args, elev=30,
             prop_cycle                 Cycler
             rasterization_zorder       float or None
             rasterized                 bool
-            sketch_params              (scale: float, length: float, randomness: float)
+            sketch_params              (scale: float, length: float,
+                                       randomness: float)
             snap                       bool or None
             subplotspec                unknown
             title                      unknown
@@ -3435,7 +3673,8 @@ class mpl_toolkits.mplot3d.axes3d.Axes3D(fig, rect=None, *args, elev=30,
             xlabel                     str
             xlim or xlim3d             (left: float, right: float)
             xmargin                    float greater than -0.5
-            xscale                     {"linear", "log", "symlog", "logit", ...}
+            xscale                     {"linear", "log", "symlog", "logit",
+                                       ...}
             xticklabels                unknown
             xticks                     unknown
             ybound                     unknown
@@ -3443,7 +3682,8 @@ class mpl_toolkits.mplot3d.axes3d.Axes3D(fig, rect=None, *args, elev=30,
             ylabel                     str
             ylim or ylim3d             (bottom: float, top: float)
             ymargin                    float greater than -0.5
-            yscale                     {"linear", "log", "symlog", "logit", ...}
+            yscale                     {"linear", "log", "symlog", "logit",
+                                       ...}
             yticklabels                unknown
             yticks                     unknown
             zbound                     unknown
@@ -3452,7 +3692,8 @@ class mpl_toolkits.mplot3d.axes3d.Axes3D(fig, rect=None, *args, elev=30,
             zlim or zlim3d             (bottom: float, top: float)
             zmargin                    float greater than -0.5
             zorder                     float
-            zscale                     {"linear", "log", "symlog", "logit", ...}
+            zscale                     {"linear", "log", "symlog", "logit",
+                                       ...}
             zticklabels                unknown
             zticks                     unknown
 
@@ -3781,10 +4022,10 @@ overview. In summary:
 Style      traditional   incl. roll    uniform [3]  path          mechanical
            [1]           [2]                        independent   counterpart
                                                     [4]           [5]
-azel       ✔️            ❌             ❌            ✔️            ✔️
-trackball  ❌             ✓ [6]         ✔️           ❌             ✔️
-sphere     ❌             ✔️            ✔️           ❌             ✔️
-arcball    ❌             ✔️            ✔️           ✔️            ❌
+azel       ✔️            ❌            ❌           ✔️            ✔️
+trackball  ❌            ✓ [6]         ✔️           ❌            ✔️
+sphere     ❌            ✔️            ✔️           ❌            ✔️
+arcball    ❌            ✔️            ✔️           ✔️            ❌
 
 [|toolkits-mplot3d-view_angles-id3|]
 The way it was prior to v3.10; this is also MATLAB's style
@@ -3936,7 +4177,8 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
 <
     If matrix is None, initialize with the identity transform.
 
-    clear() *matplotlib.transforms.Affine2D.clear*
+    clear()
+    *matplotlib.transforms.Affine2D.clear*
         Reset the underlying matrix to the identity transform.
 
     static from_values(a, b, c, d, e, f)
@@ -3950,7 +4192,8 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
 <
         .
 
-    get_matrix() *matplotlib.transforms.Affine2D.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.Affine2D.get_matrix*
         Get the underlying transformation matrix as a 3x3 array:
 
         >text
@@ -3960,7 +4203,8 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
 <
         .
 
-    rotate(theta) *matplotlib.transforms.Affine2D.rotate*
+    rotate(theta)
+    *matplotlib.transforms.Affine2D.rotate*
         Add a rotation (in radians) to this transform in place.
 
         Returns self, so this method can easily be chained with more calls
@@ -3979,7 +4223,8 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
         |matplotlib.transforms.Affine2D.translate| and
         |matplotlib.transforms.Affine2D.scale|.
 
-    rotate_deg(degrees) *matplotlib.transforms.Affine2D.rotate_deg*
+    rotate_deg(degrees)
+    *matplotlib.transforms.Affine2D.rotate_deg*
         Add a rotation (in degrees) to this transform in place.
 
         Returns self, so this method can easily be chained with more calls
@@ -3998,7 +4243,8 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
         |matplotlib.transforms.Affine2D.translate| and
         |matplotlib.transforms.Affine2D.scale|.
 
-    scale(sx, sy=None) *matplotlib.transforms.Affine2D.scale*
+    scale(sx, sy=None)
+    *matplotlib.transforms.Affine2D.scale*
         Add a scale in place.
 
         If sy is None, the same scale is applied in both the x- and
@@ -4010,11 +4256,13 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
         |matplotlib.transforms.Affine2D.translate| and
         |matplotlib.transforms.Affine2D.scale|.
 
-    set(other) *matplotlib.transforms.Affine2D.set*
+    set(other)
+    *matplotlib.transforms.Affine2D.set*
         Set this transformation from the frozen copy of another
         |matplotlib.transforms.Affine2DBase| object.
 
-    set_matrix(mtx) *matplotlib.transforms.Affine2D.set_matrix*
+    set_matrix(mtx)
+    *matplotlib.transforms.Affine2D.set_matrix*
         Set the underlying transformation matrix from a 3x3 array:
 
         >text
@@ -4024,7 +4272,8 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
 <
         .
 
-    skew(xShear, yShear) *matplotlib.transforms.Affine2D.skew*
+    skew(xShear, yShear)
+    *matplotlib.transforms.Affine2D.skew*
         Add a skew in place.
 
         xShear and yShear are the shear angles along the x- and y-axes,
@@ -4036,7 +4285,8 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
         |matplotlib.transforms.Affine2D.translate| and
         |matplotlib.transforms.Affine2D.scale|.
 
-    skew_deg(xShear, yShear) *matplotlib.transforms.Affine2D.skew_deg*
+    skew_deg(xShear, yShear)
+    *matplotlib.transforms.Affine2D.skew_deg*
         Add a skew in place.
 
         xShear and yShear are the shear angles along the x- and y-axes,
@@ -4048,7 +4298,8 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
         |matplotlib.transforms.Affine2D.translate| and
         |matplotlib.transforms.Affine2D.scale|.
 
-    translate(tx, ty) *matplotlib.transforms.Affine2D.translate*
+    translate(tx, ty)
+    *matplotlib.transforms.Affine2D.translate*
         Add a translation in place.
 
         Returns self, so this method can easily be chained with more calls
@@ -4057,8 +4308,9 @@ class matplotlib.transforms.Affine2D(matrix=None, **kwargs)
         |matplotlib.transforms.Affine2D.translate| and
         |matplotlib.transforms.Affine2D.scale|.
 
+                                          *matplotlib.transforms.Affine2DBase*
+
 class matplotlib.transforms.Affine2DBase(*args, **kwargs)
-    *matplotlib.transforms.Affine2DBase*
     Bases: |matplotlib.transforms.AffineBase|
 
     The base class of all 2D affine transformations.
@@ -4083,20 +4335,24 @@ class matplotlib.transforms.Affine2DBase(*args, **kwargs)
             carries no significance other than to improve the readability of
             `str(transform)` when DEBUG=True.
 
-    frozen() *matplotlib.transforms.Affine2DBase.frozen*
+    frozen()
+    *matplotlib.transforms.Affine2DBase.frozen*
         Return a frozen copy of this transform node. The frozen copy will
         not be updated when its children change. Useful for storing a
         previously known state of a transform where `copy.deepcopy()` might
         normally be used.
 
-    has_inverse  = True *matplotlib.transforms.Affine2DBase.has_inverse*
+    has_inverse  = True
+    *matplotlib.transforms.Affine2DBase.has_inverse*
         True if this transform has a corresponding inverse transform.
 
-    input_dims  = 2 *matplotlib.transforms.Affine2DBase.input_dims*
+    input_dims  = 2
+    *matplotlib.transforms.Affine2DBase.input_dims*
         The number of input dimensions of this transform. Must be overridden
         (with integers) in the subclass.
 
-    inverted() *matplotlib.transforms.Affine2DBase.inverted*
+    inverted()
+    *matplotlib.transforms.Affine2DBase.inverted*
         Return the corresponding inverse transformation.
 
         It holds `x == self.inverted().transform(self.transform(x))`.
@@ -4105,17 +4361,20 @@ class matplotlib.transforms.Affine2DBase(*args, **kwargs)
         update to self does not cause a corresponding update to its inverted
         copy.
 
-    property is_separable *matplotlib.transforms.Affine2DBase.is_separable*
+    property is_separable
+    *matplotlib.transforms.Affine2DBase.is_separable*
         Returns True when the argument is true, False otherwise. The
         builtins True and False are the only two instances of the class
         bool. The class bool is a subclass of the class int, and cannot be
         subclassed.
 
-    output_dims  = 2 *matplotlib.transforms.Affine2DBase.output_dims*
+    output_dims  = 2
+    *matplotlib.transforms.Affine2DBase.output_dims*
         The number of output dimensions of this transform. Must be
         overridden (with integers) in the subclass.
 
-    to_values() *matplotlib.transforms.Affine2DBase.to_values*
+    to_values()
+    *matplotlib.transforms.Affine2DBase.to_values*
         Return the values of the matrix as an `(a, b, c, d, e, f)` tuple.
 
     transform_affine(values)
@@ -4142,8 +4401,9 @@ class matplotlib.transforms.Affine2DBase(*args, **kwargs)
                 |matplotlib.transforms.Transform.output_dims|), depending on
                 the input.
 
+                                            *matplotlib.transforms.AffineBase*
+
 class matplotlib.transforms.AffineBase(*args, **kwargs)
-    *matplotlib.transforms.AffineBase*
     Bases: |matplotlib.transforms.Transform|
 
     The base class of all affine transformations of any number of
@@ -4155,12 +4415,15 @@ class matplotlib.transforms.AffineBase(*args, **kwargs)
             carries no significance other than to improve the readability of
             `str(transform)` when DEBUG=True.
 
-    get_affine() *matplotlib.transforms.AffineBase.get_affine*
+    get_affine()
+    *matplotlib.transforms.AffineBase.get_affine*
         Get the affine part of this transform.
 
-    is_affine  = True *matplotlib.transforms.AffineBase.is_affine*
+    is_affine  = True
+    *matplotlib.transforms.AffineBase.is_affine*
 
-    transform(values) *matplotlib.transforms.AffineBase.transform*
+    transform(values)
+    *matplotlib.transforms.AffineBase.transform*
         Apply this transformation on the given array of values.
 
         Parameters: ~
@@ -4224,7 +4487,8 @@ class matplotlib.transforms.AffineBase(*args, **kwargs)
                 |matplotlib.transforms.Transform.output_dims|), depending on
                 the input.
 
-    transform_path(path) *matplotlib.transforms.AffineBase.transform_path*
+    transform_path(path)
+    *matplotlib.transforms.AffineBase.transform_path*
         Apply the transform to |matplotlib.path.Path| path, returning a new
         |matplotlib.path.Path|.
 
@@ -4247,8 +4511,9 @@ class matplotlib.transforms.AffineBase(*args, **kwargs)
         `transform_path(path)` is equivalent to
         `transform_path_affine(transform_path_non_affine(values))`.
 
+                                  *matplotlib.transforms.AffineDeltaTransform*
+
 class matplotlib.transforms.AffineDeltaTransform(transform, **kwargs)
-    *matplotlib.transforms.AffineDeltaTransform*
     Bases: |matplotlib.transforms.Affine2DBase|
 
     A transform wrapper for transforming displacements between pairs of
@@ -4271,7 +4536,8 @@ class matplotlib.transforms.AffineDeltaTransform(transform, **kwargs)
             carries no significance other than to improve the readability of
             `str(transform)` when DEBUG=True.
 
-    get_matrix() *matplotlib.transforms.AffineDeltaTransform.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.AffineDeltaTransform.get_matrix*
         Get the matrix for the affine part of this transform.
 
     pass_through = True
@@ -4279,8 +4545,9 @@ class matplotlib.transforms.AffineDeltaTransform(transform, **kwargs)
         If pass_through is True, all ancestors will always be invalidated,
         even if 'self' is already invalid.
 
+                                                  *matplotlib.transforms.Bbox*
+
 class matplotlib.transforms.Bbox(points, **kwargs)
-    *matplotlib.transforms.Bbox*
     Bases: |matplotlib.transforms.BboxBase|
 
     A mutable bounding box.
@@ -4377,7 +4644,8 @@ class matplotlib.transforms.Bbox(points, **kwargs)
         https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray
             A (2, 2) array of the form `[[x0, y0], [x1, y1]]`.
 
-    property bounds *matplotlib.transforms.Bbox.bounds*
+    property bounds
+    *matplotlib.transforms.Bbox.bounds*
         Return (|matplotlib.transforms.Bbox.x0|,
         |matplotlib.transforms.Bbox.y0|,
         |matplotlib.transforms.BboxBase.width|,
@@ -4406,18 +4674,21 @@ class matplotlib.transforms.Bbox(points, **kwargs)
                 scales and other scales where negative bounds result in
                 floating point errors.
 
-    frozen() *matplotlib.transforms.Bbox.frozen*
+    frozen()
+    *matplotlib.transforms.Bbox.frozen*
         The base class for anything that participates in the transform tree
         and needs to invalidate its parents or be invalidated. This includes
         classes that are not really transforms, such as bounding boxes,
         since some transforms depend on bounding boxes to compute their
         values.
 
-    get_points() *matplotlib.transforms.Bbox.get_points*
+    get_points()
+    *matplotlib.transforms.Bbox.get_points*
         Get the points of the bounding box as an array of the form
         `[[x0, y0], [x1, y1]]`.
 
-    ignore(value) *matplotlib.transforms.Bbox.ignore*
+    ignore(value)
+    *matplotlib.transforms.Bbox.ignore*
         Set whether the existing bounds of the box should be ignored by
         subsequent calls to
         |matplotlib.transforms.Bbox.update_from_data_xy|.
@@ -4430,67 +4701,79 @@ class matplotlib.transforms.Bbox(points, **kwargs)
               |matplotlib.transforms.Bbox.update_from_data_xy| will include
               the existing bounds of the |matplotlib.transforms.Bbox|.
 
-    property intervalx *matplotlib.transforms.Bbox.intervalx*
+    property intervalx
+    *matplotlib.transforms.Bbox.intervalx*
         The pair of x coordinates that define the bounding box.
 
         This is not guaranteed to be sorted from left to right.
 
-    property intervaly *matplotlib.transforms.Bbox.intervaly*
+    property intervaly
+    *matplotlib.transforms.Bbox.intervaly*
         The pair of y coordinates that define the bounding box.
 
         This is not guaranteed to be sorted from bottom to top.
 
-    property minpos *matplotlib.transforms.Bbox.minpos*
+    property minpos
+    *matplotlib.transforms.Bbox.minpos*
         The minimum positive value in both directions within the Bbox.
 
         This is useful when dealing with logarithmic scales and other scales
         where negative bounds result in floating point errors, and will be
         used as the minimum extent instead of p0.
 
-    property minposx *matplotlib.transforms.Bbox.minposx*
+    property minposx
+    *matplotlib.transforms.Bbox.minposx*
         The minimum positive value in the x-direction within the Bbox.
 
         This is useful when dealing with logarithmic scales and other scales
         where negative bounds result in floating point errors, and will be
         used as the minimum x-extent instead of x0.
 
-    property minposy *matplotlib.transforms.Bbox.minposy*
+    property minposy
+    *matplotlib.transforms.Bbox.minposy*
         The minimum positive value in the y-direction within the Bbox.
 
         This is useful when dealing with logarithmic scales and other scales
         where negative bounds result in floating point errors, and will be
         used as the minimum y-extent instead of y0.
 
-    mutated() *matplotlib.transforms.Bbox.mutated*
+    mutated()
+    *matplotlib.transforms.Bbox.mutated*
         Return whether the bbox has changed since init.
 
-    mutatedx() *matplotlib.transforms.Bbox.mutatedx*
+    mutatedx()
+    *matplotlib.transforms.Bbox.mutatedx*
         Return whether the x-limits have changed since init.
 
-    mutatedy() *matplotlib.transforms.Bbox.mutatedy*
+    mutatedy()
+    *matplotlib.transforms.Bbox.mutatedy*
         Return whether the y-limits have changed since init.
 
     static null() *matplotlib.transforms.Bbox.null*
         Create a new null |matplotlib.transforms.Bbox| from (inf, inf) to
         (-inf, -inf).
 
-    property p0 *matplotlib.transforms.Bbox.p0*
+    property p0
+    *matplotlib.transforms.Bbox.p0*
         The first pair of (x, y) coordinates that define the bounding box.
 
         This is not guaranteed to be the bottom-left corner (for that, use
         |matplotlib.transforms.BboxBase.min|).
 
-    property p1 *matplotlib.transforms.Bbox.p1*
+    property p1
+    *matplotlib.transforms.Bbox.p1*
         The second pair of (x, y) coordinates that define the bounding box.
 
         This is not guaranteed to be the top-right corner (for that, use
         |matplotlib.transforms.BboxBase.max|).
 
-    set(other) *matplotlib.transforms.Bbox.set*
+    set(other)
+    *matplotlib.transforms.Bbox.set*
         Set this bounding box from the "frozen" bounds of another
         |matplotlib.transforms.Bbox|.
 
-    set_points(points) *matplotlib.transforms.Bbox.set_points*
+    set_points(points)
+    *matplotlib.transforms.Bbox.set_points*
         Set the points of the bounding box directly from an array of the
         form `[[x0, y0], [x1, y1]]`. No error checking is performed, as this
         method is mainly for internal use.
@@ -4580,14 +4863,16 @@ class matplotlib.transforms.Bbox(points, **kwargs)
             updatex, updatey bool, default: True
                 When `True`, update the x/y values.
 
-    property x0 *matplotlib.transforms.Bbox.x0*
+    property x0
+    *matplotlib.transforms.Bbox.x0*
         The first of the pair of x coordinates that define the bounding box.
 
         This is not guaranteed to be less than
         |matplotlib.transforms.Bbox.x1| (for that, use
         |matplotlib.transforms.BboxBase.xmin|).
 
-    property x1 *matplotlib.transforms.Bbox.x1*
+    property x1
+    *matplotlib.transforms.Bbox.x1*
         The second of the pair of x coordinates that define the bounding
         box.
 
@@ -4595,14 +4880,16 @@ class matplotlib.transforms.Bbox(points, **kwargs)
         |matplotlib.transforms.Bbox.x0| (for that, use
         |matplotlib.transforms.BboxBase.xmax|).
 
-    property y0 *matplotlib.transforms.Bbox.y0*
+    property y0
+    *matplotlib.transforms.Bbox.y0*
         The first of the pair of y coordinates that define the bounding box.
 
         This is not guaranteed to be less than
         |matplotlib.transforms.Bbox.y1| (for that, use
         |matplotlib.transforms.BboxBase.ymin|).
 
-    property y1 *matplotlib.transforms.Bbox.y1*
+    property y1
+    *matplotlib.transforms.Bbox.y1*
         The second of the pair of y coordinates that define the bounding
         box.
 
@@ -4610,8 +4897,9 @@ class matplotlib.transforms.Bbox(points, **kwargs)
         |matplotlib.transforms.Bbox.y0| (for that, use
         |matplotlib.transforms.BboxBase.ymax|).
 
+                                              *matplotlib.transforms.BboxBase*
+
 class matplotlib.transforms.BboxBase(shorthand_name=None)
-    *matplotlib.transforms.BboxBase*
     Bases: |matplotlib.transforms.TransformNode|
 
     The base class of all bounding boxes.
@@ -4630,7 +4918,8 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
             carries no significance other than to improve the readability of
             `str(transform)` when DEBUG=True.
 
-    anchored(c, container) *matplotlib.transforms.BboxBase.anchored*
+    anchored(c, container)
+    *matplotlib.transforms.BboxBase.anchored*
         Return a copy of the |matplotlib.transforms.Bbox| anchored to c
         within container.
 
@@ -4648,7 +4937,8 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
 
           |matplotlib.axes.Axes.set_anchor|
 
-    property bounds *matplotlib.transforms.BboxBase.bounds*
+    property bounds
+    *matplotlib.transforms.BboxBase.bounds*
         Return (|matplotlib.transforms.BboxBase.x0|,
         |matplotlib.transforms.BboxBase.y0|,
         |matplotlib.transforms.BboxBase.width|,
@@ -4656,28 +4946,34 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
 
     coefs = {'C': (0.5, 0.5), 'E': (1.0, 0.5), 'N': (0.5, 1.0), 'NE': (1.0,
     1.0), 'NW': (0, 1.0), 'S': (0.5, 0), 'SE': (1.0, 0), 'SW': (0, 0), 'W':
-    (0, 0.5)} *matplotlib.transforms.BboxBase.coefs*
+    (0, 0.5)}
+    *matplotlib.transforms.BboxBase.coefs*
 
-    contains(x, y) *matplotlib.transforms.BboxBase.contains*
+    contains(x, y)
+    *matplotlib.transforms.BboxBase.contains*
         Return whether `(x, y)` is in the bounding box or on its edge.
 
-    containsx(x) *matplotlib.transforms.BboxBase.containsx*
+    containsx(x)
+    *matplotlib.transforms.BboxBase.containsx*
         Return whether x is in the closed
         (|matplotlib.transforms.BboxBase.x0|,
         |matplotlib.transforms.BboxBase.x1|) interval.
 
-    containsy(y) *matplotlib.transforms.BboxBase.containsy*
+    containsy(y)
+    *matplotlib.transforms.BboxBase.containsy*
         Return whether y is in the closed
         (|matplotlib.transforms.BboxBase.y0|,
         |matplotlib.transforms.BboxBase.y1|) interval.
 
-    corners() *matplotlib.transforms.BboxBase.corners*
+    corners()
+    *matplotlib.transforms.BboxBase.corners*
         Return the corners of this rectangle as an array of points.
 
         Specifically, this returns the array
         `[[x0, y0], [x0, y1], [x1, y0], [x1, y1]]`.
 
-    count_contains(vertices) *matplotlib.transforms.BboxBase.count_contains*
+    count_contains(vertices)
+    *matplotlib.transforms.BboxBase.count_contains*
         Count the number of vertices contained in the
         |matplotlib.transforms.Bbox|. Any vertices with a non-finite x or y
         value are ignored.
@@ -4685,52 +4981,62 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
         Parameters: ~
             vertices (N, 2) array
 
-    count_overlaps(bboxes) *matplotlib.transforms.BboxBase.count_overlaps*
+    count_overlaps(bboxes)
+    *matplotlib.transforms.BboxBase.count_overlaps*
         Count the number of bounding boxes that overlap this one.
 
         Parameters: ~
             bboxes sequence of |matplotlib.transforms.BboxBase|
 
-    expanded(sw, sh) *matplotlib.transforms.BboxBase.expanded*
+    expanded(sw, sh)
+    *matplotlib.transforms.BboxBase.expanded*
         Construct a |matplotlib.transforms.Bbox| by expanding this one
         around its center by the factors sw and sh.
 
-    property extents *matplotlib.transforms.BboxBase.extents*
+    property extents
+    *matplotlib.transforms.BboxBase.extents*
         Return (|matplotlib.transforms.BboxBase.x0|,
         |matplotlib.transforms.BboxBase.y0|,
         |matplotlib.transforms.BboxBase.x1|,
         |matplotlib.transforms.BboxBase.y1|).
 
-    frozen() *matplotlib.transforms.BboxBase.frozen*
+    frozen()
+    *matplotlib.transforms.BboxBase.frozen*
         The base class for anything that participates in the transform tree
         and needs to invalidate its parents or be invalidated. This includes
         classes that are not really transforms, such as bounding boxes,
         since some transforms depend on bounding boxes to compute their
         values.
 
-    fully_contains(x, y) *matplotlib.transforms.BboxBase.fully_contains*
+    fully_contains(x, y)
+    *matplotlib.transforms.BboxBase.fully_contains*
         Return whether `x, y` is in the bounding box, but not on its edge.
 
-    fully_containsx(x) *matplotlib.transforms.BboxBase.fully_containsx*
+    fully_containsx(x)
+    *matplotlib.transforms.BboxBase.fully_containsx*
         Return whether x is in the open
         (|matplotlib.transforms.BboxBase.x0|,
         |matplotlib.transforms.BboxBase.x1|) interval.
 
-    fully_containsy(y) *matplotlib.transforms.BboxBase.fully_containsy*
+    fully_containsy(y)
+    *matplotlib.transforms.BboxBase.fully_containsy*
         Return whether y is in the open
         (|matplotlib.transforms.BboxBase.y0|,
         |matplotlib.transforms.BboxBase.y1|) interval.
 
-    fully_overlaps(other) *matplotlib.transforms.BboxBase.fully_overlaps*
+    fully_overlaps(other)
+    *matplotlib.transforms.BboxBase.fully_overlaps*
         Return whether this bounding box overlaps with the other bounding
         box, not including the edges.
 
         Parameters: ~
             other |matplotlib.transforms.BboxBase|
 
-    get_points() *matplotlib.transforms.BboxBase.get_points*
+    get_points()
+    *matplotlib.transforms.BboxBase.get_points*
 
-    property height *matplotlib.transforms.BboxBase.height*
+    property height
+    *matplotlib.transforms.BboxBase.height*
         The (signed) height of the bounding box.
 
     static intersection(bbox1, bbox2)
@@ -4738,44 +5044,53 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
         Return the intersection of bbox1 and bbox2 if they intersect, or
         None if they don't.
 
-    property intervalx *matplotlib.transforms.BboxBase.intervalx*
+    property intervalx
+    *matplotlib.transforms.BboxBase.intervalx*
         The pair of x coordinates that define the bounding box.
 
         This is not guaranteed to be sorted from left to right.
 
-    property intervaly *matplotlib.transforms.BboxBase.intervaly*
+    property intervaly
+    *matplotlib.transforms.BboxBase.intervaly*
         The pair of y coordinates that define the bounding box.
 
         This is not guaranteed to be sorted from bottom to top.
 
-    is_affine  = True *matplotlib.transforms.BboxBase.is_affine*
+    is_affine  = True
+    *matplotlib.transforms.BboxBase.is_affine*
 
-    property max *matplotlib.transforms.BboxBase.max*
+    property max
+    *matplotlib.transforms.BboxBase.max*
         The top-right corner of the bounding box.
 
-    property min *matplotlib.transforms.BboxBase.min*
+    property min
+    *matplotlib.transforms.BboxBase.min*
         The bottom-left corner of the bounding box.
 
-    overlaps(other) *matplotlib.transforms.BboxBase.overlaps*
+    overlaps(other)
+    *matplotlib.transforms.BboxBase.overlaps*
         Return whether this bounding box overlaps with the other bounding
         box.
 
         Parameters: ~
             other |matplotlib.transforms.BboxBase|
 
-    property p0 *matplotlib.transforms.BboxBase.p0*
+    property p0
+    *matplotlib.transforms.BboxBase.p0*
         The first pair of (x, y) coordinates that define the bounding box.
 
         This is not guaranteed to be the bottom-left corner (for that, use
         |matplotlib.transforms.BboxBase.min|).
 
-    property p1 *matplotlib.transforms.BboxBase.p1*
+    property p1
+    *matplotlib.transforms.BboxBase.p1*
         The second pair of (x, y) coordinates that define the bounding box.
 
         This is not guaranteed to be the top-right corner (for that, use
         |matplotlib.transforms.BboxBase.max|).
 
-    padded(w_pad, h_pad=None) *matplotlib.transforms.BboxBase.padded*
+    padded(w_pad, h_pad=None)
+    *matplotlib.transforms.BboxBase.padded*
         Construct a |matplotlib.transforms.Bbox| by padding this one on all
         four sides.
 
@@ -4786,11 +5101,13 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
             h_pad float, optional
                 Height pad. Defaults to w_pad.
 
-    rotated(radians) *matplotlib.transforms.BboxBase.rotated*
+    rotated(radians)
+    *matplotlib.transforms.BboxBase.rotated*
         Return the axes-aligned bounding box that bounds the result of
         rotating this |matplotlib.transforms.Bbox| by an angle of radians.
 
-    shrunk(mx, my) *matplotlib.transforms.BboxBase.shrunk*
+    shrunk(mx, my)
+    *matplotlib.transforms.BboxBase.shrunk*
         Return a copy of the |matplotlib.transforms.Bbox|, shrunk by the
         factor mx in the x direction and the factor my in the y direction.
         The lower left corner of the box remains unchanged. Normally mx and
@@ -4806,24 +5123,29 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
         given as a ratio of the absolute dimensions, not the relative
         dimensions.
 
-    property size *matplotlib.transforms.BboxBase.size*
+    property size
+    *matplotlib.transforms.BboxBase.size*
         The (signed) width and height of the bounding box.
 
-    splitx(*args) *matplotlib.transforms.BboxBase.splitx*
+    splitx(*args)
+    *matplotlib.transforms.BboxBase.splitx*
         Return a list of new |matplotlib.transforms.Bbox| objects formed by
         splitting the original one with vertical lines at fractional
         positions given by args.
 
-    splity(*args) *matplotlib.transforms.BboxBase.splity*
+    splity(*args)
+    *matplotlib.transforms.BboxBase.splity*
         Return a list of new |matplotlib.transforms.Bbox| objects formed by
         splitting the original one with horizontal lines at fractional
         positions given by args.
 
-    transformed(transform) *matplotlib.transforms.BboxBase.transformed*
+    transformed(transform)
+    *matplotlib.transforms.BboxBase.transformed*
         Construct a |matplotlib.transforms.Bbox| by statically transforming
         this one by transform.
 
-    translated(tx, ty) *matplotlib.transforms.BboxBase.translated*
+    translated(tx, ty)
+    *matplotlib.transforms.BboxBase.translated*
         Construct a |matplotlib.transforms.Bbox| by translating this one by
         tx and ty.
 
@@ -4831,17 +5153,20 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
         Return a |matplotlib.transforms.Bbox| that contains all of the given
         bboxes.
 
-    property width *matplotlib.transforms.BboxBase.width*
+    property width
+    *matplotlib.transforms.BboxBase.width*
         The (signed) width of the bounding box.
 
-    property x0 *matplotlib.transforms.BboxBase.x0*
+    property x0
+    *matplotlib.transforms.BboxBase.x0*
         The first of the pair of x coordinates that define the bounding box.
 
         This is not guaranteed to be less than
         |matplotlib.transforms.BboxBase.x1| (for that, use
         |matplotlib.transforms.BboxBase.xmin|).
 
-    property x1 *matplotlib.transforms.BboxBase.x1*
+    property x1
+    *matplotlib.transforms.BboxBase.x1*
         The second of the pair of x coordinates that define the bounding
         box.
 
@@ -4849,20 +5174,24 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
         |matplotlib.transforms.BboxBase.x0| (for that, use
         |matplotlib.transforms.BboxBase.xmax|).
 
-    property xmax *matplotlib.transforms.BboxBase.xmax*
+    property xmax
+    *matplotlib.transforms.BboxBase.xmax*
         The right edge of the bounding box.
 
-    property xmin *matplotlib.transforms.BboxBase.xmin*
+    property xmin
+    *matplotlib.transforms.BboxBase.xmin*
         The left edge of the bounding box.
 
-    property y0 *matplotlib.transforms.BboxBase.y0*
+    property y0
+    *matplotlib.transforms.BboxBase.y0*
         The first of the pair of y coordinates that define the bounding box.
 
         This is not guaranteed to be less than
         |matplotlib.transforms.BboxBase.y1| (for that, use
         |matplotlib.transforms.BboxBase.ymin|).
 
-    property y1 *matplotlib.transforms.BboxBase.y1*
+    property y1
+    *matplotlib.transforms.BboxBase.y1*
         The second of the pair of y coordinates that define the bounding
         box.
 
@@ -4870,14 +5199,17 @@ class matplotlib.transforms.BboxBase(shorthand_name=None)
         |matplotlib.transforms.BboxBase.y0| (for that, use
         |matplotlib.transforms.BboxBase.ymax|).
 
-    property ymax *matplotlib.transforms.BboxBase.ymax*
+    property ymax
+    *matplotlib.transforms.BboxBase.ymax*
         The top edge of the bounding box.
 
-    property ymin *matplotlib.transforms.BboxBase.ymin*
+    property ymin
+    *matplotlib.transforms.BboxBase.ymin*
         The bottom edge of the bounding box.
 
+                                         *matplotlib.transforms.BboxTransform*
+
 class matplotlib.transforms.BboxTransform(boxin, boxout, **kwargs)
-    *matplotlib.transforms.BboxTransform*
     Bases: |matplotlib.transforms.Affine2DBase|
 
     |matplotlib.transforms.BboxTransform| linearly transforms points from
@@ -4886,14 +5218,17 @@ class matplotlib.transforms.BboxTransform(boxin, boxout, **kwargs)
     Create a new |matplotlib.transforms.BboxTransform| that linearly
     transforms points from boxin to boxout.
 
-    get_matrix() *matplotlib.transforms.BboxTransform.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.BboxTransform.get_matrix*
         Get the matrix for the affine part of this transform.
 
-    is_separable  = True *matplotlib.transforms.BboxTransform.is_separable*
+    is_separable  = True
+    *matplotlib.transforms.BboxTransform.is_separable*
         True if this transform is separable in the x- and y- dimensions.
 
+                                     *matplotlib.transforms.BboxTransformFrom*
+
 class matplotlib.transforms.BboxTransformFrom(boxin, **kwargs)
-    *matplotlib.transforms.BboxTransformFrom*
     Bases: |matplotlib.transforms.Affine2DBase|
 
     |matplotlib.transforms.BboxTransformFrom| linearly transforms points
@@ -4905,15 +5240,17 @@ class matplotlib.transforms.BboxTransformFrom(boxin, **kwargs)
             carries no significance other than to improve the readability of
             `str(transform)` when DEBUG=True.
 
-    get_matrix() *matplotlib.transforms.BboxTransformFrom.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.BboxTransformFrom.get_matrix*
         Get the matrix for the affine part of this transform.
 
     is_separable = True
     *matplotlib.transforms.BboxTransformFrom.is_separable*
         True if this transform is separable in the x- and y- dimensions.
 
+                                       *matplotlib.transforms.BboxTransformTo*
+
 class matplotlib.transforms.BboxTransformTo(boxout, **kwargs)
-    *matplotlib.transforms.BboxTransformTo*
     Bases: |matplotlib.transforms.Affine2DBase|
 
     |matplotlib.transforms.BboxTransformTo| is a transformation that
@@ -4923,10 +5260,12 @@ class matplotlib.transforms.BboxTransformTo(boxout, **kwargs)
     Create a new |matplotlib.transforms.BboxTransformTo| that linearly
     transforms points from the unit bounding box to boxout.
 
-    get_matrix() *matplotlib.transforms.BboxTransformTo.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.BboxTransformTo.get_matrix*
         Get the matrix for the affine part of this transform.
 
-    is_separable = True *matplotlib.transforms.BboxTransformTo.is_separable*
+    is_separable = True
+    *matplotlib.transforms.BboxTransformTo.is_separable*
         True if this transform is separable in the x- and y- dimensions.
 
                                        *matplotlib.transforms.BlendedAffine2D*
@@ -4950,10 +5289,12 @@ class matplotlib.transforms.BlendedAffine2D(x_transform, y_transform,
     which can determine automatically which kind of blended transform to
     create.
 
-    get_matrix() *matplotlib.transforms.BlendedAffine2D.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.BlendedAffine2D.get_matrix*
         Get the matrix for the affine part of this transform.
 
-    is_separable = True *matplotlib.transforms.BlendedAffine2D.is_separable*
+    is_separable = True
+    *matplotlib.transforms.BlendedAffine2D.is_separable*
         True if this transform is separable in the x- and y- dimensions.
 
                                *matplotlib.transforms.BlendedGenericTransform*
@@ -4985,7 +5326,8 @@ class matplotlib.transforms.BlendedGenericTransform(x_transform,
         For the case where the given transform represents the whole of this
         transform, returns True.
 
-    property depth *matplotlib.transforms.BlendedGenericTransform.depth*
+    property depth
+    *matplotlib.transforms.BlendedGenericTransform.depth*
         Return the number of transforms which have been chained together to
         form this Transform instance.
 
@@ -4994,13 +5336,15 @@ class matplotlib.transforms.BlendedGenericTransform(x_transform,
           For the special case of a Composite transform, the maximum depth
           of the two is returned.
 
-    frozen() *matplotlib.transforms.BlendedGenericTransform.frozen*
+    frozen()
+    *matplotlib.transforms.BlendedGenericTransform.frozen*
         Return a frozen copy of this transform node. The frozen copy will
         not be updated when its children change. Useful for storing a
         previously known state of a transform where `copy.deepcopy()` might
         normally be used.
 
-    get_affine() *matplotlib.transforms.BlendedGenericTransform.get_affine*
+    get_affine()
+    *matplotlib.transforms.BlendedGenericTransform.get_affine*
         Get the affine part of this transform.
 
     property has_inverse
@@ -5015,7 +5359,8 @@ class matplotlib.transforms.BlendedGenericTransform(x_transform,
         The number of input dimensions of this transform. Must be overridden
         (with integers) in the subclass.
 
-    inverted() *matplotlib.transforms.BlendedGenericTransform.inverted*
+    inverted()
+    *matplotlib.transforms.BlendedGenericTransform.inverted*
         Return the corresponding inverse transformation.
 
         It holds `x == self.inverted().transform(self.transform(x))`.
@@ -5069,8 +5414,9 @@ class matplotlib.transforms.BlendedGenericTransform(x_transform,
                 |matplotlib.transforms.Transform.output_dims|), depending on
                 the input.
 
+                                     *matplotlib.transforms.CompositeAffine2D*
+
 class matplotlib.transforms.CompositeAffine2D(a, b, **kwargs)
-    *matplotlib.transforms.CompositeAffine2D*
     Bases: |matplotlib.transforms.Affine2DBase|
 
     A composite transform formed by applying transform a then transform b.
@@ -5086,7 +5432,8 @@ class matplotlib.transforms.CompositeAffine2D(a, b, **kwargs)
     instead, which will automatically choose the best kind of composite
     transform instance to create.
 
-    property depth *matplotlib.transforms.CompositeAffine2D.depth*
+    property depth
+    *matplotlib.transforms.CompositeAffine2D.depth*
         Return the number of transforms which have been chained together to
         form this Transform instance.
 
@@ -5095,11 +5442,13 @@ class matplotlib.transforms.CompositeAffine2D(a, b, **kwargs)
           For the special case of a Composite transform, the maximum depth
           of the two is returned.
 
-    get_matrix() *matplotlib.transforms.CompositeAffine2D.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.CompositeAffine2D.get_matrix*
         Get the matrix for the affine part of this transform.
 
+                             *matplotlib.transforms.CompositeGenericTransform*
+
 class matplotlib.transforms.CompositeGenericTransform(a, b, **kwargs)
-    *matplotlib.transforms.CompositeGenericTransform*
     Bases: |matplotlib.transforms.Transform|
 
     A composite transform formed by applying transform a then transform b.
@@ -5125,7 +5474,8 @@ class matplotlib.transforms.CompositeGenericTransform(a, b, **kwargs)
             x_isdata, y_isdata = trans.contains_branch_separately(ax.transData)
 <
 
-    property depth *matplotlib.transforms.CompositeGenericTransform.depth*
+    property depth
+    *matplotlib.transforms.CompositeGenericTransform.depth*
         Return the number of transforms which have been chained together to
         form this Transform instance.
 
@@ -5134,7 +5484,8 @@ class matplotlib.transforms.CompositeGenericTransform(a, b, **kwargs)
           For the special case of a Composite transform, the maximum depth
           of the two is returned.
 
-    frozen() *matplotlib.transforms.CompositeGenericTransform.frozen*
+    frozen()
+    *matplotlib.transforms.CompositeGenericTransform.frozen*
         Return a frozen copy of this transform node. The frozen copy will
         not be updated when its children change. Useful for storing a
         previously known state of a transform where `copy.deepcopy()` might
@@ -5151,7 +5502,8 @@ class matplotlib.transforms.CompositeGenericTransform(a, b, **kwargs)
         bool. The class bool is a subclass of the class int, and cannot be
         subclassed.
 
-    inverted() *matplotlib.transforms.CompositeGenericTransform.inverted*
+    inverted()
+    *matplotlib.transforms.CompositeGenericTransform.inverted*
         Return the corresponding inverse transformation.
 
         It holds `x == self.inverted().transform(self.transform(x))`.
@@ -5235,8 +5587,9 @@ class matplotlib.transforms.CompositeGenericTransform(a, b, **kwargs)
         `transform_path(path)` is equivalent to
         `transform_path_affine(transform_path_non_affine(values))`.
 
+                                     *matplotlib.transforms.IdentityTransform*
+
 class matplotlib.transforms.IdentityTransform(*args, **kwargs)
-    *matplotlib.transforms.IdentityTransform*
     Bases: |matplotlib.transforms.Affine2DBase|
 
     A special class that does one thing, the identity transform, in a fast
@@ -5248,19 +5601,23 @@ class matplotlib.transforms.IdentityTransform(*args, **kwargs)
             carries no significance other than to improve the readability of
             `str(transform)` when DEBUG=True.
 
-    frozen() *matplotlib.transforms.IdentityTransform.frozen*
+    frozen()
+    *matplotlib.transforms.IdentityTransform.frozen*
         Return a frozen copy of this transform node. The frozen copy will
         not be updated when its children change. Useful for storing a
         previously known state of a transform where `copy.deepcopy()` might
         normally be used.
 
-    get_affine() *matplotlib.transforms.IdentityTransform.get_affine*
+    get_affine()
+    *matplotlib.transforms.IdentityTransform.get_affine*
         Get the affine part of this transform.
 
-    get_matrix() *matplotlib.transforms.IdentityTransform.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.IdentityTransform.get_matrix*
         Get the matrix for the affine part of this transform.
 
-    inverted() *matplotlib.transforms.IdentityTransform.inverted*
+    inverted()
+    *matplotlib.transforms.IdentityTransform.inverted*
         Return the corresponding inverse transformation.
 
         It holds `x == self.inverted().transform(self.transform(x))`.
@@ -5269,7 +5626,8 @@ class matplotlib.transforms.IdentityTransform(*args, **kwargs)
         update to self does not cause a corresponding update to its inverted
         copy.
 
-    transform(values) *matplotlib.transforms.IdentityTransform.transform*
+    transform(values)
+    *matplotlib.transforms.IdentityTransform.transform*
         Apply this transformation on the given array of values.
 
         Parameters: ~
@@ -5384,22 +5742,28 @@ class matplotlib.transforms.LockableBbox(bbox, x0=None, y0=None, x1=None,
         y1 float or None
             The locked value for y1, or None to leave unlocked.
 
-    get_points() *matplotlib.transforms.LockableBbox.get_points*
+    get_points()
+    *matplotlib.transforms.LockableBbox.get_points*
 
-    property locked_x0 *matplotlib.transforms.LockableBbox.locked_x0*
+    property locked_x0
+    *matplotlib.transforms.LockableBbox.locked_x0*
         float or None: The value used for the locked x0.
 
-    property locked_x1 *matplotlib.transforms.LockableBbox.locked_x1*
+    property locked_x1
+    *matplotlib.transforms.LockableBbox.locked_x1*
         float or None: The value used for the locked x1.
 
-    property locked_y0 *matplotlib.transforms.LockableBbox.locked_y0*
+    property locked_y0
+    *matplotlib.transforms.LockableBbox.locked_y0*
         float or None: The value used for the locked y0.
 
-    property locked_y1 *matplotlib.transforms.LockableBbox.locked_y1*
+    property locked_y1
+    *matplotlib.transforms.LockableBbox.locked_y1*
         float or None: The value used for the locked y1.
 
+                                     *matplotlib.transforms.ScaledTranslation*
+
 class matplotlib.transforms.ScaledTranslation(xt, yt, scale_trans, **kwargs)
-    *matplotlib.transforms.ScaledTranslation*
     Bases: |matplotlib.transforms.Affine2DBase|
 
     A transformation that translates by xt and yt, after xt and yt have been
@@ -5411,11 +5775,13 @@ class matplotlib.transforms.ScaledTranslation(xt, yt, scale_trans, **kwargs)
             carries no significance other than to improve the readability of
             `str(transform)` when DEBUG=True.
 
-    get_matrix() *matplotlib.transforms.ScaledTranslation.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.ScaledTranslation.get_matrix*
         Get the matrix for the affine part of this transform.
 
+                                             *matplotlib.transforms.Transform*
+
 class matplotlib.transforms.Transform(shorthand_name=None)
-    *matplotlib.transforms.Transform*
     Bases: |matplotlib.transforms.TransformNode|
 
     The base class of all |matplotlib.transforms.TransformNode| instances
@@ -5451,13 +5817,15 @@ class matplotlib.transforms.Transform(shorthand_name=None)
             carries no significance other than to improve the readability of
             `str(transform)` when DEBUG=True.
 
-    __add__(other) *matplotlib.transforms.Transform.__add__*
+    __add__(other)
+    *matplotlib.transforms.Transform.__add__*
         Compose two transforms together so that self is followed by other.
 
         `A + B` returns a transform `C` so that
         `C.transform(x) == B.transform(A.transform(x))`.
 
-    __sub__(other) *matplotlib.transforms.Transform.__sub__*
+    __sub__(other)
+    *matplotlib.transforms.Transform.__sub__*
         Compose self with the inverse of other, cancelling identical terms
         if any:
 
@@ -5486,7 +5854,8 @@ class matplotlib.transforms.Transform(shorthand_name=None)
           on the other hand, `A + B - B` will always be equal to `A` even if
           `B` is mutated.
 
-    contains_branch(other) *matplotlib.transforms.Transform.contains_branch*
+    contains_branch(other)
+    *matplotlib.transforms.Transform.contains_branch*
         Return whether the given transform is a sub-tree of this transform.
 
         This routine uses transform equality to identify sub-trees,
@@ -5507,7 +5876,8 @@ class matplotlib.transforms.Transform(shorthand_name=None)
             x_isdata, y_isdata = trans.contains_branch_separately(ax.transData)
 <
 
-    property depth *matplotlib.transforms.Transform.depth*
+    property depth
+    *matplotlib.transforms.Transform.depth*
         Return the number of transforms which have been chained together to
         form this Transform instance.
 
@@ -5516,20 +5886,25 @@ class matplotlib.transforms.Transform(shorthand_name=None)
           For the special case of a Composite transform, the maximum depth
           of the two is returned.
 
-    get_affine() *matplotlib.transforms.Transform.get_affine*
+    get_affine()
+    *matplotlib.transforms.Transform.get_affine*
         Get the affine part of this transform.
 
-    get_matrix() *matplotlib.transforms.Transform.get_matrix*
+    get_matrix()
+    *matplotlib.transforms.Transform.get_matrix*
         Get the matrix for the affine part of this transform.
 
-    has_inverse  = False *matplotlib.transforms.Transform.has_inverse*
+    has_inverse  = False
+    *matplotlib.transforms.Transform.has_inverse*
         True if this transform has a corresponding inverse transform.
 
-    input_dims  = None *matplotlib.transforms.Transform.input_dims*
+    input_dims  = None
+    *matplotlib.transforms.Transform.input_dims*
         The number of input dimensions of this transform. Must be overridden
         (with integers) in the subclass.
 
-    inverted() *matplotlib.transforms.Transform.inverted*
+    inverted()
+    *matplotlib.transforms.Transform.inverted*
         Return the corresponding inverse transformation.
 
         It holds `x == self.inverted().transform(self.transform(x))`.
@@ -5538,14 +5913,17 @@ class matplotlib.transforms.Transform(shorthand_name=None)
         update to self does not cause a corresponding update to its inverted
         copy.
 
-    is_separable  = False *matplotlib.transforms.Transform.is_separable*
+    is_separable  = False
+    *matplotlib.transforms.Transform.is_separable*
         True if this transform is separable in the x- and y- dimensions.
 
-    output_dims  = None *matplotlib.transforms.Transform.output_dims*
+    output_dims  = None
+    *matplotlib.transforms.Transform.output_dims*
         The number of output dimensions of this transform. Must be
         overridden (with integers) in the subclass.
 
-    transform(values) *matplotlib.transforms.Transform.transform*
+    transform(values)
+    *matplotlib.transforms.Transform.transform*
         Apply this transformation on the given array of values.
 
         Parameters: ~
@@ -5609,7 +5987,8 @@ class matplotlib.transforms.Transform(shorthand_name=None)
         Returns: ~
             (N,) array
 
-    transform_bbox(bbox) *matplotlib.transforms.Transform.transform_bbox*
+    transform_bbox(bbox)
+    *matplotlib.transforms.Transform.transform_bbox*
         Transform the given bounding box.
 
         For smarter transforms including caching (a common requirement in
@@ -5639,7 +6018,8 @@ class matplotlib.transforms.Transform(shorthand_name=None)
                 |matplotlib.transforms.Transform.output_dims|), depending on
                 the input.
 
-    transform_path(path) *matplotlib.transforms.Transform.transform_path*
+    transform_path(path)
+    *matplotlib.transforms.Transform.transform_path*
         Apply the transform to |matplotlib.path.Path| path, returning a new
         |matplotlib.path.Path|.
 
@@ -5662,7 +6042,8 @@ class matplotlib.transforms.Transform(shorthand_name=None)
         `transform_path(path)` is equivalent to
         `transform_path_affine(transform_path_non_affine(values))`.
 
-    transform_point(point) *matplotlib.transforms.Transform.transform_point*
+    transform_point(point)
+    *matplotlib.transforms.Transform.transform_point*
         Return a transformed point.
 
         This function is only kept for backcompatibility; the more general
@@ -5674,8 +6055,9 @@ class matplotlib.transforms.Transform(shorthand_name=None)
         is returned as a sequence of length
         |matplotlib.transforms.Transform.output_dims|.
 
+                                         *matplotlib.transforms.TransformNode*
+
 class matplotlib.transforms.TransformNode(shorthand_name=None)
-    *matplotlib.transforms.TransformNode*
     Bases: `object` https://docs.python.org/3/library/functions.html#object
 
     The base class for anything that participates in the transform tree and
@@ -5689,20 +6071,24 @@ class matplotlib.transforms.TransformNode(shorthand_name=None)
             carries no significance other than to improve the readability of
             `str(transform)` when DEBUG=True.
 
-    frozen() *matplotlib.transforms.TransformNode.frozen*
+    frozen()
+    *matplotlib.transforms.TransformNode.frozen*
         Return a frozen copy of this transform node. The frozen copy will
         not be updated when its children change. Useful for storing a
         previously known state of a transform where `copy.deepcopy()` might
         normally be used.
 
-    invalidate() *matplotlib.transforms.TransformNode.invalidate*
+    invalidate()
+    *matplotlib.transforms.TransformNode.invalidate*
         Invalidate this |matplotlib.transforms.TransformNode| and triggers
         an invalidation of its ancestors. Should be called any time the
         transform changes.
 
-    is_affine  = False *matplotlib.transforms.TransformNode.is_affine*
+    is_affine  = False
+    *matplotlib.transforms.TransformNode.is_affine*
 
-    pass_through  = False *matplotlib.transforms.TransformNode.pass_through*
+    pass_through  = False
+    *matplotlib.transforms.TransformNode.pass_through*
         If pass_through is True, all ancestors will always be invalidated,
         even if 'self' is already invalid.
 
@@ -5713,8 +6099,9 @@ class matplotlib.transforms.TransformNode(shorthand_name=None)
         called from the constructor of any transforms that depend on other
         transforms.
 
+                                      *matplotlib.transforms.TransformWrapper*
+
 class matplotlib.transforms.TransformWrapper(child)
-    *matplotlib.transforms.TransformWrapper*
     Bases: |matplotlib.transforms.Transform|
 
     A helper class that holds a single child transform and acts equivalently
@@ -5732,7 +6119,8 @@ class matplotlib.transforms.TransformWrapper(child)
     child: A |matplotlib.transforms.Transform| instance. This child may
     later be replaced with |matplotlib.transforms.TransformWrapper.set|.
 
-    frozen() *matplotlib.transforms.TransformWrapper.frozen*
+    frozen()
+    *matplotlib.transforms.TransformWrapper.frozen*
         Return a frozen copy of this transform node. The frozen copy will
         not be updated when its children change. Useful for storing a
         previously known state of a transform where `copy.deepcopy()` might
@@ -5745,10 +6133,12 @@ class matplotlib.transforms.TransformWrapper(child)
         bool. The class bool is a subclass of the class int, and cannot be
         subclassed.
 
-    property input_dims *matplotlib.transforms.TransformWrapper.input_dims*
+    property input_dims
+    *matplotlib.transforms.TransformWrapper.input_dims*
         The type of the None singleton.
 
-    property is_affine *matplotlib.transforms.TransformWrapper.is_affine*
+    property is_affine
+    *matplotlib.transforms.TransformWrapper.is_affine*
         Returns True when the argument is true, False otherwise. The
         builtins True and False are the only two instances of the class
         bool. The class bool is a subclass of the class int, and cannot be
@@ -5770,14 +6160,16 @@ class matplotlib.transforms.TransformWrapper(child)
         If pass_through is True, all ancestors will always be invalidated,
         even if 'self' is already invalid.
 
-    set(child) *matplotlib.transforms.TransformWrapper.set*
+    set(child)
+    *matplotlib.transforms.TransformWrapper.set*
         Replace the current child of this transform with another one.
 
         The new child must have the same number of input and output
         dimensions as the current child.
 
+                                       *matplotlib.transforms.TransformedBbox*
+
 class matplotlib.transforms.TransformedBbox(bbox, transform, **kwargs)
-    *matplotlib.transforms.TransformedBbox*
     Bases: |matplotlib.transforms.BboxBase|
 
     A |matplotlib.transforms.Bbox| that is automatically transformed by a
@@ -5788,17 +6180,20 @@ class matplotlib.transforms.TransformedBbox(bbox, transform, **kwargs)
         bbox |matplotlib.transforms.Bbox|
         transform |matplotlib.transforms.Transform|
 
-    contains(x, y) *matplotlib.transforms.TransformedBbox.contains*
+    contains(x, y)
+    *matplotlib.transforms.TransformedBbox.contains*
         Return whether `(x, y)` is in the bounding box or on its edge.
 
     fully_contains(x, y)
     *matplotlib.transforms.TransformedBbox.fully_contains*
         Return whether `x, y` is in the bounding box, but not on its edge.
 
-    get_points() *matplotlib.transforms.TransformedBbox.get_points*
+    get_points()
+    *matplotlib.transforms.TransformedBbox.get_points*
+
+                                  *matplotlib.transforms.TransformedPatchPath*
 
 class matplotlib.transforms.TransformedPatchPath(patch)
-    *matplotlib.transforms.TransformedPatchPath*
     Bases: |matplotlib.transforms.TransformedPath|
 
     A |matplotlib.transforms.TransformedPatchPath| caches a non-affine
@@ -5809,8 +6204,9 @@ class matplotlib.transforms.TransformedPatchPath(patch)
     Parameters: ~
         patch |matplotlib.patches.Patch|
 
+                                       *matplotlib.transforms.TransformedPath*
+
 class matplotlib.transforms.TransformedPath(path, transform)
-    *matplotlib.transforms.TransformedPath*
     Bases: |matplotlib.transforms.TransformNode|
 
     A |matplotlib.transforms.TransformedPath| caches a non-affine
@@ -5826,7 +6222,8 @@ class matplotlib.transforms.TransformedPath(path, transform)
         path |matplotlib.path.Path|
         transform |matplotlib.transforms.Transform|
 
-    get_affine() *matplotlib.transforms.TransformedPath.get_affine*
+    get_affine()
+    *matplotlib.transforms.TransformedPath.get_affine*
 
     get_fully_transformed_path()
     *matplotlib.transforms.TransformedPath.get_fully_transformed_path*
@@ -5846,16 +6243,18 @@ class matplotlib.transforms.TransformedPath(path, transform)
         |matplotlib.transforms.TransformedPath.get_transformed_path_and_affine|,
         no interpolation will be performed.
 
+                             *matplotlib.transforms.blended_transform_factory*
+
 matplotlib.transforms.blended_transform_factory(x_transform, y_transform)
-    *matplotlib.transforms.blended_transform_factory*
     Create a new "blended" transform using x_transform to transform the
     x-axis and y_transform to transform the y-axis.
 
     A faster version of the blended transform is returned for the case where
     both child transforms are affine.
 
+                           *matplotlib.transforms.composite_transform_factory*
+
 matplotlib.transforms.composite_transform_factory(a, b)
-    *matplotlib.transforms.composite_transform_factory*
     Create a new composite transform that is the result of applying
     transform a then transform b.
 
@@ -5869,8 +6268,9 @@ matplotlib.transforms.composite_transform_factory(a, b)
         c = a + b
 <
 
+                                     *matplotlib.transforms.interval_contains*
+
 matplotlib.transforms.interval_contains(interval, val)
-    *matplotlib.transforms.interval_contains*
     [Deprecated] Check, inclusively, whether an interval includes a given
     value.
 
@@ -5889,8 +6289,9 @@ matplotlib.transforms.interval_contains(interval, val)
 
       Deprecated since version 3.11.: ~
 
+                                *matplotlib.transforms.interval_contains_open*
+
 matplotlib.transforms.interval_contains_open(interval, val)
-    *matplotlib.transforms.interval_contains_open*
     [Deprecated] Check, excluding endpoints, whether an interval includes a
     given value.
 
@@ -6014,7 +6415,8 @@ class matplotlib.tri.Triangulation(x, y, triangles=None, mask=None)
         z-value at (x, y) position in triangle tri to be calculated using
         `z = array[tri, 0] * x + array[tri, 1] * y + array[tri, 2]`.
 
-    property edges *matplotlib.tri.Triangulation.edges*
+    property edges
+    *matplotlib.tri.Triangulation.edges*
         Return integer array of shape (nedges, 2) containing all edges of
         non-masked triangles.
 
@@ -6042,12 +6444,14 @@ class matplotlib.tri.Triangulation(x, y, triangles=None, mask=None)
     *matplotlib.tri.Triangulation.get_masked_triangles*
         Return an array of triangles taking the mask into account.
 
-    get_trifinder() *matplotlib.tri.Triangulation.get_trifinder*
+    get_trifinder()
+    *matplotlib.tri.Triangulation.get_trifinder*
         Return the default |matplotlib.tri.TriFinder| of this triangulation,
         creating it if necessary. This allows the same TriFinder object to
         be easily shared.
 
-    property neighbors *matplotlib.tri.Triangulation.neighbors*
+    property neighbors
+    *matplotlib.tri.Triangulation.neighbors*
         Return integer array of shape (ntri, 3) containing neighbor
         triangles.
 
@@ -6057,14 +6461,16 @@ class matplotlib.tri.Triangulation(x, y, triangles=None, mask=None)
         from point index `triangles[i, j]` to point index
         `triangles[i, (j+1)%3]`.
 
-    set_mask(mask) *matplotlib.tri.Triangulation.set_mask*
+    set_mask(mask)
+    *matplotlib.tri.Triangulation.set_mask*
         Set or clear the mask array.
 
         Parameters: ~
             mask None or bool array of length ntri
 
+                                                *matplotlib.tri.TriContourSet*
+
 class matplotlib.tri.TriContourSet(ax, *args, **kwargs)
-    *matplotlib.tri.TriContourSet*
     Bases: |matplotlib.contour.ContourSet|
 
     Create and store a set of contour lines or filled regions for a
@@ -6123,57 +6529,63 @@ class matplotlib.tri.TriContourSet(ax, *args, **kwargs)
 
         Supported properties are
 
-          Property                            Description
-          ----------------------------------  ------------------------------------------
-          agg_filter                          a filter function, which takes a (m, n, 3)
-                                              float array and a dpi value, and returns a
-                                              (m, n, 3) array and two offsets from the
-                                              bottom left corner of the image
-          alpha                               array-like or float or None
-          animated                            bool
-          antialiased or aa or antialiaseds   bool or list of bools
-          array                               array-like or None
-          capstyle                            CapStyle or {'butt', 'projecting',
-                                              'round'}
-          clim                                (vmin: float, vmax: float)
-          clip_box                            BboxBase or None
-          clip_on                             bool
-          clip_path                           Patch or (Path, Transform) or None
-          cmap                                Colormap or str or None
-          color                               color or list of RGBA tuples
-          edgecolor or ec or edgecolors       color or list of color or 'face'
-          facecolor or facecolors or fc       color or list of color
-          figure                              Figure or SubFigure
-          gid                                 str
-          hatch                               {'/', '\', '|', '-', '+', 'x', 'o', 'O',
-                                              '.', '*'}
-          hatch_linewidth                     unknown
-          hatchcolor                          color or list of color or 'edge'
-          in_layout                           bool
-          joinstyle                           JoinStyle or {'miter', 'round', 'bevel'}
-          label                               object
-          linestyle or dashes or linestyles   {'-', '--', '-.', ':', '', ...} or
-          or ls                               (offset, on-off-seq) or list thereof
-          linewidth or linewidths or lw       float or list of floats
-          mouseover                           bool
-          norm                                Normalize or str or None
-          offset_transform or transOffset     Transform
-          offsets                             (N, 2) or (2,) array-like
-          path_effects                        list of AbstractPathEffect
-          paths                               unknown
-          picker                              None or bool or float or callable
-          pickradius                          float
-          rasterized                          bool
-          sketch_params                       (scale: float, length: float, randomness:
-                                              float)
-          snap                                bool or None
-          transform                           Transform
-          url                                 str
-          urls                                list of str or None
-          visible                             bool
-          zorder                              float
+          Property                           Description
+          ---------------------------------  ---------------------------------
+          agg_filter                         a filter function, which takes a
+                                             (m, n, 3) float array and a dpi
+                                             value, and returns a (m, n, 3)
+                                             array and two offsets from the
+                                             bottom left corner of the image
+          alpha                              array-like or float or None
+          animated                           bool
+          antialiased or aa or antialiaseds  bool or list of bools
+          array                              array-like or None
+          capstyle                           CapStyle or {'butt',
+                                             'projecting', 'round'}
+          clim                               (vmin: float, vmax: float)
+          clip_box                           BboxBase or None
+          clip_on                            bool
+          clip_path                          Patch or (Path, Transform) or
+                                             None
+          cmap                               Colormap or str or None
+          color                              color or list of RGBA tuples
+          edgecolor or ec or edgecolors      color or list of color or 'face'
+          facecolor or facecolors or fc      color or list of color
+          figure                             Figure or SubFigure
+          gid                                str
+          hatch                              {'/', '\', '|', '-', '+', 'x',
+                                             'o', 'O', '.', '*'}
+          hatch_linewidth                    unknown
+          hatchcolor                         color or list of color or 'edge'
+          in_layout                          bool
+          joinstyle                          JoinStyle or {'miter', 'round',
+                                             'bevel'}
+          label                              object
+          linestyle or dashes or linestyles  {'-', '--', '-.', ':', '', ...}
+          or ls                              or (offset, on-off-seq) or list
+                                             thereof
+          linewidth or linewidths or lw      float or list of floats
+          mouseover                          bool
+          norm                               Normalize or str or None
+          offset_transform or transOffset    Transform
+          offsets                            (N, 2) or (2,) array-like
+          path_effects                       list of AbstractPathEffect
+          paths                              unknown
+          picker                             None or bool or float or callable
+          pickradius                         float
+          rasterized                         bool
+          sketch_params                      (scale: float, length: float,
+                                             randomness: float)
+          snap                               bool or None
+          transform                          Transform
+          url                                str
+          urls                               list of str or None
+          visible                            bool
+          zorder                             float
 
-class matplotlib.tri.TriFinder(triangulation)  *matplotlib.tri.TriFinder*
+                                                    *matplotlib.tri.TriFinder*
+
+class matplotlib.tri.TriFinder(triangulation)
     Abstract base class for classes used to find the triangles of a
     Triangulation in which (x, y) points lie.
 
@@ -6184,8 +6596,9 @@ class matplotlib.tri.TriFinder(triangulation)  *matplotlib.tri.TriFinder*
     Derived classes implement __call__(x, y) where x and y are array-like
     point coordinates of the same shape.
 
+                                        *matplotlib.tri.TrapezoidMapTriFinder*
+
 class matplotlib.tri.TrapezoidMapTriFinder(triangulation)
-    *matplotlib.tri.TrapezoidMapTriFinder*
     Bases: |matplotlib.tri.TriFinder|
 
     |matplotlib.tri.TriFinder| class implemented using the trapezoid map
@@ -6198,8 +6611,9 @@ class matplotlib.tri.TrapezoidMapTriFinder(triangulation)
     algorithm has some tolerance to triangles formed from colinear points,
     but this should not be relied upon.
 
+                                              *matplotlib.tri.TriInterpolator*
+
 class matplotlib.tri.TriInterpolator(triangulation, z, trifinder=None)
-    *matplotlib.tri.TriInterpolator*
     Abstract base class for classes used to interpolate on a triangular
     grid.
 
@@ -6213,8 +6627,9 @@ class matplotlib.tri.TriInterpolator(triangulation, z, trifinder=None)
       shape containing the 2 derivatives of the interpolator (derivatives of
       interpolated z values with respect to x and y).
 
+                                        *matplotlib.tri.LinearTriInterpolator*
+
 class matplotlib.tri.LinearTriInterpolator(triangulation, z, trifinder=None)
-    *matplotlib.tri.LinearTriInterpolator*
     Bases: |matplotlib.tri.TriInterpolator|
 
     Linear interpolator on a triangular grid.
@@ -6239,10 +6654,11 @@ class matplotlib.tri.LinearTriInterpolator(triangulation, z, trifinder=None)
 
     Methods: ~
 
-    `__call__` (x, y)   (Returns interpolated values at (x, y) points.)
-    `gradient` (x, y)   (Returns interpolated derivatives at (x, y) points.)
+    `__call__` (x, y)  (Returns interpolated values at (x, y) points.)
+    `gradient` (x, y)  (Returns interpolated derivatives at (x, y) points.)
 
-    gradient(x, y) *matplotlib.tri.LinearTriInterpolator.gradient*
+    gradient(x, y)
+    *matplotlib.tri.LinearTriInterpolator.gradient*
         Returns a list of 2 masked arrays containing interpolated
         derivatives at the specified (x, y) points.
 
@@ -6309,8 +6725,8 @@ class matplotlib.tri.CubicTriInterpolator(triangulation, z, kind='min_E',
 
     Methods: ~
 
-    `__call__` (x, y)   (Returns interpolated values at (x, y) points.)
-    `gradient` (x, y)   (Returns interpolated derivatives at (x, y) points.)
+    `__call__` (x, y)  (Returns interpolated values at (x, y) points.)
+    `gradient` (x, y)  (Returns interpolated derivatives at (x, y) points.)
 
     Notes: ~
 
@@ -6351,7 +6767,8 @@ class matplotlib.tri.CubicTriInterpolator(triangulation, z, kind='min_E',
     [|api-tri_api-id2|]
     C.T. Kelley, "Iterative Methods for Optimization".
 
-    gradient(x, y) *matplotlib.tri.CubicTriInterpolator.gradient*
+    gradient(x, y)
+    *matplotlib.tri.CubicTriInterpolator.gradient*
         Returns a list of 2 masked arrays containing interpolated
         derivatives at the specified (x, y) points.
 
@@ -6368,7 +6785,9 @@ class matplotlib.tri.CubicTriInterpolator(triangulation, z, kind='min_E',
                 of `\(\frac{\partial z}{\partial x}\)` and the second those
                 of `\(\frac{\partial z}{\partial y}\)`.
 
-class matplotlib.tri.TriRefiner(triangulation)  *matplotlib.tri.TriRefiner*
+                                                   *matplotlib.tri.TriRefiner*
+
+class matplotlib.tri.TriRefiner(triangulation)
     Abstract base class for classes implementing mesh refinement.
 
     A TriRefiner encapsulates a Triangulation object and provides tools for
@@ -6396,8 +6815,9 @@ class matplotlib.tri.TriRefiner(triangulation)  *matplotlib.tri.TriRefiner*
       and which returns (as a tuple) a refined triangular mesh and the
       interpolated values of the field at the refined triangulation nodes.
 
+                                            *matplotlib.tri.UniformTriRefiner*
+
 class matplotlib.tri.UniformTriRefiner(triangulation)
-    *matplotlib.tri.UniformTriRefiner*
     Bases: |matplotlib.tri.TriRefiner|
 
     Uniform mesh refinement by recursive subdivisions.
@@ -6461,7 +6881,9 @@ class matplotlib.tri.UniformTriRefiner(triangulation)
                 each point of refi_triangulation. Returned only if
                 return_tri_index is set to True.
 
-class matplotlib.tri.TriAnalyzer(triangulation)  *matplotlib.tri.TriAnalyzer*
+                                                  *matplotlib.tri.TriAnalyzer*
+
+class matplotlib.tri.TriAnalyzer(triangulation)
     Define basic tools for triangular mesh analysis and improvement.
 
     A TriAnalyzer encapsulates a |matplotlib.tri.Triangulation| object and
@@ -6475,7 +6897,8 @@ class matplotlib.tri.TriAnalyzer(triangulation)  *matplotlib.tri.TriAnalyzer*
         |matplotlib.tri.TriAnalyzer.scale_factors|
             Factors to rescale the triangulation into a unit square.
 
-    circle_ratios(rescale=True) *matplotlib.tri.TriAnalyzer.circle_ratios*
+    circle_ratios(rescale=True)
+    *matplotlib.tri.TriAnalyzer.circle_ratios*
         Return a measure of the triangulation triangles flatness.
 
         The ratio of the incircle radius over the circumcircle radius is a
@@ -6545,7 +6968,8 @@ class matplotlib.tri.TriAnalyzer(triangulation)  *matplotlib.tri.TriAnalyzer*
         triangles with a circle ratio below min_circle_ratio, thus improving
         the mesh quality for subsequent plots or interpolation.
 
-    property scale_factors *matplotlib.tri.TriAnalyzer.scale_factors*
+    property scale_factors
+    *matplotlib.tri.TriAnalyzer.scale_factors*
         Factors to rescale the triangulation into a unit square.
 
         Returns: ~

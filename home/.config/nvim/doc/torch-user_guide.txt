@@ -831,7 +831,7 @@ COMMON ERROR PATTERN
 The following output shows the common error pattern
 `GuardOnDataDependentSymNode` errors:
 
->sh
+>bash
     torch.fx.experimental.symbolic_shapes.GuardOnDataDependentSymNode: Could not guard on data-dependent expression Eq(u2, -1) (unhinted: Eq(u2, -1)).  (Size-like symbols: none)
 
     Potential framework code culprit (scroll up for full backtrace):
@@ -882,7 +882,7 @@ The exception provides a backtrace, which often indicates the problem. Given
 that PT2 backtraces can be lengthy, the error message will also suggest a
 potential framework culprit. For example:
 
->sh
+>bash
     Potential framework code culprit (scroll up for full backtrace):
       File "/data/users/ezyang/a/pytorch/torch/_prims_common/__init__.py", line 855, in infer_size
         if d == -1:
@@ -933,14 +933,14 @@ Using `TORCH_LOGS=dynamic` and examining the user stack trace is crucial for
 understanding how to fix the problem, as they guide you on how to modify the
 user program.
 
->sh
+>bash
     [INFO] create_unbacked_symint u0 [-9223372036854775808, 9223372036854775807] (w.py:40 in custom_op_meta)
 <
 This log message indicates where (`w.py:40`) the unbacked `SymInt` was
 allocated. An unbacked `SymInt` may be allocated multiple times, so track
 their equalities:
 
->sh
+>bash
     [INFO] set_replacement u1 = u0 (trivial_lhs) ValueRanges(lower=0, upper=9223372036854775807, is_bool=False)
 <
 
@@ -1055,7 +1055,9 @@ By asserting `torch._check(i > 4)`, the symbolic reasoning system learns
 that `i > 4` is always `True`, allowing the branch to be resolved without
 error. The else branch becomes dead code from the compiler's perspective.
 
-torch._check(cond, msg_fn)  *torch_compiler-compile-dynamic_shapes_troubleshooting_guardon_errors-torch-check-cond-msg-fn*
+*torch_compiler-compile-dynamic_shapes_troubleshooting_guardon_errors-torch-check-cond-msg-fn*
+
+torch._check(cond, msg_fn)
 
 `torch._check` is a function used to assert conditions at runtime,
 particularly when dealing with symbolic integers (`SymInts`) in PyTorch.
@@ -2035,44 +2037,55 @@ SUMMARY OF `fullgraph=True/False` VS `error_on_graph_break`
 Here is a table summarizing the differences between `fullgraph=True/False`
 and `error_on_graph_break`:
 
-                 error_on_graph_break=True       error_on_graph_break=False
-                                                 (default)
----------------  ------------------------------  -----------------------------
-fullgraph=True   Graph breaks result in errors.  Same as fullgraph=True and
-                 Only the first graph break      error_on_graph_break=True as
-                 will be reported. One graph     error_on_graph_break has no
-                 guarantee.fullgraph cannot be   effect when fullgraph=True.
-                 toggled to False.
-                 error_on_graph_break has no
-                 effect.User code must be fully
-                 compatible with torch.compile.
-                 Guarantees no performance hits
-                 from graph breaks (because
-                 there are no graph
-                 breaks).Ideal for code
-                 sensitive to graph breaks:
-                 framework/library code or
-                 cases where getting maximum
-                 performance is required.
-                 Prevents downstream user code
-                 from inadvertently allowing
-                 graph breaks.
-fullgraph=False  Graph breaks result in errors.  Will continue to compile
-(default)        Only the first graph break      after encountering graph
-                 will be reported. No one graph  breaks. All graph breaks will
-                 guarantee.error_on_graph_break  be
-                 can be toggled to False.User    reported.error_on_graph_break
-                 code must be fully compatible   can be toggled to
-                 with torch.compile. Guarantees  True.Doesn't require many
-                 no performance hits from graph  user code changes to work.
-                 breaks (because there are no    Performance may be negatively
-                 graph breaks).Ideal for user    impacted due to graph
-                 code sensitive to graph         breaks.Ideal for
-                 breaks. error_on_graph_break    out-of-the-box use cases, on
-                 can be toggled to False to      “non-weird” code, or where
-                 deal with sections that have    squeezing maximal performance
-                 graph breaks that are           is not necessary
-                 difficult to work around.
+                          error_on_graph_break=True  error_on_graph_break=
+                                                     False
+                                                     (default)
+------------------------  -------------------------  -------------------------
+fullgraph=True            Graph breaks result in     Same as fullgraph=True
+                          errors. Only the first     and
+                          graph break will be        error_on_graph_break=True
+                          reported. One graph        as error_on_graph_break
+                          guarantee. fullgraph       has no effect when
+                          cannot be toggled to       fullgraph=True.
+                          False.
+                          error_on_graph_break has
+                          no effect. User code must
+                          be fully compatible with
+                          torch.compile. Guarantees
+                          no performance hits from
+                          graph breaks (because
+                          there are no graph
+                          breaks). Ideal for code
+                          sensitive to graph
+                          breaks: framework/library
+                          code or cases where
+                          getting maximum
+                          performance is required.
+                          Prevents downstream user
+                          code from inadvertently
+                          allowing graph breaks.
+fullgraph=False           Graph breaks result in     Will continue to compile
+(default)                 errors. Only the first     after encountering graph
+                          graph break will be        breaks. All graph breaks
+                          reported. No one graph     will be reported.
+                          guarantee.                 error_on_graph_break can
+                          error_on_graph_break can   be toggled to True.
+                          be toggled to False. User  Doesn't require many user
+                          code must be fully         code changes to work.
+                          compatible with            Performance may be
+                          torch.compile. Guarantees  negatively impacted due
+                          no performance hits from   to graph breaks. Ideal
+                          graph breaks (because      for out-of-the-box use
+                          there are no graph         cases, on “non-weird”
+                          breaks). Ideal for user    code, or where squeezing
+                          code sensitive to graph    maximal performance is
+                          breaks.                    not necessary
+                          error_on_graph_break can
+                          be toggled to False to
+                          deal with sections that
+                          have graph breaks that
+                          are difficult to work
+                          around.
 
 fullgraph=False">
 
@@ -4426,7 +4439,7 @@ specify all the possible inputs used to trace the program, and
 `AdditionalInputs` will infer which inputs are dynamic based on which input
 shapes are changing.
 
-Example:
+Example: ~
 
 >python
     import dataclasses
@@ -4489,18 +4502,19 @@ ATen operators https://pytorch.org/cppdocs/#aten, which are the basic unit
 of computation in PyTorch. Export provides different IR levels based on your
 use case:
 
-IR Type    How to Obtain                         Properties   Operator  Use Case
-                                                              Count
----------  ------------------------------------  -----------  --------  ----------
-Training   torch.export.export() (default)       May contain  ~3000     Training
-IR                                               mutations              with
-                                                                        autograd
-Inference  ep.run_decompositions(decomp_table={})  Purely       ~2000     Inference
-IR                                               functional             deployment
-Core ATen  ep.run_decompositions(decomp_table=None)  Purely       ~180      Minimal
-IR                                               functional,            backend
-                                                 highly                 support
-                                                 decomposed
+IR Type       How to Obtain           Properties    Operator      Use Case
+                                                    Count
+------------  ----------------------  ------------  ------------  ------------
+Training IR   torch.export.export()   May contain   ~3000         Training
+              (default)               mutations                   with
+                                                                  autograd
+Inference IR  ep.run_                 Purely        ~2000         Inference
+              decompositions(decomp_  functional                  deployment
+              table={})
+Core ATen IR  ep.run_                 Purely        ~180          Minimal
+              decompositions(decomp_  functional,                 backend
+              table=None)             highly                      support
+                                      decomposed
 
 Training IR (Default)   *user_guide-torch_compiler-export-training-ir-default*
 
@@ -4833,7 +4847,7 @@ torch.export.export(mod, args, kwargs=None, *, dynamic_shapes=None,
             dynamic dim, yielding a graph that is not valid for all the
             inputs).
 
-          Example:
+          Example: ~
 
           >python
               batch = ShapeVar("batch", min=2, max=128)
@@ -4906,7 +4920,9 @@ class torch.export.ExportedProgram(root, graph, graph_signature, state_dict,
     rewrite the graph. Afterwards, you can simply use |torch.export.export|
     again to construct a correct ExportedProgram.
 
-buffers()  *torch.export.ExportedProgram.buffers*
+                                        *torch.export.ExportedProgram.buffers*
+
+buffers()
     Returns an iterator over original module buffers.
 
       Warning: ~
@@ -4917,42 +4933,58 @@ buffers()  *torch.export.ExportedProgram.buffers*
         Iterator
         https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator[|torch.Tensor|]
 
-property call_spec *torch.export.ExportedProgram.call_spec*
+                                      *torch.export.ExportedProgram.call_spec*
+
+property call_spec
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-property constants *torch.export.ExportedProgram.constants*
+                                      *torch.export.ExportedProgram.constants*
+
+property constants
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-property dialect : str *torch.export.ExportedProgram.dialect*
+                                        *torch.export.ExportedProgram.dialect*
+
+property dialect : str
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-property example_inputs *torch.export.ExportedProgram.example_inputs*
+                                 *torch.export.ExportedProgram.example_inputs*
+
+property example_inputs
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-property graph *torch.export.ExportedProgram.graph*
+                                          *torch.export.ExportedProgram.graph*
+
+property graph
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-property graph_module *torch.export.ExportedProgram.graph_module*
+                                   *torch.export.ExportedProgram.graph_module*
+
+property graph_module
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-property graph_signature *torch.export.ExportedProgram.graph_signature*
+                                *torch.export.ExportedProgram.graph_signature*
+
+property graph_signature
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-module(check_guards=True)  *torch.export.ExportedProgram.module*
+                                         *torch.export.ExportedProgram.module*
+
+module(check_guards=True)
     Returns a self contained GraphModule with all the parameters/buffers
     inlined.
 
@@ -4966,12 +4998,16 @@ module(check_guards=True)  *torch.export.ExportedProgram.module*
     Return type: ~
         |torch.fx.GraphModule|
 
-property module_call_graph *torch.export.ExportedProgram.module_call_graph*
+                              *torch.export.ExportedProgram.module_call_graph*
+
+property module_call_graph
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-named_buffers()  *torch.export.ExportedProgram.named_buffers*
+                                  *torch.export.ExportedProgram.named_buffers*
+
+named_buffers()
     Returns an iterator over original module buffers, yielding both the name
     of the buffer as well as the buffer itself.
 
@@ -4984,7 +5020,9 @@ named_buffers()  *torch.export.ExportedProgram.named_buffers*
         https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator[tuple[str,
         |torch.Tensor|]]
 
-named_parameters()  *torch.export.ExportedProgram.named_parameters*
+                               *torch.export.ExportedProgram.named_parameters*
+
+named_parameters()
     Returns an iterator over original module parameters, yielding both the
     name of the parameter as well as the parameter itself.
 
@@ -4997,7 +5035,9 @@ named_parameters()  *torch.export.ExportedProgram.named_parameters*
         https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator[tuple[str,
         |torch.nn.parameter.Parameter|]]
 
-parameters()  *torch.export.ExportedProgram.parameters*
+                                     *torch.export.ExportedProgram.parameters*
+
+parameters()
     Returns an iterator over original module's parameters.
 
       Warning: ~
@@ -5008,13 +5048,16 @@ parameters()  *torch.export.ExportedProgram.parameters*
         Iterator
         https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator[|torch.nn.parameter.Parameter|]
 
-property range_constraints *torch.export.ExportedProgram.range_constraints*
+                              *torch.export.ExportedProgram.range_constraints*
+
+property range_constraints
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
+                             *torch.export.ExportedProgram.run_decompositions*
+
 run_decompositions(decomp_table=None, decompose_custom_triton_ops=False)
-    *torch.export.ExportedProgram.run_decompositions*
     Run a set of decompositions on the exported program and returns a new
     exported program. By default we will run the Core ATen decompositions to
     get operators in the Core ATen Operator Set
@@ -5049,27 +5092,37 @@ run_decompositions(decomp_table=None, decompose_custom_triton_ops=False)
         ep = ep.run_decompositions(decomp_table=decomp_table)
 <
 
-property state_dict *torch.export.ExportedProgram.state_dict*
+                                     *torch.export.ExportedProgram.state_dict*
+
+property state_dict
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-property tensor_constants *torch.export.ExportedProgram.tensor_constants*
+                               *torch.export.ExportedProgram.tensor_constants*
+
+property tensor_constants
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-validate()  *torch.export.ExportedProgram.validate*
+                                       *torch.export.ExportedProgram.validate*
+
+validate()
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-property verifier : Any *torch.export.ExportedProgram.verifier*
+                                       *torch.export.ExportedProgram.verifier*
+
+property verifier : Any
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
 
-property verifiers *torch.export.ExportedProgram.verifiers*
+                                      *torch.export.ExportedProgram.verifiers*
+
+property verifiers
       Warning: ~
 
       This API is experimental and is NOT backward-compatible.
@@ -5093,7 +5146,7 @@ class torch.export.dynamic_shapes.AdditionalInputs
     valid for the exported program. This guarantees that tracing with them
     instead of the original would have generated the same graph.
 
-    Example:
+    Example: ~
 
     >python
         args0, kwargs0 = ...  # example inputs for export
@@ -5117,12 +5170,14 @@ class torch.export.dynamic_shapes.AdditionalInputs
         structure by merging shapes of the original input `args()` and
         `kwargs()` and of each additional input args and kwargs.
 
-    verify(ep) *torch.export.dynamic_shapes.AdditionalInputs.verify*
+    verify(ep)
+    *torch.export.dynamic_shapes.AdditionalInputs.verify*
         Verifies that an exported program is valid for each additional
         input.
 
+                                             *torch.export.dynamic_shapes.Dim*
+
 class torch.export.dynamic_shapes.Dim(name, *, min=None, max=None)
-    *torch.export.dynamic_shapes.Dim*
     The `Dim` class allows users to specify dynamism in their exported
     programs. By marking a dimension with a `Dim`, the compiler associates
     the dimension with a symbolic integer containing a dynamic range.
@@ -5137,7 +5192,7 @@ class torch.export.dynamic_shapes.Dim(name, *, min=None, max=None)
     automatically infer the remaining constraints on min/max ranges and
     relationships between dimensions.
 
-    Example:
+    Example: ~
 
     >python
         class Foo(nn.Module):
@@ -5207,7 +5262,7 @@ class torch.export.dynamic_shapes.ShapesCollection
     |torch.export.dynamic_shapes.ShapesCollection.dynamic_shapes|
     specification.
 
-    Example:
+    Example: ~
 
     >python
         args = {"x": tensor_x, "others": [tensor_y, tensor_z]}
@@ -5225,7 +5280,7 @@ class torch.export.dynamic_shapes.ShapesCollection
     using _IntWrapper so that we have a “unique identification tag” for each
     integer.
 
-    Example:
+    Example: ~
 
     >python
         args = {"x": tensor_x, "others": [int_x, int_y]}
@@ -5247,8 +5302,9 @@ class torch.export.dynamic_shapes.ShapesCollection
         |torch.export.dynamic_shapes.ShapesCollection.dynamic_shapes| pytree
         structure according to `args()` and `kwargs()`.
 
+                                            *torch.export.dynamic_shapes.dims*
+
 torch.export.dynamic_shapes.dims(*names, min=None, max=None)
-    *torch.export.dynamic_shapes.dims*
     Util to create multiple |torch.export.dynamic_shapes.Dim| types.
 
     Returns: ~
@@ -5257,9 +5313,10 @@ torch.export.dynamic_shapes.dims(*names, min=None, max=None)
     Return type: ~
         tuple[|torch.export.dynamic_shapes.Dim|, ...]
 
+      *torch.export.dynamic_shapes.refine_dynamic_shapes_from_suggested_fixes*
+
 torch.export.dynamic_shapes.refine_dynamic_shapes_from_suggested_fixes(msg,
     dynamic_shapes)
-    *torch.export.dynamic_shapes.refine_dynamic_shapes_from_suggested_fixes*
     When exporting with `dynamic_shapes()`, export may fail with a
     ConstraintViolation error if the specification doesn't match the
     constraints inferred from tracing the model. The error message may
@@ -5318,7 +5375,7 @@ torch.export.save(ep, f, *, extra_files=None, opset_version=None,
         - pickle_protocol (int) -- can be specified to override the default
           protocol
 
-    Example:
+    Example: ~
 
     >python
         import torch
@@ -5344,8 +5401,9 @@ torch.export.save(ep, f, *, extra_files=None, opset_version=None,
         torch.export.save(ep, "exported_program.pt2", extra_files=extra_files)
 <
 
+                                                           *torch.export.load*
+
 torch.export.load(f, *, extra_files=None, expected_opset_version=None)
-    *torch.export.load*
       Warning: ~
 
       Under active development, saved files may not be usable in newer
@@ -5376,7 +5434,7 @@ torch.export.load(f, *, extra_files=None, expected_opset_version=None)
     Return type: ~
         |torch.export.ExportedProgram|
 
-    Example:
+    Example: ~
 
     >python
         import torch
@@ -5436,10 +5494,11 @@ torch.export.pt2_archive._package.package_pt2(f, *, exported_programs=None,
         https://docs.python.org/3/library/os.html#os.PathLike[str] | IO
         https://docs.python.org/3/library/typing.html#typing.IO[bytes]
 
+                                  *torch.export.pt2_archive._package.load_pt2*
+
 torch.export.pt2_archive._package.load_pt2(f, *,
     expected_opset_version=None, run_single_threaded=False, num_runners=1,
     device_index=-1, load_weights_from_disk=False, use_stream_affinity=False)
-    *torch.export.pt2_archive._package.load_pt2*
     Loads all the artifacts previously saved with `package_pt2`.
 
     Parameters: ~
@@ -5470,10 +5529,11 @@ torch.export.pt2_archive._package.load_pt2(f, *,
     Return type: ~
         PT2ArchiveContents
 
+                                                   *torch.export.draft_export*
+
 torch.export.draft_export(mod, args, kwargs=None, *, dynamic_shapes=None,
     preserve_module_call_signature=(), strict=False,
     prefer_deferred_runtime_asserts_over_guards=False)
-    *torch.export.draft_export*
     A version of torch.export.export which is designed to consistently
     produce an ExportedProgram, even if there are potential soundness
     issues, and to generate a report listing the issues found.
@@ -5499,8 +5559,9 @@ class torch.export.unflatten.FlatArgsAdapter
         Return type: ~
             list[str]
 
+                                    *torch.export.unflatten.InterpreterModule*
+
 class torch.export.unflatten.InterpreterModule(graph, ty=None)
-    *torch.export.unflatten.InterpreterModule*
     A module that uses torch.fx.Interpreter to execute instead of the usual
     codegen that GraphModule uses. This provides better stack trace
     information and makes it easier to debug execution.
@@ -5512,8 +5573,9 @@ class torch.export.unflatten.InterpreterModuleDispatcher(attrs,
     a sequence of calls of that module. Each call to the module dispatches
     to the next InterpreterModule, and wraps back around after the last.
 
+                                            *torch.export.unflatten.unflatten*
+
 torch.export.unflatten.unflatten(module, flat_args_adapter=None)
-    *torch.export.unflatten.unflatten*
     Unflatten an ExportedProgram, producing a module with the same module
     hierarchy as the original eager module. This can be useful if you are
     trying to use |torch_compiler-export-api_reference-module-torch.export|
@@ -5543,8 +5605,9 @@ torch.export.unflatten.unflatten(module, flat_args_adapter=None)
     Return type: ~
         UnflattenedModule
 
+                                             *torch.export.register_dataclass*
+
 torch.export.register_dataclass(cls, *, serialized_type_name=None)
-    *torch.export.register_dataclass*
     Registers a dataclass as a valid input/output type for
     |torch.export.export|.
 
@@ -5558,7 +5621,7 @@ torch.export.register_dataclass(cls, *, serialized_type_name=None)
           containing) --
         - dataclass. --
 
-    Example:
+    Example: ~
 
     >python
         import torch
@@ -5609,24 +5672,37 @@ class torch.export.decomp_utils.CustomDecompTable
     4. We load the final time during export, right before calling
        run_decompositions()
 
-copy()  *torch.export.decomp_utils.CustomDecompTable.copy*
+                            *torch.export.decomp_utils.CustomDecompTable.copy*
+
+copy()
     Return type: ~
         |torch.export.decomp_utils.CustomDecompTable|
 
-items()  *torch.export.decomp_utils.CustomDecompTable.items*
+                           *torch.export.decomp_utils.CustomDecompTable.items*
 
-keys()  *torch.export.decomp_utils.CustomDecompTable.keys*
+items()
 
-materialize()  *torch.export.decomp_utils.CustomDecompTable.materialize*
+                            *torch.export.decomp_utils.CustomDecompTable.keys*
+
+keys()
+
+                     *torch.export.decomp_utils.CustomDecompTable.materialize*
+
+materialize()
     Return type: ~
         dict[OperatorBase, Callable]
 
-pop(*args)  *torch.export.decomp_utils.CustomDecompTable.pop*
+                             *torch.export.decomp_utils.CustomDecompTable.pop*
 
-update(other_dict)  *torch.export.decomp_utils.CustomDecompTable.update*
+pop(*args)
+
+                          *torch.export.decomp_utils.CustomDecompTable.update*
+
+update(other_dict)
+
+                                     *torch.export.passes.move_to_device_pass*
 
 torch.export.passes.move_to_device_pass(ep, location)
-    *torch.export.passes.move_to_device_pass*
     Move the exported program to the given device.
 
     Parameters: ~
@@ -5643,87 +5719,109 @@ torch.export.passes.move_to_device_pass(ep, location)
     Return type: ~
         |torch.export.ExportedProgram|
 
+                                   *torch.export.pt2_archive.PT2ArchiveReader*
+
 class torch.export.pt2_archive.PT2ArchiveReader(archive_path_or_buffer)
-    *torch.export.pt2_archive.PT2ArchiveReader*
     Context manager for reading a PT2 archive.
 
+                   *torch.export.pt2_archive.PT2ArchiveReader.archive_version*
+
 archive_version()
-    *torch.export.pt2_archive.PT2ArchiveReader.archive_version*
     Get the archive version.
 
     Return type: ~
         int
 
-get_file_names()  *torch.export.pt2_archive.PT2ArchiveReader.get_file_names*
+                    *torch.export.pt2_archive.PT2ArchiveReader.get_file_names*
+
+get_file_names()
     Get the file names in the archive.
 
     Return type: ~
         list[str]
 
-read_bytes(name)  *torch.export.pt2_archive.PT2ArchiveReader.read_bytes*
+                        *torch.export.pt2_archive.PT2ArchiveReader.read_bytes*
+
+read_bytes(name)
     Read a bytes object from the archive. name: The source file inside the
     archive.
 
     Return type: ~
         bytes
 
-read_string(name)  *torch.export.pt2_archive.PT2ArchiveReader.read_string*
+                       *torch.export.pt2_archive.PT2ArchiveReader.read_string*
+
+read_string(name)
     Read a string object from the archive. name: The source file inside the
     archive.
 
     Return type: ~
         str
 
+                                   *torch.export.pt2_archive.PT2ArchiveWriter*
+
 class torch.export.pt2_archive.PT2ArchiveWriter(archive_path_or_buffer)
-    *torch.export.pt2_archive.PT2ArchiveWriter*
     Context manager for writing a PT2 archive.
 
-close()  *torch.export.pt2_archive.PT2ArchiveWriter.close*
+                             *torch.export.pt2_archive.PT2ArchiveWriter.close*
+
+close()
     Close the archive.
 
+                      *torch.export.pt2_archive.PT2ArchiveWriter.count_prefix*
+
 count_prefix(prefix)
-    *torch.export.pt2_archive.PT2ArchiveWriter.count_prefix*
     Count the number of records that start with a given prefix.
 
     Return type: ~
         int
 
-has_record(name)  *torch.export.pt2_archive.PT2ArchiveWriter.has_record*
+                        *torch.export.pt2_archive.PT2ArchiveWriter.has_record*
+
+has_record(name)
     Check if a record exists in the archive.
 
     Return type: ~
         bool
 
+                       *torch.export.pt2_archive.PT2ArchiveWriter.write_bytes*
+
 write_bytes(name, data)
-    *torch.export.pt2_archive.PT2ArchiveWriter.write_bytes*
     Write a bytes object to the archive. name: The destination file inside
     the archive. data: The bytes object to write.
 
+                        *torch.export.pt2_archive.PT2ArchiveWriter.write_file*
+
 write_file(name, file_path)
-    *torch.export.pt2_archive.PT2ArchiveWriter.write_file*
     Copy a file into the archive. name: The destination file inside the
     archive. file_path: The source file on disk.
 
+                      *torch.export.pt2_archive.PT2ArchiveWriter.write_folder*
+
 write_folder(archive_dir, folder_dir)
-    *torch.export.pt2_archive.PT2ArchiveWriter.write_folder*
     Copy a folder into the archive. archive_dir: The destination folder
     inside the archive. folder_dir: The source folder on disk.
 
+                      *torch.export.pt2_archive.PT2ArchiveWriter.write_string*
+
 write_string(name, data)
-    *torch.export.pt2_archive.PT2ArchiveWriter.write_string*
     Write a string object to the archive. name: The destination file inside
     the archive. data: The string object to write.
 
+                                     *torch.export.pt2_archive.is_pt2_package*
+
 torch.export.pt2_archive.is_pt2_package(serialized_model)
-    *torch.export.pt2_archive.is_pt2_package*
     Check if the serialized model is a PT2 Archive package.
 
     Return type: ~
         bool
 
+                               *torch.export.exported_program.ModuleCallEntry*
+
 class torch.export.exported_program.ModuleCallEntry(fqn: str, signature:
     |torch.export.exported_program.ModuleCallSignature| | None = None)
-    *torch.export.exported_program.ModuleCallEntry*
+
+                           *torch.export.exported_program.ModuleCallSignature*
 
 class torch.export.exported_program.ModuleCallSignature(inputs:
     list[|torch.export.graph_signature.TensorArgument| |
@@ -5742,10 +5840,10 @@ class torch.export.exported_program.ModuleCallSignature(inputs:
     |torch.export.graph_signature.TokenArgument|], in_spec:
     torch.utils._pytree.TreeSpec, out_spec: torch.utils._pytree.TreeSpec,
     forward_arg_names: list[str] | None = None)
-    *torch.export.exported_program.ModuleCallSignature*
+
+                        *torch.export.exported_program.default_decompositions*
 
 torch.export.exported_program.default_decompositions()
-    *torch.export.exported_program.default_decompositions*
     This is the default decomposition table which contains decomposition of
     all ATEN operators to core aten opset. Use this API together with
     `run_decompositions()`
@@ -5753,8 +5851,9 @@ torch.export.exported_program.default_decompositions()
     Return type: ~
         |torch.export.decomp_utils.CustomDecompTable|
 
+                                    *torch.export.custom_obj.ScriptObjectMeta*
+
 class torch.export.custom_obj.ScriptObjectMeta(constant_name, class_fqn)
-    *torch.export.custom_obj.ScriptObjectMeta*
     Metadata which is stored on nodes representing ScriptObjects.
 
                                *torch.export.graph_signature.ConstantArgument*
@@ -5778,10 +5877,11 @@ fake_val : FakeScriptObject | None = None
 
 name : str *torch.export.graph_signature.CustomObjArgument.name*
 
+                        *torch.export.graph_signature.ExportBackwardSignature*
+
 class
 torch.export.graph_signature.ExportBackwardSignature(gradients_to_parameters:
     dict[str, str], gradients_to_user_inputs: dict[str, str], loss_output: str)
-    *torch.export.graph_signature.ExportBackwardSignature*
 
 gradients_to_parameters : dict[str, str]
 *torch.export.graph_signature.ExportBackwardSignature.gradients_to_parameters*
@@ -5908,100 +6008,126 @@ class torch.export.graph_signature.ExportGraphSignature(input_specs,
         add_1: USER_OUTPUT
 <
 
+       *torch.export.graph_signature.ExportGraphSignature.assertion_dep_token*
+
 property assertion_dep_token : Mapping[int, str] | None
-*torch.export.graph_signature.ExportGraphSignature.assertion_dep_token*
+
+        *torch.export.graph_signature.ExportGraphSignature.backward_signature*
 
 property backward_signature :
 |torch.export.graph_signature.ExportBackwardSignature| | None
-*torch.export.graph_signature.ExportGraphSignature.backward_signature*
+
+                   *torch.export.graph_signature.ExportGraphSignature.buffers*
 
 property buffers : Collection
-https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
-*torch.export.graph_signature.ExportGraphSignature.buffers*
+    https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
+
+         *torch.export.graph_signature.ExportGraphSignature.buffers_to_mutate*
 
 property buffers_to_mutate : Mapping[str, str]
-*torch.export.graph_signature.ExportGraphSignature.buffers_to_mutate*
+
+          *torch.export.graph_signature.ExportGraphSignature.get_replace_hook*
 
 get_replace_hook(replace_inputs=False)
-    *torch.export.graph_signature.ExportGraphSignature.get_replace_hook*
 
 input_specs : list[|torch.export.graph_signature.InputSpec|]
 *torch.export.graph_signature.ExportGraphSignature.input_specs*
 
+              *torch.export.graph_signature.ExportGraphSignature.input_tokens*
+
 property input_tokens : Collection
-https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
-*torch.export.graph_signature.ExportGraphSignature.input_tokens*
+    https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
+
+         *torch.export.graph_signature.ExportGraphSignature.inputs_to_buffers*
 
 property inputs_to_buffers : Mapping[str, str]
-*torch.export.graph_signature.ExportGraphSignature.inputs_to_buffers*
 
-property inputs_to_lifted_custom_objs : Mapping[str, str]
 *torch.export.graph_signature.ExportGraphSignature.inputs_to_lifted_custom_objs*
 
-property inputs_to_lifted_tensor_constants : Mapping[str, str]
+property inputs_to_lifted_custom_objs : Mapping[str, str]
+
 *torch.export.graph_signature.ExportGraphSignature.inputs_to_lifted_tensor_constants*
 
+property inputs_to_lifted_tensor_constants : Mapping[str, str]
+
+      *torch.export.graph_signature.ExportGraphSignature.inputs_to_parameters*
+
 property inputs_to_parameters : Mapping[str, str]
-*torch.export.graph_signature.ExportGraphSignature.inputs_to_parameters*
+
+        *torch.export.graph_signature.ExportGraphSignature.lifted_custom_objs*
 
 property lifted_custom_objs : Collection
-https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
-*torch.export.graph_signature.ExportGraphSignature.lifted_custom_objs*
+    https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
+
+   *torch.export.graph_signature.ExportGraphSignature.lifted_tensor_constants*
 
 property lifted_tensor_constants : Collection
-https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
-*torch.export.graph_signature.ExportGraphSignature.lifted_tensor_constants*
+    https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
+
+    *torch.export.graph_signature.ExportGraphSignature.non_persistent_buffers*
 
 property non_persistent_buffers : Collection
-https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
-*torch.export.graph_signature.ExportGraphSignature.non_persistent_buffers*
+    https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
 
 output_specs : list[|torch.export.graph_signature.OutputSpec|]
 *torch.export.graph_signature.ExportGraphSignature.output_specs*
 
+             *torch.export.graph_signature.ExportGraphSignature.output_tokens*
+
 property output_tokens : Collection
-https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
-*torch.export.graph_signature.ExportGraphSignature.output_tokens*
+    https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
+
+                *torch.export.graph_signature.ExportGraphSignature.parameters*
 
 property parameters : Collection
-https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
-*torch.export.graph_signature.ExportGraphSignature.parameters*
+    https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[str]
+
+      *torch.export.graph_signature.ExportGraphSignature.parameters_to_mutate*
 
 property parameters_to_mutate : Mapping[str, str]
-*torch.export.graph_signature.ExportGraphSignature.parameters_to_mutate*
+
+          *torch.export.graph_signature.ExportGraphSignature.replace_all_uses*
 
 replace_all_uses(old, new)
-    *torch.export.graph_signature.ExportGraphSignature.replace_all_uses*
     Replace all uses of the old name with new name in the signature.
 
+               *torch.export.graph_signature.ExportGraphSignature.user_inputs*
+
 property user_inputs : Collection
-https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[int
-| float | bool | str | None]
-*torch.export.graph_signature.ExportGraphSignature.user_inputs*
+    https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[int
+    | float | bool | str | None]
+
+     *torch.export.graph_signature.ExportGraphSignature.user_inputs_to_mutate*
 
 property user_inputs_to_mutate : Mapping[str, str]
-*torch.export.graph_signature.ExportGraphSignature.user_inputs_to_mutate*
+
+              *torch.export.graph_signature.ExportGraphSignature.user_outputs*
 
 property user_outputs : Collection
-https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[int
-| float | bool | str | None]
-*torch.export.graph_signature.ExportGraphSignature.user_outputs*
+    https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection[int
+    | float | bool | str | None]
+
+                                      *torch.export.graph_signature.InputKind*
 
 class torch.export.graph_signature.InputKind(value, names=None, *,
     module=None, qualname=None, type=None, start=1, boundary=None)
-    *torch.export.graph_signature.InputKind*
-    BUFFER  = 3 *torch.export.graph_signature.InputKind.BUFFER*
+    BUFFER  = 3
+    *torch.export.graph_signature.InputKind.BUFFER*
 
     CONSTANT_TENSOR = 4
     *torch.export.graph_signature.InputKind.CONSTANT_TENSOR*
 
-    CUSTOM_OBJ  = 5 *torch.export.graph_signature.InputKind.CUSTOM_OBJ*
+    CUSTOM_OBJ  = 5
+    *torch.export.graph_signature.InputKind.CUSTOM_OBJ*
 
-    PARAMETER  = 2 *torch.export.graph_signature.InputKind.PARAMETER*
+    PARAMETER  = 2
+    *torch.export.graph_signature.InputKind.PARAMETER*
 
-    TOKEN  = 6 *torch.export.graph_signature.InputKind.TOKEN*
+    TOKEN  = 6
+    *torch.export.graph_signature.InputKind.TOKEN*
 
-    USER_INPUT  = 1 *torch.export.graph_signature.InputKind.USER_INPUT*
+    USER_INPUT  = 1
+    *torch.export.graph_signature.InputKind.USER_INPUT*
 
                                       *torch.export.graph_signature.InputSpec*
 class torch.export.graph_signature.InputSpec(kind:
@@ -6032,9 +6158,10 @@ persistent : bool | None = None
 
 target : str | None *torch.export.graph_signature.InputSpec.target*
 
+                                     *torch.export.graph_signature.OutputKind*
+
 class torch.export.graph_signature.OutputKind(value, names=None, *,
     module=None, qualname=None, type=None, start=1, boundary=None)
-    *torch.export.graph_signature.OutputKind*
     BUFFER_MUTATION = 3
     *torch.export.graph_signature.OutputKind.BUFFER_MUTATION*
 
@@ -6044,17 +6171,22 @@ class torch.export.graph_signature.OutputKind(value, names=None, *,
     GRADIENT_TO_USER_INPUT = 6
     *torch.export.graph_signature.OutputKind.GRADIENT_TO_USER_INPUT*
 
-    LOSS_OUTPUT  = 2 *torch.export.graph_signature.OutputKind.LOSS_OUTPUT*
+    LOSS_OUTPUT  = 2
+    *torch.export.graph_signature.OutputKind.LOSS_OUTPUT*
 
     PARAMETER_MUTATION = 4
     *torch.export.graph_signature.OutputKind.PARAMETER_MUTATION*
 
-    TOKEN  = 8 *torch.export.graph_signature.OutputKind.TOKEN*
+    TOKEN  = 8
+    *torch.export.graph_signature.OutputKind.TOKEN*
 
     USER_INPUT_MUTATION = 7
     *torch.export.graph_signature.OutputKind.USER_INPUT_MUTATION*
 
-    USER_OUTPUT  = 1 *torch.export.graph_signature.OutputKind.USER_OUTPUT*
+    USER_OUTPUT  = 1
+    *torch.export.graph_signature.OutputKind.USER_OUTPUT*
+
+                                     *torch.export.graph_signature.OutputSpec*
 
 class torch.export.graph_signature.OutputSpec(kind:
     |torch.export.graph_signature.OutputKind|, arg:
@@ -6065,7 +6197,6 @@ class torch.export.graph_signature.OutputSpec(kind:
     |torch.export.graph_signature.ConstantArgument| |
     |torch.export.graph_signature.CustomObjArgument| |
     |torch.export.graph_signature.TokenArgument|, target: str | None)
-    *torch.export.graph_signature.OutputSpec*
 
 arg : |torch.export.graph_signature.TensorArgument| |
 |torch.export.graph_signature.SymIntArgument| |
@@ -6081,28 +6212,33 @@ kind : |torch.export.graph_signature.OutputKind|
 
 target : str | None *torch.export.graph_signature.OutputSpec.target*
 
+                                *torch.export.graph_signature.SymBoolArgument*
+
 class torch.export.graph_signature.SymBoolArgument(name: str)
-    *torch.export.graph_signature.SymBoolArgument*
 
 name : str *torch.export.graph_signature.SymBoolArgument.name*
 
+                               *torch.export.graph_signature.SymFloatArgument*
+
 class torch.export.graph_signature.SymFloatArgument(name: str)
-    *torch.export.graph_signature.SymFloatArgument*
 
 name : str *torch.export.graph_signature.SymFloatArgument.name*
 
+                                 *torch.export.graph_signature.SymIntArgument*
+
 class torch.export.graph_signature.SymIntArgument(name: str)
-    *torch.export.graph_signature.SymIntArgument*
 
 name : str *torch.export.graph_signature.SymIntArgument.name*
 
+                                 *torch.export.graph_signature.TensorArgument*
+
 class torch.export.graph_signature.TensorArgument(name: str)
-    *torch.export.graph_signature.TensorArgument*
 
 name : str *torch.export.graph_signature.TensorArgument.name*
 
+                                  *torch.export.graph_signature.TokenArgument*
+
 class torch.export.graph_signature.TokenArgument(name: str)
-    *torch.export.graph_signature.TokenArgument*
 
 name : str *torch.export.graph_signature.TokenArgument.name*
 
@@ -6466,7 +6602,7 @@ Definition: The set of `placeholder` nodes of a Graph represents the inputs
 of the Graph of GraphModule. The `output` node of a Graph represents the
 outputs of the Graph of GraphModule.
 
-Example:
+Example: ~
 
 >python
     import torch
@@ -6781,7 +6917,7 @@ Pytree-able Types            *torch_compiler-export-ir_spec-pytree-able-types*
 We define a type “Pytree-able”, if it is either a leaf type or a container
 type that contains other Pytree-able types.
 
-Note:
+Note: ~
 
   The concept of pytree is the same as the one documented here
   https://jax.readthedocs.io/en/latest/pytrees.html for JAX:
@@ -6893,11 +7029,12 @@ torch._functorch.aot_autograd.aot_export_joint_with_descriptors(stack, mod,
     Return type: ~
         JointWithDescriptors
 
+            *torch._functorch.aot_autograd.aot_compile_joint_with_descriptors*
+
 torch._functorch.aot_autograd.aot_compile_joint_with_descriptors(jd, *,
     partition_fn=<function default_partition>, fw_compiler=<function
     boxed_nop_preserve_node_meta>, bw_compiler=<function
     boxed_nop_preserve_node_meta>, serializable=False)
-    *torch._functorch.aot_autograd.aot_compile_joint_with_descriptors*
     Companion function for aot_export_joint_with_descriptors which compiles
     the joint graph into a callable function that follows a standard calling
     convention. params_flat all are arguments.
@@ -6923,22 +7060,27 @@ class torch._functorch._aot_autograd.descriptors.AOTInput
     Describes where an input from an AOTAutograd produced FX graph comes
     from
 
-is_buffer()  *torch._functorch._aot_autograd.descriptors.AOTInput.is_buffer*
+               *torch._functorch._aot_autograd.descriptors.AOTInput.is_buffer*
+
+is_buffer()
     True if this input is a buffer or derived from a buffer (e.g., subclass
     attr)
 
     Return type: ~
         bool
 
-is_param()  *torch._functorch._aot_autograd.descriptors.AOTInput.is_param*
+                *torch._functorch._aot_autograd.descriptors.AOTInput.is_param*
+
+is_param()
     True if this input is a parameter or derived from a parameter (e.g.,
     subclass attr)
 
     Return type: ~
         bool
 
+              *torch._functorch._aot_autograd.descriptors.AOTInput.is_tangent*
+
 is_tangent()
-    *torch._functorch._aot_autograd.descriptors.AOTInput.is_tangent*
     True if this input is a tangent or derived from a tangent (e.g.,
     subclass attr)
 
@@ -6950,29 +7092,35 @@ class torch._functorch._aot_autograd.descriptors.AOTOutput
     Describes where an output from an AOTAutograd produced FX graph will
     eventually be bundled into the final output
 
-is_grad()  *torch._functorch._aot_autograd.descriptors.AOTOutput.is_grad*
+                *torch._functorch._aot_autograd.descriptors.AOTOutput.is_grad*
+
+is_grad()
     True if this output is a grad or derived from a grad (e.g., subclass
     attr)
 
     Return type: ~
         bool
 
+            *torch._functorch._aot_autograd.descriptors.BackwardTokenAOTInput*
+
 class torch._functorch._aot_autograd.descriptors.BackwardTokenAOTInput(idx)
-    *torch._functorch._aot_autograd.descriptors.BackwardTokenAOTInput*
     The world token which is threaded through side-effectful operations, for
     backwards
 
+           *torch._functorch._aot_autograd.descriptors.BackwardTokenAOTOutput*
+
 class torch._functorch._aot_autograd.descriptors.BackwardTokenAOTOutput(idx)
-    *torch._functorch._aot_autograd.descriptors.BackwardTokenAOTOutput*
     The world token output for side-effectful calls, returned so we cannot
     DCE it, backward only
 
+                   *torch._functorch._aot_autograd.descriptors.BufferAOTInput*
+
 class torch._functorch._aot_autograd.descriptors.BufferAOTInput(target)
-    *torch._functorch._aot_autograd.descriptors.BufferAOTInput*
     The input is a buffer, whose FQN is target
 
+                    *torch._functorch._aot_autograd.descriptors.DummyAOTInput*
+
 class torch._functorch._aot_autograd.descriptors.DummyAOTInput(idx)
-    *torch._functorch._aot_autograd.descriptors.DummyAOTInput*
     In some circumstances, we want to call into a function that expects
     AOTInput, but we don't actually care about that logic (most typically,
     because some code is being used for both compile-time and run-time;
@@ -6980,30 +7128,35 @@ class torch._functorch._aot_autograd.descriptors.DummyAOTInput(idx)
     this situation; but it is better to just have a version of the function
     that doesn't have this at all.
 
+                   *torch._functorch._aot_autograd.descriptors.DummyAOTOutput*
+
 class torch._functorch._aot_autograd.descriptors.DummyAOTOutput(idx)
-    *torch._functorch._aot_autograd.descriptors.DummyAOTOutput*
     For cases when you don't actually care about descriptor propagation, do
     not use under normal circumstances.
 
+                    *torch._functorch._aot_autograd.descriptors.GradAOTOutput*
+
 class torch._functorch._aot_autograd.descriptors.GradAOTOutput(grad_of)
-    *torch._functorch._aot_autograd.descriptors.GradAOTOutput*
     An output representing the computed gradient for a differentiable input,
     in the joint graph
 
+           *torch._functorch._aot_autograd.descriptors.InputMutationAOTOutput*
+
 class
 torch._functorch._aot_autograd.descriptors.InputMutationAOTOutput(mutated_input)
-    *torch._functorch._aot_autograd.descriptors.InputMutationAOTOutput*
     The mutated value of an input tensor, returned so we can appropriately
     propagate autograd.
 
+        *torch._functorch._aot_autograd.descriptors.IntermediateBaseAOTOutput*
+
 class
 torch._functorch._aot_autograd.descriptors.IntermediateBaseAOTOutput(base_of)
-    *torch._functorch._aot_autograd.descriptors.IntermediateBaseAOTOutput*
     An intermediate base of multiple outputs which alias each other. We only
     report ONE of the outputs that contributed to this base
 
+                    *torch._functorch._aot_autograd.descriptors.ParamAOTInput*
+
 class torch._functorch._aot_autograd.descriptors.ParamAOTInput(target)
-    *torch._functorch._aot_autograd.descriptors.ParamAOTInput*
     The input is a parameter, whose FQN is target
 
 class
@@ -7038,8 +7191,9 @@ torch._functorch._aot_autograd.descriptors.PhiloxUpdatedForwardOffsetAOTOutput
 *torch._functorch._aot_autograd.descriptors.PhiloxUpdatedForwardOffsetAOTOutput*
     The final offset from the functionalized RNG calls, forward only
 
+                    *torch._functorch._aot_autograd.descriptors.PlainAOTInput*
+
 class torch._functorch._aot_autograd.descriptors.PlainAOTInput(idx)
-    *torch._functorch._aot_autograd.descriptors.PlainAOTInput*
     The input is a plain input, corresponding to a particular positional
     index.
 
@@ -7048,8 +7202,9 @@ class torch._functorch._aot_autograd.descriptors.PlainAOTInput(idx)
     AOTAutograd APIs that flatten pytrees, and we don't record PyTree key
     paths from the flattening (but we could and should!)
 
+                   *torch._functorch._aot_autograd.descriptors.PlainAOTOutput*
+
 class torch._functorch._aot_autograd.descriptors.PlainAOTOutput(idx)
-    *torch._functorch._aot_autograd.descriptors.PlainAOTOutput*
     A plain tensor output at position idx of the output tuple
 
 class
@@ -7083,9 +7238,10 @@ class torch._functorch._aot_autograd.descriptors.SubclassSizeAOTOutput(base,
     idx)
     This output size will be bundled into a subclass at this location
 
+           *torch._functorch._aot_autograd.descriptors.SubclassStrideAOTInput*
+
 class
 torch._functorch._aot_autograd.descriptors.SubclassStrideAOTInput(base, idx)
-    *torch._functorch._aot_autograd.descriptors.SubclassStrideAOTInput*
     Which subclass this particular outer stride SymInt input (at dim idx)
     came from.
 
@@ -7095,16 +7251,18 @@ torch._functorch._aot_autograd.descriptors.SubclassStrideAOTOutput(base,
     idx)
     This output stride will be bundled into a subclass at this location
 
+            *torch._functorch._aot_autograd.descriptors.SyntheticBaseAOTInput*
+
 class
 torch._functorch._aot_autograd.descriptors.SyntheticBaseAOTInput(base_of)
-    *torch._functorch._aot_autograd.descriptors.SyntheticBaseAOTInput*
     This is similar to ViewBaseAOTInput, but this happens when none of the
     views were differentiable, so we weren't able to get our hands on the
     true original view and constructed a synthetic one instead for the sake
     of autograd.
 
+                 *torch._functorch._aot_autograd.descriptors.ViewBaseAOTInput*
+
 class torch._functorch._aot_autograd.descriptors.ViewBaseAOTInput(base_of)
-    *torch._functorch._aot_autograd.descriptors.ViewBaseAOTInput*
     When multiple differentiable inputs are views of the same input,
     AOTAutograd will replace all of these views with a single input
     representing the base. If this is undesirable, you can clone the views
@@ -7124,8 +7282,9 @@ FX graphs. See also
 |torch._functorch.aot_autograd.aot_export_joint_with_descriptors|. We also
 recommend reading :mod:torch._functorch._aot_autograd.descriptors`.
 
+        *torch._functorch._aot_autograd.fx_utils.get_all_input_and_grad_nodes*
+
 torch._functorch._aot_autograd.fx_utils.get_all_input_and_grad_nodes(g)
-    *torch._functorch._aot_autograd.fx_utils.get_all_input_and_grad_nodes*
     Given a joint graph with descriptors (meta[‘desc'] on placeholders and
     output), returns the node for every input and its corresponding grad
     output node if it exists. These tuples are in a dict that is indexed by
@@ -7157,8 +7316,9 @@ torch._functorch._aot_autograd.fx_utils.get_all_input_and_grad_nodes(g)
         dict[DifferentiableAOTInput, tuple[|torch.fx.Node|, |torch.fx.Node|
         | None]]
 
-torch._functorch._aot_autograd.fx_utils.get_all_output_and_tangent_nodes(g)
     *torch._functorch._aot_autograd.fx_utils.get_all_output_and_tangent_nodes*
+
+torch._functorch._aot_autograd.fx_utils.get_all_output_and_tangent_nodes(g)
     Get all output nodes and their corresponding tangent nodes from a joint
     graph.
 
@@ -7191,8 +7351,9 @@ torch._functorch._aot_autograd.fx_utils.get_all_output_and_tangent_nodes(g)
         dict[DifferentiableAOTOutput, tuple[|torch.fx.Node|, |torch.fx.Node|
         | None]]
 
+                    *torch._functorch._aot_autograd.fx_utils.get_buffer_nodes*
+
 torch._functorch._aot_autograd.fx_utils.get_buffer_nodes(graph)
-    *torch._functorch._aot_autograd.fx_utils.get_buffer_nodes*
     Get all buffer nodes from a graph as a list.
 
     You can rely on this providing the correct order of buffers you need to
@@ -7215,8 +7376,9 @@ torch._functorch._aot_autograd.fx_utils.get_buffer_nodes(graph)
     Return type: ~
         list[|torch.fx.Node|]
 
+              *torch._functorch._aot_autograd.fx_utils.get_named_buffer_nodes*
+
 torch._functorch._aot_autograd.fx_utils.get_named_buffer_nodes(graph)
-    *torch._functorch._aot_autograd.fx_utils.get_named_buffer_nodes*
     Get buffer nodes mapped by their fully qualified names.
 
     This function traverses the graph to find all buffer input nodes and
@@ -7240,8 +7402,9 @@ torch._functorch._aot_autograd.fx_utils.get_named_buffer_nodes(graph)
     Return type: ~
         dict[str, |torch.fx.Node|]
 
+               *torch._functorch._aot_autograd.fx_utils.get_named_param_nodes*
+
 torch._functorch._aot_autograd.fx_utils.get_named_param_nodes(graph)
-    *torch._functorch._aot_autograd.fx_utils.get_named_param_nodes*
     Get parameter nodes mapped by their fully qualified names.
 
     This function traverses the graph to find all parameter input nodes and
@@ -7265,8 +7428,9 @@ torch._functorch._aot_autograd.fx_utils.get_named_param_nodes(graph)
     Return type: ~
         dict[str, |torch.fx.Node|]
 
+            *torch._functorch._aot_autograd.fx_utils.get_param_and_grad_nodes*
+
 torch._functorch._aot_autograd.fx_utils.get_param_and_grad_nodes(graph)
-    *torch._functorch._aot_autograd.fx_utils.get_param_and_grad_nodes*
     Get parameter nodes and their corresponding gradient nodes from a joint
     graph.
 
@@ -7281,8 +7445,9 @@ torch._functorch._aot_autograd.fx_utils.get_param_and_grad_nodes(graph)
         A dictionary mapping each ParamAOTInput descriptor to a tuple
         containing
 
+                     *torch._functorch._aot_autograd.fx_utils.get_param_nodes*
+
 torch._functorch._aot_autograd.fx_utils.get_param_nodes(graph)
-    *torch._functorch._aot_autograd.fx_utils.get_param_nodes*
     Get all parameter nodes from a graph as a list.
 
     You can rely on this providing the correct order of parameters you need
@@ -7306,8 +7471,9 @@ torch._functorch._aot_autograd.fx_utils.get_param_nodes(graph)
     Return type: ~
         list[|torch.fx.Node|]
 
+      *torch._functorch._aot_autograd.fx_utils.get_plain_input_and_grad_nodes*
+
 torch._functorch._aot_autograd.fx_utils.get_plain_input_and_grad_nodes(graph)
-    *torch._functorch._aot_autograd.fx_utils.get_plain_input_and_grad_nodes*
     Get plain input nodes and their corresponding gradient nodes from a
     joint graph.
 
@@ -7322,8 +7488,9 @@ torch._functorch._aot_autograd.fx_utils.get_plain_input_and_grad_nodes(graph)
         A dictionary mapping each PlainAOTInput descriptor to a tuple
         containing
 
+  *torch._functorch._aot_autograd.fx_utils.get_plain_output_and_tangent_nodes*
+
 torch._functorch._aot_autograd.fx_utils.get_plain_output_and_tangent_nodes(graph)
-    *torch._functorch._aot_autograd.fx_utils.get_plain_output_and_tangent_nodes*
     Get plain output nodes and their corresponding tangent nodes from a
     joint graph.
 
@@ -8433,7 +8600,7 @@ API REFERENCE
 
 Ahead-of-time compiles the `torch.compile()`-wrapped function.
 
-Args:
+Args: ~
 
 - example_inputs (`tuple[tuple[Any, ...], dict[str, Any]]`) -- A tuple of
   `(args, kwargs)` providing example inputs for tracing. These determine the
@@ -8469,7 +8636,7 @@ Requirements:
 
 Load a previously saved AOT-compiled function from a file.
 
-Args:
+Args: ~
 
 - file -- A file-like object (opened in binary read mode) containing the
   serialized compiled function.
@@ -9015,9 +9182,10 @@ torch._inductor.aoti_compile_and_package(exported_program,
     Return type: ~
         str
 
+                                           *torch._inductor.aoti_load_package*
+
 torch._inductor.aoti_load_package(path, run_single_threaded=False,
     device_index=-1, *, num_runners=1, use_stream_affinity=False)
-    *torch._inductor.aoti_load_package*
     Loads a model from a PT2 package or an extracted PT2 package directory.
 
     If multiple models were packaged into the PT2, this will load the
@@ -12935,66 +13103,62 @@ disable compilation are listed in the following table:
 
 Caption: TorchDynamo APIs to control fine-grained tracing
 
-API                                 Description                    When to use?
-----------------------------------  -----------------------------  ------------------
-torch.compiler.disable              Disables Dynamo on the         Excellent for
-                                    decorated function as well as  unblocking a user,
-                                    recursively invoked            if a small portion
-                                    functions.                     of the model
-                                                                   cannot be handled
-                                                                   with
-                                                                   torch.compile.
-torch._dynamo.disallow_in_graph     Disallows the marked op in     This API is
-                                    the TorchDynamo graph.         excellent for both
-                                    TorchDynamo causes graph       debugging and
-                                    break, and runs the op in the  unblocking if a
-                                    eager (no compile)             custom op like
-                                    mode.nnThis is suitable for    torch.ops.fbgemm.*
-                                    the ops, while                 is causing issues
-                                    torch.compiler.disable is      with the
-                                    suitable for decorating        torch.compile
-                                    functions.                     function.
-torch.compile.allow_in_graph        The annotated callable goes    This API is useful
-                                    as is in the TorchDynamo       for portions of
-                                    graph. For example, a          the model which
-                                    black-box for TorchDynamo      have known
-                                    Dynamo.nnNote that AOT         TorchDynamo
-                                    Autograd will trace through    hard-to-support
-                                    it, so the allow_in_graph is   features, like
-                                    only a Dynamo-level concept.   hooks or
-                                                                   autograd.Function.
-                                                                   However, each
-                                                                   usage of
-                                                                   allow_in_graph
-                                                                   must be carefully
-                                                                   screened (no graph
-                                                                   breaks, no
-                                                                   closures).
-torch._dynamo.graph_break           Adds a graph break. The code   Rarely useful for
-                                    before and after the graph     deployment - If
-                                    break goes through             you think you need
-                                    TorchDynamo.                   this, most
-                                                                   probably you need
-                                                                   either disable or
-                                                                   disallow_in_graph.
-torch.compiler.is_compiling         Indicates whether a graph is
-                                    executed/traced as part of
-                                    torch.compile() or
-                                    torch.export().
-torch.compiler.is_dynamo_compiling  Indicates whether a graph is
-                                    traced via TorchDynamo. It's
-                                    stricter than
-                                    torch.compiler.is_compiling()
-                                    flag, as it would only be set
-                                    to True when TorchDynamo is
-                                    used.
-torch.compiler.is_exporting         Indicates whether a graph is
-                                    traced via export. It's
-                                    stricter than
-                                    torch.compiler.is_compiling()
-                                    flag, as it would only be set
-                                    to True when torch.export is
-                                    used.
+API                       Description                When to use?
+------------------------  -------------------------  -------------------------
+torch.compiler.disable    Disables Dynamo on the     Excellent for unblocking
+                          decorated function as      a user, if a small
+                          well as recursively        portion of the model
+                          invoked functions.         cannot be handled with
+                                                     torch.compile.
+torch._dynamo.disallow_   Disallows the marked op    This API is excellent for
+in_graph                  in the TorchDynamo graph.  both debugging and
+                          TorchDynamo causes graph   unblocking if a custom op
+                          break, and runs the op in  like torch.ops.fbgemm.*
+                          the eager (no compile)     is causing issues with
+                          mode.nnThis is suitable    the torch.compile
+                          for the ops, while         function.
+                          torch.compiler.disable is
+                          suitable for decorating
+                          functions.
+torch.compile.allow_in_   The annotated callable     This API is useful for
+graph                     goes as is in the          portions of the model
+                          TorchDynamo graph. For     which have known
+                          example, a black-box for   TorchDynamo
+                          TorchDynamo Dynamo.nnNote  hard-to-support features,
+                          that AOT Autograd will     like hooks or
+                          trace through it, so the   autograd.Function.
+                          allow_in_graph is only a   However, each usage of
+                          Dynamo-level concept.      allow_in_graph must be
+                                                     carefully screened (no
+                                                     graph breaks, no
+                                                     closures).
+torch._dynamo.graph_      Adds a graph break. The    Rarely useful for
+break                     code before and after the  deployment - If you think
+                          graph break goes through   you need this, most
+                          TorchDynamo.               probably you need either
+                                                     disable or
+                                                     disallow_in_graph.
+torch.compiler.is_        Indicates whether a graph
+compiling                 is executed/traced as
+                          part of torch.compile()
+                          or torch.export().
+torch.compiler.is_        Indicates whether a graph
+dynamo_compiling          is traced via
+                          TorchDynamo. It's
+                          stricter than
+                          torch.compiler.is_
+                          compiling()
+                          flag, as it would only be
+                          set to True when
+                          TorchDynamo is used.
+torch.compiler.is_        Indicates whether a graph
+exporting                 is traced via export.
+                          It's stricter than
+                          torch.compiler.is_
+                          compiling()
+                          flag, as it would only be
+                          set to True when
+                          torch.export is used.
 
 *user_guide-torch_compiler-torch.compiler_fine_grain_apis-torch-compiler-disable*
 `torch.compiler.disable`
@@ -13512,463 +13676,452 @@ backends.
   This opset is still under active development, more ops will be added in
   the future.
 
-Operator                              Schema
-------------------------------------  ----------------------------------------
-aten._adaptive_avg_pool2d             _adaptive_avg_pool2d(Tensor self,
-                                      SymInt[2] output_size) -> Tensor
-aten._adaptive_avg_pool2d_backward    _adaptive_avg_pool2d_backward(Tensor
-                                      grad_output, Tensor self) -> Tensor
-aten._adaptive_avg_pool3d             _adaptive_avg_pool3d(Tensor self,
-                                      SymInt[3] output_size) -> Tensor
-aten._cdist_forward                   _cdist_forward(Tensor x1, Tensor x2,
-                                      float p, int? compute_mode) -> Tensor
-aten._embedding_bag                   _embedding_bag(Tensor weight, Tensor
-                                      indices, Tensor offsets, bool
-                                      scale_grad_by_freq=False, int mode=0,
-                                      bool sparse=False, Tensor?
-                                      per_sample_weights=None, bool
-                                      include_last_offset=False, int
-                                      padding_idx=-1) -> (Tensor, Tensor,
-                                      Tensor, Tensor)
-aten._fft_c2r                         _fft_c2r(Tensor self, int[] dim, int
-                                      normalization, SymInt last_dim_size) ->
-                                      Tensor
-aten._fft_r2c                         _fft_r2c(Tensor self, int[] dim, int
-                                      normalization, bool onesided) -> Tensor
-aten._local_scalar_dense              _local_scalar_dense(Tensor self) ->
-                                      Scalar
-aten._log_softmax                     _log_softmax(Tensor self, int dim, bool
-                                      half_to_float) -> Tensor
-aten._native_batch_norm_legit         _native_batch_norm_legit(Tensor input,
-                                      Tensor? weight, Tensor? bias, Tensor(a!)
-                                      running_mean, Tensor(b!) running_var,
-                                      bool training, float momentum, float
-                                      eps) -> (Tensor, Tensor, Tensor)
-aten._native_batch_norm_legit.no_stats  _native_batch_norm_legit.no_stats(Tensor
-                                      input, Tensor? weight, Tensor? bias,
-                                      bool training, float momentum, float
-                                      eps) -> (Tensor, Tensor, Tensor)
-aten._native_batch_norm_legit_no_training  _native_batch_norm_legit_no_training(Tensor
-                                      input, Tensor? weight, Tensor? bias,
-                                      Tensor running_mean, Tensor running_var,
-                                      float momentum, float eps) -> (Tensor,
-                                      Tensor, Tensor)
-aten._pdist_forward                   _pdist_forward(Tensor self, float p=2)
-                                      -> Tensor
-aten._softmax                         _softmax(Tensor self, int dim, bool
-                                      half_to_float) -> Tensor
-aten._to_copy                         _to_copy(Tensor self, *, ScalarType?
-                                      dtype=None, Layout? layout=None, Device?
-                                      device=None, bool? pin_memory=None, bool
-                                      non_blocking=False, MemoryFormat?
-                                      memory_format=None) -> Tensor
-aten.abs                              abs(Tensor self) -> Tensor
-aten.acos                             acos(Tensor self) -> Tensor
-aten.acosh                            acosh(Tensor self) -> Tensor
-aten.adaptive_avg_pool1d              adaptive_avg_pool1d(Tensor self, int[1]
-                                      output_size) -> Tensor
-aten.add.Scalar                       add.Scalar(Tensor self, Scalar other,
-                                      Scalar alpha=1) -> Tensor
-aten.add.Tensor                       add.Tensor(Tensor self, Tensor other, *,
-                                      Scalar alpha=1) -> Tensor
-aten.addmm                            addmm(Tensor self, Tensor mat1, Tensor
-                                      mat2, *, Scalar beta=1, Scalar alpha=1)
-                                      -> Tensor
-aten.alias                            alias(Tensor(a) self) -> Tensor(a)
-aten.amax                             amax(Tensor self, int[1] dim=[], bool
-                                      keepdim=False) -> Tensor
-aten.amin                             amin(Tensor self, int[1] dim=[], bool
-                                      keepdim=False) -> Tensor
-aten.any                              any(Tensor self) -> Tensor
-aten.any.dim                          any.dim(Tensor self, int dim, bool
-                                      keepdim=False) -> Tensor
-aten.any.dims                         any.dims(Tensor self, int[]? dim=None,
-                                      bool keepdim=False) -> Tensor
-aten.arange.start_step                arange.start_step(Scalar start, Scalar
-                                      end, Scalar step=1, *, ScalarType?
-                                      dtype=None, Layout? layout=None, Device?
-                                      device=None, bool? pin_memory=None) ->
-                                      Tensor
-aten.argmax                           argmax(Tensor self, int? dim=None, bool
-                                      keepdim=False) -> Tensor
-aten.argmin                           argmin(Tensor self, int? dim=None, bool
-                                      keepdim=False) -> Tensor
-aten.as_strided                       as_strided(Tensor(a) self, SymInt[]
-                                      size, SymInt[] stride, SymInt?
-                                      storage_offset=None) -> Tensor(a)
-aten.asin                             asin(Tensor self) -> Tensor
-aten.asinh                            asinh(Tensor self) -> Tensor
-aten.atan                             atan(Tensor self) -> Tensor
-aten.atan2                            atan2(Tensor self, Tensor other) ->
-                                      Tensor
-aten.atan2.out                        atan2.out(Tensor self, Tensor other, *,
-                                      Tensor(a!) out) -> Tensor(a!)
-aten.atanh                            atanh(Tensor self) -> Tensor
-aten.avg_pool1d                       avg_pool1d(Tensor self, int[1]
-                                      kernel_size, int[1] stride=[], int[1]
-                                      padding=0, bool ceil_mode=False, bool
-                                      count_include_pad=True) -> Tensor
-aten.avg_pool2d                       avg_pool2d(Tensor self, int[2]
-                                      kernel_size, int[2] stride=[], int[2]
-                                      padding=0, bool ceil_mode=False, bool
-                                      count_include_pad=True, int?
-                                      divisor_override=None) -> Tensor
-aten.avg_pool2d_backward              avg_pool2d_backward(Tensor grad_output,
-                                      Tensor self, int[2] kernel_size, int[2]
-                                      stride, int[2] padding, bool ceil_mode,
-                                      bool count_include_pad, int?
-                                      divisor_override) -> Tensor
-aten.avg_pool3d                       avg_pool3d(Tensor self, int[3]
-                                      kernel_size, int[3] stride=[], int[3]
-                                      padding=0, bool ceil_mode=False, bool
-                                      count_include_pad=True, int?
-                                      divisor_override=None) -> Tensor
-aten.bitwise_and.Scalar               bitwise_and.Scalar(Tensor self, Scalar
-                                      other) -> Tensor
-aten.bitwise_and.Tensor               bitwise_and.Tensor(Tensor self, Tensor
-                                      other) -> Tensor
-aten.bitwise_not                      bitwise_not(Tensor self) -> Tensor
-aten.bitwise_or.Scalar                bitwise_or.Scalar(Tensor self, Scalar
-                                      other) -> Tensor
-aten.bitwise_or.Tensor                bitwise_or.Tensor(Tensor self, Tensor
-                                      other) -> Tensor
-aten.bitwise_xor.Scalar               bitwise_xor.Scalar(Tensor self, Scalar
-                                      other) -> Tensor
-aten.bitwise_xor.Tensor               bitwise_xor.Tensor(Tensor self, Tensor
-                                      other) -> Tensor
-aten.bmm                              bmm(Tensor self, Tensor mat2) -> Tensor
-aten.cat                              cat(Tensor[] tensors, int dim=0) ->
-                                      Tensor
-aten.ceil                             ceil(Tensor self) -> Tensor
-aten.clamp                            clamp(Tensor self, Scalar? min=None,
-                                      Scalar? max=None) -> Tensor
-aten.clamp.Tensor                     clamp.Tensor(Tensor self, Tensor?
-                                      min=None, Tensor? max=None) -> Tensor
-aten.clone                            clone(Tensor self, *, MemoryFormat?
-                                      memory_format=None) -> Tensor
-aten.col2im                           col2im(Tensor self, SymInt[2]
-                                      output_size, int[2] kernel_size, int[2]
-                                      dilation, int[2] padding, int[2] stride)
-                                      -> Tensor
-aten.constant_pad_nd                  constant_pad_nd(Tensor self, SymInt[]
-                                      pad, Scalar value=0) -> Tensor
-aten.convolution                      convolution(Tensor input, Tensor weight,
-                                      Tensor? bias, SymInt[] stride, SymInt[]
-                                      padding, SymInt[] dilation, bool
-                                      transposed, SymInt[] output_padding,
-                                      SymInt groups) -> Tensor
-aten.convolution_backward             convolution_backward(Tensor grad_output,
-                                      Tensor input, Tensor weight, SymInt[]?
-                                      bias_sizes, SymInt[] stride, SymInt[]
-                                      padding, SymInt[] dilation, bool
-                                      transposed, SymInt[] output_padding,
-                                      SymInt groups, bool[3] output_mask) ->
-                                      (Tensor, Tensor, Tensor)
-aten.copy                             copy(Tensor self, Tensor src, bool
-                                      non_blocking=False) -> Tensor
-aten.cos                              cos(Tensor self) -> Tensor
-aten.cosh                             cosh(Tensor self) -> Tensor
-aten.cumsum                           cumsum(Tensor self, int dim, *,
-                                      ScalarType? dtype=None) -> Tensor
-aten.diagonal                         diagonal(Tensor(a) self, int offset=0,
-                                      int dim1=0, int dim2=1) -> Tensor(a)
-aten.div.Scalar                       div.Scalar(Tensor self, Scalar other) ->
-                                      Tensor
-aten.div.Scalar_mode                  div.Scalar_mode(Tensor self, Scalar
-                                      other, *, str? rounding_mode) -> Tensor
-aten.div.Tensor                       div.Tensor(Tensor self, Tensor other) ->
-                                      Tensor
-aten.div.Tensor_mode                  div.Tensor_mode(Tensor self, Tensor
-                                      other, *, str? rounding_mode) -> Tensor
-aten.elu                              elu(Tensor self, Scalar alpha=1, Scalar
-                                      scale=1, Scalar input_scale=1) -> Tensor
-aten.embedding                        embedding(Tensor weight, Tensor indices,
-                                      SymInt padding_idx=-1, bool
-                                      scale_grad_by_freq=False, bool
-                                      sparse=False) -> Tensor
-aten.embedding_dense_backward         embedding_dense_backward(Tensor
-                                      grad_output, Tensor indices, SymInt
-                                      num_weights, SymInt padding_idx, bool
-                                      scale_grad_by_freq) -> Tensor
-aten.empty.memory_format              empty.memory_format(SymInt[] size, *,
-                                      ScalarType? dtype=None, Layout?
-                                      layout=None, Device? device=None, bool?
-                                      pin_memory=None, MemoryFormat?
-                                      memory_format=None) -> Tensor
-aten.empty_strided                    empty_strided(SymInt[] size, SymInt[]
-                                      stride, *, ScalarType? dtype=None,
-                                      Layout? layout=None, Device?
-                                      device=None, bool? pin_memory=None) ->
-                                      Tensor
-aten.eq.Scalar                        eq.Scalar(Tensor self, Scalar other) ->
-                                      Tensor
-aten.eq.Tensor                        eq.Tensor(Tensor self, Tensor other) ->
-                                      Tensor
-aten.erf                              erf(Tensor self) -> Tensor
-aten.exp                              exp(Tensor self) -> Tensor
-aten.expand                           expand(Tensor(a) self, SymInt[] size, *,
-                                      bool implicit=False) -> Tensor(a)
-aten.expm1                            expm1(Tensor self) -> Tensor
-aten.fill.Scalar                      fill.Scalar(Tensor self, Scalar value)
-                                      -> Tensor
-aten.flip                             flip(Tensor self, int[] dims) -> Tensor
-aten.floor                            floor(Tensor self) -> Tensor
-aten.fmod.Scalar                      fmod.Scalar(Tensor self, Scalar other)
-                                      -> Tensor
-aten.fmod.Tensor                      fmod.Tensor(Tensor self, Tensor other)
-                                      -> Tensor
-aten.full                             full(SymInt[] size, Scalar fill_value,
-                                      *, ScalarType? dtype=None, Layout?
-                                      layout=None, Device? device=None, bool?
-                                      pin_memory=None) -> Tensor
-aten.full_like                        full_like(Tensor self, Scalar
-                                      fill_value, *, ScalarType? dtype=None,
-                                      Layout? layout=None, Device?
-                                      device=None, bool? pin_memory=None,
-                                      MemoryFormat? memory_format=None) ->
-                                      Tensor
-aten.gather                           gather(Tensor self, int dim, Tensor
-                                      index, *, bool sparse_grad=False) ->
-                                      Tensor
-aten.ge.Scalar                        ge.Scalar(Tensor self, Scalar other) ->
-                                      Tensor
-aten.ge.Tensor                        ge.Tensor(Tensor self, Tensor other) ->
-                                      Tensor
-aten.gelu                             gelu(Tensor self, *, str
-                                      approximate='none') -> Tensor
-aten.grid_sampler_2d                  grid_sampler_2d(Tensor input, Tensor
-                                      grid, int interpolation_mode, int
-                                      padding_mode, bool align_corners) ->
-                                      Tensor
-aten.gt.Scalar                        gt.Scalar(Tensor self, Scalar other) ->
-                                      Tensor
-aten.gt.Tensor                        gt.Tensor(Tensor self, Tensor other) ->
-                                      Tensor
-aten.hardtanh                         hardtanh(Tensor self, Scalar min_val=-1,
-                                      Scalar max_val=1) -> Tensor
-aten.index.Tensor                     index.Tensor(Tensor self, Tensor?[]
-                                      indices) -> Tensor
-aten.index_put                        index_put(Tensor self, Tensor?[]
-                                      indices, Tensor values, bool
-                                      accumulate=False) -> Tensor
-aten.index_select                     index_select(Tensor self, int dim,
-                                      Tensor index) -> Tensor
-aten.isinf                            isinf(Tensor self) -> Tensor
-aten.isnan                            isnan(Tensor self) -> Tensor
-aten.le.Scalar                        le.Scalar(Tensor self, Scalar other) ->
-                                      Tensor
-aten.le.Tensor                        le.Tensor(Tensor self, Tensor other) ->
-                                      Tensor
-aten.leaky_relu                       leaky_relu(Tensor self, Scalar
-                                      negative_slope=0.01) -> Tensor
-aten.log                              log(Tensor self) -> Tensor
-aten.log10                            log10(Tensor self) -> Tensor
-aten.log1p                            log1p(Tensor self) -> Tensor
-aten.log2                             log2(Tensor self) -> Tensor
-aten.logical_and                      logical_and(Tensor self, Tensor other)
-                                      -> Tensor
-aten.logical_not                      logical_not(Tensor self) -> Tensor
-aten.logical_or                       logical_or(Tensor self, Tensor other) ->
-                                      Tensor
-aten.logical_xor                      logical_xor(Tensor self, Tensor other)
-                                      -> Tensor
-aten.lt.Scalar                        lt.Scalar(Tensor self, Scalar other) ->
-                                      Tensor
-aten.lt.Tensor                        lt.Tensor(Tensor self, Tensor other) ->
-                                      Tensor
-aten.masked_scatter                   masked_scatter(Tensor self, Tensor mask,
-                                      Tensor source) -> Tensor
-aten.max.dim                          max.dim(Tensor self, int dim, bool
-                                      keepdim=False) -> (Tensor values, Tensor
-                                      indices)
-aten.max_pool2d_with_indices          max_pool2d_with_indices(Tensor self,
-                                      int[2] kernel_size, int[2] stride=[],
-                                      int[2] padding=0, int[2] dilation=1,
-                                      bool ceil_mode=False) -> (Tensor,
-                                      Tensor)
-aten.max_pool2d_with_indices_backward  max_pool2d_with_indices_backward(Tensor
-                                      grad_output, Tensor self, int[2]
-                                      kernel_size, int[2] stride, int[2]
-                                      padding, int[2] dilation, bool
-                                      ceil_mode, Tensor indices) -> Tensor
-aten.max_pool3d_with_indices          max_pool3d_with_indices(Tensor self,
-                                      int[3] kernel_size, int[3] stride=[],
-                                      int[3] padding=0, int[3] dilation=1,
-                                      bool ceil_mode=False) -> (Tensor,
-                                      Tensor)
-aten.maximum                          maximum(Tensor self, Tensor other) ->
-                                      Tensor
-aten.mean                             mean(Tensor self, *, ScalarType?
-                                      dtype=None) -> Tensor
-aten.mean.dim                         mean.dim(Tensor self, int[1]? dim, bool
-                                      keepdim=False, *, ScalarType?
-                                      dtype=None) -> Tensor
-aten.min.dim                          min.dim(Tensor self, int dim, bool
-                                      keepdim=False) -> (Tensor values, Tensor
-                                      indices)
-aten.minimum                          minimum(Tensor self, Tensor other) ->
-                                      Tensor
-aten.mm                               mm(Tensor self, Tensor mat2) -> Tensor
-aten.mul.Scalar                       mul.Scalar(Tensor self, Scalar other) ->
-                                      Tensor
-aten.mul.Tensor                       mul.Tensor(Tensor self, Tensor other) ->
-                                      Tensor
-aten.native_dropout                   native_dropout(Tensor input, float p,
-                                      bool? train) -> (Tensor, Tensor)
-aten.native_group_norm                native_group_norm(Tensor input, Tensor?
-                                      weight, Tensor? bias, SymInt N, SymInt
-                                      C, SymInt HxW, int group, float eps) ->
-                                      (Tensor, Tensor, Tensor)
-aten.native_group_norm_backward       native_group_norm_backward(Tensor
-                                      grad_out, Tensor input, Tensor mean,
-                                      Tensor rstd, Tensor? weight, SymInt N,
-                                      SymInt C, SymInt HxW, int group, bool[3]
-                                      output_mask) -> (Tensor, Tensor, Tensor)
-aten.native_layer_norm                native_layer_norm(Tensor input, SymInt[]
-                                      normalized_shape, Tensor? weight,
-                                      Tensor? bias, float eps) -> (Tensor,
-                                      Tensor, Tensor)
-aten.native_layer_norm_backward       native_layer_norm_backward(Tensor
-                                      grad_out, Tensor input, SymInt[]
-                                      normalized_shape, Tensor mean, Tensor
-                                      rstd, Tensor? weight, Tensor? bias,
-                                      bool[3] output_mask) -> (Tensor, Tensor,
-                                      Tensor)
-aten.ne.Scalar                        ne.Scalar(Tensor self, Scalar other) ->
-                                      Tensor
-aten.ne.Tensor                        ne.Tensor(Tensor self, Tensor other) ->
-                                      Tensor
-aten.neg                              neg(Tensor self) -> Tensor
-aten.nonzero                          nonzero(Tensor self) -> Tensor
-aten.permute                          permute(Tensor(a) self, int[] dims) ->
-                                      Tensor(a)
-aten.pow.Scalar                       pow.Scalar(Scalar self, Tensor exponent)
-                                      -> Tensor
-aten.pow.Tensor_Scalar                pow.Tensor_Scalar(Tensor self, Scalar
-                                      exponent) -> Tensor
-aten.pow.Tensor_Tensor                pow.Tensor_Tensor(Tensor self, Tensor
-                                      exponent) -> Tensor
-aten.prod                             prod(Tensor self, *, ScalarType?
-                                      dtype=None) -> Tensor
-aten.prod.dim_int                     prod.dim_int(Tensor self, int dim, bool
-                                      keepdim=False, *, ScalarType?
-                                      dtype=None) -> Tensor
-aten.rand                             rand(SymInt[] size, *, ScalarType?
-                                      dtype=None, Layout? layout=None, Device?
-                                      device=None, bool? pin_memory=None) ->
-                                      Tensor
-aten.randn                            randn(SymInt[] size, *, ScalarType?
-                                      dtype=None, Layout? layout=None, Device?
-                                      device=None, bool? pin_memory=None) ->
-                                      Tensor
-aten.randperm                         randperm(SymInt n, *, ScalarType?
-                                      dtype=long, Layout? layout=None, Device?
-                                      device=None, bool? pin_memory=None) ->
-                                      Tensor
-aten.reciprocal                       reciprocal(Tensor self) -> Tensor
-aten.reflection_pad1d                 reflection_pad1d(Tensor self, SymInt[2]
-                                      padding) -> Tensor
-aten.reflection_pad2d                 reflection_pad2d(Tensor self, SymInt[4]
-                                      padding) -> Tensor
-aten.reflection_pad3d                 reflection_pad3d(Tensor self, SymInt[6]
-                                      padding) -> Tensor
-aten.relu                             relu(Tensor self) -> Tensor
-aten.remainder.Scalar                 remainder.Scalar(Tensor self, Scalar
-                                      other) -> Tensor
-aten.remainder.Tensor                 remainder.Tensor(Tensor self, Tensor
-                                      other) -> Tensor
-aten.repeat                           repeat(Tensor self, SymInt[] repeats) ->
-                                      Tensor
-aten.replication_pad2d                replication_pad2d(Tensor self, SymInt[4]
-                                      padding) -> Tensor
-aten.replication_pad3d                replication_pad3d(Tensor self, SymInt[6]
-                                      padding) -> Tensor
-aten.resize_                          resize_(Tensor(a!) self, SymInt[] size,
-                                      *, MemoryFormat? memory_format=None) ->
-                                      Tensor(a!)
-aten.round                            round(Tensor self) -> Tensor
-aten.rsqrt                            rsqrt(Tensor self) -> Tensor
-aten.scalar_tensor                    scalar_tensor(Scalar s, *, ScalarType?
-                                      dtype=None, Layout? layout=None, Device?
-                                      device=None, bool? pin_memory=None) ->
-                                      Tensor
-aten.scatter.src                      scatter.src(Tensor self, int dim, Tensor
-                                      index, Tensor src) -> Tensor
-aten.scatter.value                    scatter.value(Tensor self, int dim,
-                                      Tensor index, Scalar value) -> Tensor
-aten.scatter_add                      scatter_add(Tensor self, int dim, Tensor
-                                      index, Tensor src) -> Tensor
-aten.scatter_reduce.two               scatter_reduce.two(Tensor self, int dim,
-                                      Tensor index, Tensor src, str reduce, *,
-                                      bool include_self=True) -> Tensor
-aten.select.int                       select.int(Tensor(a) self, int dim,
-                                      SymInt index) -> Tensor(a)
-aten.select_scatter                   select_scatter(Tensor self, Tensor src,
-                                      int dim, SymInt index) -> Tensor
-aten.sigmoid                          sigmoid(Tensor self) -> Tensor
-aten.sign                             sign(Tensor self) -> Tensor
-aten.sin                              sin(Tensor self) -> Tensor
-aten.sinh                             sinh(Tensor self) -> Tensor
-aten.slice.Tensor                     slice.Tensor(Tensor(a) self, int dim=0,
-                                      SymInt? start=None, SymInt? end=None,
-                                      SymInt step=1) -> Tensor(a)
-aten.slice_scatter                    slice_scatter(Tensor self, Tensor src,
-                                      int dim=0, SymInt? start=None, SymInt?
-                                      end=None, SymInt step=1) -> Tensor
-aten.sort                             sort(Tensor self, int dim=-1, bool
-                                      descending=False) -> (Tensor values,
-                                      Tensor indices)
-aten.split_with_sizes                 split_with_sizes(Tensor(a -> *) self,
-                                      SymInt[] split_sizes, int dim=0) ->
-                                      Tensor(a)[]
-aten.sqrt                             sqrt(Tensor self) -> Tensor
-aten.squeeze.dim                      squeeze.dim(Tensor(a) self, int dim) ->
-                                      Tensor(a)
-aten.squeeze.dims                     squeeze.dims(Tensor(a) self, int[] dim)
-                                      -> Tensor(a)
-aten.sub.Scalar                       sub.Scalar(Tensor self, Scalar other,
-                                      Scalar alpha=1) -> Tensor
-aten.sub.Tensor                       sub.Tensor(Tensor self, Tensor other, *,
-                                      Scalar alpha=1) -> Tensor
-aten.sum.dim_IntList                  sum.dim_IntList(Tensor self, int[1]?
-                                      dim, bool keepdim=False, *, ScalarType?
-                                      dtype=None) -> Tensor
-aten.sym_is_contiguous                sym_is_contiguous(Tensor self,
-                                      MemoryFormat
-                                      memory_format=contiguous_format) ->
-                                      SymBool
-aten.sym_numel                        sym_numel(Tensor self) -> SymInt
-aten.sym_size.int                     sym_size.int(Tensor self, int dim) ->
-                                      SymInt
-aten.sym_storage_offset               sym_storage_offset(Tensor self) ->
-                                      SymInt
-aten.sym_stride.int                   sym_stride.int(Tensor self, int dim) ->
-                                      SymInt
-aten.tan                              tan(Tensor self) -> Tensor
-aten.tanh                             tanh(Tensor self) -> Tensor
-aten.topk                             topk(Tensor self, SymInt k, int dim=-1,
-                                      bool largest=True, bool sorted=True) ->
-                                      (Tensor values, Tensor indices)
-aten.trunc                            trunc(Tensor self) -> Tensor
-aten.unsqueeze                        unsqueeze(Tensor(a) self, int dim) ->
-                                      Tensor(a)
-aten.upsample_bilinear2d.vec          upsample_bilinear2d.vec(Tensor input,
-                                      SymInt[]? output_size, bool
-                                      align_corners, float[]? scale_factors)
-                                      -> Tensor
-aten.upsample_nearest2d.vec           upsample_nearest2d.vec(Tensor input,
-                                      SymInt[]? output_size, float[]?
-                                      scale_factors) -> Tensor
-aten.var.correction                   var.correction(Tensor self, int[1]?
-                                      dim=None, *, Scalar? correction=None,
-                                      bool keepdim=False) -> Tensor
-aten.var.dim                          var.dim(Tensor self, int[1]? dim, bool
-                                      unbiased=True, bool keepdim=False) ->
-                                      Tensor
-aten.view                             view(Tensor(a) self, SymInt[] size) ->
-                                      Tensor(a)
-aten.where.self                       where.self(Tensor condition, Tensor
-                                      self, Tensor other) -> Tensor
+Operator                            Schema
+----------------------------------  ------------------------------------------
+aten._adaptive_avg_pool2d           _adaptive_avg_pool2d(Tensor self,
+                                    SymInt[2] output_size) -> Tensor
+aten._adaptive_avg_pool2d_backward  _adaptive_avg_pool2d_backward(Tensor
+                                    grad_output, Tensor self) -> Tensor
+aten._adaptive_avg_pool3d           _adaptive_avg_pool3d(Tensor self,
+                                    SymInt[3] output_size) -> Tensor
+aten._cdist_forward                 _cdist_forward(Tensor x1, Tensor x2, float
+                                    p, int? compute_mode) -> Tensor
+aten._embedding_bag                 _embedding_bag(Tensor weight, Tensor
+                                    indices, Tensor offsets, bool
+                                    scale_grad_by_freq=False, int mode=0, bool
+                                    sparse=False, Tensor?
+                                    per_sample_weights=None, bool
+                                    include_last_offset=False, int
+                                    padding_idx=-1) -> (Tensor, Tensor,
+                                    Tensor, Tensor)
+aten._fft_c2r                       _fft_c2r(Tensor self, int[] dim, int
+                                    normalization, SymInt last_dim_size) ->
+                                    Tensor
+aten._fft_r2c                       _fft_r2c(Tensor self, int[] dim, int
+                                    normalization, bool onesided) -> Tensor
+aten._local_scalar_dense            _local_scalar_dense(Tensor self) -> Scalar
+aten._log_softmax                   _log_softmax(Tensor self, int dim, bool
+                                    half_to_float) -> Tensor
+aten._native_batch_norm_legit       _native_batch_norm_legit(Tensor input,
+                                    Tensor? weight, Tensor? bias, Tensor(a!)
+                                    running_mean, Tensor(b!) running_var, bool
+                                    training, float momentum, float eps) ->
+                                    (Tensor, Tensor, Tensor)
+aten._native_batch_norm_legit.no_   _native_batch_norm_legit.no_stats(Tensor
+stats                               input, Tensor? weight, Tensor? bias, bool
+                                    training, float momentum, float eps) ->
+                                    (Tensor, Tensor, Tensor)
+aten._native_batch_norm_legit_no_   _native_batch_norm_legit_no_
+training                            training(Tensor
+                                    input, Tensor? weight, Tensor? bias,
+                                    Tensor running_mean, Tensor running_var,
+                                    float momentum, float eps) -> (Tensor,
+                                    Tensor, Tensor)
+aten._pdist_forward                 _pdist_forward(Tensor self, float p=2) ->
+                                    Tensor
+aten._softmax                       _softmax(Tensor self, int dim, bool
+                                    half_to_float) -> Tensor
+aten._to_copy                       _to_copy(Tensor self, *, ScalarType?
+                                    dtype=None, Layout? layout=None, Device?
+                                    device=None, bool? pin_memory=None, bool
+                                    non_blocking=False, MemoryFormat?
+                                    memory_format=None) -> Tensor
+aten.abs                            abs(Tensor self) -> Tensor
+aten.acos                           acos(Tensor self) -> Tensor
+aten.acosh                          acosh(Tensor self) -> Tensor
+aten.adaptive_avg_pool1d            adaptive_avg_pool1d(Tensor self, int[1]
+                                    output_size) -> Tensor
+aten.add.Scalar                     add.Scalar(Tensor self, Scalar other,
+                                    Scalar alpha=1) -> Tensor
+aten.add.Tensor                     add.Tensor(Tensor self, Tensor other, *,
+                                    Scalar alpha=1) -> Tensor
+aten.addmm                          addmm(Tensor self, Tensor mat1, Tensor
+                                    mat2, *, Scalar beta=1, Scalar alpha=1) ->
+                                    Tensor
+aten.alias                          alias(Tensor(a) self) -> Tensor(a)
+aten.amax                           amax(Tensor self, int[1] dim=[], bool
+                                    keepdim=False) -> Tensor
+aten.amin                           amin(Tensor self, int[1] dim=[], bool
+                                    keepdim=False) -> Tensor
+aten.any                            any(Tensor self) -> Tensor
+aten.any.dim                        any.dim(Tensor self, int dim, bool
+                                    keepdim=False) -> Tensor
+aten.any.dims                       any.dims(Tensor self, int[]? dim=None,
+                                    bool keepdim=False) -> Tensor
+aten.arange.start_step              arange.start_step(Scalar start, Scalar
+                                    end, Scalar step=1, *, ScalarType?
+                                    dtype=None, Layout? layout=None, Device?
+                                    device=None, bool? pin_memory=None) ->
+                                    Tensor
+aten.argmax                         argmax(Tensor self, int? dim=None, bool
+                                    keepdim=False) -> Tensor
+aten.argmin                         argmin(Tensor self, int? dim=None, bool
+                                    keepdim=False) -> Tensor
+aten.as_strided                     as_strided(Tensor(a) self, SymInt[] size,
+                                    SymInt[] stride, SymInt?
+                                    storage_offset=None) -> Tensor(a)
+aten.asin                           asin(Tensor self) -> Tensor
+aten.asinh                          asinh(Tensor self) -> Tensor
+aten.atan                           atan(Tensor self) -> Tensor
+aten.atan2                          atan2(Tensor self, Tensor other) -> Tensor
+aten.atan2.out                      atan2.out(Tensor self, Tensor other, *,
+                                    Tensor(a!) out) -> Tensor(a!)
+aten.atanh                          atanh(Tensor self) -> Tensor
+aten.avg_pool1d                     avg_pool1d(Tensor self, int[1]
+                                    kernel_size, int[1] stride=[], int[1]
+                                    padding=0, bool ceil_mode=False, bool
+                                    count_include_pad=True) -> Tensor
+aten.avg_pool2d                     avg_pool2d(Tensor self, int[2]
+                                    kernel_size, int[2] stride=[], int[2]
+                                    padding=0, bool ceil_mode=False, bool
+                                    count_include_pad=True, int?
+                                    divisor_override=None) -> Tensor
+aten.avg_pool2d_backward            avg_pool2d_backward(Tensor grad_output,
+                                    Tensor self, int[2] kernel_size, int[2]
+                                    stride, int[2] padding, bool ceil_mode,
+                                    bool count_include_pad, int?
+                                    divisor_override) -> Tensor
+aten.avg_pool3d                     avg_pool3d(Tensor self, int[3]
+                                    kernel_size, int[3] stride=[], int[3]
+                                    padding=0, bool ceil_mode=False, bool
+                                    count_include_pad=True, int?
+                                    divisor_override=None) -> Tensor
+aten.bitwise_and.Scalar             bitwise_and.Scalar(Tensor self, Scalar
+                                    other) -> Tensor
+aten.bitwise_and.Tensor             bitwise_and.Tensor(Tensor self, Tensor
+                                    other) -> Tensor
+aten.bitwise_not                    bitwise_not(Tensor self) -> Tensor
+aten.bitwise_or.Scalar              bitwise_or.Scalar(Tensor self, Scalar
+                                    other) -> Tensor
+aten.bitwise_or.Tensor              bitwise_or.Tensor(Tensor self, Tensor
+                                    other) -> Tensor
+aten.bitwise_xor.Scalar             bitwise_xor.Scalar(Tensor self, Scalar
+                                    other) -> Tensor
+aten.bitwise_xor.Tensor             bitwise_xor.Tensor(Tensor self, Tensor
+                                    other) -> Tensor
+aten.bmm                            bmm(Tensor self, Tensor mat2) -> Tensor
+aten.cat                            cat(Tensor[] tensors, int dim=0) -> Tensor
+aten.ceil                           ceil(Tensor self) -> Tensor
+aten.clamp                          clamp(Tensor self, Scalar? min=None,
+                                    Scalar? max=None) -> Tensor
+aten.clamp.Tensor                   clamp.Tensor(Tensor self, Tensor?
+                                    min=None, Tensor? max=None) -> Tensor
+aten.clone                          clone(Tensor self, *, MemoryFormat?
+                                    memory_format=None) -> Tensor
+aten.col2im                         col2im(Tensor self, SymInt[2] output_size,
+                                    int[2] kernel_size, int[2] dilation,
+                                    int[2] padding, int[2] stride) -> Tensor
+aten.constant_pad_nd                constant_pad_nd(Tensor self, SymInt[] pad,
+                                    Scalar value=0) -> Tensor
+aten.convolution                    convolution(Tensor input, Tensor weight,
+                                    Tensor? bias, SymInt[] stride, SymInt[]
+                                    padding, SymInt[] dilation, bool
+                                    transposed, SymInt[] output_padding,
+                                    SymInt groups) -> Tensor
+aten.convolution_backward           convolution_backward(Tensor grad_output,
+                                    Tensor input, Tensor weight, SymInt[]?
+                                    bias_sizes, SymInt[] stride, SymInt[]
+                                    padding, SymInt[] dilation, bool
+                                    transposed, SymInt[] output_padding,
+                                    SymInt groups, bool[3] output_mask) ->
+                                    (Tensor, Tensor, Tensor)
+aten.copy                           copy(Tensor self, Tensor src, bool
+                                    non_blocking=False) -> Tensor
+aten.cos                            cos(Tensor self) -> Tensor
+aten.cosh                           cosh(Tensor self) -> Tensor
+aten.cumsum                         cumsum(Tensor self, int dim, *,
+                                    ScalarType? dtype=None) -> Tensor
+aten.diagonal                       diagonal(Tensor(a) self, int offset=0, int
+                                    dim1=0, int dim2=1) -> Tensor(a)
+aten.div.Scalar                     div.Scalar(Tensor self, Scalar other) ->
+                                    Tensor
+aten.div.Scalar_mode                div.Scalar_mode(Tensor self, Scalar other,
+                                    *, str? rounding_mode) -> Tensor
+aten.div.Tensor                     div.Tensor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.div.Tensor_mode                div.Tensor_mode(Tensor self, Tensor other,
+                                    *, str? rounding_mode) -> Tensor
+aten.elu                            elu(Tensor self, Scalar alpha=1, Scalar
+                                    scale=1, Scalar input_scale=1) -> Tensor
+aten.embedding                      embedding(Tensor weight, Tensor indices,
+                                    SymInt padding_idx=-1, bool
+                                    scale_grad_by_freq=False, bool
+                                    sparse=False) -> Tensor
+aten.embedding_dense_backward       embedding_dense_backward(Tensor
+                                    grad_output, Tensor indices, SymInt
+                                    num_weights, SymInt padding_idx, bool
+                                    scale_grad_by_freq) -> Tensor
+aten.empty.memory_format            empty.memory_format(SymInt[] size, *,
+                                    ScalarType? dtype=None, Layout?
+                                    layout=None, Device? device=None, bool?
+                                    pin_memory=None, MemoryFormat?
+                                    memory_format=None) -> Tensor
+aten.empty_strided                  empty_strided(SymInt[] size, SymInt[]
+                                    stride, *, ScalarType? dtype=None, Layout?
+                                    layout=None, Device? device=None, bool?
+                                    pin_memory=None) -> Tensor
+aten.eq.Scalar                      eq.Scalar(Tensor self, Scalar other) ->
+                                    Tensor
+aten.eq.Tensor                      eq.Tensor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.erf                            erf(Tensor self) -> Tensor
+aten.exp                            exp(Tensor self) -> Tensor
+aten.expand                         expand(Tensor(a) self, SymInt[] size, *,
+                                    bool implicit=False) -> Tensor(a)
+aten.expm1                          expm1(Tensor self) -> Tensor
+aten.fill.Scalar                    fill.Scalar(Tensor self, Scalar value) ->
+                                    Tensor
+aten.flip                           flip(Tensor self, int[] dims) -> Tensor
+aten.floor                          floor(Tensor self) -> Tensor
+aten.fmod.Scalar                    fmod.Scalar(Tensor self, Scalar other) ->
+                                    Tensor
+aten.fmod.Tensor                    fmod.Tensor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.full                           full(SymInt[] size, Scalar fill_value, *,
+                                    ScalarType? dtype=None, Layout?
+                                    layout=None, Device? device=None, bool?
+                                    pin_memory=None) -> Tensor
+aten.full_like                      full_like(Tensor self, Scalar fill_value,
+                                    *, ScalarType? dtype=None, Layout?
+                                    layout=None, Device? device=None, bool?
+                                    pin_memory=None, MemoryFormat?
+                                    memory_format=None) -> Tensor
+aten.gather                         gather(Tensor self, int dim, Tensor index,
+                                    *, bool sparse_grad=False) -> Tensor
+aten.ge.Scalar                      ge.Scalar(Tensor self, Scalar other) ->
+                                    Tensor
+aten.ge.Tensor                      ge.Tensor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.gelu                           gelu(Tensor self, *, str
+                                    approximate='none') -> Tensor
+aten.grid_sampler_2d                grid_sampler_2d(Tensor input, Tensor grid,
+                                    int interpolation_mode, int padding_mode,
+                                    bool align_corners) -> Tensor
+aten.gt.Scalar                      gt.Scalar(Tensor self, Scalar other) ->
+                                    Tensor
+aten.gt.Tensor                      gt.Tensor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.hardtanh                       hardtanh(Tensor self, Scalar min_val=-1,
+                                    Scalar max_val=1) -> Tensor
+aten.index.Tensor                   index.Tensor(Tensor self, Tensor?[]
+                                    indices) -> Tensor
+aten.index_put                      index_put(Tensor self, Tensor?[] indices,
+                                    Tensor values, bool accumulate=False) ->
+                                    Tensor
+aten.index_select                   index_select(Tensor self, int dim, Tensor
+                                    index) -> Tensor
+aten.isinf                          isinf(Tensor self) -> Tensor
+aten.isnan                          isnan(Tensor self) -> Tensor
+aten.le.Scalar                      le.Scalar(Tensor self, Scalar other) ->
+                                    Tensor
+aten.le.Tensor                      le.Tensor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.leaky_relu                     leaky_relu(Tensor self, Scalar
+                                    negative_slope=0.01) -> Tensor
+aten.log                            log(Tensor self) -> Tensor
+aten.log10                          log10(Tensor self) -> Tensor
+aten.log1p                          log1p(Tensor self) -> Tensor
+aten.log2                           log2(Tensor self) -> Tensor
+aten.logical_and                    logical_and(Tensor self, Tensor other) ->
+                                    Tensor
+aten.logical_not                    logical_not(Tensor self) -> Tensor
+aten.logical_or                     logical_or(Tensor self, Tensor other) ->
+                                    Tensor
+aten.logical_xor                    logical_xor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.lt.Scalar                      lt.Scalar(Tensor self, Scalar other) ->
+                                    Tensor
+aten.lt.Tensor                      lt.Tensor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.masked_scatter                 masked_scatter(Tensor self, Tensor mask,
+                                    Tensor source) -> Tensor
+aten.max.dim                        max.dim(Tensor self, int dim, bool
+                                    keepdim=False) -> (Tensor values, Tensor
+                                    indices)
+aten.max_pool2d_with_indices        max_pool2d_with_indices(Tensor self,
+                                    int[2] kernel_size, int[2] stride=[],
+                                    int[2] padding=0, int[2] dilation=1, bool
+                                    ceil_mode=False) -> (Tensor, Tensor)
+aten.max_pool2d_with_indices_       max_pool2d_with_indices_backward(Tensor
+backward                            grad_output, Tensor self, int[2]
+                                    kernel_size, int[2] stride, int[2]
+                                    padding, int[2] dilation, bool ceil_mode,
+                                    Tensor indices) -> Tensor
+aten.max_pool3d_with_indices        max_pool3d_with_indices(Tensor self,
+                                    int[3] kernel_size, int[3] stride=[],
+                                    int[3] padding=0, int[3] dilation=1, bool
+                                    ceil_mode=False) -> (Tensor, Tensor)
+aten.maximum                        maximum(Tensor self, Tensor other) ->
+                                    Tensor
+aten.mean                           mean(Tensor self, *, ScalarType?
+                                    dtype=None) -> Tensor
+aten.mean.dim                       mean.dim(Tensor self, int[1]? dim, bool
+                                    keepdim=False, *, ScalarType? dtype=None)
+                                    -> Tensor
+aten.min.dim                        min.dim(Tensor self, int dim, bool
+                                    keepdim=False) -> (Tensor values, Tensor
+                                    indices)
+aten.minimum                        minimum(Tensor self, Tensor other) ->
+                                    Tensor
+aten.mm                             mm(Tensor self, Tensor mat2) -> Tensor
+aten.mul.Scalar                     mul.Scalar(Tensor self, Scalar other) ->
+                                    Tensor
+aten.mul.Tensor                     mul.Tensor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.native_dropout                 native_dropout(Tensor input, float p,
+                                    bool? train) -> (Tensor, Tensor)
+aten.native_group_norm              native_group_norm(Tensor input, Tensor?
+                                    weight, Tensor? bias, SymInt N, SymInt C,
+                                    SymInt HxW, int group, float eps) ->
+                                    (Tensor, Tensor, Tensor)
+aten.native_group_norm_backward     native_group_norm_backward(Tensor
+                                    grad_out, Tensor input, Tensor mean,
+                                    Tensor rstd, Tensor? weight, SymInt N,
+                                    SymInt C, SymInt HxW, int group, bool[3]
+                                    output_mask) -> (Tensor, Tensor, Tensor)
+aten.native_layer_norm              native_layer_norm(Tensor input, SymInt[]
+                                    normalized_shape, Tensor? weight, Tensor?
+                                    bias, float eps) -> (Tensor, Tensor,
+                                    Tensor)
+aten.native_layer_norm_backward     native_layer_norm_backward(Tensor
+                                    grad_out, Tensor input, SymInt[]
+                                    normalized_shape, Tensor mean, Tensor
+                                    rstd, Tensor? weight, Tensor? bias,
+                                    bool[3] output_mask) -> (Tensor, Tensor,
+                                    Tensor)
+aten.ne.Scalar                      ne.Scalar(Tensor self, Scalar other) ->
+                                    Tensor
+aten.ne.Tensor                      ne.Tensor(Tensor self, Tensor other) ->
+                                    Tensor
+aten.neg                            neg(Tensor self) -> Tensor
+aten.nonzero                        nonzero(Tensor self) -> Tensor
+aten.permute                        permute(Tensor(a) self, int[] dims) ->
+                                    Tensor(a)
+aten.pow.Scalar                     pow.Scalar(Scalar self, Tensor exponent)
+                                    -> Tensor
+aten.pow.Tensor_Scalar              pow.Tensor_Scalar(Tensor self, Scalar
+                                    exponent) -> Tensor
+aten.pow.Tensor_Tensor              pow.Tensor_Tensor(Tensor self, Tensor
+                                    exponent) -> Tensor
+aten.prod                           prod(Tensor self, *, ScalarType?
+                                    dtype=None) -> Tensor
+aten.prod.dim_int                   prod.dim_int(Tensor self, int dim, bool
+                                    keepdim=False, *, ScalarType? dtype=None)
+                                    -> Tensor
+aten.rand                           rand(SymInt[] size, *, ScalarType?
+                                    dtype=None, Layout? layout=None, Device?
+                                    device=None, bool? pin_memory=None) ->
+                                    Tensor
+aten.randn                          randn(SymInt[] size, *, ScalarType?
+                                    dtype=None, Layout? layout=None, Device?
+                                    device=None, bool? pin_memory=None) ->
+                                    Tensor
+aten.randperm                       randperm(SymInt n, *, ScalarType?
+                                    dtype=long, Layout? layout=None, Device?
+                                    device=None, bool? pin_memory=None) ->
+                                    Tensor
+aten.reciprocal                     reciprocal(Tensor self) -> Tensor
+aten.reflection_pad1d               reflection_pad1d(Tensor self, SymInt[2]
+                                    padding) -> Tensor
+aten.reflection_pad2d               reflection_pad2d(Tensor self, SymInt[4]
+                                    padding) -> Tensor
+aten.reflection_pad3d               reflection_pad3d(Tensor self, SymInt[6]
+                                    padding) -> Tensor
+aten.relu                           relu(Tensor self) -> Tensor
+aten.remainder.Scalar               remainder.Scalar(Tensor self, Scalar
+                                    other) -> Tensor
+aten.remainder.Tensor               remainder.Tensor(Tensor self, Tensor
+                                    other) -> Tensor
+aten.repeat                         repeat(Tensor self, SymInt[] repeats) ->
+                                    Tensor
+aten.replication_pad2d              replication_pad2d(Tensor self, SymInt[4]
+                                    padding) -> Tensor
+aten.replication_pad3d              replication_pad3d(Tensor self, SymInt[6]
+                                    padding) -> Tensor
+aten.resize_                        resize_(Tensor(a!) self, SymInt[] size, *,
+                                    MemoryFormat? memory_format=None) ->
+                                    Tensor(a!)
+aten.round                          round(Tensor self) -> Tensor
+aten.rsqrt                          rsqrt(Tensor self) -> Tensor
+aten.scalar_tensor                  scalar_tensor(Scalar s, *, ScalarType?
+                                    dtype=None, Layout? layout=None, Device?
+                                    device=None, bool? pin_memory=None) ->
+                                    Tensor
+aten.scatter.src                    scatter.src(Tensor self, int dim, Tensor
+                                    index, Tensor src) -> Tensor
+aten.scatter.value                  scatter.value(Tensor self, int dim, Tensor
+                                    index, Scalar value) -> Tensor
+aten.scatter_add                    scatter_add(Tensor self, int dim, Tensor
+                                    index, Tensor src) -> Tensor
+aten.scatter_reduce.two             scatter_reduce.two(Tensor self, int dim,
+                                    Tensor index, Tensor src, str reduce, *,
+                                    bool include_self=True) -> Tensor
+aten.select.int                     select.int(Tensor(a) self, int dim, SymInt
+                                    index) -> Tensor(a)
+aten.select_scatter                 select_scatter(Tensor self, Tensor src,
+                                    int dim, SymInt index) -> Tensor
+aten.sigmoid                        sigmoid(Tensor self) -> Tensor
+aten.sign                           sign(Tensor self) -> Tensor
+aten.sin                            sin(Tensor self) -> Tensor
+aten.sinh                           sinh(Tensor self) -> Tensor
+aten.slice.Tensor                   slice.Tensor(Tensor(a) self, int dim=0,
+                                    SymInt? start=None, SymInt? end=None,
+                                    SymInt step=1) -> Tensor(a)
+aten.slice_scatter                  slice_scatter(Tensor self, Tensor src, int
+                                    dim=0, SymInt? start=None, SymInt?
+                                    end=None, SymInt step=1) -> Tensor
+aten.sort                           sort(Tensor self, int dim=-1, bool
+                                    descending=False) -> (Tensor values,
+                                    Tensor indices)
+aten.split_with_sizes               split_with_sizes(Tensor(a -> *) self,
+                                    SymInt[] split_sizes, int dim=0) ->
+                                    Tensor(a)[]
+aten.sqrt                           sqrt(Tensor self) -> Tensor
+aten.squeeze.dim                    squeeze.dim(Tensor(a) self, int dim) ->
+                                    Tensor(a)
+aten.squeeze.dims                   squeeze.dims(Tensor(a) self, int[] dim) ->
+                                    Tensor(a)
+aten.sub.Scalar                     sub.Scalar(Tensor self, Scalar other,
+                                    Scalar alpha=1) -> Tensor
+aten.sub.Tensor                     sub.Tensor(Tensor self, Tensor other, *,
+                                    Scalar alpha=1) -> Tensor
+aten.sum.dim_IntList                sum.dim_IntList(Tensor self, int[1]? dim,
+                                    bool keepdim=False, *, ScalarType?
+                                    dtype=None) -> Tensor
+aten.sym_is_contiguous              sym_is_contiguous(Tensor self,
+                                    MemoryFormat
+                                    memory_format=contiguous_format) ->
+                                    SymBool
+aten.sym_numel                      sym_numel(Tensor self) -> SymInt
+aten.sym_size.int                   sym_size.int(Tensor self, int dim) ->
+                                    SymInt
+aten.sym_storage_offset             sym_storage_offset(Tensor self) -> SymInt
+aten.sym_stride.int                 sym_stride.int(Tensor self, int dim) ->
+                                    SymInt
+aten.tan                            tan(Tensor self) -> Tensor
+aten.tanh                           tanh(Tensor self) -> Tensor
+aten.topk                           topk(Tensor self, SymInt k, int dim=-1,
+                                    bool largest=True, bool sorted=True) ->
+                                    (Tensor values, Tensor indices)
+aten.trunc                          trunc(Tensor self) -> Tensor
+aten.unsqueeze                      unsqueeze(Tensor(a) self, int dim) ->
+                                    Tensor(a)
+aten.upsample_bilinear2d.vec        upsample_bilinear2d.vec(Tensor input,
+                                    SymInt[]? output_size, bool align_corners,
+                                    float[]? scale_factors) -> Tensor
+aten.upsample_nearest2d.vec         upsample_nearest2d.vec(Tensor input,
+                                    SymInt[]? output_size, float[]?
+                                    scale_factors) -> Tensor
+aten.var.correction                 var.correction(Tensor self, int[1]?
+                                    dim=None, *, Scalar? correction=None, bool
+                                    keepdim=False) -> Tensor
+aten.var.dim                        var.dim(Tensor self, int[1]? dim, bool
+                                    unbiased=True, bool keepdim=False) ->
+                                    Tensor
+aten.view                           view(Tensor(a) self, SymInt[] size) ->
+                                    Tensor(a)
+aten.where.self                     where.self(Tensor condition, Tensor self,
+                                    Tensor other) -> Tensor
 
 PRIMS IR                *user_guide-torch_compiler-torch.compiler_ir-prims-ir*
 
@@ -14798,7 +14951,7 @@ https://github.com/pytorch/pytorch/blob/main/torch/fx/subgraph_rewriter.py.
 Given a `pattern`, it creates a subgraph of operators matching to the
 pattern, and then replaces each matched subgraph with the `replacement`.
 
-Note:
+Note: ~
 
 >text
     This is an inplace operation.
@@ -14839,7 +14992,7 @@ The subgraph rewriter returns a list of `ReplacedPatterns`:
         # List of nodes that were added into the graph
         replacements: List[Node]
 <
-Note:
+Note: ~
 
 >text
     The nodes created by the subgraph rewriter will not have the metadata that

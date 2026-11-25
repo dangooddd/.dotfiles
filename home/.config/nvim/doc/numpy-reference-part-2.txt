@@ -6,6 +6,34 @@ REFERENCE (PART 2)                            *numpy-section-reference-part-2*
 
 
 ----------------------------------------------------------------------------
+                                                   *numpy.ma.masked_not_equal*
+
+ma.masked_not_equal(x, value, copy=True)
+    Mask an array where not equal to a given value.
+
+    This function is a shortcut to `masked_where`, with condition = (x !=
+    value).
+
+      See also: ~
+
+      |numpy.ma.masked_where|
+          Mask where a condition is met.
+
+    Examples: ~
+
+    >python
+        >>> import numpy as np
+        >>> import numpy.ma as ma
+        >>> a = np.arange(4)
+        >>> a
+        array([0, 1, 2, 3])
+        >>> ma.masked_not_equal(a, 2)
+        masked_array(data=[--, --, 2, --],
+                     mask=[ True,  True, False,  True],
+               fill_value=999999)
+<
+
+----------------------------------------------------------------------------
                                                       *numpy.ma.masked_object*
 
 ma.masked_object(x, value, copy=True, shrink=True)
@@ -5349,37 +5377,38 @@ class numpy.matrix(data, dtype=None, copy=True)
 
     Methods: ~
 
-    all([axis, out])                    Test whether all matrix elements along a
-                                        given axis evaluate to True.
+    all([axis, out])                    Test whether all matrix elements along
+                                        a given axis evaluate to True.
     any([axis, out])                    Test whether any array element along a
                                         given axis evaluates to True.
     argmax([axis, out])                 Indexes of the maximum values along an
                                         axis.
     argmin([axis, out])                 Indexes of the minimum values along an
                                         axis.
-    argpartition(kth[, axis, kind,      Returns the indices that would partition
-    order])                             this array.
-    argsort([axis, kind, order,         Returns the indices that would sort this
-    stable, descending])                array.
+    argpartition(kth[, axis, kind,      Returns the indices that would
+    order])                             partition this array.
+    argsort([axis, kind, order,         Returns the indices that would sort
+    stable, descending])                this array.
     astype(dtype[, order, casting,      Copy of the array, cast to a specified
     subok, copy])                       type.
     byteswap([inplace])                 Swap the bytes of the array elements
     choose(choices[, out, mode])        Use an index array to construct a new
                                         array from a set of choices.
-    clip([min, max, out])               Return an array whose values are limited
-                                        to [min, max].
-    compress(condition[, axis, out])    Return selected slices of this array along
-                                        given axis.
+    clip([min, max, out])               Return an array whose values are
+                                        limited to [min, max].
+    compress(condition[, axis, out])    Return selected slices of this array
+                                        along given axis.
     conj()                              Complex-conjugate all elements.
     conjugate()                         Return the complex conjugate,
                                         element-wise.
     copy([order])                       Return a copy of the array.
     cumprod([axis, dtype, out])         Return the cumulative product of the
                                         elements along the given axis.
-    cumsum([axis, dtype, out])          Return the cumulative sum of the elements
-                                        along the given axis.
+    cumsum([axis, dtype, out])          Return the cumulative sum of the
+                                        elements along the given axis.
     diagonal([offset, axis1, axis2])    Return specified diagonals.
-    dot(other, /[, out])                Refer to numpy.dot for full documentation.
+    dot(other, /[, out])                Refer to numpy.dot for full
+                                        documentation.
     dump(file)                          Dump a pickle of the array to the
                                         specified file.
     dumps()                             Returns the pickle of the array as a
@@ -5388,62 +5417,67 @@ class numpy.matrix(data, dtype=None, copy=True)
     flatten([order])                    Return a flattened copy of the matrix.
     getA()                              Return self as an ndarray object.
     getA1()                             Return self as a flattened ndarray.
-    getH()                              Returns the (complex) conjugate transpose
-                                        of self.
-    getI()                              Returns the (multiplicative) inverse of
-                                        invertible self.
+    getH()                              Returns the (complex) conjugate
+                                        transpose of self.
+    getI()                              Returns the (multiplicative) inverse
+                                        of invertible self.
     getT()                              Returns the transpose of the matrix.
-    getfield(dtype[, offset])           Returns a field of the given array as a
-                                        certain type.
-    item(*args)                         Copy an element of an array to a standard
-                                        Python scalar and return it.
-    max([axis, out])                    Return the maximum value along an axis.
-    mean([axis, dtype, out])            Returns the average of the matrix elements
-                                        along the given axis.
-    min([axis, out])                    Return the minimum value along an axis.
-    nonzero()                           Return the indices of the elements that
-                                        are non-zero.
-    partition(kth[, axis, kind,         Partially sorts the elements in the array
-    order])                             in such a way that the value of the
-                                        element in k-th position is in the
-                                        position it would be in a sorted array.
-    prod([axis, dtype, out])            Return the product of the array elements
-                                        over the given axis.
+    getfield(dtype[, offset])           Returns a field of the given array as
+                                        a certain type.
+    item(*args)                         Copy an element of an array to a
+                                        standard Python scalar and return it.
+    max([axis, out])                    Return the maximum value along an
+                                        axis.
+    mean([axis, dtype, out])            Returns the average of the matrix
+                                        elements along the given axis.
+    min([axis, out])                    Return the minimum value along an
+                                        axis.
+    nonzero()                           Return the indices of the elements
+                                        that are non-zero.
+    partition(kth[, axis, kind,         Partially sorts the elements in the
+    order])                             array in such a way that the value of
+                                        the element in k-th position is in the
+                                        position it would be in a sorted
+                                        array.
+    prod([axis, dtype, out])            Return the product of the array
+                                        elements over the given axis.
     ptp([axis, out])                    Peak-to-peak (maximum - minimum) value
                                         along the given axis.
     put(indices, values[, mode])        Set a.flat[n] = values[n] for all n in
                                         indices.
     ravel([order])                      Return a flattened matrix.
     repeat(repeats[, axis])             Repeat elements of an array.
-    reshape(a.reshape)                  Returns an array containing the same data
-                                        with a new shape.
-    resize(a.resize)                    Change shape and size of array in-place.
-    round([decimals, out])              Return a with each element rounded to the
-                                        given number of decimals.
-    searchsorted(v[, side, sorter])     Find indices where elements of v should be
-                                        inserted in a to maintain order.
-    setfield(val, dtype[, offset])      Put a value into a specified place in a
-                                        field defined by a data-type.
+    reshape(a.reshape)                  Returns an array containing the same
+                                        data with a new shape.
+    resize(a.resize)                    Change shape and size of array
+                                        in-place.
+    round([decimals, out])              Return a with each element rounded to
+                                        the given number of decimals.
+    searchsorted(v[, side, sorter])     Find indices where elements of v
+                                        should be inserted in a to maintain
+                                        order.
+    setfield(val, dtype[, offset])      Put a value into a specified place in
+                                        a field defined by a data-type.
     setflags([write, align, uic])       Set array flags WRITEABLE, ALIGNED,
                                         WRITEBACKIFCOPY, respectively.
     sort([axis, kind, order, stable,    Sort an array in-place.
     descending])
     squeeze([axis])                     Return a possibly reshaped matrix.
-    std([axis, dtype, out, ddof])       Return the standard deviation of the array
-                                        elements along the given axis.
-    sum([axis, dtype, out])             Returns the sum of the matrix elements,
-                                        along the given axis.
-    swapaxes(axis1, axis2, /)           Return a view of the array with axis1 and
-                                        axis2 interchanged.
-    take(indices[, axis, out, mode])    Return an array formed from the elements
-                                        of a at the given indices.
+    std([axis, dtype, out, ddof])       Return the standard deviation of the
+                                        array elements along the given axis.
+    sum([axis, dtype, out])             Returns the sum of the matrix
+                                        elements, along the given axis.
+    swapaxes(axis1, axis2, /)           Return a view of the array with axis1
+                                        and axis2 interchanged.
+    take(indices[, axis, out, mode])    Return an array formed from the
+                                        elements of a at the given indices.
     to_device(device, /, *[, stream])   For Array API compatibility.
-    tobytes([order])                    Construct Python bytes containing the raw
-                                        data bytes in the array.
-    tofile(fid, /[, sep, format])       Write array to a file as text or binary
-                                        (default).
-    tolist()                            Return the matrix as a (possibly nested)
-                                        list.
+    tobytes([order])                    Construct Python bytes containing the
+                                        raw data bytes in the array.
+    tofile(fid, /[, sep, format])       Write array to a file as text or
+                                        binary (default).
+    tolist()                            Return the matrix as a (possibly
+                                        nested) list.
     trace([offset, axis1, axis2,        Return the sum along diagonals of the
     dtype, out])                        array.
     transpose(*axes)                    Returns a view of the array with axes
@@ -11507,75 +11541,79 @@ class numpy.ndarray(shape, dtype=np.float64, buffer=None, offset=0,
 
     Methods: ~
 
-    all([axis, out, keepdims, where])   Returns True if all elements evaluate to
-                                        True.
-    any([axis, out, keepdims, where])   Returns True if any of the elements of a
-                                        evaluate to True.
-    argmax([axis, out, keepdims])       Return indices of the maximum values along
-                                        the given axis.
-    argmin([axis, out, keepdims])       Return indices of the minimum values along
-                                        the given axis.
-    argpartition(kth[, axis, kind,      Returns the indices that would partition
-    order])                             this array.
-    argsort([axis, kind, order,         Returns the indices that would sort this
-    stable, descending])                array.
+    all([axis, out, keepdims, where])   Returns True if all elements evaluate
+                                        to True.
+    any([axis, out, keepdims, where])   Returns True if any of the elements of
+                                        a evaluate to True.
+    argmax([axis, out, keepdims])       Return indices of the maximum values
+                                        along the given axis.
+    argmin([axis, out, keepdims])       Return indices of the minimum values
+                                        along the given axis.
+    argpartition(kth[, axis, kind,      Returns the indices that would
+    order])                             partition this array.
+    argsort([axis, kind, order,         Returns the indices that would sort
+    stable, descending])                this array.
     astype(dtype[, order, casting,      Copy of the array, cast to a specified
     subok, copy])                       type.
     byteswap([inplace])                 Swap the bytes of the array elements
     choose(choices[, out, mode])        Use an index array to construct a new
                                         array from a set of choices.
-    clip([min, max, out])               Return an array whose values are limited
-                                        to [min, max].
-    compress(condition[, axis, out])    Return selected slices of this array along
-                                        given axis.
+    clip([min, max, out])               Return an array whose values are
+                                        limited to [min, max].
+    compress(condition[, axis, out])    Return selected slices of this array
+                                        along given axis.
     conj()                              Complex-conjugate all elements.
     conjugate()                         Return the complex conjugate,
                                         element-wise.
     copy([order])                       Return a copy of the array.
     cumprod([axis, dtype, out])         Return the cumulative product of the
                                         elements along the given axis.
-    cumsum([axis, dtype, out])          Return the cumulative sum of the elements
-                                        along the given axis.
+    cumsum([axis, dtype, out])          Return the cumulative sum of the
+                                        elements along the given axis.
     diagonal([offset, axis1, axis2])    Return specified diagonals.
-    dot(other, /[, out])                Refer to numpy.dot for full documentation.
+    dot(other, /[, out])                Refer to numpy.dot for full
+                                        documentation.
     dump(file)                          Dump a pickle of the array to the
                                         specified file.
     dumps()                             Returns the pickle of the array as a
                                         string.
     fill(value)                         Fill the array with a scalar value.
-    flatten([order])                    Return a copy of the array collapsed into
-                                        one dimension.
-    getfield(dtype[, offset])           Returns a field of the given array as a
-                                        certain type.
-    item(*args)                         Copy an element of an array to a standard
-                                        Python scalar and return it.
+    flatten([order])                    Return a copy of the array collapsed
+                                        into one dimension.
+    getfield(dtype[, offset])           Returns a field of the given array as
+                                        a certain type.
+    item(*args)                         Copy an element of an array to a
+                                        standard Python scalar and return it.
     max([axis, out, keepdims, initial,  Return the maximum along a given axis.
     where])
-    mean([axis, dtype, out, keepdims,   Returns the average of the array elements
-    where])                             along given axis.
+    mean([axis, dtype, out, keepdims,   Returns the average of the array
+    where])                             elements along given axis.
     min([axis, out, keepdims, initial,  Return the minimum along a given axis.
     where])
-    nonzero()                           Return the indices of the elements that
-                                        are non-zero.
-    partition(kth[, axis, kind,         Partially sorts the elements in the array
-    order])                             in such a way that the value of the
-                                        element in k-th position is in the
-                                        position it would be in a sorted array.
-    prod([axis, dtype, out, keepdims,   Return the product of the array elements
-    initial, ...])                      over the given axis
+    nonzero()                           Return the indices of the elements
+                                        that are non-zero.
+    partition(kth[, axis, kind,         Partially sorts the elements in the
+    order])                             array in such a way that the value of
+                                        the element in k-th position is in the
+                                        position it would be in a sorted
+                                        array.
+    prod([axis, dtype, out, keepdims,   Return the product of the array
+    initial, ...])                      elements over the given axis
     put(indices, values[, mode])        Set a.flat[n] = values[n] for all n in
                                         indices.
     ravel([order])                      Return a flattened array.
     repeat(repeats[, axis])             Repeat elements of an array.
-    reshape(a.reshape)                  Returns an array containing the same data
-                                        with a new shape.
-    resize(a.resize)                    Change shape and size of array in-place.
-    round([decimals, out])              Return a with each element rounded to the
-                                        given number of decimals.
-    searchsorted(v[, side, sorter])     Find indices where elements of v should be
-                                        inserted in a to maintain order.
-    setfield(val, dtype[, offset])      Put a value into a specified place in a
-                                        field defined by a data-type.
+    reshape(a.reshape)                  Returns an array containing the same
+                                        data with a new shape.
+    resize(a.resize)                    Change shape and size of array
+                                        in-place.
+    round([decimals, out])              Return a with each element rounded to
+                                        the given number of decimals.
+    searchsorted(v[, side, sorter])     Find indices where elements of v
+                                        should be inserted in a to maintain
+                                        order.
+    setfield(val, dtype[, offset])      Put a value into a specified place in
+                                        a field defined by a data-type.
     setflags([write, align, uic])       Set array flags WRITEABLE, ALIGNED,
                                         WRITEBACKIFCOPY, respectively.
     sort([axis, kind, order, stable,    Sort an array in-place.
@@ -11583,19 +11621,19 @@ class numpy.ndarray(shape, dtype=np.float64, buffer=None, offset=0,
     squeeze([axis])                     Remove axes of length one from a.
     std([axis, dtype, out, ddof,        Returns the standard deviation of the
     keepdims, ...])                     array elements along given axis.
-    sum([axis, dtype, out, keepdims,    Return the sum of the array elements over
-    initial, where])                    the given axis.
-    swapaxes(axis1, axis2, /)           Return a view of the array with axis1 and
-                                        axis2 interchanged.
-    take(indices[, axis, out, mode])    Return an array formed from the elements
-                                        of a at the given indices.
+    sum([axis, dtype, out, keepdims,    Return the sum of the array elements
+    initial, where])                    over the given axis.
+    swapaxes(axis1, axis2, /)           Return a view of the array with axis1
+                                        and axis2 interchanged.
+    take(indices[, axis, out, mode])    Return an array formed from the
+                                        elements of a at the given indices.
     to_device(device, /, *[, stream])   For Array API compatibility.
-    tobytes([order])                    Construct Python bytes containing the raw
-                                        data bytes in the array.
-    tofile(fid, /[, sep, format])       Write array to a file as text or binary
-                                        (default).
-    tolist()                            Return the array as an a.ndim-levels deep
-                                        nested list of Python scalars.
+    tobytes([order])                    Construct Python bytes containing the
+                                        raw data bytes in the array.
+    tofile(fid, /[, sep, format])       Write array to a file as text or
+                                        binary (default).
+    tolist()                            Return the array as an a.ndim-levels
+                                        deep nested list of Python scalars.
     trace([offset, axis1, axis2,        Return the sum along diagonals of the
     dtype, out])                        array.
     transpose(*axes)                    Returns a view of the array with axes
@@ -13461,7 +13499,8 @@ class numpy.nditer(op, flags=None, op_flags=None, op_dtypes=None, order='K',
 
     Methods: ~
 
-    close()                 Resolve all writeback semantics in writeable operands.
+    close()                 Resolve all writeback semantics in writeable
+                            operands.
     copy()                  Get a copy of the iterator in its current state.
     debug_print()           Print the current state of the nditer instance and
                             debug info to stdout.
@@ -13473,8 +13512,8 @@ class numpy.nditer(op, flags=None, op_flags=None, op_dtypes=None, order='K',
                             result.
     remove_axis(i, /)       Removes axis i from the iterator.
     remove_multi_index()    When the "multi_index" flag was specified, this
-                            removes it, allowing the internal iteration structure
-                            to be optimized further.
+                            removes it, allowing the internal iteration
+                            structure to be optimized further.
     reset()                 Reset the iterator to its initial state.
 
     Notes: ~
@@ -14739,9 +14778,9 @@ numpy.partition(a, kth, axis=-1, kind='introselect', order=None)
     stable. A stable sort keeps items with the same key in the same relative
     order. The available algorithms have the following properties:
 
-    kind                                     speed  worst case  work space  stable
-    ---------------------------------------  -----  ----------  ----------  ------
-    ‘introselect'                            1      O(n)        0           no
+    kind                                 speed  worst case  work space  stable
+    -----------------------------------  -----  ----------  ----------  ------
+    ‘introselect'                        1      O(n)        0           no
 
     All the partition algorithms make temporary copies of the data when
     partitioning along any but the last axis. Consequently, partitioning
@@ -16565,9 +16604,10 @@ class numpy.polynomial.chebyshev.Chebyshev(coef, domain=None, window=None,
     __call__(arg)                       Call self as a function.
     basis(deg[, domain, window,         Series basis polynomial of degree deg.
     symbol])
-    cast(series[, domain, window])      Convert series to series of this class.
-    convert([domain, kind, window])     Convert series to a different kind and/or
-                                        domain and/or window.
+    cast(series[, domain, window])      Convert series to series of this
+                                        class.
+    convert([domain, kind, window])     Convert series to a different kind
+                                        and/or domain and/or window.
     copy()                              Return a copy.
     cutdeg(deg)                         Truncate series to the given degree.
     degree()                            The degree of the series.
@@ -16582,12 +16622,13 @@ class numpy.polynomial.chebyshev.Chebyshev(coef, domain=None, window=None,
     has_samewindow(other)               Check if windows match.
     identity([domain, window, symbol])  Identity function.
     integ([m, k, lbnd])                 Integrate.
-    interpolate(func, deg[, domain,     Interpolate a function at the Chebyshev
-    args])                              points of the first kind.
+    interpolate(func, deg[, domain,     Interpolate a function at the
+    args])                              Chebyshev points of the first kind.
     linspace([n, domain])               Return x, y values at equally spaced
                                         points in domain.
     mapparms()                          Return the mapping parameters.
-    roots()                             Return the roots of the series polynomial.
+    roots()                             Return the roots of the series
+                                        polynomial.
     trim([tol])                         Remove trailing coefficients
     truncate(size)                      Truncate series to length size.
 
@@ -19296,9 +19337,10 @@ class numpy.polynomial.hermite.Hermite(coef, domain=None, window=None,
     __call__(arg)                       Call self as a function.
     basis(deg[, domain, window,         Series basis polynomial of degree deg.
     symbol])
-    cast(series[, domain, window])      Convert series to series of this class.
-    convert([domain, kind, window])     Convert series to a different kind and/or
-                                        domain and/or window.
+    cast(series[, domain, window])      Convert series to series of this
+                                        class.
+    convert([domain, kind, window])     Convert series to a different kind
+                                        and/or domain and/or window.
     copy()                              Return a copy.
     cutdeg(deg)                         Truncate series to the given degree.
     degree()                            The degree of the series.
@@ -19316,7 +19358,8 @@ class numpy.polynomial.hermite.Hermite(coef, domain=None, window=None,
     linspace([n, domain])               Return x, y values at equally spaced
                                         points in domain.
     mapparms()                          Return the mapping parameters.
-    roots()                             Return the roots of the series polynomial.
+    roots()                             Return the roots of the series
+                                        polynomial.
     trim([tol])                         Remove trailing coefficients
     truncate(size)                      Truncate series to length size.
 
@@ -22017,9 +22060,10 @@ class numpy.polynomial.hermite_e.HermiteE(coef, domain=None, window=None,
     __call__(arg)                       Call self as a function.
     basis(deg[, domain, window,         Series basis polynomial of degree deg.
     symbol])
-    cast(series[, domain, window])      Convert series to series of this class.
-    convert([domain, kind, window])     Convert series to a different kind and/or
-                                        domain and/or window.
+    cast(series[, domain, window])      Convert series to series of this
+                                        class.
+    convert([domain, kind, window])     Convert series to a different kind
+                                        and/or domain and/or window.
     copy()                              Return a copy.
     cutdeg(deg)                         Truncate series to the given degree.
     degree()                            The degree of the series.
@@ -22037,7 +22081,8 @@ class numpy.polynomial.hermite_e.HermiteE(coef, domain=None, window=None,
     linspace([n, domain])               Return x, y values at equally spaced
                                         points in domain.
     mapparms()                          Return the mapping parameters.
-    roots()                             Return the roots of the series polynomial.
+    roots()                             Return the roots of the series
+                                        polynomial.
     trim([tol])                         Remove trailing coefficients
     truncate(size)                      Truncate series to length size.
 
@@ -24640,9 +24685,10 @@ class numpy.polynomial.laguerre.Laguerre(coef, domain=None, window=None,
     __call__(arg)                       Call self as a function.
     basis(deg[, domain, window,         Series basis polynomial of degree deg.
     symbol])
-    cast(series[, domain, window])      Convert series to series of this class.
-    convert([domain, kind, window])     Convert series to a different kind and/or
-                                        domain and/or window.
+    cast(series[, domain, window])      Convert series to series of this
+                                        class.
+    convert([domain, kind, window])     Convert series to a different kind
+                                        and/or domain and/or window.
     copy()                              Return a copy.
     cutdeg(deg)                         Truncate series to the given degree.
     degree()                            The degree of the series.
@@ -24660,7 +24706,8 @@ class numpy.polynomial.laguerre.Laguerre(coef, domain=None, window=None,
     linspace([n, domain])               Return x, y values at equally spaced
                                         points in domain.
     mapparms()                          Return the mapping parameters.
-    roots()                             Return the roots of the series polynomial.
+    roots()                             Return the roots of the series
+                                        polynomial.
     trim([tol])                         Remove trailing coefficients
     truncate(size)                      Truncate series to length size.
 
@@ -27345,9 +27392,10 @@ class numpy.polynomial.legendre.Legendre(coef, domain=None, window=None,
     __call__(arg)                       Call self as a function.
     basis(deg[, domain, window,         Series basis polynomial of degree deg.
     symbol])
-    cast(series[, domain, window])      Convert series to series of this class.
-    convert([domain, kind, window])     Convert series to a different kind and/or
-                                        domain and/or window.
+    cast(series[, domain, window])      Convert series to series of this
+                                        class.
+    convert([domain, kind, window])     Convert series to a different kind
+                                        and/or domain and/or window.
     copy()                              Return a copy.
     cutdeg(deg)                         Truncate series to the given degree.
     degree()                            The degree of the series.
@@ -27365,7 +27413,8 @@ class numpy.polynomial.legendre.Legendre(coef, domain=None, window=None,
     linspace([n, domain])               Return x, y values at equally spaced
                                         points in domain.
     mapparms()                          Return the mapping parameters.
-    roots()                             Return the roots of the series polynomial.
+    roots()                             Return the roots of the series
+                                        polynomial.
     trim([tol])                         Remove trailing coefficients
     truncate(size)                      Truncate series to length size.
 
@@ -29944,9 +29993,10 @@ class numpy.polynomial.polynomial.Polynomial(coef, domain=None, window=None,
     __call__(arg)                       Call self as a function.
     basis(deg[, domain, window,         Series basis polynomial of degree deg.
     symbol])
-    cast(series[, domain, window])      Convert series to series of this class.
-    convert([domain, kind, window])     Convert series to a different kind and/or
-                                        domain and/or window.
+    cast(series[, domain, window])      Convert series to series of this
+                                        class.
+    convert([domain, kind, window])     Convert series to a different kind
+                                        and/or domain and/or window.
     copy()                              Return a copy.
     cutdeg(deg)                         Truncate series to the given degree.
     degree()                            The degree of the series.
@@ -29964,7 +30014,8 @@ class numpy.polynomial.polynomial.Polynomial(coef, domain=None, window=None,
     linspace([n, domain])               Return x, y values at equally spaced
                                         points in domain.
     mapparms()                          Return the mapping parameters.
-    roots()                             Return the roots of the series polynomial.
+    roots()                             Return the roots of the series
+                                        polynomial.
     trim([tol])                         Remove trailing coefficients
     truncate(size)                      Truncate series to length size.
 
@@ -33527,14 +33578,14 @@ numpy.quantile(a, q, axis=None, out=None, overwrite_input=False,
     where `m` may be defined according to several different conventions. The
     preferred convention may be selected using the `method` parameter:
 
-    method                                       number in H&F           m
-    -------------------------------------------  ----------------------  ---------
-    interpolated_inverted_cdf                    4                       0
-    hazen                                        5                       1/2
-    weibull                                      6                       q
-    linear (default)                             7                       1 - q
-    median_unbiased                              8                       q/3 + 1/3
-    normal_unbiased                              9                       q/4 + 3/8
+    method                                     number in H&F         m
+    -----------------------------------------  --------------------  ---------
+    interpolated_inverted_cdf                  4                     0
+    hazen                                      5                     1/2
+    weibull                                    6                     q
+    linear (default)                           7                     1 - q
+    median_unbiased                            8                     q/3 + 1/3
+    normal_unbiased                            9                     q/4 + 3/8
 
     Note that indices `j` and `j + 1` are clipped to the range `0` to
     `n - 1` when the results of the formula would be outside the allowed
@@ -34533,8 +34584,6 @@ numpy.reciprocal(x, /, out=None, *, where=True, casting='same_kind',
         y ndarray
             Return array. This is a scalar if x is a scalar.
 
-    Notes: ~
-
       Note: ~
 
       This function is not designed to work with integers.
@@ -35229,16 +35278,16 @@ numpy.rollaxis(a, axis, start=0)
             “complete” roll. The following table describes how negative
             values of `start` are interpreted:
 
-            start                               Normalized start
-            ----------------------------------  ------------------------------------------
-            -(arr.ndim+1)                       raise AxisError
-            -arr.ndim                           0
-            ⋮                                   ⋮
-            -1                                  arr.ndim-1
-            0                                   0
-            ⋮                                   ⋮
-            arr.ndim                            arr.ndim
-            arr.ndim + 1                        raise AxisError
+            start                         Normalized start
+            ----------------------------  ------------------------------------
+            -(arr.ndim+1)                 raise AxisError
+            -arr.ndim                     0
+            ⋮                             ⋮
+            -1                            arr.ndim-1
+            0                             0
+            ⋮                             ⋮
+            arr.ndim                      arr.ndim
+            arr.ndim + 1                  raise AxisError
 
     Returns: ~
         res ndarray
@@ -35951,7 +36000,7 @@ numpy.searchsorted(a, v, side='left', sorter=None)
     Assuming that a is sorted:
 
     side   returned index i satisfies
-    -----  -----------------------------------------------------------------------
+    -----  -------------------------------------------------------------------
     left   a[i-1] < v <= a[i]
     right  a[i-1] <= v < a[i]
 
@@ -37019,13 +37068,13 @@ numpy.sinc(x)
     following combinations of backend and device (or other capability) are
     supported.
 
-    Library                                   CPU                GPU
-    ----------------------------------------  -----------------  -----------------
-    NumPy                                     ✅                  n/a
-    CuPy                                      n/a                ✅
-    PyTorch                                   ✅                  ✅
-    JAX                                       ✅                  ⛔
-    Dask                                      ✅                  n/a
+    Library                                 CPU               GPU
+    --------------------------------------  ----------------  ----------------
+    NumPy                                   ✅                n/a
+    CuPy                                    n/a               ✅
+    PyTorch                                 ✅                ✅
+    JAX                                     ✅                ⛔
+    Dask                                    ✅                n/a
 
     See Support for the array API standard
     https://docs.scipy.org/doc/scipy/dev/api-dev/array_api.html#dev-arrayapi
@@ -37279,12 +37328,12 @@ numpy.sort(a, axis=-1, kind=None, order=None, *, stable=None, descending=<no
     stable sort keeps items with the same key in the same relative order.
     The four algorithms implemented in NumPy have the following properties:
 
-    kind                  speed     worst case         work space        stable
-    --------------------  --------  -----------------  ----------------  ---------
-    ‘quicksort'           1         O(n^2)             0                 no
-    ‘heapsort'            3         O(n*log(n))        0                 no
-    ‘mergesort'           2         O(n*log(n))        ~n/2              yes
-    ‘timsort'             2         O(n*log(n))        ~n/2              yes
+    kind                 speed    worst case        work space       stable
+    -------------------  -------  ----------------  ---------------  ---------
+    ‘quicksort'          1        O(n^2)            0                no
+    ‘heapsort'           3        O(n*log(n))       0                no
+    ‘mergesort'          2        O(n*log(n))       ~n/2             yes
+    ‘timsort'            2        O(n*log(n))       ~n/2             yes
 
       Note: ~
 
@@ -37358,7 +37407,7 @@ numpy.sort(a, axis=-1, kind=None, order=None, *, stable=None, descending=<no
         >>> values = [('Arthur', 1.8, 41), ('Lancelot', 1.9, 38),
         ...           ('Galahad', 1.7, 38)]
         >>> a = np.array(values, dtype=dtype)       # create a structured array
-        >>> np.sort(a, order='height')                        
+        >>> np.sort(a, order='height')
         array([('Galahad', 1.7, 38), ('Arthur', 1.8, 41),
                ('Lancelot', 1.8999999999999999, 38)],
               dtype=[('name', '|S10'), ('height', '<f8'), ('age', '<i4')])
@@ -37366,7 +37415,7 @@ numpy.sort(a, axis=-1, kind=None, order=None, *, stable=None, descending=<no
     Sort by age, then height if ages are equal:
 
     >python
-        >>> np.sort(a, order=['age', 'height'])               
+        >>> np.sort(a, order=['age', 'height'])
         array([('Galahad', 1.7, 38), ('Lancelot', 1.8999999999999999, 38),
                ('Arthur', 1.8, 41)],
               dtype=[('name', '|S10'), ('height', '<f8'), ('age', '<i4')])
@@ -38408,8 +38457,8 @@ strings.expandtabs(a, tabsize=8)
     >python
         >>> import numpy as np
         >>> a = np.array(['         Hello   world'])
-        >>> np.strings.expandtabs(a, tabsize=4)  
-        array(['        Hello   world'], dtype='<U21')  
+        >>> np.strings.expandtabs(a, tabsize=4)
+        array(['        Hello   world'], dtype='<U21')
 <
 
 ----------------------------------------------------------------------------
@@ -43216,15 +43265,15 @@ class numpy.ufunc
     __call__(*args, **kwargs)           Call self as a function.
     accumulate(array[, axis, dtype,     Accumulate the result of applying the
     out])                               operator to all elements.
-    at(a, indices[, b])                 Performs unbuffered in place operation on
-                                        operand 'a' for elements specified by
-                                        'indices'.
+    at(a, indices[, b])                 Performs unbuffered in place operation
+                                        on operand 'a' for elements specified
+                                        by 'indices'.
     outer(A, B, /, **kwargs)            Apply the ufunc op to all pairs (a, b)
                                         with a in A and b in B.
     reduce(array[, axis, dtype, out,    Reduces array's dimension by one, by
     keepdims, ...])                     applying ufunc along one axis.
-    reduceat(array, indices[, axis,     Performs a (local) reduce with specified
-    dtype, out])                        slices over a single axis.
+    reduceat(array, indices[, axis,     Performs a (local) reduce with
+    dtype, out])                        specified slices over a single axis.
     resolve_dtypes(dtypes, *[,          Find the dtypes NumPy will use for the
     signature, ...])                    operation.
 

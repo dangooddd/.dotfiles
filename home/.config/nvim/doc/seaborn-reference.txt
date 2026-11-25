@@ -617,36 +617,36 @@ class seaborn.FacetGrid(data, *, row=None, col=None, hue=None,
 
     __init__(data, *[, row, col, hue,   Initialize the matplotlib figure and
     col_wrap, ...])                     FacetGrid object.
-    add_legend([legend_data, title,     Draw a legend, maybe placing it outside
-    ...])                               axes and resizing the figure.
-    apply(func, *args, **kwargs)        Pass the grid to a user-supplied function
-                                        and return self.
+    add_legend([legend_data, title,     Draw a legend, maybe placing it
+    ...])                               outside axes and resizing the figure.
+    apply(func, *args, **kwargs)        Pass the grid to a user-supplied
+                                        function and return self.
     despine(**kwargs)                   Remove axis spines from the facets.
-    facet_axis(row_i, col_j[,           Make the axis identified by these indices
-    modify_state])                      active and return it.
+    facet_axis(row_i, col_j[,           Make the axis identified by these
+    modify_state])                      indices active and return it.
     facet_data()                        Generator for name indices and data
                                         subsets for each facet.
-    map(func, *args, **kwargs)          Apply a plotting function to each facet's
-                                        subset of the data.
-    map_dataframe(func, *args,          Like .map but passes args as strings and
-    **kwargs)                           inserts data in kwargs.
-    pipe(func, *args, **kwargs)         Pass the grid to a user-supplied function
-                                        and return its value.
+    map(func, *args, **kwargs)          Apply a plotting function to each
+                                        facet's subset of the data.
+    map_dataframe(func, *args,          Like .map but passes args as strings
+    **kwargs)                           and inserts data in kwargs.
+    pipe(func, *args, **kwargs)         Pass the grid to a user-supplied
+                                        function and return its value.
     refline(*[, x, y, color,            Add a reference line(s) to each facet.
     linestyle])
     savefig(*args, **kwargs)            Save an image of the plot.
     set(**kwargs)                       Set attributes on each subplot Axes.
     set_axis_labels([x_var, y_var,      Set axis labels on the left column and
     clear_inner])                       bottom row of the grid.
-    set_titles([template,               Draw titles either above each facet or on
-    row_template, ...])                 the grid margins.
-    set_xlabels([label, clear_inner])   Label the x axis on the bottom row of the
-                                        grid.
+    set_titles([template,               Draw titles either above each facet or
+    row_template, ...])                 on the grid margins.
+    set_xlabels([label, clear_inner])   Label the x axis on the bottom row of
+                                        the grid.
     set_xticklabels([labels, step])     Set x axis tick labels of the grid.
-    set_ylabels([label, clear_inner])   Label the y axis on the left column of the
-                                        grid.
-    set_yticklabels([labels])           Set y axis tick labels on the left column
-                                        of the grid.
+    set_ylabels([label, clear_inner])   Label the y axis on the left column of
+                                        the grid.
+    set_yticklabels([labels])           Set y axis tick labels on the left
+                                        column of the grid.
     tick_params([axis])                 Modify the ticks, tick labels, and
                                         gridlines.
     tight_layout(*args, **kwargs)       Call fig.tight_layout within rect that
@@ -654,7 +654,8 @@ class seaborn.FacetGrid(data, *, row=None, col=None, hue=None,
 
     Attributes: ~
 
-    ax         The matplotlib.axes.Axes when no faceting variables are assigned.
+    ax         The matplotlib.axes.Axes when no faceting variables are
+               assigned.
     axes       An array of the matplotlib.axes.Axes objects in the grid.
     axes_dict  A mapping of facet names to corresponding matplotlib.axes.Axes.
     fig        DEPRECATED: prefer the figure property.
@@ -1046,7 +1047,8 @@ class seaborn.JointGrid(data=None, *, x=None, y=None, hue=None, height=6,
 
     __init__(data=None, *, x=None, y=None, hue=None, height=6, ratio=5,
     space=0.2, palette=None, hue_order=None, hue_norm=None, dropna=False,
-    xlim=None, ylim=None, marginal_ticks=False) *seaborn.JointGrid.__init__-2*
+    xlim=None, ylim=None, marginal_ticks=False)
+    *seaborn.JointGrid.__init__-2*
         Set up the grid of subplots and store data internally for easy
         plotting.
 
@@ -1216,20 +1218,20 @@ class seaborn.JointGrid(data=None, *, x=None, y=None, hue=None, height=6,
 
     Methods: ~
 
-    __init__([data, x, y, hue, height,  Set up the grid of subplots and store data
-    ratio, ...])                        internally for easy plotting.
-    apply(func, *args, **kwargs)        Pass the grid to a user-supplied function
-                                        and return self.
-    pipe(func, *args, **kwargs)         Pass the grid to a user-supplied function
-                                        and return its value.
+    __init__([data, x, y, hue, height,  Set up the grid of subplots and store
+    ratio, ...])                        data internally for easy plotting.
+    apply(func, *args, **kwargs)        Pass the grid to a user-supplied
+                                        function and return self.
+    pipe(func, *args, **kwargs)         Pass the grid to a user-supplied
+                                        function and return its value.
     plot(joint_func, marginal_func,     Draw the plot by passing functions for
     **kwargs)                           joint and marginal axes.
-    plot_joint(func, **kwargs)          Draw a bivariate plot on the joint axes of
-                                        the grid.
+    plot_joint(func, **kwargs)          Draw a bivariate plot on the joint
+                                        axes of the grid.
     plot_marginals(func, **kwargs)      Draw univariate plots on each marginal
                                         axes.
-    refline(*[, x, y, joint, marginal,  Add a reference line(s) to joint and/or
-    color, ...])                        marginal axes.
+    refline(*[, x, y, joint, marginal,  Add a reference line(s) to joint
+    color, ...])                        and/or marginal axes.
     savefig(*args, **kwargs)            Save an image of the plot.
     set(**kwargs)                       Set attributes on each subplot Axes.
     set_axis_labels([xlabel, ylabel])   Set axis labels on the bivariate axes.
@@ -1632,7 +1634,8 @@ class seaborn.PairGrid(data, *, hue=None, vars=None, x_vars=None,
     __init__(data, *, hue=None, vars=None, x_vars=None, y_vars=None,
     hue_order=None, palette=None, hue_kws=None, corner=False,
     diag_sharey=True, height=2.5, aspect=1, layout_pad=0.5, despine=True,
-    dropna=False) *seaborn.PairGrid.__init__-2*
+    dropna=False)
+    *seaborn.PairGrid.__init__-2*
         Initialize the plot figure and PairGrid object.
 
         Parameters: ~
@@ -1805,24 +1808,24 @@ class seaborn.PairGrid(data, *, hue=None, vars=None, x_vars=None,
 
     Methods: ~
 
-    __init__(data, *[, hue, vars,       Initialize the plot figure and PairGrid
-    x_vars, ...])                       object.
-    add_legend([legend_data, title,     Draw a legend, maybe placing it outside
-    ...])                               axes and resizing the figure.
-    apply(func, *args, **kwargs)        Pass the grid to a user-supplied function
-                                        and return self.
+    __init__(data, *[, hue, vars,       Initialize the plot figure and
+    x_vars, ...])                       PairGrid object.
+    add_legend([legend_data, title,     Draw a legend, maybe placing it
+    ...])                               outside axes and resizing the figure.
+    apply(func, *args, **kwargs)        Pass the grid to a user-supplied
+                                        function and return self.
     map(func, **kwargs)                 Plot with the same function in every
                                         subplot.
-    map_diag(func, **kwargs)            Plot with a univariate function on each
-                                        diagonal subplot.
+    map_diag(func, **kwargs)            Plot with a univariate function on
+                                        each diagonal subplot.
     map_lower(func, **kwargs)           Plot with a bivariate function on the
                                         lower diagonal subplots.
     map_offdiag(func, **kwargs)         Plot with a bivariate function on the
                                         off-diagonal subplots.
     map_upper(func, **kwargs)           Plot with a bivariate function on the
                                         upper diagonal subplots.
-    pipe(func, *args, **kwargs)         Pass the grid to a user-supplied function
-                                        and return its value.
+    pipe(func, *args, **kwargs)         Pass the grid to a user-supplied
+                                        function and return its value.
     savefig(*args, **kwargs)            Save an image of the plot.
     set(**kwargs)                       Set attributes on each subplot Axes.
     tick_params([axis])                 Modify the ticks, tick labels, and
@@ -2412,8 +2415,6 @@ seaborn.blend_palette(colors, n_colors=6, as_cmap=False, input='rgb')
         palette
             list of RGB tuples or `matplotlib.colors.ListedColormap`
             https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.ListedColormap.html#matplotlib.colors.ListedColormap
-
-    Examples: ~
 
 ----------------------------------------------------------------------------
                                                            *seaborn.boxenplot*
@@ -4187,8 +4188,6 @@ seaborn.diverging_palette(h_neg, h_pos, s=75, l=50, sep=1, n=6,
       |seaborn.light_palette|
           Create a sequential palette with light values.
 
-    Examples: ~
-
 ----------------------------------------------------------------------------
                                                             *seaborn.ecdfplot*
 
@@ -5891,13 +5890,13 @@ seaborn.lineplot(data=None, *, x=None, y=None, hue=None, size=None,
         flights.head()
 <
 
-         year            month               passengers
-    ---  --------------  ------------------  -------------------------------------
-    0    1949            Jan                 112
-    1    1949            Feb                 118
-    2    1949            Mar                 132
-    3    1949            Apr                 129
-    4    1949            May                 121
+         year           month              passengers
+    ---  -------------  -----------------  -----------------------------------
+    0    1949           Jan                112
+    1    1949           Feb                118
+    2    1949           Mar                132
+    3    1949           Apr                129
+    4    1949           May                121
 
     To draw a line plot using long-form data, assign the `x` and `y`
     variables:
@@ -5913,15 +5912,15 @@ seaborn.lineplot(data=None, *, x=None, y=None, hue=None, size=None,
         flights_wide.head()
 <
 
-    month               Jan  Feb  Mar  Apr  May  Jun  Jul  Aug  Sep  Oct  Nov  Dec
-    ------------------  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
+    month           Jan  Feb  Mar  Apr  May  Jun  Jul  Aug  Sep  Oct  Nov  Dec
+    --------------  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
     year
-    ------------------  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
-    1949                112  118  132  129  121  135  148  148  136  119  104  118
-    1950                115  126  141  135  125  149  170  170  158  133  114  140
-    1951                145  150  178  163  172  178  199  199  184  162  146  166
-    1952                171  180  193  181  183  218  230  242  209  191  172  194
-    1953                196  196  236  235  229  243  264  272  237  211  180  201
+    --------------  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
+    1949            112  118  132  129  121  135  148  148  136  119  104  118
+    1950            115  126  141  135  125  149  170  170  158  133  114  140
+    1951            145  150  178  163  172  178  199  199  184  162  146  166
+    1952            171  180  193  181  183  218  230  242  209  191  172  194
+    1953            196  196  236  235  229  243  264  272  237  211  180  201
 
     To plot a single vector, pass it to `data`. If the vector is a
     `pandas.Series`
@@ -5970,13 +5969,13 @@ seaborn.lineplot(data=None, *, x=None, y=None, hue=None, size=None,
         fmri.head()
 <
 
-       subject       timepoint            event     region         signal
-    -  ------------  -------------------  --------  -------------  ---------------
-    0  s13           18                   stim      parietal       -0.017552
-    1  s5            14                   stim      parietal       -0.080883
-    2  s12           18                   stim      parietal       -0.081033
-    3  s11           18                   stim      parietal       -0.046134
-    4  s10           18                   stim      parietal       -0.037970
+       subject      timepoint          event     region         signal
+    -  -----------  -----------------  --------  -------------  --------------
+    0  s13          18                 stim      parietal       -0.017552
+    1  s5           14                 stim      parietal       -0.080883
+    2  s12          18                 stim      parietal       -0.081033
+    3  s11          18                 stim      parietal       -0.046134
+    4  s10          18                 stim      parietal       -0.037970
 
     Repeated observations are aggregated even when semantic grouping is
     used:
@@ -6025,13 +6024,13 @@ seaborn.lineplot(data=None, *, x=None, y=None, hue=None, size=None,
         dots.head()
 <
 
-       align      choice       time     coherence          firing_rate
-    -  ---------  -----------  -------  -----------------  -----------------------
-    0  dots       T1           -80      0.0                33.189967
-    1  dots       T1           -80      3.2                31.691726
-    2  dots       T1           -80      6.4                34.279840
-    3  dots       T1           -80      12.8               32.631874
-    4  dots       T1           -80      25.6               35.060487
+       align     choice      time     coherence         firing_rate
+    -  --------  ----------  -------  ----------------  ----------------------
+    0  dots      T1          -80      0.0               33.189967
+    1  dots      T1          -80      3.2               31.691726
+    2  dots      T1          -80      6.4               34.279840
+    3  dots      T1          -80      12.8              32.631874
+    4  dots      T1          -80      25.6              35.060487
 
     Assigning a numeric variable to `hue` maps it differently, using a
     different default palette and a quantitative color mapping:
@@ -6867,9 +6866,11 @@ class seaborn.objects.Boolean(values=None)
     inverting axis limits so as to maintain underlying numeric positioning.
     Input data are cast to boolean values, respecting missing data.
 
-    tick(locator=None) *seaborn.objects.Boolean.tick*
+    tick(locator=None)
+    *seaborn.objects.Boolean.tick*
 
-    label(formatter=None) *seaborn.objects.Boolean.label*
+    label(formatter=None)
+    *seaborn.objects.Boolean.label*
 
 ----------------------------------------------------------------------------
                                                   *seaborn.objects.Continuous*
@@ -6878,7 +6879,8 @@ class seaborn.objects.Continuous(values=None, norm=None, trans=None)
     A numeric scale supporting norms and functional transforms.
 
     tick(locator=None, *, at=None, upto=None, count=None, every=None,
-    between=None, minor=None) *seaborn.objects.Continuous.tick*
+    between=None, minor=None)
+    *seaborn.objects.Continuous.tick*
         Configure the selection of ticks for the scale's axis or legend.
 
         Parameters: ~
@@ -7839,7 +7841,8 @@ class seaborn.objects.Move
 class seaborn.objects.Nominal(values=None, order=None)
     A categorical scale without relative importance / magnitude.
 
-    tick(locator=None) *seaborn.objects.Nominal.tick*
+    tick(locator=None)
+    *seaborn.objects.Nominal.tick*
         Configure the selection of ticks for the scale's axis or legend.
 
           Note: ~
@@ -7857,7 +7860,8 @@ class seaborn.objects.Nominal(values=None, order=None)
         Returns: ~
             Copy of self with new tick configuration.
 
-    label(formatter=None) *seaborn.objects.Nominal.label*
+    label(formatter=None)
+    *seaborn.objects.Nominal.label*
         Configure the selection of labels for the scale's axis or legend.
 
           Note: ~
@@ -9264,7 +9268,8 @@ class seaborn.objects.Stat
 class seaborn.objects.Temporal(values=None, norm=None)
     A scale for date/time data.
 
-    tick(locator=None, *, upto=None) *seaborn.objects.Temporal.tick*
+    tick(locator=None, *, upto=None)
+    *seaborn.objects.Temporal.tick*
         Configure the selection of ticks for the scale's axis or legend.
 
           Note: ~
@@ -9286,7 +9291,8 @@ class seaborn.objects.Temporal(values=None, norm=None)
             scale
                 Copy of self with new tick configuration.
 
-    label(formatter=None, *, concise=False) *seaborn.objects.Temporal.label*
+    label(formatter=None, *, concise=False)
+    *seaborn.objects.Temporal.label*
         Configure the appearance of tick labels for the scale's axis or
         legend.
 
@@ -10375,13 +10381,13 @@ seaborn.relplot(data=None, *, x=None, y=None, hue=None, size=None,
         tips.head()
 <
 
-       total_bill            tip     sex        smoker     day   time       size
-    -  --------------------  ------  ---------  ---------  ----  ---------  ------
-    0  16.99                 1.01    Female     No         Sun   Dinner     2
-    1  10.34                 1.66    Male       No         Sun   Dinner     3
-    2  21.01                 3.50    Male       No         Sun   Dinner     3
-    3  23.68                 3.31    Male       No         Sun   Dinner     2
-    4  24.59                 3.61    Female     No         Sun   Dinner     4
+       total_bill        tip     sex        smoker     day   time       size
+    -  ----------------  ------  ---------  ---------  ----  ---------  ------
+    0  16.99             1.01    Female     No         Sun   Dinner     2
+    1  10.34             1.66    Male       No         Sun   Dinner     3
+    2  21.01             3.50    Male       No         Sun   Dinner     3
+    3  23.68             3.31    Male       No         Sun   Dinner     2
+    4  24.59             3.61    Female     No         Sun   Dinner     4
 
     Assigning `x` and `y` and any semantic mapping variables will draw a
     single plot:
@@ -10428,13 +10434,13 @@ seaborn.relplot(data=None, *, x=None, y=None, hue=None, size=None,
         fmri.head()
 <
 
-       subject       timepoint            event     region         signal
-    -  ------------  -------------------  --------  -------------  ---------------
-    0  s13           18                   stim      parietal       -0.017552
-    1  s5            14                   stim      parietal       -0.080883
-    2  s12           18                   stim      parietal       -0.081033
-    3  s11           18                   stim      parietal       -0.046134
-    4  s10           18                   stim      parietal       -0.037970
+       subject      timepoint          event     region         signal
+    -  -----------  -----------------  --------  -------------  --------------
+    0  s13          18                 stim      parietal       -0.017552
+    1  s5           14                 stim      parietal       -0.080883
+    2  s12          18                 stim      parietal       -0.081033
+    3  s11          18                 stim      parietal       -0.046134
+    4  s10          18                 stim      parietal       -0.037970
 
     Using `kind="line"` offers the same flexibility for semantic mappings as
     `kind="scatter"`, but |seaborn.lineplot| transforms the data more before
@@ -10859,13 +10865,13 @@ seaborn.scatterplot(data=None, *, x=None, y=None, hue=None, size=None,
         tips.head()
 <
 
-       total_bill            tip     sex        smoker     day   time       size
-    -  --------------------  ------  ---------  ---------  ----  ---------  ------
-    0  16.99                 1.01    Female     No         Sun   Dinner     2
-    1  10.34                 1.66    Male       No         Sun   Dinner     3
-    2  21.01                 3.50    Male       No         Sun   Dinner     3
-    3  23.68                 3.31    Male       No         Sun   Dinner     2
-    4  24.59                 3.61    Female     No         Sun   Dinner     4
+       total_bill        tip     sex        smoker     day   time       size
+    -  ----------------  ------  ---------  ---------  ----  ---------  ------
+    0  16.99             1.01    Female     No         Sun   Dinner     2
+    1  10.34             1.66    Male       No         Sun   Dinner     3
+    2  21.01             3.50    Male       No         Sun   Dinner     3
+    3  23.68             3.31    Male       No         Sun   Dinner     2
+    4  24.59             3.61    Female     No         Sun   Dinner     4
 
     Passing long-form data and assigning `x` and `y` will draw a scatter
     plot between two variables:

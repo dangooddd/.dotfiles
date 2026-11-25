@@ -107,7 +107,7 @@ Selecting multiple columns by name in pandas is straightforward
     In [1]: df = pd.DataFrame(np.random.randn(10, 3), columns=list("abc"))
 
     In [2]: df[["a", "c"]]
-    Out[2]: 
+    Out[2]:
               a         c
     0  0.469112 -1.509059
     1 -1.135632 -0.173215
@@ -121,7 +121,7 @@ Selecting multiple columns by name in pandas is straightforward
     9 -1.039268 -1.157892
 
     In [3]: df.loc[:, ["a", "c"]]
-    Out[3]: 
+    Out[3]:
               a         c
     0  0.469112 -1.509059
     1 -1.135632 -0.173215
@@ -147,7 +147,7 @@ with a combination of the `iloc` indexer attribute and `numpy.r_`.
     In [7]: df = pd.DataFrame(np.random.randn(n, n), columns=columns)
 
     In [8]: df.iloc[:, np.r_[:10, 24:30]]
-    Out[8]: 
+    Out[8]:
                a         b         c  ...        27        28        29
     0  -1.344312  0.844885  1.075770  ...  0.813850  0.132003 -0.827317
     1  -0.076467 -1.187678  1.130127  ...  0.149748 -0.732339  0.687738
@@ -202,14 +202,14 @@ function.
        ...:         ],
        ...:     }
        ...: )
-       ...: 
+       ...:
 
     In [10]: g = df.groupby(["by1", "by2"])
 
     In [11]: g[["v1", "v2"]].mean()
-    Out[11]: 
+    Out[11]:
                 v1    v2
-    by1  by2            
+    by1  by2
     1    95    5.0  55.0
          99    5.0  55.0
     2    95    7.0  77.0
@@ -237,7 +237,7 @@ The |pandas.DataFrame.isin| method is similar to R `%in%` operator:
     In [12]: s = pd.Series(np.arange(5), dtype=np.float32)
 
     In [13]: s.isin([2, 4])
-    Out[13]: 
+    Out[13]:
     0    False
     1    False
     2     True
@@ -285,10 +285,10 @@ In pandas we may use |pandas.pivot_table| method to handle this:
        ....:         "batting avg": np.random.uniform(0.200, 0.400, 25),
        ....:     }
        ....: )
-       ....: 
+       ....:
 
     In [17]: baseball.pivot_table(values="batting avg", columns="team", aggfunc="max")
-    Out[17]: 
+    Out[17]:
     team           team 1    team 2    team 3    team 4    team 5
     batting avg  0.352134  0.295327  0.397191  0.394457  0.396194
 <
@@ -313,7 +313,7 @@ as well as standard boolean indexing:
     In [18]: df = pd.DataFrame({"a": np.random.randn(10), "b": np.random.randn(10)})
 
     In [19]: df.query("a <= b")
-    Out[19]: 
+    Out[19]:
               a         b
     1  0.174950  0.552887
     2 -0.023167  0.148084
@@ -324,7 +324,7 @@ as well as standard boolean indexing:
     8  0.238636  0.946550
 
     In [20]: df[df["a"] <= df["b"]]
-    Out[20]: 
+    Out[20]:
               a         b
     1  0.174950  0.552887
     2 -0.023167  0.148084
@@ -335,7 +335,7 @@ as well as standard boolean indexing:
     8  0.238636  0.946550
 
     In [21]: df.loc[df["a"] <= df["b"]]
-    Out[21]: 
+    Out[21]:
               a         b
     1  0.174950  0.552887
     2 -0.023167  0.148084
@@ -364,7 +364,7 @@ method, would be:
     In [22]: df = pd.DataFrame({"a": np.random.randn(10), "b": np.random.randn(10)})
 
     In [23]: df.eval("a + b")
-    Out[23]: 
+    Out[23]:
     0   -0.091430
     1   -2.483890
     2   -0.252728
@@ -378,7 +378,7 @@ method, would be:
     dtype: float64
 
     In [24]: df["a"] + df["b"]  # same as the previous expression
-    Out[24]: 
+    Out[24]:
     0   -0.091430
     1   -2.483890
     2   -0.252728
@@ -440,14 +440,14 @@ method, would be:
        ....:         "week": np.random.randint(1, 4, 120),
        ....:     }
        ....: )
-       ....: 
+       ....:
 
     In [26]: grouped = df.groupby(["month", "week"])
 
     In [27]: grouped["x"].agg(["mean", "std"])
-    Out[27]: 
+    Out[27]:
                       mean        std
-    month week                       
+    month week
     5     1      63.653367  40.601965
           2      78.126605  53.342400
           3      92.091886  57.630110
@@ -481,7 +481,7 @@ In Python, since `a` is a list, you can simply use list comprehension.
     In [28]: a = np.array(list(range(1, 24)) + [np.nan]).reshape(2, 3, 4)
 
     In [29]: pd.DataFrame([tuple(list(x) + [val]) for x, val in np.ndenumerate(a)])
-    Out[29]: 
+    Out[29]:
         0  1  2     3
     0   0  0  0   1.0
     1   0  0  1   2.0
@@ -514,7 +514,7 @@ would convert it to a dataframe as required.
     In [30]: a = list(enumerate(list(range(1, 5)) + [np.nan]))
 
     In [31]: pd.DataFrame(a)
-    Out[31]: 
+    Out[31]:
        0    1
     0  0  1.0
     1  1  2.0
@@ -549,10 +549,10 @@ In Python, the |pandas.melt| method is the R equivalent:
        ....:         "weight": [130, 150],
        ....:     }
        ....: )
-       ....: 
+       ....:
 
     In [33]: pd.melt(cheese, id_vars=["first", "last"])
-    Out[33]: 
+    Out[33]:
       first last variable  value
     0  John  Doe   height    5.5
     1  Mary   Bo   height    6.0
@@ -560,8 +560,8 @@ In Python, the |pandas.melt| method is the R equivalent:
     3  Mary   Bo   weight  150.0
 
     In [34]: cheese.set_index(["first", "last"]).stack()  # alternative way
-    Out[34]: 
-    first  last        
+    Out[34]:
+    first  last
     John   Doe   height      5.5
                  weight    130.0
     Mary   Bo    height      6.0
@@ -599,7 +599,7 @@ In Python the best way is to make use of |pandas.pivot_table|:
        ....:         "week": [1, 2] * 6,
        ....:     }
        ....: )
-       ....: 
+       ....:
 
     In [36]: mdf = pd.melt(df, id_vars=["month", "week"])
 
@@ -610,10 +610,10 @@ In Python the best way is to make use of |pandas.pivot_table|:
        ....:     columns=["month"],
        ....:     aggfunc="mean",
        ....: )
-       ....: 
-    Out[37]: 
+       ....:
+    Out[37]:
     month                  5           6           7
-    variable week                                   
+    variable week
     x        1     93.888747   98.762034   55.219673
              2     94.391427   38.112932   83.942781
     y        1     94.306912  279.454811  227.840449
@@ -655,12 +655,12 @@ using |pandas.pivot_table|:
        ....:         "Amount": [10, 7, 4, 2, 5, 6, 2],
        ....:     }
        ....: )
-       ....: 
+       ....:
 
     In [39]: df.pivot_table(values="Amount", index="Animal", columns="FeedType", aggfunc="sum")
-    Out[39]: 
+    Out[39]:
     FeedType     A     B
-    Animal              
+    Animal
     Animal1   10.0   5.0
     Animal2    2.0  13.0
     Animal3    6.0   NaN
@@ -669,7 +669,7 @@ The second approach is to use the |pandas.DataFrame.groupby| method:
 
 >python
     In [40]: df.groupby(["Animal", "FeedType"])["Amount"].sum()
-    Out[40]: 
+    Out[40]:
     Animal   FeedType
     Animal1  A           10
              B            5
@@ -693,7 +693,7 @@ In pandas this is accomplished with `pd.cut` and `astype("category")`:
 
 >python
     In [41]: pd.cut(pd.Series([1, 2, 3, 4, 5, 6]), 3)
-    Out[41]: 
+    Out[41]:
     0    (0.995, 2.667]
     1    (0.995, 2.667]
     2    (2.667, 4.333]
@@ -705,7 +705,7 @@ In pandas this is accomplished with `pd.cut` and `astype("category")`:
                                                (4.333, 6.0]]
 
     In [42]: pd.Series([1, 2, 3, 2, 2, 3]).astype("category")
-    Out[42]: 
+    Out[42]:
     0    1
     1    2
     2    3
@@ -839,7 +839,7 @@ dictionary, where the keys are the column names and the values are the data.
     In [1]: df = pd.DataFrame({"x": [1, 3, 5], "y": [2, 4, 6]})
 
     In [2]: df
-    Out[2]: 
+    Out[2]:
        x  y
     0  1  2
     1  3  4
@@ -868,12 +868,12 @@ The pandas method is |pandas.read_csv|, which works similarly.
        ...:     "https://raw.githubusercontent.com/pandas-dev/"
        ...:     "pandas/main/pandas/tests/io/data/csv/tips.csv"
        ...: )
-       ...: 
+       ...:
 
     In [4]: tips = pd.read_csv(url)
 
     In [5]: tips
-    Out[5]: 
+    Out[5]:
          total_bill   tip     sex smoker   day    time  size
     0         16.99  1.01  Female     No   Sun  Dinner     2
     1         10.34  1.66    Male     No   Sun  Dinner     3
@@ -912,7 +912,7 @@ or using |pandas.DataFrame.head| or |pandas.DataFrame.tail|.
 
 >python
     In [1]: tips.head(5)
-    Out[1]: 
+    Out[1]:
        total_bill   tip     sex smoker  day    time  size
     0       16.99  1.01  Female     No  Sun  Dinner     2
     1       10.34  1.66    Male     No  Sun  Dinner     3
@@ -968,7 +968,7 @@ in the `DataFrame`. New columns can be assigned in the same way. The
     In [2]: tips["new_bill"] = tips["total_bill"] / 2
 
     In [3]: tips
-    Out[3]: 
+    Out[3]:
          total_bill   tip     sex smoker   day    time  size  new_bill
     0         14.99  1.01  Female     No   Sun  Dinner     2     7.495
     1          8.34  1.66    Male     No   Sun  Dinner     3     4.170
@@ -1010,7 +1010,7 @@ using |user_guide-indexing-indexing-boolean|.
 
 >python
     In [1]: tips[tips["total_bill"] > 10]
-    Out[1]: 
+    Out[1]:
          total_bill   tip     sex smoker   day    time  size
     0         14.99  1.01  Female     No   Sun  Dinner     2
     2         19.01  3.50    Male     No   Sun  Dinner     3
@@ -1033,13 +1033,13 @@ to the DataFrame, returning all rows with `True`.
     In [2]: is_dinner = tips["time"] == "Dinner"
 
     In [3]: is_dinner
-    Out[3]: 
+    Out[3]:
     0      True
     1      True
     2      True
     3      True
     4      True
-           ... 
+           ...
     239    True
     240    True
     241    True
@@ -1048,14 +1048,14 @@ to the DataFrame, returning all rows with `True`.
     Name: time, Length: 244, dtype: bool
 
     In [4]: is_dinner.value_counts()
-    Out[4]: 
+    Out[4]:
     time
     True     176
     False     68
     Name: count, dtype: int64
 
     In [5]: tips[is_dinner]
-    Out[5]: 
+    Out[5]:
          total_bill   tip     sex smoker   day    time  size
     0         14.99  1.01  Female     No   Sun  Dinner     2
     1          8.34  1.66    Male     No   Sun  Dinner     3
@@ -1092,7 +1092,7 @@ from `numpy`.
     In [1]: tips["bucket"] = np.where(tips["total_bill"] < 10, "low", "high")
 
     In [2]: tips
-    Out[2]: 
+    Out[2]:
          total_bill   tip     sex smoker   day    time  size bucket
     0         14.99  1.01  Female     No   Sun  Dinner     2   high
     1          8.34  1.66    Male     No   Sun  Dinner     3    low
@@ -1148,13 +1148,13 @@ SAS (such as resampling and custom offsets) - see the
     In [6]: tips["months_between"] = tips["date2"].dt.to_period("M") - tips[
        ...:     "date1"
        ...: ].dt.to_period("M")
-       ...: 
+       ...:
 
     In [7]: tips[
        ...:     ["date1", "date2", "date1_year", "date2_month", "date1_next", "months_between"]
        ...: ]
-       ...: 
-    Out[7]: 
+       ...:
+    Out[7]:
              date1      date2  date1_year  date2_month date1_next    months_between
     0   2013-01-15 2015-02-15        2013            2 2013-02-01  <25 * MonthEnds>
     1   2013-01-15 2015-02-15        2013            2 2013-02-01  <25 * MonthEnds>
@@ -1200,7 +1200,7 @@ Keep certain columns
 
 >python
     In [1]: tips[["sex", "total_bill", "tip"]]
-    Out[1]: 
+    Out[1]:
             sex  total_bill   tip
     0    Female       14.99  1.01
     1      Male        8.34  1.66
@@ -1221,7 +1221,7 @@ Drop a column   *getting_started-comparison-comparison_with_sas-drop-a-column*
 
 >python
     In [2]: tips.drop("sex", axis=1)
-    Out[2]: 
+    Out[2]:
          total_bill   tip smoker   day    time  size
     0         14.99  1.01     No   Sun  Dinner     2
     1          8.34  1.66     No   Sun  Dinner     3
@@ -1243,7 +1243,7 @@ Rename a column
 
 >python
     In [3]: tips.rename(columns={"total_bill": "total_bill_2"})
-    Out[3]: 
+    Out[3]:
          total_bill_2   tip     sex smoker   day    time  size
     0           14.99  1.01  Female     No   Sun  Dinner     2
     1            8.34  1.66    Male     No   Sun  Dinner     3
@@ -1277,7 +1277,7 @@ columns to sort by.
     In [1]: tips = tips.sort_values(["sex", "total_bill"])
 
     In [2]: tips
-    Out[2]: 
+    Out[2]:
          total_bill    tip     sex smoker   day    time  size
     67         1.07   1.00  Female    Yes   Sat  Dinner     1
     92         3.75   1.00  Female    Yes   Fri  Dinner     2
@@ -1320,7 +1320,7 @@ blanks. Use `len` and `rstrip` to exclude trailing blanks.
 
 >python
     In [1]: tips["time"].str.len()
-    Out[1]: 
+    Out[1]:
     67     6
     92     6
     111    6
@@ -1335,7 +1335,7 @@ blanks. Use `len` and `rstrip` to exclude trailing blanks.
     Name: time, Length: 244, dtype: int64
 
     In [2]: tips["time"].str.rstrip().str.len()
-    Out[2]: 
+    Out[2]:
     67     6
     92     6
     111    6
@@ -1373,7 +1373,7 @@ zero-based.
 
 >python
     In [1]: tips["sex"].str.find("ale")
-    Out[1]: 
+    Out[1]:
     67     3
     92     3
     111    3
@@ -1406,7 +1406,7 @@ by position locations. Keep in mind that Python indexes are zero-based.
 
 >python
     In [1]: tips["sex"].str[0:1]
-    Out[1]: 
+    Out[1]:
     67     F
     92     F
     111    F
@@ -1453,7 +1453,7 @@ approaches should you need them.
     In [3]: firstlast["Last_Name"] = firstlast["String"].str.rsplit(" ", expand=True)[1]
 
     In [4]: firstlast
-    Out[4]: 
+    Out[4]:
            String First_Name Last_Name
     0  John Smith       John     Smith
     1   Jane Cook       Jane      Cook
@@ -1494,7 +1494,7 @@ The equivalent pandas methods are |pandas.Series.str.upper|,
     In [4]: firstlast["title"] = firstlast["string"].str.title()
 
     In [5]: firstlast
-    Out[5]: 
+    Out[5]:
            string       upper       lower       title
     0  John Smith  JOHN SMITH  john smith  John Smith
     1   Jane Cook   JANE COOK   jane cook   Jane Cook
@@ -1508,7 +1508,7 @@ The following tables will be used in the merge examples:
     In [1]: df1 = pd.DataFrame({"key": ["A", "B", "C", "D"], "value": np.random.randn(4)})
 
     In [2]: df1
-    Out[2]: 
+    Out[2]:
       key     value
     0   A  0.469112
     1   B -0.282863
@@ -1518,7 +1518,7 @@ The following tables will be used in the merge examples:
     In [3]: df2 = pd.DataFrame({"key": ["B", "D", "D", "E"], "value": np.random.randn(4)})
 
     In [4]: df2
-    Out[4]: 
+    Out[4]:
       key     value
     0   B  1.212112
     1   D -0.173215
@@ -1555,7 +1555,7 @@ and different join types are accomplished via the `how` keyword.
     In [1]: inner_join = df1.merge(df2, on=["key"], how="inner")
 
     In [2]: inner_join
-    Out[2]: 
+    Out[2]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -1564,7 +1564,7 @@ and different join types are accomplished via the `how` keyword.
     In [3]: left_join = df1.merge(df2, on=["key"], how="left")
 
     In [4]: left_join
-    Out[4]: 
+    Out[4]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -1575,7 +1575,7 @@ and different join types are accomplished via the `how` keyword.
     In [5]: right_join = df1.merge(df2, on=["key"], how="right")
 
     In [6]: right_join
-    Out[6]: 
+    Out[6]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -1585,7 +1585,7 @@ and different join types are accomplished via the `how` keyword.
     In [7]: outer_join = df1.merge(df2, on=["key"], how="outer")
 
     In [8]: outer_join
-    Out[8]: 
+    Out[8]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -1606,7 +1606,7 @@ aggregations.
 
 >python
     In [1]: outer_join
-    Out[1]: 
+    Out[1]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -1616,7 +1616,7 @@ aggregations.
     5   E       NaN -1.044236
 
     In [2]: outer_join["value_x"] + outer_join["value_y"]
-    Out[2]: 
+    Out[2]:
     0         NaN
     1    0.929249
     2         NaN
@@ -1647,12 +1647,12 @@ filter the rows.
 
 >python
     In [1]: outer_join[outer_join["value_x"].isna()]
-    Out[1]: 
+    Out[1]:
       key  value_x   value_y
     5   E      NaN -1.044236
 
     In [2]: outer_join[outer_join["value_x"].notna()]
-    Out[2]: 
+    Out[2]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -1668,7 +1668,7 @@ Drop rows with missing values
 
 >python
     In [3]: outer_join.dropna()
-    Out[3]: 
+    Out[3]:
       key   value_x   value_y
     1   B -0.282863  1.212112
     3   D -1.135632 -0.173215
@@ -1680,7 +1680,7 @@ Forward fill from previous rows
 
 >python
     In [4]: outer_join.ffill()
-    Out[4]: 
+    Out[4]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -1697,7 +1697,7 @@ Using the mean:
 
 >python
     In [5]: outer_join["value_x"].fillna(outer_join["value_x"].mean())
-    Out[5]: 
+    Out[5]:
     0    0.469112
     1   -0.282863
     2   -1.509059
@@ -1729,9 +1729,9 @@ examples.
     In [1]: tips_summed = tips.groupby(["sex", "smoker"])[["total_bill", "tip"]].sum()
 
     In [2]: tips_summed
-    Out[2]: 
+    Out[2]:
                    total_bill     tip
-    sex    smoker                    
+    sex    smoker
     Female No          869.68  149.77
            Yes         527.27   96.74
     Male   No         1725.75  302.00
@@ -1771,7 +1771,7 @@ allows these type of operations to be succinctly expressed in one operation.
     In [2]: tips["adj_total_bill"] = tips["total_bill"] - gb.transform("mean")
 
     In [3]: tips
-    Out[3]: 
+    Out[3]:
          total_bill    tip     sex smoker   day    time  size  adj_total_bill
     67         1.07   1.00  Female    Yes   Sat  Dinner     1      -17.686344
     92         3.75   1.00  Female    Yes   Fri  Dinner     2      -15.006344
@@ -1810,9 +1810,9 @@ In pandas this would be written as:
 
 >python
     In [4]: tips.groupby(["sex", "smoker"]).first()
-    Out[4]: 
+    Out[4]:
                    total_bill   tip   day    time  size  adj_total_bill
-    sex    smoker                                                      
+    sex    smoker
     Female No            5.25  1.00   Sat  Dinner     1      -11.938278
            Yes           1.07  1.00   Sat  Dinner     1      -17.686344
     Male   No            5.51  2.00  Thur   Lunch     2      -11.678278
@@ -1994,7 +1994,7 @@ dictionary, where the keys are the column names and the values are the data.
     In [3]: df = pd.DataFrame({"x": [1, 3, 5], "y": [2, 4, 6]})
 
     In [4]: df
-    Out[4]: 
+    Out[4]:
        x  y
     0  1  2
     1  3  4
@@ -2024,12 +2024,12 @@ In pandas, you pass the URL or local path of the CSV file to
        ...:     "https://raw.githubusercontent.com/pandas-dev"
        ...:     "/pandas/main/pandas/tests/io/data/csv/tips.csv"
        ...: )
-       ...: 
+       ...:
 
     In [6]: tips = pd.read_csv(url)
 
     In [7]: tips
-    Out[7]: 
+    Out[7]:
          total_bill   tip     sex smoker   day    time  size
     0         16.99  1.01  Female     No   Sun  Dinner     2
     1         10.34  1.66    Male     No   Sun  Dinner     3
@@ -2095,7 +2095,7 @@ or using |pandas.DataFrame.head| or |pandas.DataFrame.tail|.
 
 >python
     In [8]: tips.head(5)
-    Out[8]: 
+    Out[8]:
        total_bill   tip     sex smoker  day    time  size
     0       16.99  1.01  Female     No  Sun  Dinner     2
     1       10.34  1.66    Male     No  Sun  Dinner     3
@@ -2137,7 +2137,7 @@ in the `DataFrame`. New columns can be assigned in the same way. The
     In [10]: tips["new_bill"] = tips["total_bill"] / 2
 
     In [11]: tips
-    Out[11]: 
+    Out[11]:
          total_bill   tip     sex smoker   day    time  size  new_bill
     0         14.99  1.01  Female     No   Sun  Dinner     2     7.495
     1          8.34  1.66    Male     No   Sun  Dinner     3     4.170
@@ -2169,7 +2169,7 @@ using |user_guide-indexing-indexing-boolean|.
 
 >python
     In [13]: tips[tips["total_bill"] > 10]
-    Out[13]: 
+    Out[13]:
          total_bill   tip     sex smoker   day    time  size
     0         14.99  1.01  Female     No   Sun  Dinner     2
     2         19.01  3.50    Male     No   Sun  Dinner     3
@@ -2192,13 +2192,13 @@ to the DataFrame, returning all rows with `True`.
     In [14]: is_dinner = tips["time"] == "Dinner"
 
     In [15]: is_dinner
-    Out[15]: 
+    Out[15]:
     0      True
     1      True
     2      True
     3      True
     4      True
-           ... 
+           ...
     239    True
     240    True
     241    True
@@ -2207,14 +2207,14 @@ to the DataFrame, returning all rows with `True`.
     Name: time, Length: 244, dtype: bool
 
     In [16]: is_dinner.value_counts()
-    Out[16]: 
+    Out[16]:
     time
     True     176
     False     68
     Name: count, dtype: int64
 
     In [17]: tips[is_dinner]
-    Out[17]: 
+    Out[17]:
          total_bill   tip     sex smoker   day    time  size
     0         14.99  1.01  Female     No   Sun  Dinner     2
     1          8.34  1.66    Male     No   Sun  Dinner     3
@@ -2249,7 +2249,7 @@ from `numpy`.
     In [18]: tips["bucket"] = np.where(tips["total_bill"] < 10, "low", "high")
 
     In [19]: tips
-    Out[19]: 
+    Out[19]:
          total_bill   tip     sex smoker   day    time  size bucket
     0         14.99  1.01  Female     No   Sun  Dinner     2   high
     1          8.34  1.66    Male     No   Sun  Dinner     3    low
@@ -2317,13 +2317,13 @@ The equivalent pandas operations are shown below.
     In [25]: tips["months_between"] = tips["date2"].dt.to_period("M") - tips[
        ....:     "date1"
        ....: ].dt.to_period("M")
-       ....: 
+       ....:
 
     In [26]: tips[
        ....:     ["date1", "date2", "date1_year", "date2_month", "date1_next", "months_between"]
        ....: ]
-       ....: 
-    Out[26]: 
+       ....:
+    Out[26]:
              date1      date2  date1_year  date2_month date1_next    months_between
     0   2013-01-15 2015-02-15        2013            2 2013-02-01  <25 * MonthEnds>
     1   2013-01-15 2015-02-15        2013            2 2013-02-01  <25 * MonthEnds>
@@ -2366,7 +2366,7 @@ Keep certain columns
 
 >python
     In [27]: tips[["sex", "total_bill", "tip"]]
-    Out[27]: 
+    Out[27]:
             sex  total_bill   tip
     0    Female       14.99  1.01
     1      Male        8.34  1.66
@@ -2388,7 +2388,7 @@ Drop a column
 
 >python
     In [28]: tips.drop("sex", axis=1)
-    Out[28]: 
+    Out[28]:
          total_bill   tip smoker   day    time  size
     0         14.99  1.01     No   Sun  Dinner     2
     1          8.34  1.66     No   Sun  Dinner     3
@@ -2410,7 +2410,7 @@ Rename a column
 
 >python
     In [29]: tips.rename(columns={"total_bill": "total_bill_2"})
-    Out[29]: 
+    Out[29]:
          total_bill_2   tip     sex smoker   day    time  size
     0           14.99  1.01  Female     No   Sun  Dinner     2
     1            8.34  1.66    Male     No   Sun  Dinner     3
@@ -2440,7 +2440,7 @@ columns to sort by.
     In [30]: tips = tips.sort_values(["sex", "total_bill"])
 
     In [31]: tips
-    Out[31]: 
+    Out[31]:
          total_bill    tip     sex smoker   day    time  size
     67         1.07   1.00  Female    Yes   Sat  Dinner     1
     92         3.75   1.00  Female    Yes   Fri  Dinner     2
@@ -2478,7 +2478,7 @@ blanks. Use `len` and `rstrip` to exclude trailing blanks.
 
 >python
     In [32]: tips["time"].str.len()
-    Out[32]: 
+    Out[32]:
     67     6
     92     6
     111    6
@@ -2493,7 +2493,7 @@ blanks. Use `len` and `rstrip` to exclude trailing blanks.
     Name: time, Length: 244, dtype: int64
 
     In [33]: tips["time"].str.rstrip().str.len()
-    Out[33]: 
+    Out[33]:
     67     6
     92     6
     111    6
@@ -2526,7 +2526,7 @@ zero-based.
 
 >python
     In [34]: tips["sex"].str.find("ale")
-    Out[34]: 
+    Out[34]:
     67     3
     92     3
     111    3
@@ -2557,7 +2557,7 @@ by position locations. Keep in mind that Python indexes are zero-based.
 
 >python
     In [35]: tips["sex"].str[0:1]
-    Out[35]: 
+    Out[35]:
     67     F
     92     F
     111    F
@@ -2593,7 +2593,7 @@ approaches should you need them.
     In [38]: firstlast["Last_Name"] = firstlast["String"].str.rsplit(" ", expand=True)[1]
 
     In [39]: firstlast
-    Out[39]: 
+    Out[39]:
            String First_Name Last_Name
     0  John Smith       John     Smith
     1   Jane Cook       Jane      Cook
@@ -2619,7 +2619,7 @@ The equivalent pandas methods are |pandas.Series.str.upper|,
     In [43]: firstlast["title"] = firstlast["string"].str.title()
 
     In [44]: firstlast
-    Out[44]: 
+    Out[44]:
            string       upper       lower       title
     0  John Smith  JOHN SMITH  john smith  John Smith
     1   Jane Cook   JANE COOK   jane cook   Jane Cook
@@ -2633,7 +2633,7 @@ The following tables will be used in the merge examples:
     In [45]: df1 = pd.DataFrame({"key": ["A", "B", "C", "D"], "value": np.random.randn(4)})
 
     In [46]: df1
-    Out[46]: 
+    Out[46]:
       key     value
     0   A  0.469112
     1   B -0.282863
@@ -2643,7 +2643,7 @@ The following tables will be used in the merge examples:
     In [47]: df2 = pd.DataFrame({"key": ["B", "D", "D", "E"], "value": np.random.randn(4)})
 
     In [48]: df2
-    Out[48]: 
+    Out[48]:
       key     value
     0   B  1.212112
     1   D -0.173215
@@ -2661,7 +2661,7 @@ and different join types are accomplished via the `how` keyword.
     In [49]: inner_join = df1.merge(df2, on=["key"], how="inner")
 
     In [50]: inner_join
-    Out[50]: 
+    Out[50]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -2670,7 +2670,7 @@ and different join types are accomplished via the `how` keyword.
     In [51]: left_join = df1.merge(df2, on=["key"], how="left")
 
     In [52]: left_join
-    Out[52]: 
+    Out[52]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -2681,7 +2681,7 @@ and different join types are accomplished via the `how` keyword.
     In [53]: right_join = df1.merge(df2, on=["key"], how="right")
 
     In [54]: right_join
-    Out[54]: 
+    Out[54]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -2691,7 +2691,7 @@ and different join types are accomplished via the `how` keyword.
     In [55]: outer_join = df1.merge(df2, on=["key"], how="outer")
 
     In [56]: outer_join
-    Out[56]: 
+    Out[56]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -2726,7 +2726,7 @@ cells.
     In [57]: df = pd.DataFrame({"AAA": [1] * 8, "BBB": list(range(0, 8))})
 
     In [58]: df
-    Out[58]: 
+    Out[58]:
        AAA  BBB
     0    1    0
     1    1    1
@@ -2745,7 +2745,7 @@ cells.
     In [61]: df.loc[2:5, "AAA"] = series
 
     In [62]: df
-    Out[62]: 
+    Out[62]:
        AAA  BBB
     0    1    0
     1    1    1
@@ -2772,10 +2772,10 @@ This is supported in pandas via |pandas.DataFrame.drop_duplicates|.
        ....:         "all_pass": ["Yes", "Yes", "Yes", "No", "No", "Yes"],
        ....:     }
        ....: )
-       ....: 
+       ....:
 
     In [64]: df.drop_duplicates()
-    Out[64]: 
+    Out[64]:
       class  student_count all_pass
     0     A             42      Yes
     1     A             35      Yes
@@ -2784,7 +2784,7 @@ This is supported in pandas via |pandas.DataFrame.drop_duplicates|.
     5     D             45      Yes
 
     In [65]: df.drop_duplicates(["class", "student_count"])
-    Out[65]: 
+    Out[65]:
       class  student_count all_pass
     0     A             42      Yes
     1     A             35      Yes
@@ -2810,10 +2810,10 @@ The equivalent in pandas:
     In [66]: pd.pivot_table(
        ....:     tips, values="tip", index=["size"], columns=["sex"], aggfunc=np.average
        ....: )
-       ....: 
-    Out[66]: 
+       ....:
+    Out[66]:
     sex     Female      Male
-    size                    
+    size
     1     1.276667  1.920000
     2     2.528448  2.614184
     3     3.250000  3.476667
@@ -2830,7 +2830,7 @@ can use |pandas.concat| to add a row to the bottom of a `DataFrame`.
 
 >python
     In [67]: df
-    Out[67]: 
+    Out[67]:
       class  student_count all_pass
     0     A             42      Yes
     1     A             35      Yes
@@ -2841,10 +2841,10 @@ can use |pandas.concat| to add a row to the bottom of a `DataFrame`.
 
     In [68]: new_row = pd.DataFrame([["E", 51, True]],
        ....:                        columns=["class", "student_count", "all_pass"])
-       ....: 
+       ....:
 
     In [69]: pd.concat([df, new_row])
-    Out[69]: 
+    Out[69]:
       class  student_count all_pass
     0     A             42      Yes
     1     A             35      Yes
@@ -2866,7 +2866,7 @@ generally done for an entire column or `DataFrame` at once through
 
 >python
     In [70]: tips
-    Out[70]: 
+    Out[70]:
          total_bill    tip     sex smoker   day    time  size
     67         1.07   1.00  Female    Yes   Sat  Dinner     1
     92         3.75   1.00  Female    Yes   Fri  Dinner     2
@@ -2883,7 +2883,7 @@ generally done for an entire column or `DataFrame` at once through
     [244 rows x 7 columns]
 
     In [71]: tips == "Sun"
-    Out[71]: 
+    Out[71]:
          total_bill    tip    sex  smoker    day   time   size
     67        False  False  False   False  False  False  False
     92        False  False  False   False  False  False  False
@@ -2900,13 +2900,13 @@ generally done for an entire column or `DataFrame` at once through
     [244 rows x 7 columns]
 
     In [72]: tips["day"].str.contains("S")
-    Out[72]: 
+    Out[72]:
     67      True
     92     False
     111     True
     145    False
     135    False
-           ...  
+           ...
     182     True
     156     True
     59      True
@@ -2918,7 +2918,7 @@ pandas' |pandas.DataFrame.replace| is comparable to Excel's `Replace All`.
 
 >python
     In [73]: tips.replace("Thu", "Thursday")
-    Out[73]: 
+    Out[73]:
          total_bill    tip     sex smoker   day    time  size
     67         1.07   1.00  Female    Yes   Sat  Dinner     1
     92         3.75   1.00  Female    Yes   Fri  Dinner     2
@@ -3120,7 +3120,7 @@ blanks. Use `len` and `rstrip` to exclude trailing blanks.
 
 >python
     In [3]: tips["time"].str.len()
-    Out[3]: 
+    Out[3]:
     67     6
     92     6
     111    6
@@ -3135,7 +3135,7 @@ blanks. Use `len` and `rstrip` to exclude trailing blanks.
     Name: time, Length: 244, dtype: int64
 
     In [4]: tips["time"].str.rstrip().str.len()
-    Out[4]: 
+    Out[4]:
     67     6
     92     6
     111    6
@@ -3172,7 +3172,7 @@ The equivalent pandas methods are |pandas.Series.str.upper|,
     In [8]: firstlast["title"] = firstlast["string"].str.title()
 
     In [9]: firstlast
-    Out[9]: 
+    Out[9]:
            string       upper       lower       title
     0  John Smith  JOHN SMITH  john smith  John Smith
     1   Jane Cook   JANE COOK   jane cook   Jane Cook
@@ -3188,7 +3188,7 @@ The following tables will be used in the merge examples:
     In [10]: df1 = pd.DataFrame({"key": ["A", "B", "C", "D"], "value": np.random.randn(4)})
 
     In [11]: df1
-    Out[11]: 
+    Out[11]:
       key     value
     0   A  0.469112
     1   B -0.282863
@@ -3198,7 +3198,7 @@ The following tables will be used in the merge examples:
     In [12]: df2 = pd.DataFrame({"key": ["B", "D", "D", "E"], "value": np.random.randn(4)})
 
     In [13]: df2
-    Out[13]: 
+    Out[13]:
       key     value
     0   B  1.212112
     1   D -0.173215
@@ -3213,7 +3213,7 @@ and different join types are accomplished via the `how` keyword.
     In [14]: inner_join = df1.merge(df2, on=["key"], how="inner")
 
     In [15]: inner_join
-    Out[15]: 
+    Out[15]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -3222,7 +3222,7 @@ and different join types are accomplished via the `how` keyword.
     In [16]: left_join = df1.merge(df2, on=["key"], how="left")
 
     In [17]: left_join
-    Out[17]: 
+    Out[17]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -3233,7 +3233,7 @@ and different join types are accomplished via the `how` keyword.
     In [18]: right_join = df1.merge(df2, on=["key"], how="right")
 
     In [19]: right_join
-    Out[19]: 
+    Out[19]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -3243,7 +3243,7 @@ and different join types are accomplished via the `how` keyword.
     In [20]: outer_join = df1.merge(df2, on=["key"], how="outer")
 
     In [21]: outer_join
-    Out[21]: 
+    Out[21]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -3284,12 +3284,12 @@ filter the rows.
 
 >python
     In [22]: outer_join[outer_join["value_x"].isna()]
-    Out[22]: 
+    Out[22]:
       key  value_x   value_y
     5   E      NaN -1.044236
 
     In [23]: outer_join[outer_join["value_x"].notna()]
-    Out[23]: 
+    Out[23]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -3305,7 +3305,7 @@ Drop rows with missing values
 
 >python
     In [24]: outer_join.dropna()
-    Out[24]: 
+    Out[24]:
       key   value_x   value_y
     1   B -0.282863  1.212112
     3   D -1.135632 -0.173215
@@ -3317,7 +3317,7 @@ Forward fill from previous rows
 
 >python
     In [25]: outer_join.ffill()
-    Out[25]: 
+    Out[25]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -3334,7 +3334,7 @@ Using the mean:
 
 >python
     In [26]: outer_join["value_x"].fillna(outer_join["value_x"].mean())
-    Out[26]: 
+    Out[26]:
     0    0.469112
     1   -0.282863
     2   -1.509059
@@ -3391,12 +3391,12 @@ a database table of the same name and structure.
        ...:     "https://raw.githubusercontent.com/pandas-dev"
        ...:     "/pandas/main/pandas/tests/io/data/csv/tips.csv"
        ...: )
-       ...: 
+       ...:
 
     In [4]: tips = pd.read_csv(url)
 
     In [5]: tips
-    Out[5]: 
+    Out[5]:
          total_bill   tip     sex smoker   day    time  size
     0         16.99  1.01  Female     No   Sun  Dinner     2
     1         10.34  1.66    Male     No   Sun  Dinner     3
@@ -3457,7 +3457,7 @@ your DataFrame:
 
 >python
     In [6]: tips[["total_bill", "tip", "smoker", "time"]]
-    Out[6]: 
+    Out[6]:
          total_bill   tip smoker    time
     0         16.99  1.01     No  Dinner
     1         10.34  1.66     No  Dinner
@@ -3487,7 +3487,7 @@ to append a new column:
 
 >python
     In [7]: tips.assign(tip_rate=tips["tip"] / tips["total_bill"])
-    Out[7]: 
+    Out[7]:
          total_bill   tip     sex smoker   day    time  size  tip_rate
     0         16.99  1.01  Female     No   Sun  Dinner     2  0.059447
     1         10.34  1.66    Male     No   Sun  Dinner     3  0.160542
@@ -3518,7 +3518,7 @@ using |user_guide-indexing-indexing-boolean|.
 
 >python
     In [8]: tips[tips["total_bill"] > 10]
-    Out[8]: 
+    Out[8]:
          total_bill   tip     sex smoker   day    time  size
     0         16.99  1.01  Female     No   Sun  Dinner     2
     1         10.34  1.66    Male     No   Sun  Dinner     3
@@ -3541,13 +3541,13 @@ to the DataFrame, returning all rows with `True`.
     In [9]: is_dinner = tips["time"] == "Dinner"
 
     In [10]: is_dinner
-    Out[10]: 
+    Out[10]:
     0      True
     1      True
     2      True
     3      True
     4      True
-           ... 
+           ...
     239    True
     240    True
     241    True
@@ -3556,14 +3556,14 @@ to the DataFrame, returning all rows with `True`.
     Name: time, Length: 244, dtype: bool
 
     In [11]: is_dinner.value_counts()
-    Out[11]: 
+    Out[11]:
     time
     True     176
     False     68
     Name: count, dtype: int64
 
     In [12]: tips[is_dinner]
-    Out[12]: 
+    Out[12]:
          total_bill   tip     sex smoker   day    time  size
     0         16.99  1.01  Female     No   Sun  Dinner     2
     1         10.34  1.66    Male     No   Sun  Dinner     3
@@ -3591,7 +3591,7 @@ Tips of more than $5 at Dinner meals:
 <
 >python
     In [13]: tips[(tips["time"] == "Dinner") & (tips["tip"] > 5.00)]
-    Out[13]: 
+    Out[13]:
          total_bill    tip     sex smoker  day    time  size
     23        39.42   7.58    Male     No  Sat  Dinner     4
     44        30.40   5.60    Male     No  Sun  Dinner     4
@@ -3618,7 +3618,7 @@ Tips by parties of at least 5 diners OR bill total was more than $45:
 <
 >python
     In [14]: tips[(tips["size"] >= 5) | (tips["total_bill"] > 45)]
-    Out[14]: 
+    Out[14]:
          total_bill    tip     sex smoker   day    time  size
     59        48.27   6.73    Male     No   Sat  Dinner     4
     125       29.80   4.20  Female     No  Thur   Lunch     6
@@ -3641,10 +3641,10 @@ NULL checking is done using the |pandas.Series.notna| and
     In [15]: frame = pd.DataFrame(
        ....:     {"col1": ["A", "B", np.nan, "C", "D"], "col2": ["F", np.nan, "G", "H", "I"]}
        ....: )
-       ....: 
+       ....:
 
     In [16]: frame
-    Out[16]: 
+    Out[16]:
       col1 col2
     0    A    F
     1    B  NaN
@@ -3662,7 +3662,7 @@ see only the records where `col2` IS NULL with the following query:
 <
 >python
     In [17]: frame[frame["col2"].isna()]
-    Out[17]: 
+    Out[17]:
       col1 col2
     1    B  NaN
 <
@@ -3676,7 +3676,7 @@ Getting items where `col1` IS NOT NULL can be done with
 <
 >python
     In [18]: frame[frame["col1"].notna()]
-    Out[18]: 
+    Out[18]:
       col1 col2
     0    A    F
     1    B  NaN
@@ -3709,7 +3709,7 @@ The pandas equivalent would be:
 
 >python
     In [19]: tips.groupby("sex").size()
-    Out[19]: 
+    Out[19]:
     sex
     Female     87
     Male      157
@@ -3723,9 +3723,9 @@ column, returning the number of `NOT NULL` records within each.
 
 >python
     In [20]: tips.groupby("sex").count()
-    Out[20]: 
+    Out[20]:
             total_bill  tip  smoker  day  time  size
-    sex                                             
+    sex
     Female          87   87      87   87    87    87
     Male           157  157     157  157   157   157
 <
@@ -3734,7 +3734,7 @@ Alternatively, we could have applied the
 
 >python
     In [21]: tips.groupby("sex")["total_bill"].count()
-    Out[21]: 
+    Out[21]:
     sex
     Female     87
     Male      157
@@ -3759,9 +3759,9 @@ columns.
 <
 >python
     In [22]: tips.groupby("day").agg({"tip": "mean", "day": "size"})
-    Out[22]: 
+    Out[22]:
                tip  day
-    day                
+    day
     Fri   2.734737   19
     Sat   2.993103   87
     Sun   3.255132   76
@@ -3788,10 +3788,10 @@ Grouping by more than one column is done by passing a list of columns to the
 <
 >python
     In [23]: tips.groupby(["smoker", "day"]).agg({"tip": ["size", "mean"]})
-    Out[23]: 
-                 tip          
+    Out[23]:
+                 tip
                 size      mean
-    smoker day                
+    smoker day
     No     Fri     4  2.812500
            Sat    45  3.102889
            Sun    57  3.167895
@@ -3839,7 +3839,7 @@ INNER JOIN         *getting_started-comparison-comparison_with_sql-inner-join*
 >python
     # merge performs an INNER JOIN by default
     In [26]: pd.merge(df1, df2, on="key")
-    Out[26]: 
+    Out[26]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -3852,7 +3852,7 @@ DataFrame's column with another DataFrame's index.
     In [27]: indexed_df2 = df2.set_index("key")
 
     In [28]: pd.merge(df1, indexed_df2, left_on="key", right_index=True)
-    Out[28]: 
+    Out[28]:
       key   value_x   value_y
     1   B -0.282863  1.212112
     3   D -1.135632 -0.173215
@@ -3874,17 +3874,17 @@ of column names.
        ....:     "key2": [1, 2, 3, 4],
        ....:     "value": np.random.randn(4)
        ....: })
-       ....: 
+       ....:
 
     In [30]: df2_multi = pd.DataFrame({
        ....:     "key1": ["B", "D", "D", "E"],
        ....:     "key2": [2, 4, 4, 5],
        ....:     "value": np.random.randn(4)
        ....: })
-       ....: 
+       ....:
 
     In [31]: pd.merge(df1_multi, df2_multi, on=["key1", "key2"])
-    Out[31]: 
+    Out[31]:
       key1  key2   value_x   value_y
     0    B     2 -2.104569  0.721555
     1    D     4  1.071804 -0.706771
@@ -3899,10 +3899,10 @@ with left_on and right_on.
        ....:     "key_2": [2, 4, 4, 5],
        ....:     "value": np.random.randn(4)
        ....: })
-       ....: 
+       ....:
 
     In [33]: pd.merge(df1_multi, df2_multi, left_on=["key1", "key2"], right_on=["key_1", "key_2"])
-    Out[33]: 
+    Out[33]:
       key1  key2   value_x key_1  key_2   value_y
     0    B     2 -2.104569     B      2 -0.424972
     1    D     4  1.071804     D      4  0.567020
@@ -3922,7 +3922,7 @@ Show all records from `df1`.
 <
 >python
     In [34]: pd.merge(df1, df2, on="key", how="left")
-    Out[34]: 
+    Out[34]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -3943,7 +3943,7 @@ Show all records from `df2`.
 <
 >python
     In [35]: pd.merge(df1, df2, on="key", how="right")
-    Out[35]: 
+    Out[35]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -3967,7 +3967,7 @@ Show all records from both tables.
 <
 >python
     In [36]: pd.merge(df1, df2, on="key", how="outer")
-    Out[36]: 
+    Out[36]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -3985,12 +3985,12 @@ UNION                   *getting_started-comparison-comparison_with_sql-union*
     In [37]: df1 = pd.DataFrame(
        ....:     {"city": ["Chicago", "San Francisco", "New York City"], "rank": range(1, 4)}
        ....: )
-       ....: 
+       ....:
 
     In [38]: df2 = pd.DataFrame(
        ....:     {"city": ["Chicago", "Boston", "Los Angeles"], "rank": [1, 4, 5]}
        ....: )
-       ....: 
+       ....:
 <
 >sql
     SELECT city, rank
@@ -4010,7 +4010,7 @@ UNION                   *getting_started-comparison-comparison_with_sql-union*
 <
 >python
     In [39]: pd.concat([df1, df2])
-    Out[39]: 
+    Out[39]:
                 city  rank
     0        Chicago     1
     1  San Francisco     2
@@ -4043,7 +4043,7 @@ In pandas, you can use |pandas.concat| in conjunction with
 
 >python
     In [40]: pd.concat([df1, df2]).drop_duplicates()
-    Out[40]: 
+    Out[40]:
                 city  rank
     0        Chicago     1
     1  San Francisco     2
@@ -4060,7 +4060,7 @@ LIMIT                   *getting_started-comparison-comparison_with_sql-limit*
 <
 >python
     In [41]: tips.head(10)
-    Out[41]: 
+    Out[41]:
        total_bill   tip     sex smoker  day    time  size
     0       16.99  1.01  Female     No  Sun  Dinner     2
     1       10.34  1.66    Male     No  Sun  Dinner     3
@@ -4088,7 +4088,7 @@ Top n rows with offset
 <
 >python
     In [42]: tips.nlargest(10 + 5, columns="tip").tail(10)
-    Out[42]: 
+    Out[42]:
          total_bill   tip     sex smoker   day    time  size
     183       23.17  6.50    Male    Yes   Sun  Dinner     4
     214       28.17  6.50  Female    Yes   Sat  Dinner     3
@@ -4127,8 +4127,8 @@ Top n rows per group
        ....:     .query("rn < 3")
        ....:     .sort_values(["day", "rn"])
        ....: )
-       ....: 
-    Out[43]: 
+       ....:
+    Out[43]:
          total_bill    tip     sex smoker   day    time  size  rn
     95        40.17   4.73    Male    Yes   Fri  Dinner     4   1
     90        28.97   3.00    Male    Yes   Fri  Dinner     2   2
@@ -4151,8 +4151,8 @@ the same using `rank(method='first')` function
        ....:     .query("rnk < 3")
        ....:     .sort_values(["day", "rnk"])
        ....: )
-       ....: 
-    Out[44]: 
+       ....:
+    Out[44]:
          total_bill    tip     sex smoker   day    time  size  rnk
     95        40.17   4.73    Male    Yes   Fri  Dinner     4  1.0
     90        28.97   3.00    Male    Yes   Fri  Dinner     2  2.0
@@ -4186,8 +4186,8 @@ same `tip` (as Oracle's `RANK()` function)
        ....:     .query("rnk_min < 3")
        ....:     .sort_values(["sex", "rnk_min"])
        ....: )
-       ....: 
-    Out[45]: 
+       ....:
+    Out[45]:
          total_bill   tip     sex smoker  day    time  size  rnk_min
     67         3.07  1.00  Female    Yes  Sat  Dinner     1      1.0
     92         5.75  1.00  Female    Yes  Fri  Dinner     2      1.0
@@ -4338,7 +4338,7 @@ dictionary, where the keys are the column names and the values are the data.
     In [3]: df = pd.DataFrame({"x": [1, 3, 5], "y": [2, 4, 6]})
 
     In [4]: df
-    Out[4]: 
+    Out[4]:
        x  y
     0  1  2
     1  3  4
@@ -4368,12 +4368,12 @@ it will automatically download the data set if presented with a url.
        ...:     "https://raw.githubusercontent.com/pandas-dev"
        ...:     "/pandas/main/pandas/tests/io/data/csv/tips.csv"
        ...: )
-       ...: 
+       ...:
 
     In [6]: tips = pd.read_csv(url)
 
     In [7]: tips
-    Out[7]: 
+    Out[7]:
          total_bill   tip     sex smoker   day    time  size
     0         16.99  1.01  Female     No   Sun  Dinner     2
     1         10.34  1.66    Male     No   Sun  Dinner     3
@@ -4420,7 +4420,7 @@ or using |pandas.DataFrame.head| or |pandas.DataFrame.tail|.
 
 >python
     In [8]: tips.head(5)
-    Out[8]: 
+    Out[8]:
        total_bill   tip     sex smoker  day    time  size
     0       16.99  1.01  Female     No  Sun  Dinner     2
     1       10.34  1.66    Male     No  Sun  Dinner     3
@@ -4480,7 +4480,7 @@ in the `DataFrame`. New columns can be assigned in the same way. The
     In [10]: tips["new_bill"] = tips["total_bill"] / 2
 
     In [11]: tips
-    Out[11]: 
+    Out[11]:
          total_bill   tip     sex smoker   day    time  size  new_bill
     0         14.99  1.01  Female     No   Sun  Dinner     2     7.495
     1          8.34  1.66    Male     No   Sun  Dinner     3     4.170
@@ -4511,7 +4511,7 @@ using |user_guide-indexing-indexing-boolean|.
 
 >python
     In [13]: tips[tips["total_bill"] > 10]
-    Out[13]: 
+    Out[13]:
          total_bill   tip     sex smoker   day    time  size
     0         14.99  1.01  Female     No   Sun  Dinner     2
     2         19.01  3.50    Male     No   Sun  Dinner     3
@@ -4534,13 +4534,13 @@ to the DataFrame, returning all rows with `True`.
     In [14]: is_dinner = tips["time"] == "Dinner"
 
     In [15]: is_dinner
-    Out[15]: 
+    Out[15]:
     0      True
     1      True
     2      True
     3      True
     4      True
-           ... 
+           ...
     239    True
     240    True
     241    True
@@ -4549,14 +4549,14 @@ to the DataFrame, returning all rows with `True`.
     Name: time, Length: 244, dtype: bool
 
     In [16]: is_dinner.value_counts()
-    Out[16]: 
+    Out[16]:
     time
     True     176
     False     68
     Name: count, dtype: int64
 
     In [17]: tips[is_dinner]
-    Out[17]: 
+    Out[17]:
          total_bill   tip     sex smoker   day    time  size
     0         14.99  1.01  Female     No   Sun  Dinner     2
     1          8.34  1.66    Male     No   Sun  Dinner     3
@@ -4588,7 +4588,7 @@ from `numpy`.
     In [18]: tips["bucket"] = np.where(tips["total_bill"] < 10, "low", "high")
 
     In [19]: tips
-    Out[19]: 
+    Out[19]:
          total_bill   tip     sex smoker   day    time  size bucket
     0         14.99  1.01  Female     No   Sun  Dinner     2   high
     1          8.34  1.66    Male     No   Sun  Dinner     3    low
@@ -4644,13 +4644,13 @@ functions, pandas supports other Time Series features not available in Stata
     In [25]: tips["months_between"] = tips["date2"].dt.to_period("M") - tips[
        ....:     "date1"
        ....: ].dt.to_period("M")
-       ....: 
+       ....:
 
     In [26]: tips[
        ....:     ["date1", "date2", "date1_year", "date2_month", "date1_next", "months_between"]
        ....: ]
-       ....: 
-    Out[26]: 
+       ....:
+    Out[26]:
              date1      date2  date1_year  date2_month date1_next    months_between
     0   2013-01-15 2015-02-15        2013            2 2013-02-01  <25 * MonthEnds>
     1   2013-01-15 2015-02-15        2013            2 2013-02-01  <25 * MonthEnds>
@@ -4686,7 +4686,7 @@ Keep certain columns
 
 >python
     In [27]: tips[["sex", "total_bill", "tip"]]
-    Out[27]: 
+    Out[27]:
             sex  total_bill   tip
     0    Female       14.99  1.01
     1      Male        8.34  1.66
@@ -4707,7 +4707,7 @@ Drop a column *getting_started-comparison-comparison_with_stata-drop-a-column*
 
 >python
     In [28]: tips.drop("sex", axis=1)
-    Out[28]: 
+    Out[28]:
          total_bill   tip smoker   day    time  size
     0         14.99  1.01     No   Sun  Dinner     2
     1          8.34  1.66     No   Sun  Dinner     3
@@ -4729,7 +4729,7 @@ Rename a column
 
 >python
     In [29]: tips.rename(columns={"total_bill": "total_bill_2"})
-    Out[29]: 
+    Out[29]:
          total_bill_2   tip     sex smoker   day    time  size
     0           14.99  1.01  Female     No   Sun  Dinner     2
     1            8.34  1.66    Male     No   Sun  Dinner     3
@@ -4761,7 +4761,7 @@ columns to sort by.
     In [30]: tips = tips.sort_values(["sex", "total_bill"])
 
     In [31]: tips
-    Out[31]: 
+    Out[31]:
          total_bill    tip     sex smoker   day    time  size
     67         1.07   1.00  Female    Yes   Sat  Dinner     1
     92         3.75   1.00  Female    Yes   Fri  Dinner     2
@@ -4797,7 +4797,7 @@ blanks. Use `len` and `rstrip` to exclude trailing blanks.
 
 >python
     In [32]: tips["time"].str.len()
-    Out[32]: 
+    Out[32]:
     67     6
     92     6
     111    6
@@ -4812,7 +4812,7 @@ blanks. Use `len` and `rstrip` to exclude trailing blanks.
     Name: time, Length: 244, dtype: int64
 
     In [33]: tips["time"].str.rstrip().str.len()
-    Out[33]: 
+    Out[33]:
     67     6
     92     6
     111    6
@@ -4845,7 +4845,7 @@ zero-based.
 
 >python
     In [34]: tips["sex"].str.find("ale")
-    Out[34]: 
+    Out[34]:
     67     3
     92     3
     111    3
@@ -4874,7 +4874,7 @@ by position locations. Keep in mind that Python indexes are zero-based.
 
 >python
     In [35]: tips["sex"].str[0:1]
-    Out[35]: 
+    Out[35]:
     67     F
     92     F
     111    F
@@ -4918,7 +4918,7 @@ approaches should you need them.
     In [38]: firstlast["Last_Name"] = firstlast["String"].str.rsplit(" ", expand=True)[1]
 
     In [39]: firstlast
-    Out[39]: 
+    Out[39]:
            String First_Name Last_Name
     0  John Smith       John     Smith
     1   Jane Cook       Jane      Cook
@@ -4955,7 +4955,7 @@ The equivalent pandas methods are |pandas.Series.str.upper|,
     In [43]: firstlast["title"] = firstlast["string"].str.title()
 
     In [44]: firstlast
-    Out[44]: 
+    Out[44]:
            string       upper       lower       title
     0  John Smith  JOHN SMITH  john smith  John Smith
     1   Jane Cook   JANE COOK   jane cook   Jane Cook
@@ -4969,7 +4969,7 @@ The following tables will be used in the merge examples:
     In [45]: df1 = pd.DataFrame({"key": ["A", "B", "C", "D"], "value": np.random.randn(4)})
 
     In [46]: df1
-    Out[46]: 
+    Out[46]:
       key     value
     0   A  0.469112
     1   B -0.282863
@@ -4979,7 +4979,7 @@ The following tables will be used in the merge examples:
     In [47]: df2 = pd.DataFrame({"key": ["B", "D", "D", "E"], "value": np.random.randn(4)})
 
     In [48]: df2
-    Out[48]: 
+    Out[48]:
       key     value
     0   B  1.212112
     1   D -0.173215
@@ -5045,7 +5045,7 @@ and different join types are accomplished via the `how` keyword.
     In [49]: inner_join = df1.merge(df2, on=["key"], how="inner")
 
     In [50]: inner_join
-    Out[50]: 
+    Out[50]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -5054,7 +5054,7 @@ and different join types are accomplished via the `how` keyword.
     In [51]: left_join = df1.merge(df2, on=["key"], how="left")
 
     In [52]: left_join
-    Out[52]: 
+    Out[52]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -5065,7 +5065,7 @@ and different join types are accomplished via the `how` keyword.
     In [53]: right_join = df1.merge(df2, on=["key"], how="right")
 
     In [54]: right_join
-    Out[54]: 
+    Out[54]:
       key   value_x   value_y
     0   B -0.282863  1.212112
     1   D -1.135632 -0.173215
@@ -5075,7 +5075,7 @@ and different join types are accomplished via the `how` keyword.
     In [55]: outer_join = df1.merge(df2, on=["key"], how="outer")
 
     In [56]: outer_join
-    Out[56]: 
+    Out[56]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -5096,7 +5096,7 @@ aggregations.
 
 >python
     In [57]: outer_join
-    Out[57]: 
+    Out[57]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -5106,7 +5106,7 @@ aggregations.
     5   E       NaN -1.044236
 
     In [58]: outer_join["value_x"] + outer_join["value_y"]
-    Out[58]: 
+    Out[58]:
     0         NaN
     1    0.929249
     2         NaN
@@ -5132,12 +5132,12 @@ filter the rows.
 
 >python
     In [60]: outer_join[outer_join["value_x"].isna()]
-    Out[60]: 
+    Out[60]:
       key  value_x   value_y
     5   E      NaN -1.044236
 
     In [61]: outer_join[outer_join["value_x"].notna()]
-    Out[61]: 
+    Out[61]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -5153,7 +5153,7 @@ Drop rows with missing values
 
 >python
     In [62]: outer_join.dropna()
-    Out[62]: 
+    Out[62]:
       key   value_x   value_y
     1   B -0.282863  1.212112
     3   D -1.135632 -0.173215
@@ -5165,7 +5165,7 @@ Forward fill from previous rows
 
 >python
     In [63]: outer_join.ffill()
-    Out[63]: 
+    Out[63]:
       key   value_x   value_y
     0   A  0.469112       NaN
     1   B -0.282863  1.212112
@@ -5182,7 +5182,7 @@ Using the mean:
 
 >python
     In [64]: outer_join["value_x"].fillna(outer_join["value_x"].mean())
-    Out[64]: 
+    Out[64]:
     0    0.469112
     1   -0.282863
     2   -1.509059
@@ -5210,9 +5210,9 @@ examples.
     In [65]: tips_summed = tips.groupby(["sex", "smoker"])[["total_bill", "tip"]].sum()
 
     In [66]: tips_summed
-    Out[66]: 
+    Out[66]:
                    total_bill     tip
-    sex    smoker                    
+    sex    smoker
     Female No          869.68  149.77
            Yes         527.27   96.74
     Male   No         1725.75  302.00
@@ -5239,7 +5239,7 @@ allows these type of operations to be succinctly expressed in one operation.
     In [68]: tips["adj_total_bill"] = tips["total_bill"] - gb.transform("mean")
 
     In [69]: tips
-    Out[69]: 
+    Out[69]:
          total_bill    tip     sex smoker   day    time  size  adj_total_bill
     67         1.07   1.00  Female    Yes   Sat  Dinner     1      -17.686344
     92         3.75   1.00  Female    Yes   Fri  Dinner     2      -15.006344
@@ -5270,9 +5270,9 @@ In pandas this would be written as:
 
 >python
     In [70]: tips.groupby(["sex", "smoker"]).first()
-    Out[70]: 
+    Out[70]:
                    total_bill   tip   day    time  size  adj_total_bill
-    sex    smoker                                                      
+    sex    smoker
     Female No            5.25  1.00   Sat  Dinner     1      -11.938278
            Yes           1.07  1.00   Sat  Dinner     1      -17.686344
     Male   No            5.51  2.00  Thur   Lunch     2      -11.678278
@@ -5847,19 +5847,19 @@ SQL databases                          *getting_started-install-sql-databases*
 Traditional drivers are installable with
 `pip install "pandas[postgresql, mysql, sql-other]"`
 
-Dependency              Minimum Version  pip extra          Notes
-----------------------  ---------------  -----------------  ------------------
-SQLAlchemy              2.0.42           postgresql,        SQL support for
-                                         mysql, sql-other   databases other
-                                                            than sqlite
-psycopg2                2.9.10           postgresql         PostgreSQL engine
-                                                            for sqlalchemy
-pymysql                 1.1.1            mysql              MySQL engine for
-                                                            sqlalchemy
-adbc-driver-postgresql  1.7.0            postgresql         ADBC Driver for
-                                                            PostgreSQL
-adbc-driver-sqlite      1.7.0            sql-other          ADBC Driver for
-                                                            SQLite
+Dependency           Minimum Version  pip extra            Notes
+-------------------  ---------------  -------------------  -------------------
+SQLAlchemy           2.0.42           postgresql, mysql,   SQL support for
+                                      sql-other            databases other
+                                                           than sqlite
+psycopg2             2.9.10           postgresql           PostgreSQL engine
+                                                           for sqlalchemy
+pymysql              1.1.1            mysql                MySQL engine for
+                                                           sqlalchemy
+adbc-driver-         1.7.0            postgresql           ADBC Driver for
+postgresql                                                 PostgreSQL
+adbc-driver-sqlite   1.7.0            sql-other            ADBC Driver for
+                                                           SQLite
 
 Other data sources                *getting_started-install-other-data-sources*
 
@@ -5964,10 +5964,10 @@ PANDAS DATA TABLE REPRESENTATION
          ...:         "Sex": ["male", "male", "female"],
          ...:     }
          ...: )
-         ...: 
+         ...:
 
       In [3]: df
-      Out[3]: 
+      Out[3]:
                              Name  Age     Sex
       0   Braund, Mr. Owen Harris   22    male
       1  Allen, Mr. William Henry   35    male
@@ -5999,7 +5999,7 @@ EACH COLUMN IN A `DataFrame` IS A `Series`
 
   >python
       In [4]: df["Age"]
-      Out[4]: 
+      Out[4]:
       0    22
       1    35
       2    58
@@ -6022,7 +6022,7 @@ You can create a `Series` from scratch as well:
     In [5]: ages = pd.Series([22, 35, 58], name="Age")
 
     In [6]: ages
-    Out[6]: 
+    Out[6]:
     0    22
     1    35
     2    58
@@ -6060,7 +6060,7 @@ forget to use parentheses `()`.
 
   >python
       In [9]: df.describe()
-      Out[9]: 
+      Out[9]:
                    Age
       count   3.000000
       mean   38.333333
@@ -6147,7 +6147,7 @@ default:
 
 >python
     In [3]: titanic
-    Out[3]: 
+    Out[3]:
          PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
     0              1         0       3  ...   7.2500   NaN        S
     1              2         1       1  ...  71.2833   C85        C
@@ -6167,7 +6167,7 @@ default:
 
   >python
       In [4]: titanic.head(8)
-      Out[4]: 
+      Out[4]:
          PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
       0            1         0       3  ...   7.2500   NaN        S
       1            2         1       1  ...  71.2833   C85        C
@@ -6194,7 +6194,7 @@ by requesting the pandas `dtypes` attribute:
 
 >python
     In [5]: titanic.dtypes
-    Out[5]: 
+    Out[5]:
     PassengerId      int64
     Survived         int64
     Pclass           int64
@@ -6248,7 +6248,7 @@ The equivalent read function `read_excel()` will reload the data to a
 <
 >python
     In [8]: titanic.head()
-    Out[8]: 
+    Out[8]:
        PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
     0            1         0       3  ...   7.2500   NaN        S
     1            2         1       1  ...  71.2833   C85        C
@@ -6265,20 +6265,20 @@ The equivalent read function `read_excel()` will reload the data to a
       <class 'pandas.DataFrame'>
       RangeIndex: 891 entries, 0 to 890
       Data columns (total 12 columns):
-       #   Column       Non-Null Count  Dtype  
-      ---  ------       --------------  -----  
-       0   PassengerId  891 non-null    int64  
-       1   Survived     891 non-null    int64  
-       2   Pclass       891 non-null    int64  
-       3   Name         891 non-null    str    
-       4   Sex          891 non-null    str    
+       #   Column       Non-Null Count  Dtype
+      ---  ------       --------------  -----
+       0   PassengerId  891 non-null    int64
+       1   Survived     891 non-null    int64
+       2   Pclass       891 non-null    int64
+       3   Name         891 non-null    str
+       4   Sex          891 non-null    str
        5   Age          714 non-null    float64
-       6   SibSp        891 non-null    int64  
-       7   Parch        891 non-null    int64  
-       8   Ticket       891 non-null    str    
+       6   SibSp        891 non-null    int64
+       7   Parch        891 non-null    int64
+       8   Ticket       891 non-null    str
        9   Fare         891 non-null    float64
-       10  Cabin        204 non-null    str    
-       11  Embarked     889 non-null    str    
+       10  Cabin        204 non-null    str
+       11  Embarked     889 non-null    str
       dtypes: float64(2), int64(5), str(5)
       memory usage: 118.7 KB
 <
@@ -6340,7 +6340,7 @@ Data used for this tutorial:
       In [2]: titanic = pd.read_csv("data/titanic.csv")
 
       In [3]: titanic.head()
-      Out[3]: 
+      Out[3]:
          PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
       0            1         0       3  ...   7.2500   NaN        S
       1            2         1       1  ...  71.2833   C85        C
@@ -6364,7 +6364,7 @@ HOW DO I SELECT SPECIFIC COLUMNS FROM A `DataFrame`?
       In [4]: ages = titanic["Age"]
 
       In [5]: ages.head()
-      Out[5]: 
+      Out[5]:
       0    22.0
       1    38.0
       2    26.0
@@ -6404,7 +6404,7 @@ Series is 1-dimensional and only the number of rows is returned.
       In [8]: age_sex = titanic[["Age", "Sex"]]
 
       In [9]: age_sex.head()
-      Out[9]: 
+      Out[9]:
           Age     Sex
       0  22.0    male
       1  38.0  female
@@ -6448,7 +6448,7 @@ HOW DO I FILTER SPECIFIC ROWS FROM A `DataFrame`?
       In [12]: above_35 = titanic[titanic["Age"] > 35]
 
       In [13]: above_35.head()
-      Out[13]: 
+      Out[13]:
           PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
       1             2         1       1  ...  71.2833   C85        C
       6             7         0       1  ...  51.8625   E46        S
@@ -6466,13 +6466,13 @@ which rows the `Age` column has a value larger than 35:
 
 >python
     In [14]: titanic["Age"] > 35
-    Out[14]: 
+    Out[14]:
     0      False
     1       True
     2      False
     3      False
     4      False
-           ...  
+           ...
     886    False
     887    False
     888    False
@@ -6501,7 +6501,7 @@ checking the `shape` attribute of the resulting `DataFrame` `above_35`:
       In [16]: class_23 = titanic[titanic["Pclass"].isin([2, 3])]
 
       In [17]: class_23.head()
-      Out[17]: 
+      Out[17]:
          PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
       0            1         0       3  ...   7.2500   NaN        S
       2            3         1       3  ...   7.9250   NaN        S
@@ -6525,7 +6525,7 @@ or 3 and combining the two statements with an `|` (or) operator:
     In [18]: class_23 = titanic[(titanic["Pclass"] == 2) | (titanic["Pclass"] == 3)]
 
     In [19]: class_23.head()
-    Out[19]: 
+    Out[19]:
        PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
     0            1         0       3  ...   7.2500   NaN        S
     2            3         1       3  ...   7.9250   NaN        S
@@ -6552,7 +6552,7 @@ See the dedicated section in the user guide about
       In [20]: age_no_na = titanic[titanic["Age"].notna()]
 
       In [21]: age_no_na.head()
-      Out[21]: 
+      Out[21]:
          PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
       0            1         0       3  ...   7.2500   NaN        S
       1            2         1       1  ...  71.2833   C85        C
@@ -6588,12 +6588,12 @@ HOW DO I SELECT SPECIFIC ROWS AND COLUMNS FROM A `DataFrame`?
       In [23]: adult_names = titanic.loc[titanic["Age"] > 35, "Name"]
 
       In [24]: adult_names.head()
-      Out[24]: 
+      Out[24]:
       1     Cumings, Mrs. John Bradley (Florence Briggs Th...
       6                               McCarthy, Mr. Timothy J
       11                              Bonnell, Miss Elizabeth
       13                          Andersson, Mr. Anders Johan
-      15                     Hewlett, Mrs. (Mary D Kingcome) 
+      15                     Hewlett, Mrs. (Mary D Kingcome)
       Name: Name, dtype: str
 <
   In this case, a subset of both rows and columns is made in one go and just
@@ -6612,7 +6612,7 @@ want to select all rows or columns.
 
   >python
       In [25]: titanic.iloc[9:25, 2:5]
-      Out[25]: 
+      Out[25]:
           Pclass                                 Name     Sex
       9        2  Nasser, Mrs. Nicholas (Adele Achem)  female
       10       3       Sandstrom, Miss Marguerite Rut  female
@@ -6641,7 +6641,7 @@ can be assigned to the selected data. For example, to assign the name
     In [26]: titanic.iloc[0:3, 3] = "anonymous"
 
     In [27]: titanic.iloc[:5, 3]
-    Out[27]: 
+    Out[27]:
     0                                       anonymous
     1                                       anonymous
     2                                       anonymous
@@ -6691,9 +6691,9 @@ Data used for this tutorial:
       In [3]: air_quality = pd.read_csv("data/air_quality_no2.csv", index_col=0, parse_dates=True)
 
       In [4]: air_quality.head()
-      Out[4]: 
+      Out[4]:
                            station_antwerp  station_paris  station_london
-      datetime                                                           
+      datetime
       2019-05-07 02:00:00              NaN            NaN            23.0
       2019-05-07 03:00:00             50.5           25.0            19.0
       2019-05-07 04:00:00             45.0           27.7            19.0
@@ -6752,8 +6752,8 @@ to get an overview of the available plot methods:
        ....:     for method_name in dir(air_quality.plot)
        ....:     if not method_name.startswith("_")
        ....: ]
-       ....: 
-    Out[11]: 
+       ....:
+    Out[11]:
     ['area',
      'bar',
      'barh',
@@ -6857,9 +6857,9 @@ Data used for this tutorial:
       In [2]: air_quality = pd.read_csv("data/air_quality_no2.csv", index_col=0, parse_dates=True)
 
       In [3]: air_quality.head()
-      Out[3]: 
+      Out[3]:
                            station_antwerp  station_paris  station_london
-      datetime                                                           
+      datetime
       2019-05-07 02:00:00              NaN            NaN            23.0
       2019-05-07 03:00:00             50.5           25.0            19.0
       2019-05-07 04:00:00             45.0           27.7            19.0
@@ -6881,9 +6881,9 @@ How to create new columns derived from existing columns
       In [4]: air_quality["london_mg_per_cubic"] = air_quality["station_london"] * 1.882
 
       In [5]: air_quality.head()
-      Out[5]: 
+      Out[5]:
                            station_antwerp  ...  london_mg_per_cubic
-      datetime                              ...                     
+      datetime                              ...
       2019-05-07 02:00:00              NaN  ...               43.286
       2019-05-07 03:00:00             50.5  ...               35.758
       2019-05-07 04:00:00             45.0  ...               35.758
@@ -6908,12 +6908,12 @@ How to create new columns derived from existing columns
       In [6]: air_quality["ratio_paris_antwerp"] = (
          ...:     air_quality["station_paris"] / air_quality["station_antwerp"]
          ...: )
-         ...: 
+         ...:
 
       In [7]: air_quality.head()
-      Out[7]: 
+      Out[7]:
                            station_antwerp  ...  ratio_paris_antwerp
-      datetime                              ...                     
+      datetime                              ...
       2019-05-07 02:00:00              NaN  ...                  NaN
       2019-05-07 03:00:00             50.5  ...             0.495050
       2019-05-07 04:00:00             45.0  ...             0.615556
@@ -6944,13 +6944,13 @@ If you need more advanced logic, you can use arbitrary Python code via
          ...:         "station_london": "London Westminster",
          ...:     }
          ...: )
-         ...: 
+         ...:
 <
   >python
       In [9]: air_quality_renamed.head()
-      Out[9]: 
+      Out[9]:
                            BETR801  ...  ratio_paris_antwerp
-      datetime                      ...                     
+      datetime                      ...
       2019-05-07 02:00:00      NaN  ...                  NaN
       2019-05-07 03:00:00     50.5  ...             0.495050
       2019-05-07 04:00:00     45.0  ...             0.615556
@@ -6971,9 +6971,9 @@ lowercase letters can be done using a function as well:
     In [10]: air_quality_renamed = air_quality_renamed.rename(columns=str.lower)
 
     In [11]: air_quality_renamed.head()
-    Out[11]: 
+    Out[11]:
                          betr801  ...  ratio_paris_antwerp
-    datetime                      ...                     
+    datetime                      ...
     2019-05-07 02:00:00      NaN  ...                  NaN
     2019-05-07 03:00:00     50.5  ...             0.495050
     2019-05-07 04:00:00     45.0  ...             0.615556
@@ -7025,7 +7025,7 @@ Data used for this tutorial:
       In [2]: titanic = pd.read_csv("data/titanic.csv")
 
       In [3]: titanic.head()
-      Out[3]: 
+      Out[3]:
          PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
       0            1         0       3  ...   7.2500   NaN        S
       1            2         1       1  ...  71.2833   C85        C
@@ -7058,7 +7058,7 @@ across rows by default.
 
   >python
       In [5]: titanic[["Age", "Fare"]].median()
-      Out[5]: 
+      Out[5]:
       Age     28.0000
       Fare    14.4542
       dtype: float64
@@ -7074,7 +7074,7 @@ time. Remember the `describe` function from the
 
 >python
     In [6]: titanic[["Age", "Fare"]].describe()
-    Out[6]: 
+    Out[6]:
                   Age        Fare
     count  714.000000  891.000000
     mean    29.699118   32.204208
@@ -7096,8 +7096,8 @@ method:
        ...:         "Fare": ["min", "max", "median", "mean"],
        ...:     }
        ...: )
-       ...: 
-    Out[7]: 
+       ...:
+    Out[7]:
                   Age        Fare
     min      0.420000    0.000000
     max     80.000000  512.329200
@@ -7116,9 +7116,9 @@ AGGREGATING STATISTICS GROUPED BY CATEGORY
 
   >python
       In [8]: titanic[["Sex", "Age"]].groupby("Sex").mean()
-      Out[8]: 
+      Out[8]:
                     Age
-      Sex              
+      Sex
       female  27.915709
       male    30.726645
 <
@@ -7145,9 +7145,9 @@ passing `numeric_only=True`:
 
 >python
     In [9]: titanic.groupby("Sex").mean(numeric_only=True)
-    Out[9]: 
+    Out[9]:
             PassengerId  Survived    Pclass  ...     SibSp     Parch       Fare
-    Sex                                      ...                               
+    Sex                                      ...
     female   431.028662  0.742038  2.159236  ...  0.694268  0.649682  44.479818
     male     454.147314  0.188908  2.389948  ...  0.429809  0.235702  25.523893
 
@@ -7160,7 +7160,7 @@ well:
 
 >python
     In [10]: titanic.groupby("Sex")["Age"].mean()
-    Out[10]: 
+    Out[10]:
     Sex
     female    27.915709
     male      30.726645
@@ -7180,7 +7180,7 @@ well:
 
   >python
       In [11]: titanic.groupby(["Sex", "Pclass"])["Fare"].mean()
-      Out[11]: 
+      Out[11]:
       Sex     Pclass
       female  1         106.125798
               2          21.970121
@@ -7204,7 +7204,7 @@ COUNT NUMBER OF RECORDS BY CATEGORY
 
   >python
       In [12]: titanic["Pclass"].value_counts()
-      Out[12]: 
+      Out[12]:
       Pclass
       3    491
       1    216
@@ -7219,7 +7219,7 @@ combination with counting the number of records within each group:
 
 >python
     In [13]: titanic.groupby("Pclass")["Pclass"].count()
-    Out[13]: 
+    Out[13]:
     Pclass
     1    216
     2    184
@@ -7275,7 +7275,7 @@ Data used for this tutorial:
       In [2]: titanic = pd.read_csv("data/titanic.csv")
 
       In [3]: titanic.head()
-      Out[3]: 
+      Out[3]:
          PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
       0            1         0       3  ...   7.2500   NaN        S
       1            2         1       1  ...  71.2833   C85        C
@@ -7323,12 +7323,12 @@ Data used for this tutorial:
       In [4]: air_quality = pd.read_csv(
          ...:     "data/air_quality_long.csv", index_col="date.utc", parse_dates=True
          ...: )
-         ...: 
+         ...:
 
       In [5]: air_quality.head()
-      Out[5]: 
+      Out[5]:
                                       city country location parameter  value   unit
-      date.utc                                                                     
+      date.utc
       2019-06-18 06:00:00+00:00  Antwerpen      BE  BETR801      pm25   18.0  µg/m³
       2019-06-17 08:00:00+00:00  Antwerpen      BE  BETR801      pm25    6.5  µg/m³
       2019-06-17 07:00:00+00:00  Antwerpen      BE  BETR801      pm25   18.5  µg/m³
@@ -7347,7 +7347,7 @@ SORT TABLE ROWS
 
   >python
       In [6]: titanic.sort_values(by="Age").head()
-      Out[6]: 
+      Out[6]:
            PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
       803          804         1       3  ...   8.5167   NaN        C
       755          756         1       2  ...  14.5000   NaN        S
@@ -7363,7 +7363,7 @@ SORT TABLE ROWS
 
   >python
       In [7]: titanic.sort_values(by=['Pclass', 'Age'], ascending=False).head()
-      Out[7]: 
+      Out[7]:
            PassengerId  Survived  Pclass  ...    Fare Cabin Embarked
       851          852         0       3  ...  7.7750   NaN        S
       116          117         0       3  ...  7.7500   NaN        Q
@@ -7396,9 +7396,9 @@ of each group). The subset of data will be called `no2_subset`.
     In [9]: no2_subset = no2.sort_index().groupby(["location"]).head(2)
 
     In [10]: no2_subset
-    Out[10]: 
+    Out[10]:
                                     city country  ...  value   unit
-    date.utc                                      ...              
+    date.utc                                      ...
     2019-04-09 01:00:00+00:00  Antwerpen      BE  ...   22.5  µg/m³
     2019-04-09 01:00:00+00:00      Paris      FR  ...   24.4  µg/m³
     2019-04-09 02:00:00+00:00     London      GB  ...   67.0  µg/m³
@@ -7413,9 +7413,9 @@ of each group). The subset of data will be called `no2_subset`.
 
   >python
       In [11]: no2_subset.pivot(columns="location", values="value")
-      Out[11]: 
+      Out[11]:
       location                   BETR801  FR04014  London Westminster
-      date.utc                                                       
+      date.utc
       2019-04-09 01:00:00+00:00     22.5     24.4                 NaN
       2019-04-09 02:00:00+00:00     53.5     27.4                67.0
       2019-04-09 03:00:00+00:00      NaN      NaN                67.0
@@ -7430,9 +7430,9 @@ of the different time series at the same time:
 
 >python
     In [12]: no2.head()
-    Out[12]: 
+    Out[12]:
                                 city country location parameter  value   unit
-    date.utc                                                                 
+    date.utc
     2019-06-21 00:00:00+00:00  Paris      FR  FR04014       no2   20.0  µg/m³
     2019-06-20 23:00:00+00:00  Paris      FR  FR04014       no2   21.8  µg/m³
     2019-06-20 22:00:00+00:00  Paris      FR  FR04014       no2   26.5  µg/m³
@@ -7462,10 +7462,10 @@ PIVOT TABLE
       In [14]: air_quality.pivot_table(
          ....:     values="value", index="location", columns="parameter", aggfunc="mean"
          ....: )
-         ....: 
-      Out[14]: 
+         ....:
+      Out[14]:
       parameter                 no2       pm25
-      location                                
+      location
       BETR801             26.950920  23.169492
       FR04014             29.374284        NaN
       London Westminster  29.740050  13.443568
@@ -7488,10 +7488,10 @@ parameter to `True`:
        ....:     aggfunc="mean",
        ....:     margins=True,
        ....: )
-       ....: 
-    Out[15]: 
+       ....:
+    Out[15]:
     parameter                 no2       pm25        All
-    location                                           
+    location
     BETR801             26.950920  23.169492  24.982353
     FR04014             29.374284        NaN  29.374284
     London Westminster  29.740050  13.443568  21.491708
@@ -7523,7 +7523,7 @@ we add a new index to the `DataFrame` with |pandas.DataFrame.reset_index|.
     In [16]: no2_pivoted = no2.pivot(columns="location", values="value").reset_index()
 
     In [17]: no2_pivoted.head()
-    Out[17]: 
+    Out[17]:
     location                  date.utc  BETR801  FR04014  London Westminster
     0        2019-04-09 01:00:00+00:00     22.5     24.4                 NaN
     1        2019-04-09 02:00:00+00:00     53.5     27.4                67.0
@@ -7538,7 +7538,7 @@ we add a new index to the `DataFrame` with |pandas.DataFrame.reset_index|.
       In [18]: no_2 = no2_pivoted.melt(id_vars="date.utc")
 
       In [19]: no_2.head()
-      Out[19]: 
+      Out[19]:
                          date.utc location  value
       0 2019-04-09 01:00:00+00:00  BETR801   22.5
       1 2019-04-09 02:00:00+00:00  BETR801   53.5
@@ -7564,10 +7564,10 @@ The parameters passed to |pandas.melt| can be defined in more detail:
        ....:     value_name="NO_2",
        ....:     var_name="id_location",
        ....: )
-       ....: 
+       ....:
 
     In [21]: no_2.head()
-    Out[21]: 
+    Out[21]:
                        date.utc id_location  NO_2
     0 2019-04-09 01:00:00+00:00     BETR801  22.5
     1 2019-04-09 02:00:00+00:00     BETR801  53.5
@@ -7620,14 +7620,14 @@ Data used for this tutorial:
   >python
       In [2]: air_quality_no2 = pd.read_csv("data/air_quality_no2_long.csv",
          ...:                               parse_dates=True)
-         ...: 
+         ...:
 
       In [3]: air_quality_no2 = air_quality_no2[["date.utc", "location",
          ...:                                    "parameter", "value"]]
-         ...: 
+         ...:
 
       In [4]: air_quality_no2.head()
-      Out[4]: 
+      Out[4]:
                           date.utc location parameter  value
       0  2019-06-21 00:00:00+00:00  FR04014       no2   20.0
       1  2019-06-20 23:00:00+00:00  FR04014       no2   21.8
@@ -7651,14 +7651,14 @@ Data used for this tutorial:
   >python
       In [5]: air_quality_pm25 = pd.read_csv("data/air_quality_pm25_long.csv",
          ...:                                parse_dates=True)
-         ...: 
+         ...:
 
       In [6]: air_quality_pm25 = air_quality_pm25[["date.utc", "location",
          ...:                                      "parameter", "value"]]
-         ...: 
+         ...:
 
       In [7]: air_quality_pm25.head()
-      Out[7]: 
+      Out[7]:
                           date.utc location parameter  value
       0  2019-06-18 06:00:00+00:00  BETR801      pm25   18.0
       1  2019-06-17 08:00:00+00:00  BETR801      pm25    6.5
@@ -7681,7 +7681,7 @@ CONCATENATING OBJECTS
       In [8]: air_quality = pd.concat([air_quality_pm25, air_quality_no2], axis=0)
 
       In [9]: air_quality.head()
-      Out[9]: 
+      Out[9]:
                           date.utc location parameter  value
       0  2019-06-18 06:00:00+00:00  BETR801      pm25   18.0
       1  2019-06-17 08:00:00+00:00  BETR801      pm25    6.5
@@ -7726,7 +7726,7 @@ of the table (either `no2` from table `air_quality_no2` or `pm25` from table
     In [13]: air_quality = air_quality.sort_values("date.utc")
 
     In [14]: air_quality.head()
-    Out[14]: 
+    Out[14]:
                            date.utc            location parameter  value
     100   2019-05-07 01:00:00+00:00             BETR801      pm25   12.5
     1109  2019-05-07 01:00:00+00:00  London Westminster      pm25    8.0
@@ -7744,7 +7744,7 @@ example:
     In [15]: air_quality_ = pd.concat([air_quality_pm25, air_quality_no2], keys=["PM25", "NO2"])
 
     In [16]: air_quality_.head()
-    Out[16]: 
+    Out[16]:
                              date.utc location parameter  value
     PM25 0  2019-06-18 06:00:00+00:00  BETR801      pm25   18.0
          1  2019-06-17 08:00:00+00:00  BETR801      pm25    6.5
@@ -7789,7 +7789,7 @@ JOIN TABLES USING A COMMON IDENTIFIER
       In [17]: stations_coord = pd.read_csv("data/air_quality_stations.csv")
 
       In [18]: stations_coord.head()
-      Out[18]: 
+      Out[18]:
         location  coordinates.latitude  coordinates.longitude
       0  BELAL01              51.23619                4.38522
       1  BELHB23              51.17030                4.34100
@@ -7806,7 +7806,7 @@ JOIN TABLES USING A COMMON IDENTIFIER
 
   >python
       In [19]: air_quality.head()
-      Out[19]: 
+      Out[19]:
                              date.utc            location parameter  value
       100   2019-05-07 01:00:00+00:00             BETR801      pm25   12.5
       1109  2019-05-07 01:00:00+00:00  London Westminster      pm25    8.0
@@ -7818,7 +7818,7 @@ JOIN TABLES USING A COMMON IDENTIFIER
       In [20]: air_quality = pd.merge(air_quality, stations_coord, how="left", on="location")
 
       In [21]: air_quality.head()
-      Out[21]: 
+      Out[21]:
                           date.utc  ...  coordinates.longitude
       0  2019-05-07 01:00:00+00:00  ...                4.43182
       1  2019-05-07 01:00:00+00:00  ...               -0.13193
@@ -7850,7 +7850,7 @@ JOIN TABLES USING A COMMON IDENTIFIER
       In [22]: air_quality_parameters = pd.read_csv("data/air_quality_parameters.csv")
 
       In [23]: air_quality_parameters.head()
-      Out[23]: 
+      Out[23]:
            id                                        description  name
       0    bc                                       Black Carbon    BC
       1    co                                    Carbon Monoxide    CO
@@ -7861,10 +7861,10 @@ JOIN TABLES USING A COMMON IDENTIFIER
   >python
       In [24]: air_quality = pd.merge(air_quality, air_quality_parameters,
          ....:                        how='left', left_on='parameter', right_on='id')
-         ....: 
+         ....:
 
       In [25]: air_quality.head()
-      Out[25]: 
+      Out[25]:
                           date.utc  ...   name
       0  2019-05-07 01:00:00+00:00  ...  PM2.5
       1  2019-05-07 01:00:00+00:00  ...  PM2.5
@@ -7917,7 +7917,7 @@ Data used for this tutorial:
       In [4]: air_quality = air_quality.rename(columns={"date.utc": "datetime"})
 
       In [5]: air_quality.head()
-      Out[5]: 
+      Out[5]:
           city country                   datetime location parameter  value   unit
       0  Paris      FR  2019-06-21 00:00:00+00:00  FR04014       no2   20.0  µg/m³
       1  Paris      FR  2019-06-20 23:00:00+00:00  FR04014       no2   21.8  µg/m³
@@ -7927,7 +7927,7 @@ Data used for this tutorial:
 <
   >python
       In [6]: air_quality.city.unique()
-      Out[6]: 
+      Out[6]:
       <ArrowStringArray>
       ['Paris', 'Antwerpen', 'London']
       Length: 3, dtype: str
@@ -7949,13 +7949,13 @@ USING PANDAS DATETIME PROPERTIES
       In [7]: air_quality["datetime"] = pd.to_datetime(air_quality["datetime"])
 
       In [8]: air_quality["datetime"]
-      Out[8]: 
+      Out[8]:
       0      2019-06-21 00:00:00+00:00
       1      2019-06-20 23:00:00+00:00
       2      2019-06-20 22:00:00+00:00
       3      2019-06-20 21:00:00+00:00
       4      2019-06-20 20:00:00+00:00
-                        ...           
+                        ...
       2063   2019-05-07 06:00:00+00:00
       2064   2019-05-07 04:00:00+00:00
       2065   2019-05-07 03:00:00+00:00
@@ -7989,7 +7989,7 @@ value with some example cases.
 
 >python
     In [9]: air_quality["datetime"].min(), air_quality["datetime"].max()
-    Out[9]: 
+    Out[9]:
     (Timestamp('2019-05-07 01:00:00+0000', tz='UTC'),
      Timestamp('2019-06-21 00:00:00+0000', tz='UTC'))
 <
@@ -8015,7 +8015,7 @@ guide section on |user_guide-timeseries-timeseries-overview|.
       In [11]: air_quality["month"] = air_quality["datetime"].dt.month
 
       In [12]: air_quality.head()
-      Out[12]: 
+      Out[12]:
           city country                  datetime  ...  value   unit  month
       0  Paris      FR 2019-06-21 00:00:00+00:00  ...   20.0  µg/m³      6
       1  Paris      FR 2019-06-20 23:00:00+00:00  ...   21.8  µg/m³      6
@@ -8041,15 +8041,15 @@ section on the |user_guide-basics-basics-dt-accessors|.
   >python
       In [13]: air_quality.groupby(
          ....:     [air_quality["datetime"].dt.day_of_week, "location"])["value"].mean()
-         ....: 
-      Out[13]: 
-      datetime  location          
+         ....:
+      Out[13]:
+      datetime  location
       0         BETR801               27.875000
                 FR04014               24.856250
                 London Westminster    23.969697
       1         BETR801               22.214286
                 FR04014               30.999359
-                                        ...    
+                                        ...
       5         FR04014               25.266154
                 London Westminster    24.977612
       6         BETR801               21.896552
@@ -8081,7 +8081,7 @@ section on the |user_guide-basics-basics-dt-accessors|.
       In [15]: air_quality.groupby(air_quality["datetime"].dt.hour)["value"].mean().plot(
          ....:     kind='bar', rot=0, ax=axs
          ....: )
-         ....: 
+         ....:
       Out[15]: <Axes: xlabel='datetime'>
 
       In [16]: plt.xlabel("Hour of the day");  # custom x label using Matplotlib
@@ -8106,9 +8106,9 @@ measurements locations as a separate column:
     In [18]: no_2 = air_quality.pivot(index="datetime", columns="location", values="value")
 
     In [19]: no_2.head()
-    Out[19]: 
+    Out[19]:
     location                   BETR801  FR04014  London Westminster
-    datetime                                                       
+    datetime
     2019-05-07 01:00:00+00:00     50.5     25.0                23.0
     2019-05-07 02:00:00+00:00     45.0     27.7                19.0
     2019-05-07 03:00:00+00:00      NaN     50.4                19.0
@@ -8128,7 +8128,7 @@ directly:
 
 >python
     In [20]: no_2.index.year, no_2.index.day_of_week
-    Out[20]: 
+    Out[20]:
     (Index([2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019,
             ...
             2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019],
@@ -8164,9 +8164,9 @@ RESAMPLE A TIME SERIES TO ANOTHER FREQUENCY
       In [22]: monthly_max = no_2.resample("MS").max()
 
       In [23]: monthly_max
-      Out[23]: 
+      Out[23]:
       location                   BETR801  FR04014  London Westminster
-      datetime                                                       
+      datetime
       2019-05-01 00:00:00+00:00     74.5     97.0                97.0
       2019-06-01 00:00:00+00:00     52.5     84.7                52.0
 <
@@ -8242,7 +8242,7 @@ Data used for this tutorial:
       In [2]: titanic = pd.read_csv("data/titanic.csv")
 
       In [3]: titanic.head()
-      Out[3]: 
+      Out[3]:
          PassengerId  Survived  Pclass  ...     Fare Cabin Embarked
       0            1         0       3  ...   7.2500   NaN        S
       1            2         1       1  ...  71.2833   C85        C
@@ -8261,13 +8261,13 @@ How to manipulate textual data
 
   >python
       In [4]: titanic["Name"].str.lower()
-      Out[4]: 
+      Out[4]:
       0                                braund, mr. owen harris
       1      cumings, mrs. john bradley (florence briggs th...
       2                                  heikkinen, miss laina
       3           futrelle, mrs. jacques heath (lily may peel)
       4                               allen, mr. william henry
-                                   ...                        
+                                   ...
       886                                montvila, rev. juozas
       887                          graham, miss margaret edith
       888              johnston, miss catherine helen "carrie"
@@ -8295,13 +8295,13 @@ each of the values of the columns.
 
   >python
       In [5]: titanic["Name"].str.split(",")
-      Out[5]: 
+      Out[5]:
       0                             [Braund,  Mr. Owen Harris]
       1      [Cumings,  Mrs. John Bradley (Florence Briggs ...
       2                               [Heikkinen,  Miss Laina]
       3        [Futrelle,  Mrs. Jacques Heath (Lily May Peel)]
       4                            [Allen,  Mr. William Henry]
-                                   ...                        
+                                   ...
       886                             [Montvila,  Rev. Juozas]
       887                       [Graham,  Miss Margaret Edith]
       888           [Johnston,  Miss Catherine Helen "Carrie"]
@@ -8317,13 +8317,13 @@ each of the values of the columns.
       In [6]: titanic["Surname"] = titanic["Name"].str.split(",").str.get(0)
 
       In [7]: titanic["Surname"]
-      Out[7]: 
+      Out[7]:
       0         Braund
       1        Cumings
       2      Heikkinen
       3       Futrelle
       4          Allen
-               ...    
+               ...
       886     Montvila
       887       Graham
       888     Johnston
@@ -8344,13 +8344,13 @@ guide section on |user_guide-text-text-split|.
 
   >python
       In [8]: titanic["Name"].str.contains("Countess")
-      Out[8]: 
+      Out[8]:
       0      False
       1      False
       2      False
       3      False
       4      False
-             ...  
+             ...
       886    False
       887    False
       888    False
@@ -8360,7 +8360,7 @@ guide section on |user_guide-text-text-split|.
 <
   >python
       In [9]: titanic[titanic["Name"].str.contains("Countess")]
-      Out[9]: 
+      Out[9]:
            PassengerId  Survived  Pclass  ... Cabin Embarked Surname
       759          760         1       1  ...   B77        S  Rothes
 
@@ -8392,7 +8392,7 @@ guide section on |user_guide-text-text-extract|.
 
   >python
       In [10]: titanic["Name"].str.len()
-      Out[10]: 
+      Out[10]:
       0      23
       1      51
       2      21
@@ -8435,7 +8435,7 @@ guide section on |user_guide-text-text-extract|.
       In [13]: titanic["Sex_short"] = titanic["Sex"].replace({"male": "M", "female": "F"})
 
       In [14]: titanic["Sex_short"]
-      Out[14]: 
+      Out[14]:
       0      M
       1      F
       2      F

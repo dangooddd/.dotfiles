@@ -518,21 +518,24 @@ Mixed Precision Training documentation.
     }
 <
 
-Parameter                     Type     Default              Description
-----------------------------  -------  -------------------  -----------------------------
-enabled                       boolean  false                Enable torch.autocast (no
-                                                            manual torch.autocast call
-                                                            needed in your code).
-dtype                         string   "bfloat16"           Lower precision dtype
-                                                            ("bfloat16" or "float16").
-                                                            Also used for
-                                                            gradient/parameter
-                                                            communication of
-                                                            lower_precision_safe_modules.
-lower_precision_safe_modules  list     ["torch.nn.Linear",  Module types for
-                                       "torch.nn.Conv1d",   lower-precision communication
-                                       "torch.nn.Conv2d",   (all-reduce/all-gather).
-                                       "torch.nn.Conv3d"]
+Parameter              Type     Default                 Description
+---------------------  -------  ----------------------  ----------------------
+enabled                boolean  false                   Enable torch.autocast
+                                                        (no manual
+                                                        torch.autocast call
+                                                        needed in your code).
+dtype                  string   "bfloat16"              Lower precision dtype
+                                                        ("bfloat16" or
+                                                        "float16"). Also used
+                                                        for gradient/parameter
+                                                        communication of
+                                                        lower_precision_safe_
+                                                        modules.
+lower_precision_safe_  list     ["torch.nn.Linear",     Module types for
+modules                         "torch.nn.Conv1d",      lower-precision
+                                "torch.nn.Conv2d",      communication
+                                "torch.nn.Conv3d"]      (all-reduce/all-
+                                                        gather).
 
 Gradient Clipping                   *docs-config-json-index-gradient-clipping*
 
@@ -2118,105 +2121,108 @@ seq_per_step: [integer]            At any time, the effective          N/A
 
 curriculum_learning: [dictionary]
 
-Fields                           Value                                 Default
--------------------------------  ------------------------------------  -------
-enabled: [boolean]               Enable curriculum learing technique   false
-                                 or not.
-data_cluster_path: [str]         Path to directory where curriculum    N/A
-                                 learning will store the indexes of
-                                 data samples within the same
-                                 difficulty ranges.
-curriculum_metrics:              This dictionary includes all desired  N/A
-[dictionary]                     curriculum metrics and their
-                                 configs. Each metric will be a
-                                 separate sub-dictionary, where the
-                                 key is the metric name and the
-                                 values are configs below.
-index_to_sample_path: [str]      Path to the index_to_sample file      N/A
-                                 generated during offline data
-                                 analysis. Note that data analysis
-                                 will generate two kinds of
-                                 index_to_sample files: The
-                                 metric_name_index_to_sample_percentile_merged
-                                 file is a concatenated index for
-                                 perf improvement, but it only works
-                                 when you set
-                                 difficulty_type=percentile. If you
-                                 use difficulty_type=value, you need
-                                 to change this to use the
-                                 metric_name_index_to_sample file.
-index_to_metric_path: [str]      Path to the index_to_metric_path      N/A
-                                 file generated during offline data
-                                 analysis.
-difficulty_type: [str]           During training, how to increase the  N/A
-                                 max accepted difficulty. Currently
-                                 support value (increase by absolute
-                                 value) and percentile (increase by
-                                 difficulty percentile).
-clustering_type: [str]           Currently support schedule_based      N/A
-                                 (cluster data based on the
-                                 difficulty schedule (pacing
-                                 function) below) and single_cluster
-                                 (no clustering required and probably
-                                 CL is achieved by data
-                                 postprocessing, such as sequence
-                                 length truncation).
-min_difficulty: [integer]        Starting difficulty at first step.    N/A
-                                 When difficulty_type=value the
-                                 min_difficulty is an absolute
-                                 difficulty value. When
-                                 difficulty_type=percentile the
-                                 min_difficulty is a difficulty
-                                 percentile value.
-max_difficulty: [integer]        Final max difficulty. When            N/A
-                                 difficulty_type=value the
-                                 max_difficulty is an absolute
-                                 difficulty value. When
-                                 difficulty_type=percentile the
-                                 max_difficulty is a difficulty
-                                 percentile value.
-schedule_type: [str]             The difficulty schedule (pacing       N/A
-                                 function) that defines how the max
-                                 accepted difficulty increases from
-                                 min_difficulty to max_difficulty
-                                 during training. Currently support
-                                 fixed_linear, fixed_root,
-                                 fixed_discrete, and custom.
-schedule_config: [dictionary]    Configs for the pacing function.      N/A
-                                 When schedule_type=custom this
-                                 dictionary is not necessary. Instead
-                                 user needs to provide a callback
-                                 function (via the
-                                 set_custom_curriculum_learning_schedule
-                                 API in deepspeed/runtime/engine.py)
-                                 which will update the max accepted
-                                 difficulty during training. Configs
-                                 below are all belongs to
-                                 schedule_config.
-total_curriculum_step:           How many steps the curriculum         N/A
-[integer]                        learning takes to go from min
-                                 difficulty to max difficulty. Used
-                                 by fixed_linear and fixed_root
-                                 schedule.
-difficulty_step: [integer]       The max accepted difficulty level     N/A
-                                 determined every step must be a
-                                 multiple of this difficulty_step.
-                                 This is used to ensure the use of
-                                 NVIDIA Tensor Core acceleration
-                                 (requires multiple of 8 (FP16) or 16
-                                 (INT8)). Used by fixed_linear and
-                                 fixed_root schedule.
-root_degree: [integer]           The degree of the root function.      N/A
-                                 Degree of 2 means square root and
-                                 degree of 3 means cube root. Degree
-                                 of 1 is equivalent to linear. Used
-                                 by fixed_root schedule.
-difficulty: [list]               List of max accepted difficulty       N/A
-                                 levels to be used during schedule.
-                                 Used by fixed_discrete schedule.
-max_step: [list]                 List of which step to change max      N/A
-                                 accepted difficulty level. Used by
-                                 fixed_discrete schedule.
+Fields                            Value                                Default
+--------------------------------  -----------------------------------  -------
+enabled: [boolean]                Enable curriculum learing technique  false
+                                  or not.
+data_cluster_path: [str]          Path to directory where curriculum   N/A
+                                  learning will store the indexes of
+                                  data samples within the same
+                                  difficulty ranges.
+curriculum_metrics: [dictionary]  This dictionary includes all         N/A
+                                  desired curriculum metrics and
+                                  their configs. Each metric will be
+                                  a separate sub-dictionary, where
+                                  the key is the metric name and the
+                                  values are configs below.
+index_to_sample_path: [str]       Path to the index_to_sample file     N/A
+                                  generated during offline data
+                                  analysis. Note that data analysis
+                                  will generate two kinds of
+                                  index_to_sample files: The
+                                  metric_name_index_to_sample_
+                                  percentile_merged
+                                  file is a concatenated index for
+                                  perf improvement, but it only works
+                                  when you set
+                                  difficulty_type=percentile. If you
+                                  use difficulty_type=value, you need
+                                  to change this to use the
+                                  metric_name_index_to_sample file.
+index_to_metric_path: [str]       Path to the index_to_metric_path     N/A
+                                  file generated during offline data
+                                  analysis.
+difficulty_type: [str]            During training, how to increase     N/A
+                                  the max accepted difficulty.
+                                  Currently support value (increase
+                                  by absolute value) and percentile
+                                  (increase by difficulty
+                                  percentile).
+clustering_type: [str]            Currently support schedule_based     N/A
+                                  (cluster data based on the
+                                  difficulty schedule (pacing
+                                  function) below) and single_cluster
+                                  (no clustering required and
+                                  probably CL is achieved by data
+                                  postprocessing, such as sequence
+                                  length truncation).
+min_difficulty: [integer]         Starting difficulty at first step.   N/A
+                                  When difficulty_type=value the
+                                  min_difficulty is an absolute
+                                  difficulty value. When
+                                  difficulty_type=percentile the
+                                  min_difficulty is a difficulty
+                                  percentile value.
+max_difficulty: [integer]         Final max difficulty. When           N/A
+                                  difficulty_type=value the
+                                  max_difficulty is an absolute
+                                  difficulty value. When
+                                  difficulty_type=percentile the
+                                  max_difficulty is a difficulty
+                                  percentile value.
+schedule_type: [str]              The difficulty schedule (pacing      N/A
+                                  function) that defines how the max
+                                  accepted difficulty increases from
+                                  min_difficulty to max_difficulty
+                                  during training. Currently support
+                                  fixed_linear, fixed_root,
+                                  fixed_discrete, and custom.
+schedule_config: [dictionary]     Configs for the pacing function.     N/A
+                                  When schedule_type=custom this
+                                  dictionary is not necessary.
+                                  Instead user needs to provide a
+                                  callback function (via the
+                                  set_custom_curriculum_learning_
+                                  schedule
+                                  API in deepspeed/runtime/engine.py)
+                                  which will update the max accepted
+                                  difficulty during training. Configs
+                                  below are all belongs to
+                                  schedule_config.
+total_curriculum_step: [integer]  How many steps the curriculum        N/A
+                                  learning takes to go from min
+                                  difficulty to max difficulty. Used
+                                  by fixed_linear and fixed_root
+                                  schedule.
+difficulty_step: [integer]        The max accepted difficulty level    N/A
+                                  determined every step must be a
+                                  multiple of this difficulty_step.
+                                  This is used to ensure the use of
+                                  NVIDIA Tensor Core acceleration
+                                  (requires multiple of 8 (FP16) or
+                                  16 (INT8)). Used by fixed_linear
+                                  and fixed_root schedule.
+root_degree: [integer]            The degree of the root function.     N/A
+                                  Degree of 2 means square root and
+                                  degree of 3 means cube root. Degree
+                                  of 1 is equivalent to linear. Used
+                                  by fixed_root schedule.
+difficulty: [list]                List of max accepted difficulty      N/A
+                                  levels to be used during schedule.
+                                  Used by fixed_discrete schedule.
+max_step: [list]                  List of which step to change max     N/A
+                                  accepted difficulty level. Used by
+                                  fixed_discrete schedule.
 
 Monitoring Module                   *docs-config-json-index-monitoring-module*
 
@@ -2238,45 +2244,32 @@ https://www.comet.com/site/?utm_source=deepseed&utm_medium=docs&utm_content=docs
 or to simple CSV files. Below is an overview of what DeepSpeed will log
 automatically.
 
-Field                                 Description       Conditions
-------------------------------------  ----------------  ----------------------
-Train/Samples/train_loss              The training      None
-                                      loss.
-Train/Samples/lr                      The learning      None
-                                      rate during
-                                      training.
-Train/Samples/loss_scale              The loss scale    fp16 must be enabled.
-                                      when training
-                                      using fp16.
-Train/Samples/elapsed_time_ms_forward  The global        flops_profiler.enabled
-                                      duration of the   or
-                                      forward pass.     wall_clock_breakdown.
-Train/Samples/elapsed_time_ms_backward  The global        flops_profiler.enabled
-                                      duration of the   or
-                                      forward pass.     wall_clock_breakdown.
-Train/Samples/elapsed_time_ms_backward_inner  The backward      flops_profiler.enabled
-                                      time that does    or
-                                      not include the   wall_clock_breakdown.
-                                      gradient
-                                      reduction time.
-                                      Only in cases
-                                      where the
-                                      gradient
-                                      reduction is not
-                                      overlapped, if
-                                      it is overlapped
-                                      then the inner
-                                      time should be
-                                      about the same
-                                      as the entire
-                                      backward time.
-Train/Samples/elapsed_time_ms_backward_allreduce  The global        flops_profiler.enabled
-                                      duration of the   or
-                                      allreduce         wall_clock_breakdown.
-                                      operation.
-Train/Samples/elapsed_time_ms_step    The optimizer     flops_profiler.enabled
-                                      step time         or
-                                                        wall_clock_breakdown.
+Field                     Description                Conditions
+------------------------  -------------------------  -------------------------
+Train/Samples/train_loss  The training loss.         None
+Train/Samples/lr          The learning rate during   None
+                          training.
+Train/Samples/loss_scale  The loss scale when        fp16 must be enabled.
+                          training using fp16.
+Train/Samples/elapsed_    The global duration of     flops_profiler.enabled or
+time_ms_forward           the forward pass.          wall_clock_breakdown.
+Train/Samples/elapsed_    The global duration of     flops_profiler.enabled or
+time_ms_backward          the forward pass.          wall_clock_breakdown.
+Train/Samples/elapsed_    The backward time that     flops_profiler.enabled or
+time_ms_backward_inner    does not include the       wall_clock_breakdown.
+                          gradient reduction time.
+                          Only in cases where the
+                          gradient reduction is not
+                          overlapped, if it is
+                          overlapped then the inner
+                          time should be about the
+                          same as the entire
+                          backward time.
+Train/Samples/elapsed_    The global duration of     flops_profiler.enabled or
+time_ms_backward_         the allreduce operation.   wall_clock_breakdown.
+allreduce
+Train/Samples/elapsed_    The optimizer step time    flops_profiler.enabled or
+time_ms_step                                         wall_clock_breakdown.
 
 tensorboard: [dictionary]
 

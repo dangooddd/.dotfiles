@@ -364,50 +364,131 @@ verifiable evidence.
 
 0.5B ~~~
 
-Tag  Model         Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
----  ------------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
-MIN  Qwen2.5-0.5B  GRPO-LoRA  1*H100    116       fsdp   vllm0.8.3  qwen2-0.5b_grpo-lora_1_h100_fsdp_vllm.sh  SimonHuang
+Tag  Model         Task       Resource  MaxBatch  Train  Infer      Link    Contributor
+---  ------------  ---------  --------  --------  -----  ---------  ------  -----------
+MIN  Qwen2.5-0.5B  GRPO-LoRA  1*H100    116       fsdp   vllm0.8.3  qwen2-  SimonHuang
+                                                                    0.5b_
+                                                                    grpo-
+                                                                    lora_
+                                                                    1_
+                                                                    h100_
+                                                                    fsdp_
+                                                                    vllm.
+                                                                    sh
 
 1.5B ~~~
 
-Tag  Model         Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
----  ------------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
-MIN  Qwen2.5-1.5B  GRPO-LoRA  1*H100    128       fsdp   vllm0.8.3  qwen2-1.5b_grpo-lora_1_h100_fsdp_vllm.sh  SimonHuang
+Tag  Model         Task       Resource  MaxBatch  Train  Infer      Link    Contributor
+---  ------------  ---------  --------  --------  -----  ---------  ------  -----------
+MIN  Qwen2.5-1.5B  GRPO-LoRA  1*H100    128       fsdp   vllm0.8.3  qwen2-  SimonHuang
+                                                                    1.5b_
+                                                                    grpo-
+                                                                    lora_
+                                                                    1_
+                                                                    h100_
+                                                                    fsdp_
+                                                                    vllm.
+                                                                    sh
 
 3B                                                      *perf-device_tuning-b*
 
-Tag  Model       Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
----  ----------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
-MIN  Qwen2.5-3B  GRPO-LoRA  1*H100    62        fsdp   vllm0.8.3  qwen2-3b_grpo-lora_1_h100_fsdp_vllm.sh  SimonHuang
+Tag  Model       Task       Resource  MaxBatch  Train  Infer      Link    Contributor
+---  ----------  ---------  --------  --------  -----  ---------  ------  -----------
+MIN  Qwen2.5-3B  GRPO-LoRA  1*H100    62        fsdp   vllm0.8.3  qwen2-  SimonHuang
+                                                                  3b_
+                                                                  grpo-
+                                                                  lora_
+                                                                  1_
+                                                                  h100_
+                                                                  fsdp_
+                                                                  vllm.
+                                                                  sh
 
 7B                                                    *perf-device_tuning-id3*
 
-Tag  Model       Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
----  ----------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
-MIN  Qwen2-7B    GRPO       2*H800              fsdp   vllm0.8.2  qwen2-7b_grpo_2_h800_fsdp_vllm        Xiangyongan
-MIN  Qwen2.5-7B  GRPO-LoRA  1*H100    16        fsdp   vllm0.8.3  qwen2-7b_grpo-lora_1_h100_fsdp_vllm.sh  SimonHuang
+Tag  Model       Task       Resource  MaxBatch  Train  Infer      Link    Contributor
+---  ----------  ---------  --------  --------  -----  ---------  ------  -----------
+MIN  Qwen2-7B    GRPO       2*H800              fsdp   vllm0.8.2  qwen2-  Xiangyongan
+                                                                  7b_
+                                                                  grpo_
+                                                                  2_
+                                                                  h800_
+                                                                  fsdp_
+                                                                  vllm
+MIN  Qwen2.5-7B  GRPO-LoRA  1*H100    16        fsdp   vllm0.8.3  qwen2-  SimonHuang
+                                                                  7b_
+                                                                  grpo-
+                                                                  lora_
+                                                                  1_
+                                                                  h100_
+                                                                  fsdp_
+                                                                  vllm.
+                                                                  sh
 
 14B                                                   *perf-device_tuning-id5*
 
-Tag  Model        Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
----  -----------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
-MIN  Qwen2-14B    GRPO       4*H800              fsdp   vllm0.8.2  qwen2-14b_grpo_4_h800_fsdp_vllm       Xiangyongan
-MIN  Qwen2.5-14B  GRPO-LoRA  2*H100    116       fsdp   vllm0.8.3  qwen2-14b_grpo-lora_2_h100_fsdp_vllm.sh  SimonHuang
+Tag  Model        Task       Resource  MaxBatch  Train  Infer      Link    Contributor
+---  -----------  ---------  --------  --------  -----  ---------  ------  -----------
+MIN  Qwen2-14B    GRPO       4*H800              fsdp   vllm0.8.2  qwen2-  Xiangyongan
+                                                                   14b_
+                                                                   grpo_
+                                                                   4_
+                                                                   h800_
+                                                                   fsdp_
+                                                                   vllm
+MIN  Qwen2.5-14B  GRPO-LoRA  2*H100    116       fsdp   vllm0.8.3  qwen2-  SimonHuang
+                                                                   14b_
+                                                                   grpo-
+                                                                   lora_
+                                                                   2_
+                                                                   h100_
+                                                                   fsdp_
+                                                                   vllm.
+                                                                   sh
 
 32B                                                   *perf-device_tuning-id8*
 
-Tag  Model        Task       Resource  MaxBatch  Train     Infer      Link                                  Contributor
----  -----------  ---------  --------  --------  --------  ---------  ------------------------------------  -----------
-MIN  Qwen2-32B    GRPO       8*H20               megatron  vllm0.8.2  qwen2-32b_grpo_8_h20_megatron_vllm    Xiangyongan
-MIN  Qwen2.5-32B  GRPO-LoRA  4*H100    180       fsdp      vllm0.8.3  qwen2-32b_grpo-lora_4_h100_fsdp_vllm.sh  SimonHuang
+Tag  Model        Task       Resource  MaxBatch  Train     Infer      Link       Contributor
+---  -----------  ---------  --------  --------  --------  ---------  ---------  -----------
+MIN  Qwen2-32B    GRPO       8*H20               megatron  vllm0.8.2  qwen2-     Xiangyongan
+                                                                      32b_grpo_
+                                                                      8_h20_
+                                                                      megatron_
+                                                                      vllm
+MIN  Qwen2.5-32B  GRPO-LoRA  4*H100    180       fsdp      vllm0.8.3  qwen2-     SimonHuang
+                                                                      32b_grpo-
+                                                                      lora_4_
+                                                                      h100_
+                                                                      fsdp_
+                                                                      vllm.sh
 
 70B                                                  *perf-device_tuning-id11*
 
-Tag  Model        Task       Resource  MaxBatch  Train  Infer      Link                                  Contributor
----  -----------  ---------  --------  --------  -----  ---------  ------------------------------------  -----------
-MIN  Qwen2-70B    GRPO       32*H20              fsdp   vllm0.8.2  qwen2-70b_grpo_32_h20_fsdp_vllm       Xiangyongan
-MIN  Qwen2-70B    GRPO       32*H800             fsdp   vllm0.8.3  qwen2-70b_grpo_32_h800_fsdp_vllm      Xiangyongan
-MIN  Qwen2.5-72B  GRPO-LoRA  8*H100    176       fsdp   vllm0.8.3  qwen2-72b_grpo-lora_8_h100_fsdp_vllm.sh  SimonHuang
+Tag  Model        Task       Resource  MaxBatch  Train  Infer      Link    Contributor
+---  -----------  ---------  --------  --------  -----  ---------  ------  -----------
+MIN  Qwen2-70B    GRPO       32*H20              fsdp   vllm0.8.2  qwen2-  Xiangyongan
+                                                                   70b_
+                                                                   grpo_
+                                                                   32_
+                                                                   h20_
+                                                                   fsdp_
+                                                                   vllm
+MIN  Qwen2-70B    GRPO       32*H800             fsdp   vllm0.8.3  qwen2-  Xiangyongan
+                                                                   70b_
+                                                                   grpo_
+                                                                   32_
+                                                                   h800_
+                                                                   fsdp_
+                                                                   vllm
+MIN  Qwen2.5-72B  GRPO-LoRA  8*H100    176       fsdp   vllm0.8.3  qwen2-  SimonHuang
+                                                                   72b_
+                                                                   grpo-
+                                                                   lora_
+                                                                   8_
+                                                                   h100_
+                                                                   fsdp_
+                                                                   vllm.
+                                                                   sh
 
 405B                                                 *perf-device_tuning-id15*
 
@@ -1480,7 +1561,7 @@ This configuration supports profiling both Training (Actor) and Inference
           ranks: [0] # Global GPU rank(s); each is mapped to the replica that owns it
           tool_config:
             torch:
-              discrete: True # REQUIRED 
+              discrete: True # REQUIRED
               # Optional response-token window for rollout engine side collection.
               # If start/stop are not set, the entire rollout stage is collected.
               # Collect tokens in [12, 46), i.e. token index 12~45.

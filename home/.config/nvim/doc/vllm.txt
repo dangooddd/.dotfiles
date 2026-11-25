@@ -8,6 +8,7 @@ api ..................................................... |vllm-section-api|
 api (part 2) ..................................... |vllm-section-api-part-2|
 api (part 3) ..................................... |vllm-section-api-part-3|
 api (part 4) ..................................... |vllm-section-api-part-4|
+api (part 5) ..................................... |vllm-section-api-part-5|
 cli ..................................................... |vllm-section-cli|
 configuration ................................. |vllm-section-configuration|
 deployment ....................................... |vllm-section-deployment|

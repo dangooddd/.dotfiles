@@ -26,10 +26,10 @@ Parsing time series information from various sources and formats
     In [2]: dti = pd.to_datetime(
        ...:     ["1/1/2018", np.datetime64("2018-01-01"), datetime.datetime(2018, 1, 1)]
        ...: )
-       ...: 
+       ...:
 
     In [3]: dti
-    Out[3]: 
+    Out[3]:
     DatetimeIndex(['2018-01-01', '2018-01-01', '2018-01-01'],
                   dtype='datetime64[us]', freq=None)
 <
@@ -39,7 +39,7 @@ Generate sequences of fixed-frequency dates and time spans
     In [4]: dti = pd.date_range("2018-01-01", periods=3, freq="h")
 
     In [5]: dti
-    Out[5]: 
+    Out[5]:
     DatetimeIndex(['2018-01-01 00:00:00', '2018-01-01 01:00:00',
                    '2018-01-01 02:00:00'],
                   dtype='datetime64[us]', freq='h')
@@ -50,13 +50,13 @@ Manipulating and converting date times with timezone information
     In [6]: dti = dti.tz_localize("UTC")
 
     In [7]: dti
-    Out[7]: 
+    Out[7]:
     DatetimeIndex(['2018-01-01 00:00:00+00:00', '2018-01-01 01:00:00+00:00',
                    '2018-01-01 02:00:00+00:00'],
                   dtype='datetime64[us, UTC]', freq='h')
 
     In [8]: dti.tz_convert("US/Pacific")
-    Out[8]: 
+    Out[8]:
     DatetimeIndex(['2017-12-31 16:00:00-08:00', '2017-12-31 17:00:00-08:00',
                    '2017-12-31 18:00:00-08:00'],
                   dtype='datetime64[us, US/Pacific]', freq='h')
@@ -69,7 +69,7 @@ Resampling or converting a time series to a particular frequency
     In [10]: ts = pd.Series(range(len(idx)), index=idx)
 
     In [11]: ts
-    Out[11]: 
+    Out[11]:
     2018-01-01 00:00:00    0
     2018-01-01 01:00:00    1
     2018-01-01 02:00:00    2
@@ -78,7 +78,7 @@ Resampling or converting a time series to a particular frequency
     Freq: h, dtype: int64
 
     In [12]: ts.resample("2h").mean()
-    Out[12]: 
+    Out[12]:
     2018-01-01 00:00:00    0.5
     2018-01-01 02:00:00    2.5
     2018-01-01 04:00:00    4.0
@@ -149,7 +149,7 @@ performed with respect to the time element.
 
 >python
     In [19]: pd.Series(range(3), index=pd.date_range("2000", freq="D", periods=3))
-    Out[19]: 
+    Out[19]:
     2000-01-01    0
     2000-01-02    1
     2000-01-03    2
@@ -160,7 +160,7 @@ the time component as data itself.
 
 >python
     In [20]: pd.Series(pd.date_range("2000", freq="D", periods=3))
-    Out[20]: 
+    Out[20]:
     0   2000-01-01
     1   2000-01-02
     2   2000-01-03
@@ -173,20 +173,20 @@ data.
 
 >python
     In [21]: pd.Series(pd.period_range("1/1/2011", freq="M", periods=3))
-    Out[21]: 
+    Out[21]:
     0    2011-01
     1    2011-02
     2    2011-03
     dtype: period[M]
 
     In [22]: pd.Series([pd.DateOffset(1), pd.DateOffset(2)])
-    Out[22]: 
+    Out[22]:
     0         <DateOffset>
     1    <2 * DateOffsets>
     dtype: object
 
     In [23]: pd.Series(pd.date_range("1/1/2011", freq="ME", periods=3))
-    Out[23]: 
+    Out[23]:
     0   2011-01-31
     1   2011-02-28
     2   2011-03-31
@@ -254,7 +254,7 @@ and |pandas.PeriodIndex| respectively.
        ....:     pd.Timestamp("2012-05-02"),
        ....:     pd.Timestamp("2012-05-03"),
        ....: ]
-       ....: 
+       ....:
 
     In [35]: ts = pd.Series(np.random.randn(3), dates)
 
@@ -262,12 +262,12 @@ and |pandas.PeriodIndex| respectively.
     Out[36]: pandas.DatetimeIndex
 
     In [37]: ts.index
-    Out[37]: 
+    Out[37]:
     DatetimeIndex(['2012-05-01', '2012-05-02', '2012-05-03'],
                   dtype='datetime64[us]', freq=None)
 
     In [38]: ts
-    Out[38]: 
+    Out[38]:
     2012-05-01    0.469112
     2012-05-02   -0.282863
     2012-05-03   -1.509059
@@ -284,7 +284,7 @@ and |pandas.PeriodIndex| respectively.
     Out[42]: PeriodIndex(['2012-01', '2012-02', '2012-03'], dtype='period[M]')
 
     In [43]: ts
-    Out[43]: 
+    Out[43]:
     2012-01   -1.135632
     2012-02    1.212112
     2012-03   -0.173215
@@ -307,7 +307,7 @@ list-like is converted to a `DatetimeIndex`:
 
 >python
     In [44]: pd.to_datetime(pd.Series(["Jul 31, 2009", "Jan 10, 2010", None]))
-    Out[44]: 
+    Out[44]:
     0   2009-07-31
     1   2010-01-10
     2          NaT
@@ -348,7 +348,7 @@ You can also use the `DatetimeIndex` constructor directly:
 
 >python
     In [50]: pd.DatetimeIndex(["2018-01-01", "2018-01-03", "2018-01-05"])
-    Out[50]: 
+    Out[50]:
     DatetimeIndex(['2018-01-01', '2018-01-03', '2018-01-05'],
                   dtype='datetime64[us]', freq=None)
 <
@@ -357,7 +357,7 @@ as the inferred frequency upon creation:
 
 >python
     In [51]: pd.DatetimeIndex(["2018-01-01", "2018-01-03", "2018-01-05"], freq="infer")
-    Out[51]: 
+    Out[51]:
     DatetimeIndex(['2018-01-01', '2018-01-03', '2018-01-05'],
                   dtype='datetime64[us]', freq='2D')
 <
@@ -416,10 +416,10 @@ into a `Series` of `Timestamps`.
     In [58]: df = pd.DataFrame(
        ....:     {"year": [2015, 2016], "month": [2, 3], "day": [4, 5], "hour": [2, 3]}
        ....: )
-       ....: 
+       ....:
 
     In [59]: pd.to_datetime(df)
-    Out[59]: 
+    Out[59]:
     0   2015-02-04 02:00:00
     1   2016-03-05 03:00:00
     dtype: datetime64[us]
@@ -428,7 +428,7 @@ You can pass only the columns that you need to assemble.
 
 >python
     In [60]: pd.to_datetime(df[["year", "month", "day"]])
-    Out[60]: 
+    Out[60]:
     0   2015-02-04
     1   2016-03-05
     dtype: datetime64[us]
@@ -516,8 +516,8 @@ specified. These are computed from the starting point specified by the
     In [63]: pd.to_datetime(
        ....:     [1349720105, 1349806505, 1349892905, 1349979305, 1350065705], unit="s"
        ....: )
-       ....: 
-    Out[63]: 
+       ....:
+    Out[63]:
     DatetimeIndex(['2012-10-08 18:15:05', '2012-10-09 18:15:05',
                    '2012-10-10 18:15:05', '2012-10-11 18:15:05',
                    '2012-10-12 18:15:05'],
@@ -527,8 +527,8 @@ specified. These are computed from the starting point specified by the
        ....:     [1349720105100, 1349720105200, 1349720105300, 1349720105400, 1349720105500],
        ....:     unit="ms",
        ....: )
-       ....: 
-    Out[64]: 
+       ....:
+    Out[64]:
     DatetimeIndex(['2012-10-08 18:15:05.100000', '2012-10-08 18:15:05.200000',
                    '2012-10-08 18:15:05.300000', '2012-10-08 18:15:05.400000',
                    '2012-10-08 18:15:05.500000'],
@@ -551,7 +551,7 @@ timezone-naive timestamps and then localize to the appropriate timezone:
     Out[65]: Timestamp('2010-01-01 12:00:00-0800', tz='US/Pacific')
 
     In [66]: pd.DatetimeIndex([1262347200000000000]).tz_localize("US/Pacific")
-    Out[66]: 
+    Out[66]:
     DatetimeIndex(['2010-01-01 12:00:00-08:00'], dtype='datetime64[ns, US/Pacific]',
                   freq=None)
 <
@@ -570,7 +570,7 @@ timezone-naive timestamps and then localize to the appropriate timezone:
 
   >python
       In [67]: pd.to_datetime([1490195805.433, 1490195805.433502912], unit="s")
-      Out[67]: 
+      Out[67]:
       DatetimeIndex(['2017-03-22 15:16:45.433000088',
                      '2017-03-22 15:16:45.433502913'],
                     dtype='datetime64[ns]', freq=None)
@@ -594,7 +594,7 @@ a ‘unix' epoch:
     In [69]: stamps = pd.date_range("2012-10-08 18:15:05", periods=4, freq="D")
 
     In [70]: stamps
-    Out[70]: 
+    Out[70]:
     DatetimeIndex(['2012-10-08 18:15:05', '2012-10-09 18:15:05',
                    '2012-10-10 18:15:05', '2012-10-11 18:15:05'],
                   dtype='datetime64[us]', freq='D')
@@ -621,7 +621,7 @@ specific unit or resolution of the datetime64 dtype:
 
 >python
     In [72]: stamps.astype(np.int64)
-    Out[72]: 
+    Out[72]:
     Index([1349720105000000, 1349806505000000, 1349892905000000, 1349979305000000],
           dtype='int64')
 
@@ -629,7 +629,7 @@ specific unit or resolution of the datetime64 dtype:
     Out[73]: Index([1349720105, 1349806505, 1349892905, 1349979305], dtype='int64')
 
     In [74]: stamps.as_unit("ns").astype(np.int64)
-    Out[74]: 
+    Out[74]:
     Index([1349720105000000000, 1349806505000000000, 1349892905000000000,
            1349979305000000000],
           dtype='int64')
@@ -646,7 +646,7 @@ starting date:
 
 >python
     In [75]: pd.to_datetime([1, 2, 3], unit="D", origin=pd.Timestamp("1960-01-01"))
-    Out[75]: 
+    Out[75]:
     DatetimeIndex(['1960-01-02', '1960-01-03', '1960-01-04'],
                   dtype='datetime64[us]', freq=None)
 <
@@ -655,7 +655,7 @@ The default is set at `origin='unix'`, which defaults to
 
 >python
     In [76]: pd.to_datetime([1, 2, 3], unit="D")
-    Out[76]: 
+    Out[76]:
     DatetimeIndex(['1970-01-02', '1970-01-03', '1970-01-04'],
                   dtype='datetime64[us]', freq=None)
 <
@@ -674,13 +674,13 @@ or `Index` constructor and pass in a list of datetime objects:
        ....:     datetime.datetime(2012, 5, 2),
        ....:     datetime.datetime(2012, 5, 3),
        ....: ]
-       ....: 
+       ....:
 
     # Note the frequency information
     In [78]: index = pd.DatetimeIndex(dates)
 
     In [79]: index
-    Out[79]: 
+    Out[79]:
     DatetimeIndex(['2012-05-01', '2012-05-02', '2012-05-03'],
                   dtype='datetime64[us]', freq=None)
 
@@ -688,7 +688,7 @@ or `Index` constructor and pass in a list of datetime objects:
     In [80]: index = pd.Index(dates)
 
     In [81]: index
-    Out[81]: 
+    Out[81]:
     DatetimeIndex(['2012-05-01', '2012-05-02', '2012-05-03'],
                   dtype='datetime64[us]', freq=None)
 <
@@ -707,7 +707,7 @@ business day:
     In [84]: index = pd.date_range(start, end)
 
     In [85]: index
-    Out[85]: 
+    Out[85]:
     DatetimeIndex(['2011-01-01', '2011-01-02', '2011-01-03', '2011-01-04',
                    '2011-01-05', '2011-01-06', '2011-01-07', '2011-01-08',
                    '2011-01-09', '2011-01-10',
@@ -720,7 +720,7 @@ business day:
     In [86]: index = pd.bdate_range(start, end)
 
     In [87]: index
-    Out[87]: 
+    Out[87]:
     DatetimeIndex(['2011-01-03', '2011-01-04', '2011-01-05', '2011-01-06',
                    '2011-01-07', '2011-01-10', '2011-01-11', '2011-01-12',
                    '2011-01-13', '2011-01-14',
@@ -735,7 +735,7 @@ variety of |user_guide-timeseries-timeseries-offset-aliases|:
 
 >python
     In [88]: pd.date_range(start, periods=1000, freq="ME")
-    Out[88]: 
+    Out[88]:
     DatetimeIndex(['2011-01-31', '2011-02-28', '2011-03-31', '2011-04-30',
                    '2011-05-31', '2011-06-30', '2011-07-31', '2011-08-31',
                    '2011-09-30', '2011-10-31',
@@ -746,7 +746,7 @@ variety of |user_guide-timeseries-timeseries-offset-aliases|:
                   dtype='datetime64[us]', length=1000, freq='ME')
 
     In [89]: pd.bdate_range(start, periods=250, freq="BQS")
-    Out[89]: 
+    Out[89]:
     DatetimeIndex(['2011-01-03', '2011-04-01', '2011-07-01', '2011-10-03',
                    '2012-01-02', '2012-04-02', '2012-07-02', '2012-10-01',
                    '2013-01-01', '2013-04-01',
@@ -763,14 +763,14 @@ those specified will not be generated:
 
 >python
     In [90]: pd.date_range(start, end, freq="BME")
-    Out[90]: 
+    Out[90]:
     DatetimeIndex(['2011-01-31', '2011-02-28', '2011-03-31', '2011-04-29',
                    '2011-05-31', '2011-06-30', '2011-07-29', '2011-08-31',
                    '2011-09-30', '2011-10-31', '2011-11-30', '2011-12-30'],
                   dtype='datetime64[us]', freq='BME')
 
     In [91]: pd.date_range(start, end, freq="W")
-    Out[91]: 
+    Out[91]:
     DatetimeIndex(['2011-01-02', '2011-01-09', '2011-01-16', '2011-01-23',
                    '2011-01-30', '2011-02-06', '2011-02-13', '2011-02-20',
                    '2011-02-27', '2011-03-06', '2011-03-13', '2011-03-20',
@@ -788,7 +788,7 @@ those specified will not be generated:
                   dtype='datetime64[us]', freq='W-SUN')
 
     In [92]: pd.bdate_range(end=end, periods=20)
-    Out[92]: 
+    Out[92]:
     DatetimeIndex(['2011-12-05', '2011-12-06', '2011-12-07', '2011-12-08',
                    '2011-12-09', '2011-12-12', '2011-12-13', '2011-12-14',
                    '2011-12-15', '2011-12-16', '2011-12-19', '2011-12-20',
@@ -797,7 +797,7 @@ those specified will not be generated:
                   dtype='datetime64[us]', freq='B')
 
     In [93]: pd.bdate_range(start=start, periods=20)
-    Out[93]: 
+    Out[93]:
     DatetimeIndex(['2011-01-03', '2011-01-04', '2011-01-05', '2011-01-06',
                    '2011-01-07', '2011-01-10', '2011-01-11', '2011-01-12',
                    '2011-01-13', '2011-01-14', '2011-01-17', '2011-01-18',
@@ -811,13 +811,13 @@ elements in the resulting `DatetimeIndex`:
 
 >python
     In [94]: pd.date_range("2018-01-01", "2018-01-05", periods=5)
-    Out[94]: 
+    Out[94]:
     DatetimeIndex(['2018-01-01', '2018-01-02', '2018-01-03', '2018-01-04',
                    '2018-01-05'],
                   dtype='datetime64[us]', freq=None)
 
     In [95]: pd.date_range("2018-01-01", "2018-01-05", periods=10)
-    Out[95]: 
+    Out[95]:
     DatetimeIndex(['2018-01-01 00:00:00', '2018-01-01 10:40:00',
                    '2018-01-01 21:20:00', '2018-01-02 08:00:00',
                    '2018-01-02 18:40:00', '2018-01-03 05:20:00',
@@ -840,7 +840,7 @@ if a custom frequency string is passed.
     In [97]: holidays = [datetime.datetime(2011, 1, 5), datetime.datetime(2011, 3, 14)]
 
     In [98]: pd.bdate_range(start, end, freq="C", weekmask=weekmask, holidays=holidays)
-    Out[98]: 
+    Out[98]:
     DatetimeIndex(['2011-01-03', '2011-01-07', '2011-01-10', '2011-01-12',
                    '2011-01-14', '2011-01-17', '2011-01-19', '2011-01-21',
                    '2011-01-24', '2011-01-26',
@@ -851,7 +851,7 @@ if a custom frequency string is passed.
                   dtype='datetime64[us]', length=154, freq='C')
 
     In [99]: pd.bdate_range(start, end, freq="CBMS", weekmask=weekmask)
-    Out[99]: 
+    Out[99]:
     DatetimeIndex(['2011-01-03', '2011-02-02', '2011-03-02', '2011-04-01',
                    '2011-05-02', '2011-06-01', '2011-07-01', '2011-08-01',
                    '2011-09-02', '2011-10-03', '2011-11-02', '2011-12-02'],
@@ -959,20 +959,20 @@ intelligent functionality like selection, slicing, etc.
     In [111]: ts = pd.Series(np.random.randn(len(rng)), index=rng)
 
     In [112]: ts.index
-    Out[112]: 
+    Out[112]:
     DatetimeIndex(['2011-01-31', '2011-02-28', '2011-03-31', '2011-04-29',
                    '2011-05-31', '2011-06-30', '2011-07-29', '2011-08-31',
                    '2011-09-30', '2011-10-31', '2011-11-30', '2011-12-30'],
                   dtype='datetime64[us]', freq='BME')
 
     In [113]: ts[:5].index
-    Out[113]: 
+    Out[113]:
     DatetimeIndex(['2011-01-31', '2011-02-28', '2011-03-31', '2011-04-29',
                    '2011-05-31'],
                   dtype='datetime64[us]', freq='BME')
 
     In [114]: ts[::2].index
-    Out[114]: 
+    Out[114]:
     DatetimeIndex(['2011-01-31', '2011-03-31', '2011-05-31', '2011-07-29',
                    '2011-09-30', '2011-11-30'],
                   dtype='datetime64[us]', freq='2BME')
@@ -990,12 +990,12 @@ parameters:
     Out[115]: np.float64(0.11920871129693428)
 
     In [116]: ts[datetime.datetime(2011, 12, 25):]
-    Out[116]: 
+    Out[116]:
     2011-12-30    0.56702
     Freq: BME, dtype: float64
 
     In [117]: ts["10/31/2011":"12/31/2011"]
-    Out[117]: 
+    Out[117]:
     2011-10-31    0.271860
     2011-11-30   -0.424972
     2011-12-30    0.567020
@@ -1006,7 +1006,7 @@ in the year or year and month as strings:
 
 >python
     In [118]: ts["2011"]
-    Out[118]: 
+    Out[118]:
     2011-01-31    0.119209
     2011-02-28   -1.044236
     2011-03-31   -0.861849
@@ -1022,7 +1022,7 @@ in the year or year and month as strings:
     Freq: BME, dtype: float64
 
     In [119]: ts["2011-6"]
-    Out[119]: 
+    Out[119]:
     2011-06-30    1.071804
     Freq: BME, dtype: float64
 <
@@ -1043,10 +1043,10 @@ date:
        .....:     columns=["A"],
        .....:     index=pd.date_range("20130101", periods=100000, freq="min"),
        .....: )
-       .....: 
+       .....:
 
     In [121]: dft
-    Out[121]: 
+    Out[121]:
                                 A
     2013-01-01 00:00:00  0.276232
     2013-01-01 00:01:00 -1.087401
@@ -1063,7 +1063,7 @@ date:
     [100000 rows x 1 columns]
 
     In [122]: dft.loc["2013"]
-    Out[122]: 
+    Out[122]:
                                 A
     2013-01-01 00:00:00  0.276232
     2013-01-01 00:01:00 -1.087401
@@ -1084,7 +1084,7 @@ and time for the month:
 
 >python
     In [123]: dft["2013-1":"2013-2"]
-    Out[123]: 
+    Out[123]:
                                 A
     2013-01-01 00:00:00  0.276232
     2013-01-01 00:01:00 -1.087401
@@ -1104,7 +1104,7 @@ This specifies a stop time that includes all of the times on the last day:
 
 >python
     In [124]: dft["2013-1":"2013-2-28"]
-    Out[124]: 
+    Out[124]:
                                 A
     2013-01-01 00:00:00  0.276232
     2013-01-01 00:01:00 -1.087401
@@ -1124,7 +1124,7 @@ This specifies an exact stop time (and is not the same as the above):
 
 >python
     In [125]: dft["2013-1":"2013-2-28 00:00:00"]
-    Out[125]: 
+    Out[125]:
                                 A
     2013-01-01 00:00:00  0.276232
     2013-01-01 00:01:00 -1.087401
@@ -1144,7 +1144,7 @@ We are stopping on the included end-point as it is part of the index:
 
 >python
     In [126]: dft["2013-1-15":"2013-1-15 12:30:00"]
-    Out[126]: 
+    Out[126]:
                                 A
     2013-01-15 00:00:00 -0.984810
     2013-01-15 00:01:00  0.941451
@@ -1171,10 +1171,10 @@ We are stopping on the included end-point as it is part of the index:
        .....:         [pd.date_range("20130101", periods=10, freq="12h"), ["a", "b"]]
        .....:     ),
        .....: )
-       .....: 
+       .....:
 
     In [128]: dft2
-    Out[128]: 
+    Out[128]:
                                   A
     2013-01-01 00:00:00 a -0.298694
                         b  0.823553
@@ -1191,7 +1191,7 @@ We are stopping on the included end-point as it is part of the index:
     [20 rows x 1 columns]
 
     In [129]: dft2.loc["2013-01-05"]
-    Out[129]: 
+    Out[129]:
                                   A
     2013-01-05 00:00:00 a  0.122297
                         b  1.422060
@@ -1203,7 +1203,7 @@ We are stopping on the included end-point as it is part of the index:
     In [131]: dft2 = dft2.swaplevel(0, 1).sort_index()
 
     In [132]: dft2.loc[idx[:, "2013-01-05"], :]
-    Out[132]: 
+    Out[132]:
                                   A
     a 2013-01-05 00:00:00  0.122297
       2013-01-05 12:00:00  0.370079
@@ -1216,12 +1216,12 @@ Slicing with string indexing also honors UTC offset.
     In [133]: df = pd.DataFrame([0], index=pd.DatetimeIndex(["2019-01-01"], tz="US/Pacific"))
 
     In [134]: df
-    Out[134]: 
+    Out[134]:
                                0
     2019-01-01 00:00:00-08:00  0
 
     In [135]: df["2019-01-01 12:00:00+04:00":"2019-01-01 13:00:00+04:00"]
-    Out[135]: 
+    Out[135]:
                                0
     2019-01-01 00:00:00-08:00  0
 <
@@ -1244,7 +1244,7 @@ Consider a `Series` object with a minute resolution index:
        .....:         ["2011-12-31 23:59:00", "2012-01-01 00:00:00", "2012-01-01 00:02:00"]
        .....:     ),
        .....: )
-       .....: 
+       .....:
 
     In [137]: series_minute.index.resolution
     Out[137]: 'minute'
@@ -1253,7 +1253,7 @@ A timestamp string less accurate than a minute gives a `Series` object.
 
 >python
     In [138]: series_minute["2011-12-31 23"]
-    Out[138]: 
+    Out[138]:
     2011-12-31 23:59:00    1
     dtype: int64
 <
@@ -1277,13 +1277,13 @@ If index resolution is second, then the minute-accurate timestamp gives a
        .....:         ["2011-12-31 23:59:59", "2012-01-01 00:00:00", "2012-01-01 00:00:01"]
        .....:     ),
        .....: )
-       .....: 
+       .....:
 
     In [142]: series_second.index.resolution
     Out[142]: 'second'
 
     In [143]: series_second["2011-12-31 23:59"]
-    Out[143]: 
+    Out[143]:
     2011-12-31 23:59:59    1
     dtype: int64
 <
@@ -1294,10 +1294,10 @@ If the timestamp string is treated as a slice, it can be used to index
     In [144]: dft_minute = pd.DataFrame(
        .....:     {"a": [1, 2, 3], "b": [4, 5, 6]}, index=series_minute.index
        .....: )
-       .....: 
+       .....:
 
     In [145]: dft_minute.loc["2011-12-31 23"]
-    Out[145]: 
+    Out[145]:
                          a  b
     2011-12-31 23:59:00  1  4
 <
@@ -1309,7 +1309,7 @@ If the timestamp string is treated as a slice, it can be used to index
 
   >python
       In [146]: dft_minute.loc["2011-12-31 23:59"]
-      Out[146]: 
+      Out[146]:
       a    1
       b    4
       Name: 2011-12-31 23:59:00, dtype: int64
@@ -1321,13 +1321,13 @@ Note also that `DatetimeIndex` resolution cannot be less precise than day.
     In [147]: series_monthly = pd.Series(
        .....:     [1, 2, 3], pd.DatetimeIndex(["2011-12", "2012-01", "2012-02"])
        .....: )
-       .....: 
+       .....:
 
     In [148]: series_monthly.index.resolution
     Out[148]: 'day'
 
     In [149]: series_monthly["2011-12"]  # returns Series
-    Out[149]: 
+    Out[149]:
     2011-12-01    1
     dtype: int64
 <
@@ -1346,7 +1346,7 @@ These `Timestamp` and `datetime` objects have exact `hours, minutes,` and
 
 >python
     In [150]: dft[datetime.datetime(2013, 1, 1): datetime.datetime(2013, 2, 28)]
-    Out[150]: 
+    Out[150]:
                                 A
     2013-01-01 00:00:00  0.276232
     2013-01-01 00:01:00 -1.087401
@@ -1370,8 +1370,8 @@ With no defaults.
        .....:         2013, 2, 28, 10, 12, 0
        .....:     )
        .....: ]
-       .....: 
-    Out[151]: 
+       .....:
+    Out[151]:
                                 A
     2013-01-01 10:12:00  0.565375
     2013-01-01 10:13:00  0.068184
@@ -1404,10 +1404,10 @@ If you need to select data using open or half-open intervals (for example,
        .....:     range(5),
        .....:     index=pd.date_range("2000-01-01", periods=5, freq="D"),
        .....: )
-       .....: 
+       .....:
 
     In [153]: ts_example
-    Out[153]: 
+    Out[153]:
     2000-01-01    0
     2000-01-02    1
     2000-01-03    2
@@ -1420,7 +1420,7 @@ Select all entries strictly between `"2000-01-02"` and `"2000-01-04"`
 
 >python
     In [154]: ts_example[(ts_example.index > "2000-01-02") & (ts_example.index < "2000-01-04")]
-    Out[154]: 
+    Out[154]:
     2000-01-03    2
     Freq: D, dtype: int64
 <
@@ -1428,7 +1428,7 @@ Select entries with a half-open interval (include left, exclude right):
 
 >python
     In [155]: ts_example[(ts_example.index >= "2000-01-02") & (ts_example.index < "2000-01-04")]
-    Out[155]: 
+    Out[155]:
     2000-01-02    1
     2000-01-03    2
     Freq: D, dtype: int64
@@ -1443,7 +1443,7 @@ non-inclusive slicing on a sorted index:
     In [157]: hi = ts_example.index.get_slice_bound("2000-01-04", "left")
 
     In [158]: ts_example.iloc[lo:hi]
-    Out[158]: 
+    Out[158]:
     2000-01-03    2
     Freq: D, dtype: int64
 <
@@ -1467,7 +1467,7 @@ time:
     In [160]: ts_time = pd.Series(range(10), index=rng_time)
 
     In [161]: ts_time
-    Out[161]: 
+    Out[161]:
     2018-01-01 00:00:00    0
     2018-01-01 06:00:00    1
     2018-01-01 12:00:00    2
@@ -1481,7 +1481,7 @@ time:
     Freq: 6h, dtype: int64
 
     In [162]: ts_time.at_time("12:00")
-    Out[162]: 
+    Out[162]:
     2018-01-01 12:00:00    2
     2018-01-02 12:00:00    6
     Freq: 24h, dtype: int64
@@ -1492,7 +1492,7 @@ argument controls whether each endpoint is included:
 
 >python
     In [163]: ts_time.between_time("00:00", "12:00")
-    Out[163]: 
+    Out[163]:
     2018-01-01 00:00:00    0
     2018-01-01 06:00:00    1
     2018-01-01 12:00:00    2
@@ -1504,7 +1504,7 @@ argument controls whether each endpoint is included:
     dtype: int64
 
     In [164]: ts_time.between_time("00:00", "12:00", inclusive="left")
-    Out[164]: 
+    Out[164]:
     2018-01-01 00:00:00    0
     2018-01-01 06:00:00    1
     2018-01-02 00:00:00    4
@@ -1519,7 +1519,7 @@ Both methods also accept `datetime.time` objects:
     In [165]: import datetime
 
     In [166]: ts_time.at_time(datetime.time(12, 0))
-    Out[166]: 
+    Out[166]:
     2018-01-01 12:00:00    2
     2018-01-02 12:00:00    6
     Freq: 24h, dtype: int64
@@ -1538,7 +1538,7 @@ returns any partially matching dates:
     In [168]: ts2 = pd.Series(np.random.randn(len(rng2)), index=rng2)
 
     In [169]: ts2.truncate(before="2011-11", after="2011-12")
-    Out[169]: 
+    Out[169]:
     2011-11-06    0.437823
     2011-11-13   -0.293083
     2011-11-20   -0.059881
@@ -1546,7 +1546,7 @@ returns any partially matching dates:
     Freq: W-SUN, dtype: float64
 
     In [170]: ts2["2011-11":"2011-12"]
-    Out[170]: 
+    Out[170]:
     2011-11-06    0.437823
     2011-11-13   -0.293083
     2011-11-20   -0.059881
@@ -1562,7 +1562,7 @@ regularity will result in a `DatetimeIndex`, although frequency is lost:
 
 >python
     In [171]: ts2.iloc[[0, 2, 6]].index
-    Out[171]: 
+    Out[171]:
     DatetimeIndex(['2011-01-02', '2011-01-16', '2011-02-13'],
                   dtype='datetime64[us]', freq=None)
 <
@@ -1627,7 +1627,7 @@ ISO 8601 standard:
     In [172]: idx = pd.date_range(start="2019-12-29", freq="D", periods=4)
 
     In [173]: idx.isocalendar()
-    Out[173]: 
+    Out[173]:
                 year  week  day
     2019-12-29  2019    52    7
     2019-12-30  2020     1    1
@@ -1635,7 +1635,7 @@ ISO 8601 standard:
     2020-01-01  2020     1    3
 
     In [174]: idx.to_series().dt.isocalendar()
-    Out[174]: 
+    Out[174]:
                 year  week  day
     2019-12-29  2019    52    7
     2019-12-30  2020     1    1
@@ -1889,24 +1889,24 @@ offset to each element.
     In [214]: s = pd.Series(rng)
 
     In [215]: rng
-    Out[215]: 
+    Out[215]:
     DatetimeIndex(['2012-01-01', '2012-01-02', '2012-01-03'],
                   dtype='datetime64[us]', freq='D')
 
     In [216]: rng + pd.DateOffset(months=2)
-    Out[216]: 
+    Out[216]:
     DatetimeIndex(['2012-03-01', '2012-03-02', '2012-03-03'],
                   dtype='datetime64[us]', freq=None)
 
     In [217]: s + pd.DateOffset(months=2)
-    Out[217]: 
+    Out[217]:
     0   2012-03-01
     1   2012-03-02
     2   2012-03-03
     dtype: datetime64[us]
 
     In [218]: s - pd.DateOffset(months=2)
-    Out[218]: 
+    Out[218]:
     0   2011-11-01
     1   2011-11-02
     2   2011-11-03
@@ -1919,7 +1919,7 @@ examples.
 
 >python
     In [219]: s - pd.offsets.Day(2)
-    Out[219]: 
+    Out[219]:
     0   2011-12-30
     1   2011-12-31
     2   2012-01-01
@@ -1928,14 +1928,14 @@ examples.
     In [220]: td = s - pd.Series(pd.date_range("2011-12-29", "2011-12-31"))
 
     In [221]: td
-    Out[221]: 
+    Out[221]:
     0   3 days
     1   3 days
     2   3 days
     dtype: timedelta64[us]
 
     In [222]: td + pd.offsets.Minute(15)
-    Out[222]: 
+    Out[222]:
     0   3 days 00:15:00
     1   3 days 00:15:00
     2   3 days 00:15:00
@@ -1947,7 +1947,7 @@ slower and will show a `PerformanceWarning`
 
 >python
     In [223]: rng + pd.offsets.BQuarterEnd()
-    Out[223]: 
+    Out[223]:
     DatetimeIndex(['2012-03-30', '2012-03-30', '2012-03-30'],
                   dtype='datetime64[us]', freq=None)
 <
@@ -1973,13 +1973,13 @@ weekend is observed.
        .....:     datetime.datetime(2013, 5, 1),
        .....:     np.datetime64("2014-05-01"),
        .....: ]
-       .....: 
+       .....:
 
     In [226]: bday_egypt = pd.offsets.CustomBusinessDay(
        .....:     holidays=holidays,
        .....:     weekmask=weekmask_egypt,
        .....: )
-       .....: 
+       .....:
 
     In [227]: dt = datetime.datetime(2013, 4, 30)
 
@@ -1992,7 +1992,7 @@ Let's map to the weekday names:
     In [229]: dts = pd.date_range(dt, periods=5, freq=bday_egypt)
 
     In [230]: pd.Series(dts.day_of_week, dts).map(pd.Series("Mon Tue Wed Thu Fri Sat Sun".split()))
-    Out[230]: 
+    Out[230]:
     2013-04-30    Tue
     2013-05-02    Thu
     2013-05-05    Sun
@@ -2029,7 +2029,7 @@ the usual way.
 
     # Define date index with custom offset
     In [238]: pd.date_range(start="20100101", end="20120101", freq=bmth_us)
-    Out[238]: 
+    Out[238]:
     DatetimeIndex(['2010-01-04', '2010-02-01', '2010-03-01', '2010-04-01',
                    '2010-05-03', '2010-06-01', '2010-07-01', '2010-08-02',
                    '2010-09-01', '2010-10-01', '2010-11-01', '2010-12-01',
@@ -2268,14 +2268,14 @@ ns     nanoseconds
       In [271]: dates_lst_1 = pd.date_range("2020-01-06", "2020-04-03", freq="MS")
 
       In [272]: dates_lst_1
-      Out[272]: 
+      Out[272]:
       DatetimeIndex(['2020-02-01', '2020-03-01', '2020-04-01'],
                     dtype='datetime64[us]', freq='MS')
 
       In [273]: dates_lst_2 = pd.date_range("2020-01-01", "2020-04-01", freq="MS")
 
       In [274]: dates_lst_2
-      Out[274]: 
+      Out[274]:
       DatetimeIndex(['2020-01-01', '2020-02-01', '2020-03-01', '2020-04-01'],
                     dtype='datetime64[us]', freq='MS')
 <
@@ -2314,13 +2314,13 @@ in most functions:
 
 >python
     In [275]: pd.date_range(start, periods=5, freq="B")
-    Out[275]: 
+    Out[275]:
     DatetimeIndex(['2011-01-03', '2011-01-04', '2011-01-05', '2011-01-06',
                    '2011-01-07'],
                   dtype='datetime64[us]', freq='B')
 
     In [276]: pd.date_range(start, periods=5, freq=pd.offsets.BDay())
-    Out[276]: 
+    Out[276]:
     DatetimeIndex(['2011-01-03', '2011-01-04', '2011-01-05', '2011-01-06',
                    '2011-01-07'],
                   dtype='datetime64[us]', freq='B')
@@ -2329,7 +2329,7 @@ You can combine together day and intraday offsets:
 
 >python
     In [277]: pd.date_range(start, periods=10, freq="2h20min")
-    Out[277]: 
+    Out[277]:
     DatetimeIndex(['2011-01-01 00:00:00', '2011-01-01 02:20:00',
                    '2011-01-01 04:40:00', '2011-01-01 07:00:00',
                    '2011-01-01 09:20:00', '2011-01-01 11:40:00',
@@ -2338,7 +2338,7 @@ You can combine together day and intraday offsets:
                   dtype='datetime64[us]', freq='140min')
 
     In [278]: pd.date_range(start, periods=10, freq="1D10us")
-    Out[278]: 
+    Out[278]:
     DatetimeIndex([       '2011-01-01 00:00:00', '2011-01-02 00:00:00.000010',
                    '2011-01-03 00:00:00.000020', '2011-01-04 00:00:00.000030',
                    '2011-01-05 00:00:00.000040', '2011-01-06 00:00:00.000050',
@@ -2532,7 +2532,7 @@ An example of how holidays and holiday calendars are defined:
        .....:     nearest_workday,
        .....:     MO,
        .....: )
-       .....: 
+       .....:
 
     In [296]: class ExampleCalendar(AbstractHolidayCalendar):
        .....:     rules = [
@@ -2545,12 +2545,12 @@ An example of how holidays and holiday calendars are defined:
        .....:             offset=pd.DateOffset(weekday=MO(2)),
        .....:         ),
        .....:     ]
-       .....: 
+       .....:
 
     In [297]: cal = ExampleCalendar()
 
     In [298]: cal.holidays(datetime.datetime(2012, 1, 1), datetime.datetime(2012, 12, 31))
-    Out[298]: 
+    Out[298]:
     DatetimeIndex(['2012-05-28', '2012-07-04', '2012-10-08'],
                   dtype='datetime64[us]', freq=None)
 <
@@ -2567,8 +2567,8 @@ other offset, it can be used to create a `DatetimeIndex` or added to
     In [299]: pd.date_range(
        .....:     start="7/1/2012", end="7/10/2012", freq=pd.offsets.CDay(calendar=cal)
        .....: ).to_pydatetime()
-       .....: 
-    Out[299]: 
+       .....:
+    Out[299]:
     array([datetime.datetime(2012, 7, 2, 0, 0),
            datetime.datetime(2012, 7, 3, 0, 0),
            datetime.datetime(2012, 7, 5, 0, 0),
@@ -2609,7 +2609,7 @@ datetime/Timestamp/string.
     In [308]: AbstractHolidayCalendar.end_date = datetime.datetime(2012, 12, 31)
 
     In [309]: cal.holidays()
-    Out[309]: 
+    Out[309]:
     DatetimeIndex(['2012-05-28', '2012-07-04', '2012-10-08'],
                   dtype='datetime64[us]', freq=None)
 <
@@ -2625,7 +2625,7 @@ calendars or calendars with additional rules.
     In [311]: cal = get_calendar("ExampleCalendar")
 
     In [312]: cal.rules
-    Out[312]: 
+    Out[312]:
     [Holiday: Memorial Day (month=5, day=31, offset=<DateOffset: weekday=MO(-1)>),
      Holiday: July 4th (month=7, day=4, observance=<function nearest_workday at 0x7fa243d21620>),
      Holiday: Columbus Day (month=10, day=1, offset=<DateOffset: weekday=MO(+2)>)]
@@ -2633,7 +2633,7 @@ calendars or calendars with additional rules.
     In [313]: new_cal = HolidayCalendarFactory("NewExampleCalendar", cal, USLaborDay)
 
     In [314]: new_cal.rules
-    Out[314]: 
+    Out[314]:
     [Holiday: Labor Day (month=9, day=1, offset=<DateOffset: weekday=MO(+1)>),
      Holiday: Memorial Day (month=5, day=31, offset=<DateOffset: weekday=MO(-1)>),
      Holiday: July 4th (month=7, day=4, observance=<function nearest_workday at 0x7fa243d21620>),
@@ -2657,7 +2657,7 @@ all of the pandas objects.
     In [316]: ts = ts[:5]
 
     In [317]: ts.shift(1)
-    Out[317]: 
+    Out[317]:
     2012-01-01    NaN
     2012-01-02    0.0
     2012-01-03    1.0
@@ -2672,21 +2672,21 @@ rather than changing the alignment of the data and the index:
 
 >python
     In [318]: ts.shift(5, freq="D")
-    Out[318]: 
+    Out[318]:
     2012-01-06    0
     2012-01-07    1
     2012-01-08    2
     Freq: D, dtype: int64
 
     In [319]: ts.shift(5, freq=pd.offsets.BDay())
-    Out[319]: 
+    Out[319]:
     2012-01-06    0
     2012-01-09    1
     2012-01-10    2
     dtype: int64
 
     In [320]: ts.shift(5, freq="BME")
-    Out[320]: 
+    Out[320]:
     2012-05-31    0
     2012-05-31    1
     2012-05-31    2
@@ -2708,14 +2708,14 @@ calls `reindex`.
     In [322]: ts = pd.Series(np.random.randn(3), index=dr)
 
     In [323]: ts
-    Out[323]: 
+    Out[323]:
     2010-01-01    1.494522
     2010-01-06   -0.778425
     2010-01-11   -0.253355
     Freq: 3B, dtype: float64
 
     In [324]: ts.asfreq(pd.offsets.BDay())
-    Out[324]: 
+    Out[324]:
     2010-01-01    1.494522
     2010-01-04         NaN
     2010-01-05         NaN
@@ -2730,7 +2730,7 @@ method for any gaps that may appear after the frequency conversion.
 
 >python
     In [325]: ts.asfreq(pd.offsets.BDay(), method="pad")
-    Out[325]: 
+    Out[325]:
     2010-01-01    1.494522
     2010-01-04    1.494522
     2010-01-05    1.494522
@@ -2778,7 +2778,7 @@ Basics                                          *user_guide-timeseries-basics*
     In [327]: ts = pd.Series(np.random.randint(0, 500, len(rng)), index=rng)
 
     In [328]: ts.resample("5Min").sum()
-    Out[328]: 
+    Out[328]:
     2012-01-01    25103
     Freq: 5min, dtype: int64
 <
@@ -2792,17 +2792,17 @@ available as a method of the returned object, including `sum`, `mean`,
 
 >python
     In [329]: ts.resample("5Min").mean()
-    Out[329]: 
+    Out[329]:
     2012-01-01    251.03
     Freq: 5min, dtype: float64
 
     In [330]: ts.resample("5Min").ohlc()
-    Out[330]: 
+    Out[330]:
                 open  high  low  close
     2012-01-01   308   460    9    205
 
     In [331]: ts.resample("5Min").max()
-    Out[331]: 
+    Out[331]:
     2012-01-01    460
     Freq: 5min, dtype: int64
 <
@@ -2811,13 +2811,13 @@ end of the interval is closed:
 
 >python
     In [332]: ts.resample("5Min", closed="right").mean()
-    Out[332]: 
+    Out[332]:
     2011-12-31 23:55:00    308.000000
     2012-01-01 00:00:00    250.454545
     Freq: 5min, dtype: float64
 
     In [333]: ts.resample("5Min", closed="left").mean()
-    Out[333]: 
+    Out[333]:
     2012-01-01    251.03
     Freq: 5min, dtype: float64
 <
@@ -2827,12 +2827,12 @@ interval.
 
 >python
     In [334]: ts.resample("5Min").mean()  # by default label='left'
-    Out[334]: 
+    Out[334]:
     2012-01-01    251.03
     Freq: 5min, dtype: float64
 
     In [335]: ts.resample("5Min", label="left").mean()
-    Out[335]: 
+    Out[335]:
     2012-01-01    251.03
     Freq: 5min, dtype: float64
 <
@@ -2852,7 +2852,7 @@ interval.
       In [337]: s.iloc[2] = pd.NaT
 
       In [338]: s.dt.day_name()
-      Out[338]: 
+      Out[338]:
       2000-01-01     Saturday
       2000-01-02       Sunday
       2000-01-03          NaN
@@ -2862,7 +2862,7 @@ interval.
 
       # default: label='left', closed='left'
       In [339]: s.resample("B").last().dt.day_name()
-      Out[339]: 
+      Out[339]:
       1999-12-31       Sunday
       2000-01-03          NaN
       2000-01-04      Tuesday
@@ -2875,7 +2875,7 @@ interval.
 
   >python
       In [340]: s.resample("B", label="right", closed="right").last().dt.day_name()
-      Out[340]: 
+      Out[340]:
       2000-01-03       Sunday
       2000-01-04      Tuesday
       2000-01-05    Wednesday
@@ -2902,7 +2902,7 @@ to interpolate over the gaps that are created:
 >python
     # from secondly to every 250 milliseconds
     In [341]: ts[:2].resample("250ms").asfreq()
-    Out[341]: 
+    Out[341]:
     2012-01-01 00:00:00.000    308.0
     2012-01-01 00:00:00.250      NaN
     2012-01-01 00:00:00.500      NaN
@@ -2911,7 +2911,7 @@ to interpolate over the gaps that are created:
     Freq: 250ms, dtype: float64
 
     In [342]: ts[:2].resample("250ms").ffill()
-    Out[342]: 
+    Out[342]:
     2012-01-01 00:00:00.000    308
     2012-01-01 00:00:00.250    308
     2012-01-01 00:00:00.500    308
@@ -2920,7 +2920,7 @@ to interpolate over the gaps that are created:
     Freq: 250ms, dtype: int64
 
     In [343]: ts[:2].resample("250ms").ffill(limit=2)
-    Out[343]: 
+    Out[343]:
     2012-01-01 00:00:00.000    308.0
     2012-01-01 00:00:00.250    308.0
     2012-01-01 00:00:00.500    308.0
@@ -2949,7 +2949,7 @@ If we want to resample to the full range of the series:
 
 >python
     In [346]: ts.resample("3min").sum()
-    Out[346]: 
+    Out[346]:
     2014-01-01 00:00:00     0
     2014-01-01 00:03:00     0
     2014-01-01 00:06:00     0
@@ -2974,10 +2974,10 @@ We can instead only resample those groups where we have points as follows:
        .....:     freq = to_offset(freq)
        .....:     td = pd.Timedelta(freq)
        .....:     return pd.Timestamp((t.value // td.value) * td.value)
-       .....: 
+       .....:
 
     In [350]: ts.groupby(partial(round, freq="3min")).sum()
-    Out[350]: 
+    Out[350]:
     2014-01-01     0
     2014-01-02     1
     2014-01-03     2
@@ -3011,12 +3011,12 @@ same function.
        .....:     index=pd.date_range("1/1/2012", freq="s", periods=1000),
        .....:     columns=["A", "B", "C"],
        .....: )
-       .....: 
+       .....:
 
     In [352]: r = df.resample("3min")
 
     In [353]: r.mean()
-    Out[353]: 
+    Out[353]:
                                 A         B         C
     2012-01-01 00:00:00 -0.033823 -0.121514 -0.081447
     2012-01-01 00:03:00  0.056909  0.146731 -0.024320
@@ -3029,7 +3029,7 @@ We can select a specific column or columns using standard getitem.
 
 >python
     In [354]: r["A"].mean()
-    Out[354]: 
+    Out[354]:
     2012-01-01 00:00:00   -0.033823
     2012-01-01 00:03:00    0.056909
     2012-01-01 00:06:00   -0.058837
@@ -3039,7 +3039,7 @@ We can select a specific column or columns using standard getitem.
     Freq: 3min, Name: A, dtype: float64
 
     In [355]: r[["A", "B"]].mean()
-    Out[355]: 
+    Out[355]:
                                 A         B
     2012-01-01 00:00:00 -0.033823 -0.121514
     2012-01-01 00:03:00  0.056909  0.146731
@@ -3053,7 +3053,7 @@ a `DataFrame`:
 
 >python
     In [356]: r["A"].agg(["sum", "mean", "std"])
-    Out[356]: 
+    Out[356]:
                                sum      mean       std
     2012-01-01 00:00:00  -6.088060 -0.033823  1.043263
     2012-01-01 00:03:00  10.243678  0.056909  1.058534
@@ -3067,8 +3067,8 @@ each column, which produces an aggregated result with a hierarchical index:
 
 >python
     In [357]: r.agg(["sum", "mean"])
-    Out[357]: 
-                                 A            ...          C          
+    Out[357]:
+                                 A            ...          C
                                sum      mean  ...        sum      mean
     2012-01-01 00:00:00  -6.088060 -0.033823  ... -14.660515 -0.081447
     2012-01-01 00:03:00  10.243678  0.056909  ...  -4.377642 -0.024320
@@ -3084,7 +3084,7 @@ the columns of a `DataFrame`:
 
 >python
     In [358]: r.agg({"A": "sum", "B": lambda x: np.std(x, ddof=1)})
-    Out[358]: 
+    Out[358]:
                                  A         B
     2012-01-01 00:00:00  -6.088060  1.001294
     2012-01-01 00:03:00  10.243678  1.074597
@@ -3098,7 +3098,7 @@ must be implemented on the resampled object:
 
 >python
     In [359]: r.agg({"A": "sum", "B": "std"})
-    Out[359]: 
+    Out[359]:
                                  A         B
     2012-01-01 00:00:00  -6.088060  1.001294
     2012-01-01 00:03:00  10.243678  1.074597
@@ -3112,8 +3112,8 @@ column separately.
 
 >python
     In [360]: r.agg({"A": ["sum", "std"], "B": ["mean", "std"]})
-    Out[360]: 
-                                 A                   B          
+    Out[360]:
+                                 A                   B
                                sum       std      mean       std
     2012-01-01 00:00:00  -6.088060  1.043263 -0.121514  1.001294
     2012-01-01 00:03:00  10.243678  1.058534  0.146731  1.074597
@@ -3134,12 +3134,12 @@ resample based on datetimelike column in the frame, it can passed to the
        .....:         names=["v", "d"],
        .....:     ),
        .....: )
-       .....: 
+       .....:
 
     In [362]: df
-    Out[362]: 
+    Out[362]:
                        date  a
-    v d                       
+    v d
     1 2015-01-04 2015-01-04  0
     2 2015-01-11 2015-01-11  1
     3 2015-01-18 2015-01-18  2
@@ -3147,9 +3147,9 @@ resample based on datetimelike column in the frame, it can passed to the
     5 2015-02-01 2015-02-01  4
 
     In [363]: df.resample("MS", on="date")[["a"]].sum()
-    Out[363]: 
+    Out[363]:
                 a
-    date         
+    date
     2015-01-01  6
     2015-02-01  4
 <
@@ -3158,9 +3158,9 @@ Similarly, if you instead want to resample by a datetimelike level of
 
 >python
     In [364]: df.resample("MS", level="d")[["a"]].sum()
-    Out[364]: 
+    Out[364]:
                 a
-    d            
+    d
     2015-01-01  6
     2015-02-01  4
 <
@@ -3187,7 +3187,7 @@ https://docs.python.org/3/library/itertools.html#itertools.groupby:
        .....:         ]
        .....:     ),
        .....: )
-       .....: 
+       .....:
 
     In [366]: resampled = small.resample("h")
 
@@ -3195,7 +3195,7 @@ https://docs.python.org/3/library/itertools.html#itertools.groupby:
        .....:     print("Group: ", name)
        .....:     print("-" * 27)
        .....:     print(group, end="\n\n")
-       .....: 
+       .....:
     Group:  2017-01-01 00:00:00
     ---------------------------
     2017-01-01 00:00:00    0
@@ -3245,7 +3245,7 @@ For example:
     In [371]: ts = pd.Series(np.arange(len(rng)) * 3, index=rng)
 
     In [372]: ts
-    Out[372]: 
+    Out[372]:
     2000-10-01 23:30:00     0
     2000-10-01 23:37:00     3
     2000-10-01 23:44:00     6
@@ -3263,7 +3263,7 @@ depending on the start of time series:
 
 >python
     In [373]: ts.resample("17min", origin="start_day").sum()
-    Out[373]: 
+    Out[373]:
     2000-10-01 23:14:00     0
     2000-10-01 23:31:00     9
     2000-10-01 23:48:00    21
@@ -3272,7 +3272,7 @@ depending on the start of time series:
     Freq: 17min, dtype: int64
 
     In [374]: ts[middle:end].resample("17min", origin="start_day").sum()
-    Out[374]: 
+    Out[374]:
     2000-10-02 00:00:00    33
     2000-10-02 00:17:00    45
     Freq: 17min, dtype: int64
@@ -3282,7 +3282,7 @@ Here we can see that, when setting `origin` to `'epoch'`, the result after
 
 >python
     In [375]: ts.resample("17min", origin="epoch").sum()
-    Out[375]: 
+    Out[375]:
     2000-10-01 23:18:00     0
     2000-10-01 23:35:00    18
     2000-10-01 23:52:00    27
@@ -3291,7 +3291,7 @@ Here we can see that, when setting `origin` to `'epoch'`, the result after
     Freq: 17min, dtype: int64
 
     In [376]: ts[middle:end].resample("17min", origin="epoch").sum()
-    Out[376]: 
+    Out[376]:
     2000-10-01 23:52:00    15
     2000-10-02 00:09:00    39
     2000-10-02 00:26:00    24
@@ -3301,7 +3301,7 @@ If needed you can use a custom timestamp for `origin`:
 
 >python
     In [377]: ts.resample("17min", origin="2001-01-01").sum()
-    Out[377]: 
+    Out[377]:
     2000-10-01 23:30:00     9
     2000-10-01 23:47:00    21
     2000-10-02 00:04:00    54
@@ -3309,7 +3309,7 @@ If needed you can use a custom timestamp for `origin`:
     Freq: 17min, dtype: int64
 
     In [378]: ts[middle:end].resample("17min", origin=pd.Timestamp("2001-01-01")).sum()
-    Out[378]: 
+    Out[378]:
     2000-10-02 00:04:00    54
     2000-10-02 00:21:00    24
     Freq: 17min, dtype: int64
@@ -3320,7 +3320,7 @@ time series:
 
 >python
     In [379]: ts.resample("17min", origin="start").sum()
-    Out[379]: 
+    Out[379]:
     2000-10-01 23:30:00     9
     2000-10-01 23:47:00    21
     2000-10-02 00:04:00    54
@@ -3328,7 +3328,7 @@ time series:
     Freq: 17min, dtype: int64
 
     In [380]: ts.resample("17min", offset="23h30min").sum()
-    Out[380]: 
+    Out[380]:
     2000-10-01 23:30:00     9
     2000-10-01 23:47:00    21
     2000-10-02 00:04:00    54
@@ -3351,7 +3351,7 @@ the current `Timestamp` with a right close.
 
 >python
     In [381]: ts.resample('17min', origin='end').sum()
-    Out[381]: 
+    Out[381]:
     2000-10-01 23:35:00     0
     2000-10-01 23:52:00    18
     2000-10-02 00:09:00    27
@@ -3363,7 +3363,7 @@ This will set the origin as the ceiling midnight of the largest `Timestamp`.
 
 >python
     In [382]: ts.resample('17min', origin='end_day').sum()
-    Out[382]: 
+    Out[382]:
     2000-10-01 23:38:00     3
     2000-10-01 23:55:00    15
     2000-10-02 00:12:00    45
@@ -3518,7 +3518,7 @@ which can be constructed using the `period_range` convenience function:
     In [407]: prng = pd.period_range("1/1/2011", "1/1/2012", freq="M")
 
     In [408]: prng
-    Out[408]: 
+    Out[408]:
     PeriodIndex(['2011-01', '2011-02', '2011-03', '2011-04', '2011-05', '2011-06',
                  '2011-07', '2011-08', '2011-09', '2011-10', '2011-11', '2011-12',
                  '2012-01'],
@@ -3545,7 +3545,7 @@ endpoints for a `PeriodIndex` with frequency matching that of the
     In [411]: pd.period_range(
        .....:     start=pd.Period("2017Q1", freq="Q"), end=pd.Period("2017Q2", freq="Q"), freq="M"
        .....: )
-       .....: 
+       .....:
     Out[411]: PeriodIndex(['2017-03', '2017-04', '2017-05', '2017-06'], dtype='period[M]')
 <
 Just like `DatetimeIndex`, a `PeriodIndex` can also be used to index pandas
@@ -3555,7 +3555,7 @@ objects:
     In [412]: ps = pd.Series(np.random.randn(len(prng)), prng)
 
     In [413]: ps
-    Out[413]: 
+    Out[413]:
     2011-01   -2.916901
     2011-02    0.514474
     2011-03    1.346470
@@ -3578,13 +3578,13 @@ objects:
     In [414]: idx = pd.period_range("2014-07-01 09:00", periods=5, freq="h")
 
     In [415]: idx
-    Out[415]: 
+    Out[415]:
     PeriodIndex(['2014-07-01 09:00', '2014-07-01 10:00', '2014-07-01 11:00',
                  '2014-07-01 12:00', '2014-07-01 13:00'],
                 dtype='period[h]')
 
     In [416]: idx + pd.offsets.Hour(2)
-    Out[416]: 
+    Out[416]:
     PeriodIndex(['2014-07-01 11:00', '2014-07-01 12:00', '2014-07-01 13:00',
                  '2014-07-01 14:00', '2014-07-01 15:00'],
                 dtype='period[h]')
@@ -3592,12 +3592,12 @@ objects:
     In [417]: idx = pd.period_range("2014-07", periods=5, freq="M")
 
     In [418]: idx
-    Out[418]: 
+    Out[418]:
     PeriodIndex(['2014-07', '2014-08', '2014-09', '2014-10', '2014-11'],
                 dtype='period[M]')
 
     In [419]: idx + pd.offsets.MonthEnd(3)
-    Out[419]: 
+    Out[419]:
     PeriodIndex(['2014-10', '2014-11', '2014-12', '2015-01', '2015-02'],
                 dtype='period[M]')
 <
@@ -3636,7 +3636,7 @@ to `PeriodIndex` like `to_period()`:
 
     # convert to DatetimeIndex
     In [424]: pi.astype("datetime64[ns]")
-    Out[424]: 
+    Out[424]:
     DatetimeIndex(['2016-01-01', '2016-02-01', '2016-03-01'],
                   dtype='datetime64[ns]', freq=None)
 
@@ -3644,7 +3644,7 @@ to `PeriodIndex` like `to_period()`:
     In [425]: dti = pd.date_range("2011-01-01", freq="ME", periods=3)
 
     In [426]: dti
-    Out[426]: 
+    Out[426]:
     DatetimeIndex(['2011-01-31', '2011-02-28', '2011-03-31'],
                   dtype='datetime64[us]', freq='ME')
 
@@ -3666,13 +3666,13 @@ You can pass in dates and strings to `Series` and `DataFrame` with
     Out[428]: np.float64(-2.9169013294054507)
 
     In [429]: ps[datetime.datetime(2011, 12, 25):]
-    Out[429]: 
+    Out[429]:
     2011-12    2.261385
     2012-01   -0.329583
     Freq: M, dtype: float64
 
     In [430]: ps["10/31/2011":"12/31/2011"]
-    Out[430]: 
+    Out[430]:
     2011-10    0.056780
     2011-11    0.197035
     2011-12    2.261385
@@ -3683,7 +3683,7 @@ partial sliced data.
 
 >python
     In [431]: ps["2011"]
-    Out[431]: 
+    Out[431]:
     2011-01   -2.916901
     2011-02    0.514474
     2011-03    1.346470
@@ -3703,10 +3703,10 @@ partial sliced data.
        .....:     columns=["A"],
        .....:     index=pd.period_range("2013-01-01 9:00", periods=600, freq="min"),
        .....: )
-       .....: 
+       .....:
 
     In [433]: dfp
-    Out[433]: 
+    Out[433]:
                              A
     2013-01-01 09:00 -0.538468
     2013-01-01 09:01 -1.365819
@@ -3723,7 +3723,7 @@ partial sliced data.
     [600 rows x 1 columns]
 
     In [434]: dfp.loc["2013-01-01 10h"]
-    Out[434]: 
+    Out[434]:
                              A
     2013-01-01 10:00 -0.308975
     2013-01-01 10:01  0.542520
@@ -3744,7 +3744,7 @@ example below slices data starting from 10:00 to 11:59.
 
 >python
     In [435]: dfp["2013-01-01 10h":"2013-01-01 11h"]
-    Out[435]: 
+    Out[435]:
                              A
     2013-01-01 10:00 -0.308975
     2013-01-01 10:01  0.542520
@@ -3850,7 +3850,7 @@ and vice-versa using `to_timestamp`:
     In [451]: ts = pd.Series(np.random.randn(len(rng)), index=rng)
 
     In [452]: ts
-    Out[452]: 
+    Out[452]:
     2012-01-31    1.931253
     2012-02-29   -0.184594
     2012-03-31    0.249656
@@ -3861,7 +3861,7 @@ and vice-versa using `to_timestamp`:
     In [453]: ps = ts.to_period()
 
     In [454]: ps
-    Out[454]: 
+    Out[454]:
     2012-01    1.931253
     2012-02   -0.184594
     2012-03    0.249656
@@ -3870,7 +3870,7 @@ and vice-versa using `to_timestamp`:
     Freq: M, dtype: float64
 
     In [455]: ps.to_timestamp()
-    Out[455]: 
+    Out[455]:
     2012-01-01    1.931253
     2012-02-01   -0.184594
     2012-03-01    0.249656
@@ -3883,7 +3883,7 @@ or end of the period:
 
 >python
     In [456]: ps.to_timestamp("D", how="s")
-    Out[456]: 
+    Out[456]:
     2012-01-01    1.931253
     2012-02-01   -0.184594
     2012-03-01    0.249656
@@ -3904,7 +3904,7 @@ following the quarter end:
     In [459]: ts.index = (prng.asfreq("M", "e") + 1).asfreq("h", "s") + 9
 
     In [460]: ts.head()
-    Out[460]: 
+    Out[460]:
     1990-03-01 09:00   -0.109291
     1990-06-01 09:00   -0.637235
     1990-09-01 09:00   -1.735925
@@ -3926,7 +3926,7 @@ If you have data that is outside of the `Timestamp` bounds, see
     In [461]: span = pd.period_range("1215-01-01", "1381-01-01", freq="D")
 
     In [462]: span
-    Out[462]: 
+    Out[462]:
     PeriodIndex(['1215-01-01', '1215-01-02', '1215-01-03', '1215-01-04',
                  '1215-01-05', '1215-01-06', '1215-01-07', '1215-01-08',
                  '1215-01-09', '1215-01-10',
@@ -3942,7 +3942,7 @@ To convert from an `int64` based YYYYMMDD representation.
     In [463]: s = pd.Series([20121231, 20141130, 99991231])
 
     In [464]: s
-    Out[464]: 
+    Out[464]:
     0    20121231
     1    20141130
     2    99991231
@@ -3950,10 +3950,10 @@ To convert from an `int64` based YYYYMMDD representation.
 
     In [465]: def conv(x):
        .....:     return pd.Period(year=x // 10000, month=x // 100 % 100, day=x % 100, freq="D")
-       .....: 
+       .....:
 
     In [466]: s.apply(conv)
-    Out[466]: 
+    Out[466]:
     0    2012-12-31
     1    2014-11-30
     2    9999-12-31
@@ -4033,7 +4033,7 @@ strings will return `zoneinfo` time zone objects by default. To return
        .....:     freq="D",
        .....:     tz=dateutil.tz.tzutc(),
        .....: )
-       .....: 
+       .....:
 
     In [480]: rng_utc.tz
     Out[480]: tzutc()
@@ -4046,7 +4046,7 @@ strings will return `zoneinfo` time zone objects by default. To return
        .....:     freq="D",
        .....:     tz=datetime.timezone.utc,
        .....: )
-       .....: 
+       .....:
 
     In [482]: rng_utc.tz
     Out[482]: datetime.timezone.utc
@@ -4079,7 +4079,7 @@ you can use the `tz_convert` method.
 
 >python
     In [490]: rng_zi.tz_convert("US/Eastern")
-    Out[490]: 
+    Out[490]:
     DatetimeIndex(['2012-03-05 19:00:00-05:00', '2012-03-06 19:00:00-05:00',
                    '2012-03-07 19:00:00-05:00'],
                   dtype='datetime64[us, US/Eastern]', freq=None)
@@ -4138,14 +4138,14 @@ Operations between |pandas.Series| in different time zones will yield UTC
     In [499]: result = eastern + berlin
 
     In [500]: result
-    Out[500]: 
+    Out[500]:
     2013-01-01 00:00:00+00:00    0
     2013-01-02 00:00:00+00:00    2
     2013-01-03 00:00:00+00:00    4
     dtype: int64
 
     In [501]: result.index
-    Out[501]: 
+    Out[501]:
     DatetimeIndex(['2013-01-01 00:00:00+00:00', '2013-01-02 00:00:00+00:00',
                    '2013-01-03 00:00:00+00:00'],
                   dtype='datetime64[us, UTC]', freq=None)
@@ -4159,26 +4159,26 @@ after converting to UTC time.
     In [502]: didx = pd.date_range(start="2014-08-01 09:00", freq="h", periods=3, tz="US/Eastern")
 
     In [503]: didx
-    Out[503]: 
+    Out[503]:
     DatetimeIndex(['2014-08-01 09:00:00-04:00', '2014-08-01 10:00:00-04:00',
                    '2014-08-01 11:00:00-04:00'],
                   dtype='datetime64[us, US/Eastern]', freq='h')
 
     In [504]: didx.tz_localize(None)
-    Out[504]: 
+    Out[504]:
     DatetimeIndex(['2014-08-01 09:00:00', '2014-08-01 10:00:00',
                    '2014-08-01 11:00:00'],
                   dtype='datetime64[us]', freq=None)
 
     In [505]: didx.tz_convert(None)
-    Out[505]: 
+    Out[505]:
     DatetimeIndex(['2014-08-01 13:00:00', '2014-08-01 14:00:00',
                    '2014-08-01 15:00:00'],
                   dtype='datetime64[us]', freq='h')
 
     # tz_convert(None) is identical to tz_convert('UTC').tz_localize(None)
     In [506]: didx.tz_convert("UTC").tz_localize(None)
-    Out[506]: 
+    Out[506]:
     DatetimeIndex(['2014-08-01 13:00:00', '2014-08-01 14:00:00',
                    '2014-08-01 15:00:00'],
                   dtype='datetime64[us]', freq=None)
@@ -4206,7 +4206,7 @@ need direct control over how they are handled.
        .....:     tz="dateutil/Europe/London",
        .....:     fold=0,
        .....: )
-       .....: 
+       .....:
     Out[507]: Timestamp('2019-10-27 01:30:00+0100', tz='dateutil//usr/share/zoneinfo/Europe/London')
 
     In [508]: pd.Timestamp(
@@ -4218,7 +4218,7 @@ need direct control over how they are handled.
        .....:     tz="dateutil/Europe/London",
        .....:     fold=1,
        .....: )
-       .....: 
+       .....:
     Out[508]: Timestamp('2019-10-27 01:30:00+0000', tz='dateutil//usr/share/zoneinfo/Europe/London')
 <
 
@@ -4243,7 +4243,7 @@ are available:
     In [509]: rng_hourly = pd.DatetimeIndex(
        .....:     ["11/06/2011 00:00", "11/06/2011 01:00", "11/06/2011 01:00", "11/06/2011 02:00"]
        .....: )
-       .....: 
+       .....:
 <
 This will fail as there are ambiguous times (`'11/06/2011 01:00'`)
 
@@ -4257,7 +4257,7 @@ This will fail as there are ambiguous times (`'11/06/2011 01:00'`)
     File ~/work/pandas/pandas/pandas/core/indexes/datetimes.py:1709, in DatetimeIndex.tz_localize(self, tz, ambiguous, nonexistent)
        1568 """
        1569 Localize tz-naive Datetime Array/Index to tz-aware Datetime Array/Index.
-       1570 
+       1570
        (...)   1706 dtype: datetime64[ns, Europe/Warsaw]
        1707 """  # noqa: E501
        1708 freq = self._freq
@@ -4296,19 +4296,19 @@ Handle these ambiguous times by specifying the following.
 
 >python
     In [511]: rng_hourly.tz_localize("US/Eastern", ambiguous="infer")
-    Out[511]: 
+    Out[511]:
     DatetimeIndex(['2011-11-06 00:00:00-04:00', '2011-11-06 01:00:00-04:00',
                    '2011-11-06 01:00:00-05:00', '2011-11-06 02:00:00-05:00'],
                   dtype='datetime64[us, US/Eastern]', freq=None)
 
     In [512]: rng_hourly.tz_localize("US/Eastern", ambiguous="NaT")
-    Out[512]: 
+    Out[512]:
     DatetimeIndex(['2011-11-06 00:00:00-04:00', 'NaT', 'NaT',
                    '2011-11-06 02:00:00-05:00'],
                   dtype='datetime64[us, US/Eastern]', freq=None)
 
     In [513]: rng_hourly.tz_localize("US/Eastern", ambiguous=[True, True, False, False])
-    Out[513]: 
+    Out[513]:
     DatetimeIndex(['2011-11-06 00:00:00-04:00', '2011-11-06 01:00:00-04:00',
                    '2011-11-06 01:00:00-05:00', '2011-11-06 02:00:00-05:00'],
                   dtype='datetime64[us, US/Eastern]', freq=None)
@@ -4349,7 +4349,7 @@ Localization of nonexistent times will raise an error by default.
     File ~/work/pandas/pandas/pandas/core/indexes/datetimes.py:1709, in DatetimeIndex.tz_localize(self, tz, ambiguous, nonexistent)
        1568 """
        1569 Localize tz-naive Datetime Array/Index to tz-aware Datetime Array/Index.
-       1570 
+       1570
        (...)   1706 dtype: datetime64[ns, Europe/Warsaw]
        1707 """  # noqa: E501
        1708 freq = self._freq
@@ -4388,32 +4388,32 @@ Transform nonexistent times to `NaT` or shift the times.
 
 >python
     In [516]: dti
-    Out[516]: 
+    Out[516]:
     DatetimeIndex(['2015-03-29 02:30:00', '2015-03-29 03:30:00',
                    '2015-03-29 04:30:00'],
                   dtype='datetime64[us]', freq='h')
 
     In [517]: dti.tz_localize("Europe/Warsaw", nonexistent="shift_forward")
-    Out[517]: 
+    Out[517]:
     DatetimeIndex(['2015-03-29 03:00:00+02:00', '2015-03-29 03:30:00+02:00',
                    '2015-03-29 04:30:00+02:00'],
                   dtype='datetime64[us, Europe/Warsaw]', freq=None)
 
     In [518]: dti.tz_localize("Europe/Warsaw", nonexistent="shift_backward")
-    Out[518]: 
+    Out[518]:
     DatetimeIndex(['2015-03-29 01:59:59.999999+01:00',
                           '2015-03-29 03:30:00+02:00',
                           '2015-03-29 04:30:00+02:00'],
                   dtype='datetime64[us, Europe/Warsaw]', freq=None)
 
     In [519]: dti.tz_localize("Europe/Warsaw", nonexistent=pd.Timedelta(1, unit="h"))
-    Out[519]: 
+    Out[519]:
     DatetimeIndex(['2015-03-29 03:30:00+02:00', '2015-03-29 03:30:00+02:00',
                    '2015-03-29 04:30:00+02:00'],
                   dtype='datetime64[us, Europe/Warsaw]', freq=None)
 
     In [520]: dti.tz_localize("Europe/Warsaw", nonexistent="NaT")
-    Out[520]: 
+    Out[520]:
     DatetimeIndex(['NaT', '2015-03-29 03:30:00+02:00',
                    '2015-03-29 04:30:00+02:00'],
                   dtype='datetime64[us, Europe/Warsaw]', freq=None)
@@ -4431,7 +4431,7 @@ A |pandas.Series| with time zone naive values is represented with a dtype of
     In [521]: s_naive = pd.Series(pd.date_range("20130101", periods=3))
 
     In [522]: s_naive
-    Out[522]: 
+    Out[522]:
     0   2013-01-01
     1   2013-01-02
     2   2013-01-03
@@ -4444,7 +4444,7 @@ of `datetime64[us, tz]` where `tz` is the time zone
     In [523]: s_aware = pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern"))
 
     In [524]: s_aware
-    Out[524]: 
+    Out[524]:
     0   2013-01-01 00:00:00-05:00
     1   2013-01-02 00:00:00-05:00
     2   2013-01-03 00:00:00-05:00
@@ -4457,7 +4457,7 @@ For example, to localize and convert a naive stamp to time zone aware.
 
 >python
     In [525]: s_naive.dt.tz_localize("UTC").dt.tz_convert("US/Eastern")
-    Out[525]: 
+    Out[525]:
     0   2012-12-31 19:00:00-05:00
     1   2013-01-01 19:00:00-05:00
     2   2013-01-02 19:00:00-05:00
@@ -4469,7 +4469,7 @@ This method can convert between different timezone-aware dtypes.
 >python
     # convert to a new time zone
     In [526]: s_aware.astype("datetime64[us, CET]")
-    Out[526]: 
+    Out[526]:
     0   2013-01-01 06:00:00+01:00
     1   2013-01-02 06:00:00+01:00
     2   2013-01-03 06:00:00+01:00
@@ -4484,12 +4484,12 @@ This method can convert between different timezone-aware dtypes.
 
   >python
       In [527]: s_naive.to_numpy()
-      Out[527]: 
+      Out[527]:
       array(['2013-01-01T00:00:00.000000', '2013-01-02T00:00:00.000000',
              '2013-01-03T00:00:00.000000'], dtype='datetime64[us]')
 
       In [528]: s_aware.to_numpy()
-      Out[528]: 
+      Out[528]:
       array([Timestamp('2013-01-01 00:00:00-0500', tz='US/Eastern'),
              Timestamp('2013-01-02 00:00:00-0500', tz='US/Eastern'),
              Timestamp('2013-01-03 00:00:00-0500', tz='US/Eastern')],
@@ -4501,7 +4501,7 @@ This method can convert between different timezone-aware dtypes.
 
   >python
       In [529]: s_aware.to_numpy(dtype="datetime64[us]")
-      Out[529]: 
+      Out[529]:
       array(['2013-01-01T05:00:00.000000', '2013-01-02T05:00:00.000000',
              '2013-01-03T05:00:00.000000'], dtype='datetime64[us]')
 <
@@ -4512,7 +4512,7 @@ This method can convert between different timezone-aware dtypes.
 
   >python
       In [530]: pd.Series(s_aware.to_numpy(dtype=object))
-      Out[530]: 
+      Out[530]:
       0   2013-01-01 00:00:00-05:00
       1   2013-01-02 00:00:00-05:00
       2   2013-01-03 00:00:00-05:00
@@ -4540,11 +4540,11 @@ Here's a simple example to illustrate a UDF applied to a Series:
     # Simple UDF that adds 1 to a value
     In [2]: def add_one(x):
        ...:     return x + 1
-       ...: 
+       ...:
 
     # Apply the function element-wise using .map
     In [3]: s.map(add_one)
-    Out[3]: 
+    Out[3]:
     0    2
     1    3
     2    4
@@ -4601,46 +4601,45 @@ METHODS THAT SUPPORT USER-DEFINED FUNCTIONS
 
 User-Defined Functions can be applied across various pandas methods:
 
-Method                 Function Input     Function Output    Description
----------------------  -----------------  -----------------  -----------------
-Series.map() and       Scalar             Scalar             Apply a function
-    DataFrame.map()                                              to each element
-    Series.apply() and     Column (Series)    Column (Series)    Apply a function
-    DataFrame.apply()                                            to each column
+Method              Function Input      Function Output     Description
+------------------  ------------------  ------------------  ------------------
+Series.map() and    Scalar              Scalar              Apply a function
+    DataFrame.map()                                             to each element
+    Series.apply() and  Column (Series)     Column (Series)     Apply a function
+    DataFrame.apply()                                           to each column
     (axis=0)
-    Series.apply() and     Row (Series)       Row (Series)       Apply a function
-    DataFrame.apply()                                            to each row
+    Series.apply() and  Row (Series)        Row (Series)        Apply a function
+    DataFrame.apply()                                           to each row
     (axis=1)
-    Series.pipe() and      Series or          Series or          Chain functions
-    DataFrame.pipe()       DataFrame          DataFrame          together to apply
-                                                             to Series or
-                                                             DataFrame
-Series.filter() and    Series or          Boolean mask       Function is
-    DataFrame.filter()     DataFrame                             called with the
-                                                             object and
-                                                             returns a boolean
-                                                             mask; rows where
-                                                             the mask is False
-                                                             are removed from
-                                                             the result
-Series.agg() and       Series or          Scalar or Series   Aggregate and
-    DataFrame.agg()        DataFrame                             summarize values,
-                                                             e.g., sum or
-                                                             custom reducer
-Series.transform()     Column (Series)    Column (Series)    Same as apply()
-    and                                                          with (axis=0),
-    DataFrame.transform()                                        but it raises an
-    (axis=0)                                                     exception if the
-                                                             function changes
-                                                             the shape of the
-                                                             data
-Series.transform()     Row (Series)       Row (Series)       Same as apply()
-    and                                                          with (axis=1),
-    DataFrame.transform()                                        but it raises an
-    (axis=1)                                                     exception if the
-                                                             function changes
-                                                             the shape of the
-                                                             data
+    Series.pipe() and   Series or           Series or           Chain functions
+    DataFrame.pipe()    DataFrame           DataFrame           together to apply
+                                                            to Series or
+                                                            DataFrame
+Series.filter()     Series or           Boolean mask        Function is called
+    and                 DataFrame                               with the object
+    DataFrame.filter()                                          and returns a
+                                                            boolean mask; rows
+                                                            where the mask is
+                                                            False are removed
+                                                            from the result
+Series.agg() and    Series or           Scalar or Series    Aggregate and
+    DataFrame.agg()     DataFrame                               summarize values,
+                                                            e.g., sum or
+                                                            custom reducer
+Series.transform()  Column (Series)     Column (Series)     Same as apply()
+    and                                                         with (axis=0), but
+    DataFrame.                                                  it raises an
+    transform()                                                 exception if the
+    (axis=0)                                                    function changes
+                                                            the shape of the
+                                                            data
+Series.transform()  Row (Series)        Row (Series)        Same as apply()
+    and                                                         with (axis=1), but
+    DataFrame.                                                  it raises an
+    transform()                                                 exception if the
+    (axis=1)                                                    function changes
+                                                            the shape of the
+                                                            data
 
 When applying UDFs in pandas, it is essential to select the appropriate
 method based on your specific task. Each method has its strengths and is
@@ -4655,7 +4654,9 @@ and maintainable code.
   |user_guide-timeseries-timeseries|, |user_guide-window-window|,
   |user_guide-window-window|, and |user_guide-window-window| for details.
 
-Series.map() and DataFrame.map()  *user_guide-user_defined_functions-series-map-and-dataframe-map*
+              *user_guide-user_defined_functions-series-map-and-dataframe-map*
+
+Series.map() and DataFrame.map()
 
 *user_guide-user_defined_functions-udf-map*
 
@@ -4668,14 +4669,14 @@ means the function will be called for each element in the `Series` or
        ...:     "NYC": [14, 21, 23],
        ...:     "Los Angeles": [22, 28, 31],
        ...: })
-       ...: 
+       ...:
 
     In [5]: def to_fahrenheit(value):
        ...:     return value * (9 / 5) + 32
-       ...: 
+       ...:
 
     In [6]: temperature_celsius.map(to_fahrenheit)
-    Out[6]: 
+    Out[6]:
         NYC  Los Angeles
     0  57.2         71.6
     1  69.8         82.4
@@ -4692,7 +4693,9 @@ slow down things significantly if working with medium or large data.
 When to use: Use `map()` for applying element-wise UDFs to DataFrames or
 Series.
 
-Series.apply() and DataFrame.apply()  *user_guide-user_defined_functions-series-apply-and-dataframe-apply*
+          *user_guide-user_defined_functions-series-apply-and-dataframe-apply*
+
+Series.apply() and DataFrame.apply()
 
 *user_guide-user_defined_functions-udf-apply*
 
@@ -4705,14 +4708,14 @@ column (or row), not for each individual value.
        ...:     "NYC": [14, 21, 23],
        ...:     "Los Angeles": [22, 28, 31],
        ...: })
-       ...: 
+       ...:
 
     In [8]: def to_fahrenheit(column):
        ...:     return column * (9 / 5) + 32
-       ...: 
+       ...:
 
     In [9]: temperature_celsius.apply(to_fahrenheit)
-    Out[9]: 
+    Out[9]:
         NYC  Los Angeles
     0  57.2         71.6
     1  69.8         82.4
@@ -4732,14 +4735,14 @@ access one element at a time.
        ....:     "NYC": [14, 21, 23],
        ....:     "Los Angeles": [22, 28, 31],
        ....: })
-       ....: 
+       ....:
 
     In [11]: def normalize(column):
        ....:     return column / column.mean()
-       ....: 
+       ....:
 
     In [12]: temperature.apply(normalize)
-    Out[12]: 
+    Out[12]:
             NYC  Los Angeles
     0  0.724138     0.814815
     1  1.086207     1.037037
@@ -4757,14 +4760,14 @@ column.
        ....:     "NYC": [14, 21, 23],
        ....:     "Los Angeles": [22, 28, 31],
        ....: })
-       ....: 
+       ....:
 
     In [14]: def hotter(row):
        ....:     return row["Los Angeles"] - row["NYC"]
-       ....: 
+       ....:
 
     In [15]: temperature.apply(hotter, axis=1)
-    Out[15]: 
+    Out[15]:
     0    8
     1    7
     2    8
@@ -4783,7 +4786,9 @@ When to use: `apply()` is suitable when no alternative vectorized method or
 UDF method is available, but consider optimizing performance with vectorized
 operations wherever possible.
 
-Series.pipe() and DataFrame.pipe()  *user_guide-user_defined_functions-series-pipe-and-dataframe-pipe*
+            *user_guide-user_defined_functions-series-pipe-and-dataframe-pipe*
+
+Series.pipe() and DataFrame.pipe()
 
 *user_guide-user_defined_functions-udf-pipe*
 
@@ -4795,14 +4800,14 @@ the whole `Series` or `DataFrame` it is called on.
        ....:     "NYC": [14, 21, 23],
        ....:     "Los Angeles": [22, 28, 31],
        ....: })
-       ....: 
+       ....:
 
     In [17]: def normalize(df):
        ....:     return df / df.mean().mean()
-       ....: 
+       ....:
 
     In [18]: temperature.pipe(normalize)
-    Out[18]: 
+    Out[18]:
             NYC  Los Angeles
     0  0.604317     0.949640
     1  0.906475     1.208633
@@ -4813,7 +4818,7 @@ as the parameter.
 
 >python
     In [19]: normalize(temperature)
-    Out[19]: 
+    Out[19]:
             NYC  Los Angeles
     0  0.604317     0.949640
     1  0.906475     1.208633
@@ -4827,19 +4832,19 @@ and clearer code when calling multiple functions.
        ....:     "NYC": [14, 21, 23],
        ....:     "Los Angeles": [22, 28, 31],
        ....: })
-       ....: 
+       ....:
 
     In [21]: def multiply_by_9(value):
        ....:     return value * 9
-       ....: 
+       ....:
 
     In [22]: def divide_by_5(value):
        ....:     return value / 5
-       ....: 
+       ....:
 
     In [23]: def add_32(value):
        ....:     return value + 32
-       ....: 
+       ....:
 
     # Without `pipe`:
     In [24]: fahrenheit = add_32(divide_by_5(multiply_by_9(temperature_celsius)))
@@ -4848,7 +4853,7 @@ and clearer code when calling multiple functions.
     In [25]: fahrenheit = (temperature_celsius.pipe(multiply_by_9)
        ....:                                  .pipe(divide_by_5)
        ....:                                  .pipe(add_32))
-       ....: 
+       ....:
 <
 `pipe` is also available for `SeriesGroupBy.pipe()`,
 `DataFrameGroupBy.pipe()` and `Resampler.pipe()`. You can read more about
@@ -4857,7 +4862,9 @@ and clearer code when calling multiple functions.
 When to use: Use `pipe()` when you need to create a pipeline of operations
 and want to keep the code readable and maintainable.
 
-Series.filter() and DataFrame.filter()  *user_guide-user_defined_functions-series-filter-and-dataframe-filter*
+        *user_guide-user_defined_functions-series-filter-and-dataframe-filter*
+
+Series.filter() and DataFrame.filter()
 
 *user_guide-user_defined_functions-udf-filter*
 
@@ -4871,7 +4878,7 @@ the intermediate object has no name.
     In [26]: df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
 
     In [27]: df.assign(c=df["a"] + df["b"]).filter(lambda df: df["c"] > 5)
-    Out[27]: 
+    Out[27]:
        a  b  c
     1  2  5  7
     2  3  6  9
@@ -4882,7 +4889,9 @@ You can read more about filtering with a boolean mask in
 can read more about `filter` in groupby operations in
 |user_guide-groupby-groupby-filter|.
 
-Series.agg() and DataFrame.agg()  *user_guide-user_defined_functions-series-agg-and-dataframe-agg*
+              *user_guide-user_defined_functions-series-agg-and-dataframe-agg*
+
+Series.agg() and DataFrame.agg()
 
 *user_guide-user_defined_functions-udf-agg*
 
@@ -4896,14 +4905,14 @@ other custom aggregate functions.
        ....:     "NYC": [14, 21, 23],
        ....:     "Los Angeles": [22, 28, 31],
        ....: })
-       ....: 
+       ....:
 
     In [29]: def highest_jump(column):
        ....:     return column.pct_change().max()
-       ....: 
+       ....:
 
     In [30]: temperature.agg(highest_jump)
-    Out[30]: 
+    Out[30]:
     NYC            0.500000
     Los Angeles    0.272727
     dtype: float64
@@ -4911,7 +4920,9 @@ other custom aggregate functions.
 When to use: Use `agg()` for performing custom aggregations, where the
 operation returns a scalar value on each input.
 
-Series.transform() and DataFrame.transform()  *user_guide-user_defined_functions-series-transform-and-dataframe-transform*
+  *user_guide-user_defined_functions-series-transform-and-dataframe-transform*
+
+Series.transform() and DataFrame.transform()
 
 *user_guide-user_defined_functions-udf-transform*
 
@@ -4923,14 +4934,14 @@ that the result is broadcasted to the original data.
        ....:     "NYC": [14, 21, 23],
        ....:     "Los Angeles": [22, 28, 31]},
        ....:     index=pd.date_range("2000-01-01", "2000-01-03"))
-       ....: 
+       ....:
 
     In [32]: def warm_up_all_days(column):
        ....:     return pd.Series(column.max(), index=column.index)
-       ....: 
+       ....:
 
     In [33]: temperature.transform(warm_up_all_days)
-    Out[33]: 
+    Out[33]:
                 NYC  Los Angeles
     2000-01-01   23           31
     2000-01-02   23           31
@@ -5227,7 +5238,7 @@ Histograms can be drawn by using the |pandas.DataFrame.plot.hist| and
        ....:     },
        ....:     columns=["a", "b", "c"],
        ....: )
-       ....: 
+       ....:
 
     In [26]: plt.figure();
 
@@ -5290,7 +5301,7 @@ In addition, the `by` keyword can also be specified in
        ....:         "d": np.random.randn(1000) - 1,
        ....:     },
        ....: )
-       ....: 
+       ....:
 
     In [39]: data.plot.hist(by=["a", "b"], figsize=(10, 5));
 <
@@ -5331,7 +5342,7 @@ complicated colorization, you can get each drawn artists by passing
        ....:     "medians": "DarkBlue",
        ....:     "caps": "Gray",
        ....: }
-       ....: 
+       ....:
 
     In [43]: df.plot.box(color=color, sym="r+");
 <
@@ -5472,7 +5483,7 @@ can be specified by the `x` and `y` keywords.
     In [71]: df["species"] = pd.Categorical(
        ....:     ["setosa"] * 20 + ["versicolor"] * 20 + ["virginica"] * 10
        ....: )
-       ....: 
+       ....:
 
     In [72]: df.plot.scatter(x="a", y="b");
 <
@@ -5583,7 +5594,7 @@ drawn in each pie plots by default; specify `legend=False` to hide it.
     In [87]: df = pd.DataFrame(
        ....:     3 * np.random.rand(4, 2), index=["a", "b", "c", "d"], columns=["x", "y"]
        ....: )
-       ....: 
+       ....:
 
     In [88]: df.plot.pie(subplots=True, figsize=(8, 4));
 <
@@ -5611,7 +5622,7 @@ can be used.
        ....:     fontsize=20,
        ....:     figsize=(6, 6),
        ....: );
-       ....: 
+       ....:
 <
 If you pass values whose sum total is less than 1.0 they will be rescaled so
 that they sum to 1.
@@ -5983,7 +5994,7 @@ in `pandas.plotting.plot_params` can be used in a `with` statement:
        .....:     df["A"].plot(color="r")
        .....:     df["B"].plot(color="g")
        .....:     df["C"].plot(color="b")
-       .....: 
+       .....:
 <
 
                      *user_guide-visualization-automatic-date-tick-adjustment*
@@ -6117,7 +6128,7 @@ deviations from the raw data.
        .....:     ],
        .....:     names=["letter", "word"],
        .....: )
-       .....: 
+       .....:
 
     In [171]: df3 = pd.DataFrame(
        .....:     {
@@ -6126,7 +6137,7 @@ deviations from the raw data.
        .....:     },
        .....:     index=ix3,
        .....: )
-       .....: 
+       .....:
 
     # Group by index labels and take the means and standard deviations
     # for each group
@@ -6137,18 +6148,18 @@ deviations from the raw data.
     In [174]: errors = gp3.std()
 
     In [175]: means
-    Out[175]: 
+    Out[175]:
                     data1     data2
-    letter word                    
+    letter word
     a      bar   3.500000  6.000000
            foo   4.666667  6.666667
     b      bar   3.666667  4.000000
            foo   3.000000  4.500000
 
     In [176]: errors
-    Out[176]: 
+    Out[176]:
                     data1     data2
-    letter word                    
+    letter word
     a      bar   0.707107  1.414214
            foo   3.785939  2.081666
     b      bar   2.081666  2.645751
@@ -6326,7 +6337,7 @@ it can be faster when plotting a large number of points.
        .....:     np.random.randn(150).cumsum(),
        .....:     index=pd.date_range("2000-1-1", periods=150, freq="B"),
        .....: )
-       .....: 
+       .....:
 
     In [215]: ma = price.rolling(20).mean()
 
@@ -6396,7 +6407,7 @@ necessary parameters and then subsequently call the aggregation function.
     In [1]: s = pd.Series(range(5))
 
     In [2]: s.rolling(window=2).sum()
-    Out[2]: 
+    Out[2]:
     0    NaN
     1    1.0
     2    3.0
@@ -6411,7 +6422,7 @@ the following windowed partitions of data:
 >python
     In [3]: for window in s.rolling(window=2):
        ...:     print(window)
-       ...: 
+       ...:
     0    0
     dtype: int64
     0    0
@@ -6441,18 +6452,18 @@ pandas supports 4 types of windowing operations:
 4. Exponentially Weighted window: Accumulating and exponentially weighted
    window over the values.
 
-Concept        Method     Returned Object                       Supports    Supports  Supports  Supports
-                                                                time-based  chained   table     online
-                                                                windows     groupby   method    operations
--------------  ---------  ------------------------------------  ----------  --------  --------  ----------
-Rolling        rolling    pandas.api.typing.Rolling             Yes         Yes       Yes       No
-window
-Weighted       rolling    pandas.api.typing.Window              No          No        No        No
-window
-Expanding      expanding  pandas.api.typing.Expanding           No          Yes       Yes       No
-window
-Exponentially  ewm        pandas.api.typing.ExponentialMovingWindow  No          Yes       No        Yes
-Weighted
+Concept        Method     Returned Object          Supports    Supports  Supports  Supports
+                                                   time-based  chained   table     online
+                                                   windows     groupby   method    operations
+-------------  ---------  -----------------------  ----------  --------  --------  ----------
+Rolling        rolling    pandas.api.typing.       Yes         Yes       Yes       No
+window                    Rolling
+Weighted       rolling    pandas.api.typing.       No          No        No        No
+window                    Window
+Expanding      expanding  pandas.api.typing.       No          Yes       Yes       No
+window                    Expanding
+Exponentially  ewm        pandas.api.typing.       No          Yes       No        Yes
+Weighted                  ExponentialMovingWindow
 window
 
 As noted above, some operations support specifying a window based on a time
@@ -6462,7 +6473,7 @@ offset:
     In [4]: s = pd.Series(range(5), index=pd.date_range('2020-01-01', periods=5, freq='1D'))
 
     In [5]: s.rolling(window='2D').sum()
-    Out[5]: 
+    Out[5]:
     2020-01-01    0.0
     2020-01-02    1.0
     2020-01-03    3.0
@@ -6478,9 +6489,9 @@ and then perform a windowing operation per group.
     In [6]: df = pd.DataFrame({'A': ['a', 'b', 'a', 'b', 'a'], 'B': range(5)})
 
     In [7]: df.groupby('A').expanding().sum()
-    Out[7]: 
+    Out[7]:
            B
-    A       
+    A
     a 0  0.0
       2  2.0
       4  6.0
@@ -6520,12 +6531,12 @@ calculated with `apply()` by specifying a separate column of weights.
        ...:     arr = np.ones((1, x.shape[1]))
        ...:     arr[:, :2] = (x[:, :2] * x[:, 2]).sum(axis=0) / x[:, 2].sum()
        ...:     return arr
-       ...: 
+       ...:
 
     In [9]: df = pd.DataFrame([[1, 2, 0.6], [2, 3, 0.4], [3, 4, 0.2], [4, 5, 0.7]])
 
     In [10]: df.rolling(2, method="table", min_periods=0).apply(weighted_mean, raw=True, engine="numba")  # noqa: E501
-    Out[10]: 
+    Out[10]:
               0         1    2
     0  1.000000  2.000000  1.0
     1  1.800000  2.000000  1.0
@@ -6546,7 +6557,7 @@ argument to continue the windowing calculation.
     In [11]: df = pd.DataFrame([[1, 2, 0.6], [2, 3, 0.4], [3, 4, 0.2], [4, 5, 0.7]])
 
     In [12]: df.ewm(0.5).mean()
-    Out[12]: 
+    Out[12]:
               0         1         2
     0  1.000000  2.000000  0.600000
     1  1.750000  2.750000  0.450000
@@ -6557,13 +6568,13 @@ argument to continue the windowing calculation.
     In [13]: online_ewm = df.head(2).ewm(0.5).online()
 
     In [14]: online_ewm.mean()
-    Out[14]: 
+    Out[14]:
           0     1     2
     0  1.00  2.00  0.60
     1  1.75  2.75  0.45
 
     In [15]: online_ewm.mean(update=df.tail(1))
-    Out[15]: 
+    Out[15]:
               0         1         2
     3  3.307692  4.307692  0.623077
 <
@@ -6576,7 +6587,7 @@ windows and `window` for fixed windows.
     In [16]: s = pd.Series([np.nan, 1, 2, np.nan, np.nan, 3])
 
     In [17]: s.rolling(window=3, min_periods=1).sum()
-    Out[17]: 
+    Out[17]:
     0    NaN
     1    1.0
     2    3.0
@@ -6586,7 +6597,7 @@ windows and `window` for fixed windows.
     dtype: float64
 
     In [18]: s.rolling(window=3, min_periods=2).sum()
-    Out[18]: 
+    Out[18]:
     0    NaN
     1    NaN
     2    3.0
@@ -6597,7 +6608,7 @@ windows and `window` for fixed windows.
 
     # Equivalent to min_periods=3
     In [19]: s.rolling(window=3, min_periods=None).sum()
-    Out[19]: 
+    Out[19]:
     0   NaN
     1   NaN
     2   NaN
@@ -6613,8 +6624,8 @@ returning a result of multiple aggregations applied to a window.
     In [20]: df = pd.DataFrame({"A": range(5), "B": range(10, 15)})
 
     In [21]: df.expanding().agg(["sum", "mean", "std"])
-    Out[21]: 
-          A                    B                
+    Out[21]:
+          A                    B
         sum mean       std   sum  mean       std
     0   0.0  0.0       NaN  10.0  10.0       NaN
     1   1.0  0.5  0.707107  21.0  10.5  0.707107
@@ -6638,7 +6649,7 @@ monotonic.
     In [23]: s = pd.Series(range(5), index=pd.DatetimeIndex(times))
 
     In [24]: s
-    Out[24]: 
+    Out[24]:
     2020-01-01    0
     2020-01-03    1
     2020-01-04    2
@@ -6648,7 +6659,7 @@ monotonic.
 
     # Window with 2 observations
     In [25]: s.rolling(window=2).sum()
-    Out[25]: 
+    Out[25]:
     2020-01-01    NaN
     2020-01-03    1.0
     2020-01-04    3.0
@@ -6658,7 +6669,7 @@ monotonic.
 
     # Window with 2 days worth of observations
     In [26]: s.rolling(window='2D').sum()
-    Out[26]: 
+    Out[26]:
     2020-01-01    0.0
     2020-01-03    1.0
     2020-01-04    3.0
@@ -6680,7 +6691,7 @@ By default the labels are set to the right edge of the window, but a
     In [27]: s = pd.Series(range(10))
 
     In [28]: s.rolling(window=5).mean()
-    Out[28]: 
+    Out[28]:
     0    NaN
     1    NaN
     2    NaN
@@ -6694,7 +6705,7 @@ By default the labels are set to the right edge of the window, but a
     dtype: float64
 
     In [29]: s.rolling(window=5, center=True).mean()
-    Out[29]: 
+    Out[29]:
     0    NaN
     1    NaN
     2    2.0
@@ -6713,10 +6724,10 @@ This can also be applied to datetime-like indices.
     In [30]: df = pd.DataFrame(
        ....:     {"A": [0, 1, 2, 3, 4]}, index=pd.date_range("2020", periods=5, freq="1D")
        ....: )
-       ....: 
+       ....:
 
     In [31]: df
-    Out[31]: 
+    Out[31]:
                 A
     2020-01-01  0
     2020-01-02  1
@@ -6725,7 +6736,7 @@ This can also be applied to datetime-like indices.
     2020-01-05  4
 
     In [32]: df.rolling("2D", center=False).mean()
-    Out[32]: 
+    Out[32]:
                   A
     2020-01-01  0.0
     2020-01-02  0.5
@@ -6734,7 +6745,7 @@ This can also be applied to datetime-like indices.
     2020-01-05  3.5
 
     In [33]: df.rolling("2D", center=True).mean()
-    Out[33]: 
+    Out[33]:
                   A
     2020-01-01  0.5
     2020-01-02  1.5
@@ -6773,7 +6784,7 @@ that point in time”, but not including that point in time.
        ....:         pd.Timestamp("20130101 09:00:06"),
        ....:     ],
        ....: )
-       ....: 
+       ....:
 
     In [35]: df["right"] = df.rolling("2s", closed="right").x.sum()  # default
 
@@ -6784,7 +6795,7 @@ that point in time”, but not including that point in time.
     In [38]: df["neither"] = df.rolling("2s", closed="neither").x.sum()
 
     In [39]: df
-    Out[39]: 
+    Out[39]:
                          x  right  both  left  neither
     2013-01-01 09:00:01  1    1.0   1.0   NaN      NaN
     2013-01-01 09:00:02  1    2.0   2.0   1.0      1.0
@@ -6818,7 +6829,7 @@ For example, if we have the following |pandas.DataFrame|
     In [42]: df = pd.DataFrame({"values": range(5)})
 
     In [43]: df
-    Out[43]: 
+    Out[43]:
        values
     0       0
     1       1
@@ -6845,12 +6856,12 @@ subclass:
        ....:                  start[i] = i
        ....:                  end[i] = i + self.window_size
        ....:          return start, end
-       ....: 
+       ....:
 
     In [46]: indexer = CustomIndexer(window_size=1, use_expanding=use_expanding)
 
     In [47]: df.rolling(indexer).sum()
-    Out[47]: 
+    Out[47]:
        values
     0     0.0
     1     1.0
@@ -6875,7 +6886,7 @@ non-fixed offset like a `BusinessDay`.
     In [51]: indexer = VariableOffsetWindowIndexer(index=df.index, offset=offset)
 
     In [52]: df
-    Out[52]: 
+    Out[52]:
                 0
     2020-01-01  0
     2020-01-02  1
@@ -6889,7 +6900,7 @@ non-fixed offset like a `BusinessDay`.
     2020-01-10  9
 
     In [53]: df.rolling(indexer).sum()
-    Out[53]: 
+    Out[53]:
                    0
     2020-01-01   0.0
     2020-01-02   1.0
@@ -6916,7 +6927,7 @@ fixed-width forward-looking rolling window, and we can use it as follows:
     In [55]: indexer = FixedForwardWindowIndexer(window_size=2)
 
     In [56]: df.rolling(indexer, min_periods=1).sum()
-    Out[56]: 
+    Out[56]:
                    0
     2020-01-01   1.0
     2020-01-02   3.0
@@ -6942,12 +6953,12 @@ then flipping the result as shown in example below:
        ....:     ],
        ....:     columns=["time", "value"],
        ....: ).set_index("time")
-       ....: 
+       ....:
 
     In [58]: df
-    Out[58]: 
+    Out[58]:
                          value
-    time                      
+    time
     2018-01-01 00:00:00    100
     2018-01-01 00:00:01    101
     2018-01-01 00:00:03    103
@@ -6956,9 +6967,9 @@ then flipping the result as shown in example below:
     In [59]: reversed_df = df[::-1].rolling("2s").sum()[::-1]
 
     In [60]: reversed_df
-    Out[60]: 
+    Out[60]:
                          value
-    time                      
+    time
     2018-01-01 00:00:00  201.0
     2018-01-01 00:00:01  101.0
     2018-01-01 00:00:03  214.0
@@ -6978,12 +6989,12 @@ windows are cast as |pandas.Series| objects (`raw=False`) or ndarray objects
 >python
     In [61]: def mad(x):
        ....:     return np.fabs(x - x.mean()).mean()
-       ....: 
+       ....:
 
     In [62]: s = pd.Series(range(10))
 
     In [63]: s.rolling(window=4).apply(mad, raw=True)
-    Out[63]: 
+    Out[63]:
     0    NaN
     1    NaN
     2    NaN
@@ -7052,14 +7063,14 @@ For example:
        ....:     index=pd.date_range("2020-01-01", periods=10),
        ....:     columns=["A", "B", "C", "D"],
        ....: )
-       ....: 
+       ....:
 
     In [65]: df = df.cumsum()
 
     In [66]: df2 = df[:4]
 
     In [67]: df2.rolling(window=2).corr(df2["B"])
-    Out[67]: 
+    Out[67]:
                   A    B    C    D
     2020-01-01  NaN  NaN  NaN  NaN
     2020-01-02 -1.0  1.0 -1.0  1.0
@@ -7101,10 +7112,10 @@ single DataFrame argument the `pairwise` argument can even be omitted:
        ....:     .rolling(window=4)
        ....:     .cov(df[["A", "B", "C"]], pairwise=True)
        ....: )
-       ....: 
+       ....:
 
     In [69]: covs
-    Out[69]: 
+    Out[69]:
                          B         C         D
     2020-01-01 A       NaN       NaN       NaN
                B       NaN       NaN       NaN
@@ -7137,7 +7148,7 @@ aggregation function.
     In [70]: s = pd.Series(range(10))
 
     In [71]: s.rolling(window=5).mean()
-    Out[71]: 
+    Out[71]:
     0    NaN
     1    NaN
     2    NaN
@@ -7151,7 +7162,7 @@ aggregation function.
     dtype: float64
 
     In [72]: s.rolling(window=5, win_type="triang").mean()
-    Out[72]: 
+    Out[72]:
     0    NaN
     1    NaN
     2    NaN
@@ -7166,7 +7177,7 @@ aggregation function.
 
     # Supplementary Scipy arguments passed in the aggregation function
     In [73]: s.rolling(window=5, win_type="gaussian").mean(std=0.1)
-    Out[73]: 
+    Out[73]:
     0    NaN
     1    NaN
     2    NaN
@@ -7195,7 +7206,7 @@ the following two calls are equivalent:
     In [74]: df = pd.DataFrame(range(5))
 
     In [75]: df.rolling(window=len(df), min_periods=1).mean()
-    Out[75]: 
+    Out[75]:
          0
     0  0.0
     1  0.5
@@ -7204,7 +7215,7 @@ the following two calls are equivalent:
     4  2.0
 
     In [76]: df.expanding(min_periods=1).mean()
-    Out[76]: 
+    Out[76]:
          0
     0  0.0
     1  0.5
@@ -7289,7 +7300,7 @@ value when also specifying a sequence of `times`.
     In [77]: df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
     In [78]: df
-    Out[78]: 
+    Out[78]:
          B
     0  0.0
     1  1.0
@@ -7300,7 +7311,7 @@ value when also specifying a sequence of `times`.
     In [79]: times = ["2020-01-01", "2020-01-03", "2020-01-10", "2020-01-15", "2020-01-17"]
 
     In [80]: df.ewm(halflife="4 days", times=pd.DatetimeIndex(times)).mean()
-    Out[80]: 
+    Out[80]:
               B
     0  0.000000
     1  0.585786
@@ -7345,14 +7356,14 @@ whereas if `ignore_na=True` it would be calculated as
     In [81]: ser = pd.Series([3, np.nan, 5])
 
     In [82]: ser.ewm(alpha=2 / 3, adjust=False, ignore_na=False).mean()
-    Out[82]: 
+    Out[82]:
     0    3.000000
     1    3.000000
     2    4.714286
     dtype: float64
 
     In [83]: ser.ewm(alpha=2 / 3, adjust=False, ignore_na=True).mean()
-    Out[83]: 
+    Out[83]:
     0    3.000000
     1    3.000000
     2    4.333333

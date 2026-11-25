@@ -5969,10 +5969,12 @@ class pandas.Series(data=None, index=None, dtype=None, name=None, copy=None)
 
     Attributes: ~
 
-    T                        Return the transpose, which is by definition self.
-    array                    The ExtensionArray of the data backing this Series or
-                             Index.
-    at                       Access a single value for a row/column label pair.
+    T                        Return the transpose, which is by definition
+                             self.
+    array                    The ExtensionArray of the data backing this
+                             Series or Index.
+    at                       Access a single value for a row/column label
+                             pair.
     attrs                    Dictionary of global attributes of this dataset.
     axes                     Return a list of the row axis labels.
     dtype                    Return the dtype object of the underlying data.
@@ -5983,29 +5985,33 @@ class pandas.Series(data=None, index=None, dtype=None, name=None, copy=None)
     hasnans                  Return True if there are any NaNs.
     iat                      Access a single value for a row/column pair by
                              integer position.
-    iloc                     Purely integer-location based indexing for selection
-                             by position.
+    iloc                     Purely integer-location based indexing for
+                             selection by position.
     index                    The index (axis labels) of the Series.
-    is_monotonic_decreasing  Return True if values in the object are monotonically
-                             decreasing.
-    is_monotonic_increasing  Return True if values in the object are monotonically
-                             increasing.
+    is_monotonic_decreasing  Return True if values in the object are
+                             monotonically decreasing.
+    is_monotonic_increasing  Return True if values in the object are
+                             monotonically increasing.
     is_unique                Return True if values in the object are unique.
-    loc                      Access a group of rows and columns by label(s) or a
-                             boolean array.
+    loc                      Access a group of rows and columns by label(s) or
+                             a boolean array.
     name                     Return the name of the Series.
-    nbytes                   Return the number of bytes in the underlying data.
+    nbytes                   Return the number of bytes in the underlying
+                             data.
     ndim                     Number of dimensions of the underlying data, by
                              definition 1.
-    shape                    Return a tuple of the shape of the underlying data.
-    size                     Return the number of elements in the underlying data.
-    values                   Return Series as ndarray or ndarray-like depending on
-                             the dtype.
+    shape                    Return a tuple of the shape of the underlying
+                             data.
+    size                     Return the number of elements in the underlying
+                             data.
+    values                   Return Series as ndarray or ndarray-like
+                             depending on the dtype.
 
     Methods: ~
 
-    abs()                               Return a Series/DataFrame with absolute
-                                        numeric value of each element.
+    abs()                               Return a Series/DataFrame with
+                                        absolute numeric value of each
+                                        element.
     add(other[, level, fill_value,      Return Addition of series and other,
     axis])                              element-wise (binary operator add).
     add_prefix(prefix[, axis])          Prefix labels with string prefix.
@@ -6014,57 +6020,60 @@ class pandas.Series(data=None, index=None, dtype=None, name=None, copy=None)
                                         over the specified axis.
     aggregate([func, axis])             Aggregate using one or more operations
                                         over the specified axis.
-    align(other[, join, axis, level,    Align two objects on their axes with the
-    copy, ...])                         specified join method.
+    align(other[, join, axis, level,    Align two objects on their axes with
+    copy, ...])                         the specified join method.
     all(*[, axis, bool_only, skipna])   Return whether all elements are True,
                                         potentially over an axis.
     any(*[, axis, bool_only, skipna])   Return whether any element is True,
                                         potentially over an axis.
     apply(func[, args, by_row])         Invoke function on values of Series.
-    argmax([axis, skipna])              Return int position of the largest value
-                                        in the Series.
-    argmin([axis, skipna])              Return int position of the smallest value
-                                        in the Series.
-    argsort([axis, kind, order,         Return the integer indices that would sort
-    stable])                            the Series values.
+    argmax([axis, skipna])              Return int position of the largest
+                                        value in the Series.
+    argmin([axis, skipna])              Return int position of the smallest
+                                        value in the Series.
+    argsort([axis, kind, order,         Return the integer indices that would
+    stable])                            sort the Series values.
     asfreq(freq[, method, how,          Convert time series to specified
     normalize, ...])                    frequency.
-    asof(where[, subset])               Return the last row(s) without any NaNs
-                                        before where.
-    astype(dtype[, copy, errors])       Cast a pandas object to a specified dtype
-                                        dtype.
-    at_time(time[, asof, axis])         Select values at particular time of day
-                                        (e.g., 9:30AM).
+    asof(where[, subset])               Return the last row(s) without any
+                                        NaNs before where.
+    astype(dtype[, copy, errors])       Cast a pandas object to a specified
+                                        dtype dtype.
+    at_time(time[, asof, axis])         Select values at particular time of
+                                        day (e.g., 9:30AM).
     autocorr([lag])                     Compute the lag-N autocorrelation.
-    between(left, right[, inclusive])   Return boolean Series equivalent to left
-                                        <= series <= right.
-    between_time(start_time,            Select values between particular times of
-    end_time[, ...])                    the day (e.g., 9:00-9:30 AM).
-    bfill(*[, axis, inplace, limit,     Fill NA/NaN values by using the next valid
-    limit_area])                        observation to fill the gap.
-    case_when(caselist)                 Replace values where the conditions are
-                                        True.
+    between(left, right[, inclusive])   Return boolean Series equivalent to
+                                        left <= series <= right.
+    between_time(start_time,            Select values between particular times
+    end_time[, ...])                    of the day (e.g., 9:00-9:30 AM).
+    bfill(*[, axis, inplace, limit,     Fill NA/NaN values by using the next
+    limit_area])                        valid observation to fill the gap.
+    case_when(caselist)                 Replace values where the conditions
+                                        are True.
     clip([lower, upper, axis,           Trim values at input threshold(s).
     inplace])
-    combine(other, func[, fill_value])  Combine the Series with a Series or scalar
-                                        according to func.
+    combine(other, func[, fill_value])  Combine the Series with a Series or
+                                        scalar according to func.
     combine_first(other)                Update null elements with value in the
                                         same location in 'other'.
     compare(other[, align_axis,         Compare to another Series and show the
     keep_shape, ...])                   differences.
-    convert_dtypes([infer_objects,      Convert columns from numpy dtypes to the
-    ...])                               best dtypes that support pd.NA.
-    copy([deep])                        Make a copy of this object's indices and
-                                        data.
+    convert_dtypes([infer_objects,      Convert columns from numpy dtypes to
+    ...])                               the best dtypes that support pd.NA.
+    copy([deep])                        Make a copy of this object's indices
+                                        and data.
     corr(other[, method, min_periods])  Compute correlation with other Series,
                                         excluding missing values.
-    count()                             Return number of non-NA/null observations
-                                        in the Series.
-    cov(other[, min_periods, ddof])     Compute covariance with Series, excluding
-                                        missing values.
-    cummax([axis, skipna])              Return cumulative maximum over a Series.
-    cummin([axis, skipna])              Return cumulative minimum over a Series.
-    cumprod([axis, skipna])             Return cumulative product over a Series.
+    count()                             Return number of non-NA/null
+                                        observations in the Series.
+    cov(other[, min_periods, ddof])     Compute covariance with Series,
+                                        excluding missing values.
+    cummax([axis, skipna])              Return cumulative maximum over a
+                                        Series.
+    cummin([axis, skipna])              Return cumulative minimum over a
+                                        Series.
+    cumprod([axis, skipna])             Return cumulative product over a
+                                        Series.
     cumsum([axis, skipna])              Return cumulative sum over a Series.
     describe([percentiles, include,     Generate descriptive statistics.
     exclude])
@@ -6079,190 +6088,205 @@ class pandas.Series(data=None, index=None, dtype=None, name=None, copy=None)
     divmod(other[, level, fill_value,   Return Integer division and modulo of
     axis])                              series and other, element-wise (binary
                                         operator divmod).
-    dot(other)                          Compute the dot product between the Series
-                                        and the columns of other.
-    drop([labels, axis, index,          Return Series with specified index labels
-    columns, level, ...])               removed.
+    dot(other)                          Compute the dot product between the
+                                        Series and the columns of other.
+    drop([labels, axis, index,          Return Series with specified index
+    columns, level, ...])               labels removed.
     drop_duplicates(*[, keep, inplace,  Return Series with duplicate values
     ignore_index])                      removed.
     droplevel(level[, axis])            Return Series/DataFrame with requested
                                         index / column level(s) removed.
-    dropna(*[, axis, inplace, how,      Return a new Series with missing values
-    ignore_index])                      removed.
+    dropna(*[, axis, inplace, how,      Return a new Series with missing
+    ignore_index])                      values removed.
     duplicated([keep])                  Indicate duplicate Series values.
     eq(other[, level, fill_value,       Return Equal to of series and other,
     axis])                              element-wise (binary operator eq).
-    equals(other)                       Test whether two objects contain the same
-                                        elements.
+    equals(other)                       Test whether two objects contain the
+                                        same elements.
     ewm([com, span, halflife, alpha,    Provide exponentially weighted (EW)
     ...])                               calculations.
     expanding([min_periods, method])    Provide expanding window calculations.
-    explode([ignore_index])             Transform each element of a list-like to a
-                                        row.
-    factorize([sort, use_na_sentinel])  Encode the object as an enumerated type or
-                                        categorical variable.
-    ffill(*[, axis, inplace, limit,     Fill NA/NaN values by propagating the last
-    limit_area])                        valid observation to next valid.
+    explode([ignore_index])             Transform each element of a list-like
+                                        to a row.
+    factorize([sort, use_na_sentinel])  Encode the object as an enumerated
+                                        type or categorical variable.
+    ffill(*[, axis, inplace, limit,     Fill NA/NaN values by propagating the
+    limit_area])                        last valid observation to next valid.
     fillna(value, *[, axis, inplace,    Fill NA/NaN values with value.
     limit])
-    filter([arg, like, regex, axis,     Subset the rows or columns according to a
-    items, cond, na])                   boolean mask or the labels.
-    first_valid_index()                 Return index for first non-missing value
-                                        or None, if no value is found.
+    filter([arg, like, regex, axis,     Subset the rows or columns according
+    items, cond, na])                   to a boolean mask or the labels.
+    first_valid_index()                 Return index for first non-missing
+                                        value or None, if no value is found.
     floordiv(other[, level,             Return Integer division of series and
     fill_value, axis])                  other, element-wise (binary operator
                                         floordiv).
     from_arrow(data)                    Construct a Series from an array-like
                                         Arrow object.
-    ge(other[, level, fill_value,       Return Greater than or equal to of series
-    axis])                              and other, element-wise (binary operator
-                                        ge).
-    get(key[, default])                 Get item from object for given key (ex:
-                                        DataFrame column).
-    groupby([by, level, as_index,       Group Series using a mapper or by a Series
-    sort, ...])                         of columns.
-    gt(other[, level, fill_value,       Return Greater than of series and other,
-    axis])                              element-wise (binary operator gt).
+    ge(other[, level, fill_value,       Return Greater than or equal to of
+    axis])                              series and other, element-wise (binary
+                                        operator ge).
+    get(key[, default])                 Get item from object for given key
+                                        (ex: DataFrame column).
+    groupby([by, level, as_index,       Group Series using a mapper or by a
+    sort, ...])                         Series of columns.
+    gt(other[, level, fill_value,       Return Greater than of series and
+    axis])                              other, element-wise (binary operator
+                                        gt).
     head([n])                           Return the first n rows.
-    hist([by, ax, grid, xlabelsize,     Draw histogram of the input series using
-    xrot, ...])                         matplotlib.
-    idxmax([axis, skipna])              Return the row label of the maximum value.
-    idxmin([axis, skipna])              Return the row label of the minimum value.
-    infer_objects([copy])               Attempt to infer better dtypes for object
-                                        columns.
+    hist([by, ax, grid, xlabelsize,     Draw histogram of the input series
+    xrot, ...])                         using matplotlib.
+    idxmax([axis, skipna])              Return the row label of the maximum
+                                        value.
+    idxmin([axis, skipna])              Return the row label of the minimum
+                                        value.
+    infer_objects([copy])               Attempt to infer better dtypes for
+                                        object columns.
     info([verbose, buf, max_cols,       Print a concise summary of a Series.
     memory_usage, ...])
     interpolate([method, axis, limit,   Fill NaN values using an interpolation
     inplace, ...])                      method.
-    isin(values)                        Whether elements in Series are contained
-                                        in values.
+    isin(values)                        Whether elements in Series are
+                                        contained in values.
     isna()                              Detect missing values.
-    isnull()                            Series.isnull is an alias for Series.isna.
-    item()                              Return the first element of the underlying
-                                        data as a Python scalar.
-    items()                             Lazily iterate over (index, value) tuples.
+    isnull()                            Series.isnull is an alias for
+                                        Series.isna.
+    item()                              Return the first element of the
+                                        underlying data as a Python scalar.
+    items()                             Lazily iterate over (index, value)
+                                        tuples.
     keys()                              Return alias for index.
-    kurt(*[, axis, skipna,              Return unbiased kurtosis over requested
-    numeric_only])                      axis.
-    kurtosis(*[, axis, skipna,          Return unbiased kurtosis over requested
-    numeric_only])                      axis.
-    last_valid_index()                  Return index for last non-missing value or
-                                        None, if no value is found.
-    le(other[, level, fill_value,       Return Less than or equal to of series and
-    axis])                              other, element-wise (binary operator le).
+    kurt(*[, axis, skipna,              Return unbiased kurtosis over
+    numeric_only])                      requested axis.
+    kurtosis(*[, axis, skipna,          Return unbiased kurtosis over
+    numeric_only])                      requested axis.
+    last_valid_index()                  Return index for last non-missing
+                                        value or None, if no value is found.
+    le(other[, level, fill_value,       Return Less than or equal to of series
+    axis])                              and other, element-wise (binary
+                                        operator le).
     lt(other[, level, fill_value,       Return Less than of series and other,
     axis])                              element-wise (binary operator lt).
-    map([func, na_action, engine])      Map values of Series according to an input
-                                        mapping or function.
+    map([func, na_action, engine])      Map values of Series according to an
+                                        input mapping or function.
     mask(cond[, other, inplace, axis,   Replace values where the condition is
     level])                             True.
-    max(*[, axis, skipna,               Return the maximum of the values over the
-    numeric_only])                      requested axis.
+    max(*[, axis, skipna,               Return the maximum of the values over
+    numeric_only])                      the requested axis.
     mean(*[, axis, skipna,              Return the mean of the values over the
     numeric_only])                      requested axis.
-    median(*[, axis, skipna,            Return the median of the values over the
-    numeric_only])                      requested axis.
+    median(*[, axis, skipna,            Return the median of the values over
+    numeric_only])                      the requested axis.
     memory_usage([index, deep])         Return the memory usage of the Series.
-    min(*[, axis, skipna,               Return the minimum of the values over the
-    numeric_only])                      requested axis.
+    min(*[, axis, skipna,               Return the minimum of the values over
+    numeric_only])                      the requested axis.
     mod(other[, level, fill_value,      Return Modulo of series and other,
     axis])                              element-wise (binary operator mod).
     mode([dropna])                      Return the mode(s) of the Series.
-    mul(other[, level, fill_value,      Return Multiplication of series and other,
-    axis])                              element-wise (binary operator mul).
-    multiply(other[, level,             Return Multiplication of series and other,
-    fill_value, axis])                  element-wise (binary operator mul).
-    ne(other[, level, fill_value,       Return Not equal to of series and other,
-    axis])                              element-wise (binary operator ne).
+    mul(other[, level, fill_value,      Return Multiplication of series and
+    axis])                              other, element-wise (binary operator
+                                        mul).
+    multiply(other[, level,             Return Multiplication of series and
+    fill_value, axis])                  other, element-wise (binary operator
+                                        mul).
+    ne(other[, level, fill_value,       Return Not equal to of series and
+    axis])                              other, element-wise (binary operator
+                                        ne).
     nlargest([n, keep])                 Return the largest n elements.
     notna()                             Detect existing (non-missing) values.
     notnull()                           Series.notnull is an alias for
                                         Series.notna.
     nsmallest([n, keep])                Return the smallest n elements.
-    nunique([dropna])                   Return number of unique elements in the
-                                        object.
-    pct_change([periods, fill_method,   Fractional change between the current and
-    freq])                              a prior element.
+    nunique([dropna])                   Return number of unique elements in
+                                        the object.
+    pct_change([periods, fill_method,   Fractional change between the current
+    freq])                              and a prior element.
     pipe(func, *args, **kwargs)         Apply chainable functions that expect
                                         Series or DataFrames.
     pop(item)                           Return item and drops from series.
     pow(other[, level, fill_value,      Return Exponential power of series and
-    axis])                              other, element-wise (binary operator pow).
-    prod(*[, axis, skipna,              Return the product of the values over the
-    numeric_only, min_count])           requested axis.
-    product(*[, axis, skipna,           Return the product of the values over the
-    numeric_only, ...])                 requested axis.
+    axis])                              other, element-wise (binary operator
+                                        pow).
+    prod(*[, axis, skipna,              Return the product of the values over
+    numeric_only, min_count])           the requested axis.
+    product(*[, axis, skipna,           Return the product of the values over
+    numeric_only, ...])                 the requested axis.
     quantile([q, interpolation])        Return value at the given quantile.
     radd(other[, level, fill_value,     Return Addition of series and other,
     axis])                              element-wise (binary operator radd).
-    rank([axis, method, numeric_only,   Compute numerical data ranks (1 through n)
-    ...])                               along axis.
+    rank([axis, method, numeric_only,   Compute numerical data ranks (1
+    ...])                               through n) along axis.
     rdiv(other[, level, fill_value,     Return Floating division of series and
     axis])                              other, element-wise (binary operator
                                         rtruediv).
     rdivmod(other[, level, fill_value,  Return Integer division and modulo of
     axis])                              series and other, element-wise (binary
                                         operator rdivmod).
-    reindex([index, axis, method,       Conform Series to new index with optional
-    copy, level, ...])                  filling logic.
-    reindex_like(other[, method, copy,  Return an object with matching indices as
-    limit, ...])                        other object.
+    reindex([index, axis, method,       Conform Series to new index with
+    copy, level, ...])                  optional filling logic.
+    reindex_like(other[, method, copy,  Return an object with matching indices
+    limit, ...])                        as other object.
     rename([index, axis, copy,          Alter Series index labels or name.
     inplace, level, ...])
-    rename_axis([mapper, index, axis,   Set the name of the axis for the index.
-    copy, inplace])
-    reorder_levels(order)               Rearrange index levels using input order.
+    rename_axis([mapper, index, axis,   Set the name of the axis for the
+    copy, inplace])                     index.
+    reorder_levels(order)               Rearrange index levels using input
+                                        order.
     repeat(repeats[, axis])             Repeat elements of a Series.
-    replace([to_replace, value,         Replace values given in to_replace with
-    inplace, regex])                    value.
+    replace([to_replace, value,         Replace values given in to_replace
+    inplace, regex])                    with value.
     resample(rule[, closed, label,      Resample time-series data.
     convention, ...])
-    reset_index([level, drop, name,     Generate a new DataFrame or Series with
-    inplace, ...])                      the index reset.
+    reset_index([level, drop, name,     Generate a new DataFrame or Series
+    inplace, ...])                      with the index reset.
     rfloordiv(other[, level,            Return Integer division of series and
     fill_value, axis])                  other, element-wise (binary operator
                                         rfloordiv).
     rmod(other[, level, fill_value,     Return Modulo of series and other,
     axis])                              element-wise (binary operator rmod).
-    rmul(other[, level, fill_value,     Return Multiplication of series and other,
-    axis])                              element-wise (binary operator rmul).
+    rmul(other[, level, fill_value,     Return Multiplication of series and
+    axis])                              other, element-wise (binary operator
+                                        rmul).
     rolling(window[, min_periods,       Provide rolling window calculations.
     center, ...])
-    round([decimals])                   Round each value in a Series to the given
-                                        number of decimals.
+    round([decimals])                   Round each value in a Series to the
+                                        given number of decimals.
     rpow(other[, level, fill_value,     Return Exponential power of series and
     axis])                              other, element-wise (binary operator
                                         rpow).
-    rsub(other[, level, fill_value,     Return Subtraction of series and other,
-    axis])                              element-wise (binary operator rsub).
+    rsub(other[, level, fill_value,     Return Subtraction of series and
+    axis])                              other, element-wise (binary operator
+                                        rsub).
     rtruediv(other[, level,             Return Floating division of series and
     fill_value, axis])                  other, element-wise (binary operator
                                         rtruediv).
-    sample([n, frac, replace, weights,  Return a random sample of items from an
-    ...])                               axis of object.
+    sample([n, frac, replace, weights,  Return a random sample of items from
+    ...])                               an axis of object.
     searchsorted(value[, side,          Find indices where elements should be
     sorter])                            inserted to maintain order.
-    sem(*[, axis, skipna, ddof,         Return unbiased standard error of the mean
-    numeric_only])                      over requested axis.
+    sem(*[, axis, skipna, ddof,         Return unbiased standard error of the
+    numeric_only])                      mean over requested axis.
     set_axis(labels, *[, axis, copy])   Assign desired index to given axis.
-    set_flags(*[, copy,                 Return a new object with updated flags.
-    allows_duplicate_labels])
-    shift([periods, freq, axis,         Shift index by desired number of periods
-    fill_value, suffix])                with an optional time freq.
-    skew(*[, axis, skipna,              Return unbiased skew over requested axis.
-    numeric_only])
+    set_flags(*[, copy,                 Return a new object with updated
+    allows_duplicate_labels])           flags.
+    shift([periods, freq, axis,         Shift index by desired number of
+    fill_value, suffix])                periods with an optional time freq.
+    skew(*[, axis, skipna,              Return unbiased skew over requested
+    numeric_only])                      axis.
     sort_index(*[, axis, level,         Sort Series by index labels.
     ascending, ...])
     sort_values(*[, axis, ascending,    Sort by the values.
     inplace, ...])
-    squeeze([axis])                     Squeeze 1 dimensional axis objects into
-                                        scalars.
+    squeeze([axis])                     Squeeze 1 dimensional axis objects
+                                        into scalars.
     std(*[, axis, skipna, ddof,         Return sample standard deviation.
     numeric_only])
-    sub(other[, level, fill_value,      Return Subtraction of series and other,
-    axis])                              element-wise (binary operator sub).
-    subtract(other[, level,             Return Subtraction of series and other,
-    fill_value, axis])                  element-wise (binary operator sub).
+    sub(other[, level, fill_value,      Return Subtraction of series and
+    axis])                              other, element-wise (binary operator
+                                        sub).
+    subtract(other[, level,             Return Subtraction of series and
+    fill_value, axis])                  other, element-wise (binary operator
+                                        sub).
     sum(*[, axis, skipna,               Return the sum of the values over the
     numeric_only, min_count])           requested axis.
     swaplevel([i, j, copy])             Swap levels i and j in a MultiIndex.
@@ -6270,59 +6294,60 @@ class pandas.Series(data=None, index=None, dtype=None, name=None, copy=None)
     take(indices[, axis])               Return the elements in the given
                                         positional indices along an axis.
     to_clipboard(*[, excel, sep])       Copy object to the system clipboard.
-    to_csv([path_or_buf, sep, na_rep,   Write object to a comma-separated values
-    ...])                               (csv) file.
-    to_dict(*[, into])                  Convert Series to {label -> value} dict or
-                                        dict-like object.
+    to_csv([path_or_buf, sep, na_rep,   Write object to a comma-separated
+    ...])                               values (csv) file.
+    to_dict(*[, into])                  Convert Series to {label -> value}
+                                        dict or dict-like object.
     to_excel(excel_writer, *[,          Write object to an Excel sheet.
     sheet_name, ...])
     to_frame([name])                    Convert Series to DataFrame.
-    to_hdf(path_or_buf, *, key[, mode,  Write the contained data to an HDF5 file
-    ...])                               using HDFStore.
+    to_hdf(path_or_buf, *, key[, mode,  Write the contained data to an HDF5
+    ...])                               file using HDFStore.
     to_json([path_or_buf, orient,       Convert the object to a JSON string.
     date_format, ...])
     to_latex([buf, columns, header,     Render object to a LaTeX tabular,
     index, ...])                        longtable, or nested table.
     to_list()                           Return a list of the values.
-    to_markdown([buf, mode, index,      Print Series in Markdown-friendly format.
-    storage_options])
-    to_numpy([dtype, copy, na_value])   A NumPy ndarray representing the values in
-                                        this Series or Index.
+    to_markdown([buf, mode, index,      Print Series in Markdown-friendly
+    storage_options])                   format.
+    to_numpy([dtype, copy, na_value])   A NumPy ndarray representing the
+                                        values in this Series or Index.
     to_period([freq, copy])             Convert Series from DatetimeIndex to
                                         PeriodIndex.
     to_pickle(path, *[, compression,    Pickle (serialize) object to file.
     protocol, ...])
-    to_sql(name, con, *[, schema,       Write records stored in a DataFrame to a
-    if_exists, ...])                    SQL database.
+    to_sql(name, con, *[, schema,       Write records stored in a DataFrame to
+    if_exists, ...])                    a SQL database.
     to_string([buf, na_rep,             Render a string representation of the
     float_format, ...])                 Series.
-    to_timestamp([freq, how, copy])     Cast to DatetimeIndex of Timestamps, at
-                                        beginning of period.
-    to_xarray()                         Return an xarray object from the pandas
-                                        object.
+    to_timestamp([freq, how, copy])     Cast to DatetimeIndex of Timestamps,
+                                        at beginning of period.
+    to_xarray()                         Return an xarray object from the
+                                        pandas object.
     tolist()                            Return a list of the values.
-    transform(func[, axis])             Call func on self producing a Series with
-                                        the same axis shape as self.
+    transform(func[, axis])             Call func on self producing a Series
+                                        with the same axis shape as self.
     transpose(*args, **kwargs)          Return the transpose, which is by
                                         definition self.
     truediv(other[, level, fill_value,  Return Floating division of series and
     axis])                              other, element-wise (binary operator
                                         truediv).
-    truncate([before, after, axis,      Truncate a Series or DataFrame before and
-    copy])                              after some index value.
-    tz_convert(tz[, axis, level,        Convert tz-aware axis to target time zone.
-    copy])
-    tz_localize(tz[, axis, level,       Localize time zone naive index of a Series
-    copy, ...])                         or DataFrame to target time zone.
+    truncate([before, after, axis,      Truncate a Series or DataFrame before
+    copy])                              and after some index value.
+    tz_convert(tz[, axis, level,        Convert tz-aware axis to target time
+    copy])                              zone.
+    tz_localize(tz[, axis, level,       Localize time zone naive index of a
+    copy, ...])                         Series or DataFrame to target time
+                                        zone.
     unique()                            Return unique values of Series object.
-    unstack([level, fill_value, sort])  Unstack, also known as pivot, Series with
-                                        MultiIndex to produce DataFrame.
-    update(other)                       Modify Series in place using values from
-                                        passed Series.
+    unstack([level, fill_value, sort])  Unstack, also known as pivot, Series
+                                        with MultiIndex to produce DataFrame.
+    update(other)                       Modify Series in place using values
+                                        from passed Series.
     value_counts([normalize, sort,      Return a Series containing counts of
     ascending, ...])                    unique values.
-    var(*[, axis, skipna, ddof,         Return unbiased variance over requested
-    numeric_only])                      axis.
+    var(*[, axis, skipna, ddof,         Return unbiased variance over
+    numeric_only])                      requested axis.
     where(cond[, other, inplace, axis,  Replace values where the condition is
     level])                             False.
     xs(key[, axis, level, drop_level])  Return cross-section from the
@@ -10721,80 +10746,86 @@ Series.plot(*args, **kwargs)
     x             (label or position, default None) Only used if data is a
                   DataFrame.
     y             (label, position or list of label, positions, default None)
-                  Allows plotting of one column versus another. Only used if data
-                  is a DataFrame.
+                  Allows plotting of one column versus another. Only used if
+                  data is a DataFrame.
     kind          (str) The kind of plot to produce: - ‘line' : line plot
-                  (default) - ‘bar' : vertical bar plot - ‘barh' : horizontal bar
-                  plot - ‘hist' : histogram - ‘box' : boxplot - ‘kde' : Kernel
-                  Density Estimation plot - ‘density' : same as ‘kde' - ‘area' :
-                  area plot - ‘pie' : pie plot - ‘scatter' : scatter plot
-                  (DataFrame only) - ‘hexbin' : hexbin plot (DataFrame only)
+                  (default) - ‘bar' : vertical bar plot - ‘barh' : horizontal
+                  bar plot - ‘hist' : histogram - ‘box' : boxplot - ‘kde' :
+                  Kernel Density Estimation plot - ‘density' : same as ‘kde' -
+                  ‘area' : area plot - ‘pie' : pie plot - ‘scatter' : scatter
+                  plot (DataFrame only) - ‘hexbin' : hexbin plot (DataFrame
+                  only)
     by            (str or sequence of str, optional) Column label(s) in the
-                  DataFrame to group by. Only used if kind="hist" or kind="box";
-                  ignored for other kinds. See DataFrame.plot.hist() and
-                  DataFrame.plot.box().
-    ax            (matplotlib axes object, default None) The axes to plot on. If
-                  None, Series.plot draws on the current axes
-                  (matplotlib.pyplot.gca()) when a figure already exists, while
-                  DataFrame.plot always creates a new figure.
-    subplots      (bool or sequence of iterables, default False) Whether to group
-                  columns into subplots: - False : No subplots will be used - True
-                  : Make separate subplots for each column. - sequence of
-                  iterables of column labels: Create a subplot for each group of
-                  columns. For example [(‘a', ‘c'), (‘b', ‘d')] will create 2
-                  subplots: one with columns ‘a' and ‘c', and one with columns ‘b'
-                  and ‘d'. Remaining columns that aren't specified will be plotted
-                  in additional subplots (one per column).
+                  DataFrame to group by. Only used if kind="hist" or
+                  kind="box"; ignored for other kinds. See
+                  DataFrame.plot.hist() and DataFrame.plot.box().
+    ax            (matplotlib axes object, default None) The axes to plot on.
+                  If None, Series.plot draws on the current axes
+                  (matplotlib.pyplot.gca()) when a figure already exists,
+                  while DataFrame.plot always creates a new figure.
+    subplots      (bool or sequence of iterables, default False) Whether to
+                  group columns into subplots: - False : No subplots will be
+                  used - True : Make separate subplots for each column. -
+                  sequence of iterables of column labels: Create a subplot for
+                  each group of columns. For example [(‘a', ‘c'), (‘b', ‘d')]
+                  will create 2 subplots: one with columns ‘a' and ‘c', and
+                  one with columns ‘b' and ‘d'. Remaining columns that aren't
+                  specified will be plotted in additional subplots (one per
+                  column).
     sharex        (bool, default True if ax is None else False) In case
                   subplots=True, share x axis and set some x axis labels to
-                  invisible; defaults to True if ax is None otherwise False if an
-                  ax is passed in; Be aware, that passing in both an ax and
+                  invisible; defaults to True if ax is None otherwise False if
+                  an ax is passed in; Be aware, that passing in both an ax and
                   sharex=True will alter all x axis labels for all axis in a
                   figure.
-    sharey        (bool, default False) In case subplots=True, share y axis and
-                  set some y axis labels to invisible.
-    layout        (tuple, optional) (rows, columns) for the layout of subplots.
+    sharey        (bool, default False) In case subplots=True, share y axis
+                  and set some y axis labels to invisible.
+    layout        (tuple, optional) (rows, columns) for the layout of
+                  subplots.
     figsize       (a tuple (width, height) in inches) Size of a figure object.
     use_index     (bool, default True) Use index as ticks for x axis.
-    title         (str or list) Title to use for the plot. If a string is passed,
-                  print the string at the top of the figure. If a list is passed
-                  and subplots is True, print each item in the list above the
-                  corresponding subplot.
+    title         (str or list) Title to use for the plot. If a string is
+                  passed, print the string at the top of the figure. If a list
+                  is passed and subplots is True, print each item in the list
+                  above the corresponding subplot.
     grid          (bool, default None (matlab style default)) Axis grid lines.
     legend        (bool or {‘reverse'}) Place legend on axis subplots.
     style         (list or dict) The matplotlib line style per column.
-    logx          (bool or ‘sym', default False) Use log scaling or symlog scaling
-                  on x axis.
-    logy          (bool or ‘sym' default False) Use log scaling or symlog scaling
-                  on y axis.
-    loglog        (bool or ‘sym', default False) Use log scaling or symlog scaling
-                  on both x and y axes.
+    logx          (bool or ‘sym', default False) Use log scaling or symlog
+                  scaling on x axis.
+    logy          (bool or ‘sym' default False) Use log scaling or symlog
+                  scaling on y axis.
+    loglog        (bool or ‘sym', default False) Use log scaling or symlog
+                  scaling on both x and y axes.
     xticks        (sequence) Values to use for the xticks.
     yticks        (sequence) Values to use for the yticks.
     xlim          (2-tuple/list) Set the x limits of the current axes.
     ylim          (2-tuple/list) Set the y limits of the current axes.
-    xlabel        (label, optional) Name to use for the xlabel on x-axis. Default
-                  uses index name as xlabel, or the x-column name for planar
-                  plots. .. versionchanged:: 2.0.0 Now applicable to histograms.
-    ylabel        (label, optional) Name to use for the ylabel on y-axis. Default
-                  will show no ylabel, or the y-column name for planar plots. ..
-                  versionchanged:: 2.0.0 Now applicable to histograms.
-    rot           (float, default None) Rotation for ticks (xticks for vertical,
-                  yticks for horizontal plots).
+    xlabel        (label, optional) Name to use for the xlabel on x-axis.
+                  Default uses index name as xlabel, or the x-column name for
+                  planar plots. .. versionchanged:: 2.0.0 Now applicable to
+                  histograms.
+    ylabel        (label, optional) Name to use for the ylabel on y-axis.
+                  Default will show no ylabel, or the y-column name for planar
+                  plots. .. versionchanged:: 2.0.0 Now applicable to
+                  histograms.
+    rot           (float, default None) Rotation for ticks (xticks for
+                  vertical, yticks for horizontal plots).
     fontsize      (float, default None) Font size for xticks and yticks.
-    colormap      (str or matplotlib colormap object, default None) Colormap to
-                  select colors from. If string, load colormap with that name from
-                  matplotlib.
+    colormap      (str or matplotlib colormap object, default None) Colormap
+                  to select colors from. If string, load colormap with that
+                  name from matplotlib.
     colorbar      (bool, optional) If True, plot colorbar (only relevant for
                   ‘scatter' and ‘hexbin' plots).
-    position      (float) Specify relative alignments for bar plot layout. From 0
-                  (left/bottom-end) to 1 (right/top-end). Default is 0.5 (center).
-    table         (bool, Series or DataFrame, default False) If True, draw a table
-                  using the data in the DataFrame and the data will be transposed
-                  to meet matplotlib's default layout. If a Series or DataFrame is
-                  passed, use passed data to draw a table.
-    yerr          (DataFrame, Series, array-like, dict and str) See Plotting with
-                  Error Bars for detail.
+    position      (float) Specify relative alignments for bar plot layout.
+                  From 0 (left/bottom-end) to 1 (right/top-end). Default is
+                  0.5 (center).
+    table         (bool, Series or DataFrame, default False) If True, draw a
+                  table using the data in the DataFrame and the data will be
+                  transposed to meet matplotlib's default layout. If a Series
+                  or DataFrame is passed, use passed data to draw a table.
+    yerr          (DataFrame, Series, array-like, dict and str) See Plotting
+                  with Error Bars for detail.
     xerr          (DataFrame, Series, array-like, dict and str) Equivalent to
                   yerr.
     stacked       (bool, default False in line and bar plots, and True in area
@@ -10805,11 +10836,12 @@ Series.plot(*args, **kwargs)
     mark_right    (bool, default True) When using a secondary_y axis,
                   automatically mark the column labels with “(right)” in the
                   legend.
-    include_bool  (bool, default is False) If True, boolean values can be plotted.
+    include_bool  (bool, default is False) If True, boolean values can be
+                  plotted.
     backend       (str, default None) Backend to use instead of the backend
                   specified in the option plotting.backend. For instance,
-                  ‘matplotlib'. Alternatively, to specify the plotting.backend for
-                  the whole session, set pd.options.plotting.backend.
+                  ‘matplotlib'. Alternatively, to specify the plotting.backend
+                  for the whole session, set pd.options.plotting.backend.
 
     Returns: ~
         `matplotlib.axes.Axes`
@@ -22111,14 +22143,14 @@ Series.to_numpy(dtype=None, copy=False, na_value=<no_default>, **kwargs)
     This table lays out the different dtypes and default return types of
     `to_numpy()` for various dtypes within pandas.
 
-    dtype                        array type
-    ---------------------------  -------------------------------------------------
-    category[T]                  ndarray[T] (same dtype as input)
-    period                       ndarray[object] (Periods)
-    interval                     ndarray[object] (Intervals)
-    IntegerNA                    ndarray[object]
-    datetime64[ns]               datetime64[ns]
-    datetime64[ns, tz]           ndarray[object] (Timestamps)
+    dtype                      array type
+    -------------------------  -----------------------------------------------
+    category[T]                ndarray[T] (same dtype as input)
+    period                     ndarray[object] (Periods)
+    interval                   ndarray[object] (Intervals)
+    IntegerNA                  ndarray[object]
+    datetime64[ns]             datetime64[ns]
+    datetime64[ns, tz]         ndarray[object] (Timestamps)
 
     For timezone-aware datetime data, calling `to_numpy()` without
     specifying `dtype` produces an object-dtype array of |pandas.Timestamp|
@@ -24241,7 +24273,7 @@ class pandas.SparseDtype(dtype=<class 'numpy.float64'>, fill_value=None)
             depends on `dtype`.
 
             dtype        na_value
-            -----------  -----------------------------------------------------------------
+            -----------  -----------------------------------------------------
             float        np.nan
             complex      np.nan
             int          0
@@ -24724,12 +24756,15 @@ class pandas.Timedelta(value=<object object>, unit=None, **kwargs)
 
     Methods: ~
 
-    as_unit(unit[, round_ok])  Convert the underlying int64 representation to the
-                               given unit.
-    ceil(freq)                 Return a new Timedelta ceiled to this resolution.
-    floor(freq)                Return a new Timedelta floored to this resolution.
+    as_unit(unit[, round_ok])  Convert the underlying int64 representation to
+                               the given unit.
+    ceil(freq)                 Return a new Timedelta ceiled to this
+                               resolution.
+    floor(freq)                Return a new Timedelta floored to this
+                               resolution.
     isoformat()                Format the Timedelta as ISO 8601 Duration.
-    round(freq)                Round the Timedelta to the specified resolution.
+    round(freq)                Round the Timedelta to the specified
+                               resolution.
     to_numpy([dtype, copy])    Convert the Timedelta to a NumPy timedelta64.
     to_pytimedelta()           Convert a pandas Timedelta object into a python
                                datetime.timedelta object.
@@ -25551,27 +25586,28 @@ class pandas.TimedeltaIndex(data=None, freq=<no_default>, dtype=None,
     Attributes: ~
 
     days           Number of days for each element.
-    seconds        Number of seconds (>= 0 and less than 1 day) for each element.
-    microseconds   Number of microseconds (>= 0 and less than 1 second) for each
+    seconds        Number of seconds (>= 0 and less than 1 day) for each
                    element.
-    nanoseconds    Number of nanoseconds (>= 0 and less than 1 microsecond) for
+    microseconds   Number of microseconds (>= 0 and less than 1 second) for
                    each element.
-    components     Return a DataFrame of the individual resolution components of
-                   the Timedeltas.
+    nanoseconds    Number of nanoseconds (>= 0 and less than 1 microsecond)
+                   for each element.
+    components     Return a DataFrame of the individual resolution components
+                   of the Timedeltas.
     inferred_freq  (DEPRECATED) Return the inferred frequency of the index.
 
     Methods: ~
 
-    to_pytimedelta()                    Return an ndarray of datetime.timedelta
-                                        objects.
-    to_series([index, name])            Create a Series with both index and values
-                                        equal to the index keys.
-    round(freq[, ambiguous,             Perform round operation on the data to the
-    nonexistent])                       specified freq.
-    floor(freq[, ambiguous,             Perform floor operation on the data to the
-    nonexistent])                       specified freq.
-    ceil(freq[, ambiguous,              Perform ceil operation on the data to the
-    nonexistent])                       specified freq.
+    to_pytimedelta()                    Return an ndarray of
+                                        datetime.timedelta objects.
+    to_series([index, name])            Create a Series with both index and
+                                        values equal to the index keys.
+    round(freq[, ambiguous,             Perform round operation on the data to
+    nonexistent])                       the specified freq.
+    floor(freq[, ambiguous,             Perform floor operation on the data to
+    nonexistent])                       the specified freq.
+    ceil(freq[, ambiguous,              Perform ceil operation on the data to
+    nonexistent])                       the specified freq.
     to_frame([index, name])             Create a DataFrame with a column
                                         containing the Index.
     mean(*[, skipna, axis])             Return the mean value of the Array.
@@ -27152,39 +27188,39 @@ class pandas.Timestamp(ts_input=<object object>, year=None, month=None,
 <
     Attributes: ~
 
-    asm8               Return numpy datetime64 format with same precision.
-    day                Return the day of the Timestamp.
-    day_of_week        Return day of the week.
-    day_of_year        Return the day of the year.
-    dayofweek          (DEPRECATED) Return day of the week.
-    dayofyear          (DEPRECATED) Return day of the year.
-    days_in_month      Return the number of days in the month.
-    daysinmonth        (DEPRECATED) Return the number of days in the month.
-    fold               Return the fold value of the Timestamp.
-    hour               Return the hour of the Timestamp.
-    is_leap_year       Return True if year is a leap year.
-    is_month_end       Check if the date is the last day of the month.
-    is_month_start     Check if the date is the first day of the month.
-    is_quarter_end     Check if date is last day of the quarter.
-    is_quarter_start   Check if the date is the first day of the quarter.
-    is_year_end        Return True if date is last day of the year.
-    is_year_start      Return True if date is first day of the year.
+    asm8              Return numpy datetime64 format with same precision.
+    day               Return the day of the Timestamp.
+    day_of_week       Return day of the week.
+    day_of_year       Return the day of the year.
+    dayofweek         (DEPRECATED) Return day of the week.
+    dayofyear         (DEPRECATED) Return day of the year.
+    days_in_month     Return the number of days in the month.
+    daysinmonth       (DEPRECATED) Return the number of days in the month.
+    fold              Return the fold value of the Timestamp.
+    hour              Return the hour of the Timestamp.
+    is_leap_year      Return True if year is a leap year.
+    is_month_end      Check if the date is the last day of the month.
+    is_month_start    Check if the date is the first day of the month.
+    is_quarter_end    Check if date is last day of the quarter.
+    is_quarter_start  Check if the date is the first day of the quarter.
+    is_year_end       Return True if date is last day of the year.
+    is_year_start     Return True if date is first day of the year.
     max
-    microsecond        Return the microsecond of the Timestamp.
+    microsecond       Return the microsecond of the Timestamp.
     min
-    minute             Return the minute of the Timestamp.
-    month              Return the month of the Timestamp.
-    nanosecond         Return the nanosecond of the Timestamp.
-    quarter            Return the quarter of the year for the Timestamp.
+    minute            Return the minute of the Timestamp.
+    month             Return the month of the Timestamp.
+    nanosecond        Return the nanosecond of the Timestamp.
+    quarter           Return the quarter of the year for the Timestamp.
     resolution
-    second             Return the second of the Timestamp.
-    tz                 Alias for tzinfo.
-    tzinfo             Returns the timezone info of the Timestamp.
-    unit               The abbreviation associated with self._creso.
-    value              Return the value of the Timestamp.
-    week               Return the week number of the year.
-    weekofyear         Return the week number of the year.
-    year               Return the year of the Timestamp.
+    second            Return the second of the Timestamp.
+    tz                Alias for tzinfo.
+    tzinfo            Returns the timezone info of the Timestamp.
+    unit              The abbreviation associated with self._creso.
+    value             Return the value of the Timestamp.
+    week              Return the week number of the year.
+    weekofyear        Return the week number of the year.
+    year              Return the year of the Timestamp.
 
     Methods: ~
 
@@ -27196,36 +27232,36 @@ class pandas.Timestamp(ts_input=<object object>, year=None, month=None,
     nonexistent])                       resolution.
     combine(date, time)                 Combine a date and time into a single
                                         Timestamp object.
-    ctime()                             Return a ctime() style string representing
-                                        the Timestamp.
-    date()                              Returns datetime.date with the same year,
-                                        month, and day.
-    day_name([locale])                  Return the day name of the Timestamp with
-                                        specified locale.
+    ctime()                             Return a ctime() style string
+                                        representing the Timestamp.
+    date()                              Returns datetime.date with the same
+                                        year, month, and day.
+    day_name([locale])                  Return the day name of the Timestamp
+                                        with specified locale.
     dst()                               Return the daylight saving time (DST)
                                         adjustment.
     floor(freq[, ambiguous,             Return a new Timestamp floored to this
     nonexistent])                       resolution.
-    fromisocalendar(year, week, day)    Construct a Timestamp from an ISO year,
-                                        week number, and weekday.
-    fromisoformat(date_string)          Construct a Timestamp from a string in ISO
-                                        8601 format.
+    fromisocalendar(year, week, day)    Construct a Timestamp from an ISO
+                                        year, week number, and weekday.
+    fromisoformat(date_string)          Construct a Timestamp from a string in
+                                        ISO 8601 format.
     fromordinal(ordinal[, tz])          Construct a timestamp from a proleptic
                                         Gregorian ordinal.
     fromtimestamp(ts[, tz])             Create a Timestamp object from a POSIX
                                         timestamp.
-    isocalendar()                       Return a named tuple containing ISO year,
-                                        week number, and weekday.
-    isoformat([sep, timespec])          Return the time formatted according to ISO
-                                        8601.
-    isoweekday()                        Return the day of the week represented by
-                                        the date.
+    isocalendar()                       Return a named tuple containing ISO
+                                        year, week number, and weekday.
+    isoformat([sep, timespec])          Return the time formatted according to
+                                        ISO 8601.
+    isoweekday()                        Return the day of the week represented
+                                        by the date.
     month_name([locale])                Return the month name of the Timestamp
                                         with specified locale.
     normalize()                         Normalize Timestamp to midnight,
                                         preserving tz information.
-    now([tz])                           Return new Timestamp object representing
-                                        current time local to tz.
+    now([tz])                           Return new Timestamp object
+                                        representing current time local to tz.
     replace([year, month, day, hour,    Implements datetime.replace, handles
     minute, ...])                       nanoseconds.
     round(freq[, ambiguous,             Round the Timestamp to the specified
@@ -27233,20 +27269,20 @@ class pandas.Timestamp(ts_input=<object object>, year=None, month=None,
     strftime(format)                    Return a formatted string of the
                                         Timestamp.
     strptime(date_string, format)       Convert string argument to datetime.
-    time()                              Return time object with same time but with
-                                        tzinfo=None.
+    time()                              Return time object with same time but
+                                        with tzinfo=None.
     timestamp()                         Return POSIX timestamp as float.
     timetuple()                         Return time tuple, compatible with
                                         time.localtime().
     timetz()                            Return time object with same time and
                                         tzinfo.
-    to_datetime64()                     Return a NumPy datetime64 object with same
-                                        precision.
+    to_datetime64()                     Return a NumPy datetime64 object with
+                                        same precision.
     to_julian_date()                    Convert Timestamp to a Julian Date.
     to_numpy([dtype, copy])             Convert the Timestamp to a NumPy
                                         datetime64.
-    to_period([freq])                   Return a period of which this timestamp is
-                                        an observation.
+    to_period([freq])                   Return a period of which this
+                                        timestamp is an observation.
     to_pydatetime([warn])               Convert a Timestamp object to a native
                                         Python datetime object.
     today([tz])                         Return the current time in the local
@@ -27257,15 +27293,15 @@ class pandas.Timestamp(ts_input=<object object>, year=None, month=None,
     tz_localize(tz[, ambiguous,         Attach or detach a time zone on a
     nonexistent])                       Timestamp.
     tzname()                            Return time zone name.
-    utcfromtimestamp(ts)                Construct a timezone-aware UTC datetime
-                                        from a POSIX timestamp.
+    utcfromtimestamp(ts)                Construct a timezone-aware UTC
+                                        datetime from a POSIX timestamp.
     utcnow()                            (DEPRECATED) Return a new Timestamp
                                         representing UTC day and time.
     utcoffset()                         Return utc offset.
     utctimetuple()                      Return UTC time tuple, compatible with
                                         time.localtime().
-    weekday()                           Return the day of the week represented by
-                                        the date.
+    weekday()                           Return the day of the week represented
+                                        by the date.
 
 ----------------------------------------------------------------------------
                                                *pandas.Timestamp.is_leap_year*
@@ -30649,31 +30685,32 @@ class pandas.api.extensions.ExtensionArray
 
     Methods: ~
 
-    argsort(*[, ascending, kind,        Return the indices that would sort this
-    na_position])                       array.
-    astype(dtype[, copy])               Cast to a NumPy array or ExtensionArray
-                                        with 'dtype'.
+    argsort(*[, ascending, kind,        Return the indices that would sort
+    na_position])                       this array.
+    astype(dtype[, copy])               Cast to a NumPy array or
+                                        ExtensionArray with 'dtype'.
     copy()                              Return a copy of the array.
-    count()                             Count the number of non-NA values in the
-                                        array.
-    dropna()                            Return ExtensionArray without NA values.
-    duplicated([keep])                  Return boolean ndarray denoting duplicate
+    count()                             Count the number of non-NA values in
+                                        the array.
+    dropna()                            Return ExtensionArray without NA
                                         values.
+    duplicated([keep])                  Return boolean ndarray denoting
+                                        duplicate values.
     factorize([use_na_sentinel])        Encode the extension array as an
                                         enumerated type.
     fillna(value[, limit, copy])        Fill NA/NaN values using the specified
                                         method.
-    equals(other)                       Return if another array is equivalent to
-                                        this array.
+    equals(other)                       Return if another array is equivalent
+                                        to this array.
     insert(loc, item)                   Insert an item at the given position.
     interpolate(*, method, axis,        Fill NaN values using an interpolation
     index, limit, ...)                  method.
-    isin(values)                        Pointwise comparison for set containment
-                                        in the given values.
-    isna()                              A 1-D array indicating if each value is
-                                        missing.
-    item([index])                       Return the array element at the specified
-                                        position as a Python scalar.
+    isin(values)                        Pointwise comparison for set
+                                        containment in the given values.
+    isna()                              A 1-D array indicating if each value
+                                        is missing.
+    item([index])                       Return the array element at the
+                                        specified position as a Python scalar.
     ravel([order])                      Return a flattened view on this array.
     repeat(repeats[, axis])             Repeat elements of an ExtensionArray.
     searchsorted(value[, side,          Find indices where elements should be
@@ -30689,9 +30726,10 @@ class pandas.api.extensions.ExtensionArray
     view([dtype])                       Return a view on the array.
     _accumulate(name, *[, skipna])      Return an ExtensionArray performing an
                                         accumulation operation.
-    _concat_same_type(to_concat)        Concatenate multiple arrays of this dtype.
-    _explode()                          Transform each element of list-like to a
-                                        row.
+    _concat_same_type(to_concat)        Concatenate multiple arrays of this
+                                        dtype.
+    _explode()                          Transform each element of list-like to
+                                        a row.
     _formatter([boxed])                 Formatting function for scalar values.
     _from_factorized(values, original)  Reconstruct an ExtensionArray after
                                         factorization.
@@ -30707,11 +30745,11 @@ class pandas.api.extensions.ExtensionArray
                                         monotonically increasing.
     _pad_or_backfill(*, method[,        Pad or backfill values, used by
     limit, ...])                        Series/DataFrame ffill and bfill.
-    _reduce(name, *[, skipna,           Return a scalar result of performing the
-    keepdims])                          reduction operation.
+    _reduce(name, *[, skipna,           Return a scalar result of performing
+    keepdims])                          the reduction operation.
     _values_for_argsort()               Return values for sorting.
-    _values_for_factorize()             Return an array and missing value suitable
-                                        for factorization.
+    _values_for_factorize()             Return an array and missing value
+                                        suitable for factorization.
 
       See also: ~
 
@@ -31247,7 +31285,7 @@ ExtensionArray.searchsorted(value, side='left', sorter=None)
     Assuming that self is sorted:
 
     side   returned index i satisfies
-    -----  -----------------------------------------------------------------------
+    -----  -------------------------------------------------------------------
     left   self[i-1] < value <= self[i]
     right  self[i-1] <= value < self[i]
 
@@ -32129,7 +32167,7 @@ class pandas.api.indexers.BaseIndexer(index_array=None, window_size=0,
 <
     Methods: ~
 
-    get_window_bounds([num_values,            Computes the bounds of a window.
+    get_window_bounds([num_values,          Computes the bounds of a window.
     min_periods, ...])
 
 ----------------------------------------------------------------------------
@@ -32191,7 +32229,7 @@ class pandas.api.indexers.FixedForwardWindowIndexer(index_array=None,
 <
     Methods: ~
 
-    get_window_bounds([num_values,            Computes the bounds of a window.
+    get_window_bounds([num_values,          Computes the bounds of a window.
     min_periods, ...])
 
 ----------------------------------------------------------------------------
@@ -32270,7 +32308,7 @@ class pandas.api.indexers.VariableOffsetWindowIndexer(index_array=None,
 <
     Methods: ~
 
-    get_window_bounds([num_values,            Computes the bounds of a window.
+    get_window_bounds([num_values,          Computes the bounds of a window.
     min_periods, ...])
 
 ----------------------------------------------------------------------------
@@ -41969,7 +42007,8 @@ class pandas.api.typing.JsonReader(filepath_or_buffer, orient, typ, dtype,
 <
     Methods: ~
 
-    close()  Close the underlying file handle, if one was opened by the reader.
+    close()  Close the underlying file handle, if one was opened by the
+             reader.
     read()   Read the whole JSON input into a pandas object.
 
 ----------------------------------------------------------------------------
@@ -45811,7 +45850,7 @@ pandas.array(data, dtype=None, copy=True)
             Currently, pandas will infer an extension dtype for sequences of
 
             Scalar Type         Array Type
-            ------------------  ----------------------------------------------------------
+            ------------------  ----------------------------------------------
             pandas.Interval     pandas.arrays.IntervalArray
             pandas.Period       pandas.arrays.PeriodArray
             datetime.datetime   pandas.arrays.DatetimeArray
@@ -46644,21 +46683,21 @@ class pandas.arrays.IntervalArray(data, closed=None, dtype=None, copy=False,
 
     Attributes: ~
 
-    left                          Return the left endpoints of each Interval in
-                                  the IntervalArray as an Index.
-    right                         Return the right endpoints of each Interval in
-                                  the IntervalArray as an Index.
+    left                          Return the left endpoints of each Interval
+                                  in the IntervalArray as an Index.
+    right                         Return the right endpoints of each Interval
+                                  in the IntervalArray as an Index.
     closed                        String describing the inclusive side the
                                   intervals.
     mid                           Return the midpoint of each Interval in the
                                   IntervalArray as an Index.
-    length                        Return an Index with entries denoting the length
-                                  of each Interval.
-    is_empty                      Indicates if an interval is empty, meaning it
-                                  contains no points.
+    length                        Return an Index with entries denoting the
+                                  length of each Interval.
+    is_empty                      Indicates if an interval is empty, meaning
+                                  it contains no points.
     is_non_overlapping_monotonic  Return a boolean whether the
-                                  IntervalArray/IntervalIndex is non-overlapping
-                                  and monotonic.
+                                  IntervalArray/IntervalIndex is
+                                  non-overlapping and monotonic.
 
     Methods: ~
 
@@ -46666,14 +46705,15 @@ class pandas.arrays.IntervalArray(data, closed=None, dtype=None, copy=False,
     copy, dtype])                       left and right bounds.
     from_tuples(data[, closed, copy,    Construct an IntervalArray from an
     dtype])                             array-like of tuples.
-    from_breaks(breaks[, closed, copy,  Construct an IntervalArray from an array
-    dtype])                             of splits.
-    contains(other)                     Check elementwise if the Intervals contain
-                                        the value.
-    overlaps(other)                     Check elementwise if an Interval overlaps
-                                        the values in the IntervalArray.
-    set_closed(closed)                  Return an identical IntervalArray closed
-                                        on the specified side.
+    from_breaks(breaks[, closed, copy,  Construct an IntervalArray from an
+    dtype])                             array of splits.
+    contains(other)                     Check elementwise if the Intervals
+                                        contain the value.
+    overlaps(other)                     Check elementwise if an Interval
+                                        overlaps the values in the
+                                        IntervalArray.
+    set_closed(closed)                  Return an identical IntervalArray
+                                        closed on the specified side.
     to_tuples([na_tuple])               Return an ndarray (if self is
                                         IntervalArray) or Index (if self is
                                         IntervalIndex) of tuples of the form
@@ -47260,7 +47300,7 @@ class pandas.arrays.SparseArray(data, sparse_index=<no_default>,
             data:
 
             data.dtype   na_value
-            -----------  -----------------------------------------------------------------
+            -----------  -----------------------------------------------------
             float        np.nan
             int          0
             bool         False

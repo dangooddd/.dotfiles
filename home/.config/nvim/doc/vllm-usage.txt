@@ -8,57 +8,59 @@ USAGE                                                     *vllm-section-usage*
 ----------------------------------------------------------------------------
 Frequently Asked Questions                              *vllm-usage-faq-index*
 
-  Q: How can I serve multiple models on a single port using the OpenAI API?
+  Q: How can I serve multiple models on a single port using the OpenAI
+  API?
 
-A: Assuming that you're referring to using OpenAI compatible server to serve
-multiple models at once, that is not currently supported, you can run
-multiple instances of the server (each serving a different model) at the
-same time, and have another layer to route the incoming request to the
-correct server accordingly.
+A: Assuming that you're referring to using OpenAI compatible server to
+serve multiple models at once, that is not currently supported, you can
+run multiple instances of the server (each serving a different model) at
+the same time, and have another layer to route the incoming request to
+the correct server accordingly.
 
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   Q: Which model to use for offline inference embedding?
 
 A: You can try e5-mistral-7b-instruct
 https://huggingface.co/intfloat/e5-mistral-7b-instruct and
-BAAI/bge-base-en-v1.5 https://huggingface.co/BAAI/bge-base-en-v1.5; more are
-listed |vllm-models-supported_models-index|.
+BAAI/bge-base-en-v1.5 https://huggingface.co/BAAI/bge-base-en-v1.5; more
+are listed |vllm-models-supported_models-index|.
 
-By extracting hidden states, vLLM can automatically convert text generation
-models like Llama-3-8B https://huggingface.co/meta-llama/Meta-Llama-3-8B,
+By extracting hidden states, vLLM can automatically convert text
+generation models like Llama-3-8B
+https://huggingface.co/meta-llama/Meta-Llama-3-8B,
 Mistral-7B-Instruct-v0.3
 https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3 into embedding
-models, but they are expected to be inferior to models that are specifically
-trained on embedding tasks.
+models, but they are expected to be inferior to models that are
+specifically trained on embedding tasks.
 
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   Q: Can the output of a prompt vary across runs in vLLM?
 
-A: Yes, it can. vLLM does not guarantee stable log probabilities (logprobs)
-for the output tokens. Variations in logprobs may occur due to numerical
-instability in Torch operations or non-deterministic behavior in batched
-Torch operations when batching changes. For more details, see the
-Numerical Accuracy section
+A: Yes, it can. vLLM does not guarantee stable log probabilities
+(logprobs) for the output tokens. Variations in logprobs may occur due
+to numerical instability in Torch operations or non-deterministic
+behavior in batched Torch operations when batching changes. For more
+details, see the Numerical Accuracy section
 https://pytorch.org/docs/stable/notes/numerical_accuracy.html#batched-computations-or-slice-computations.
 
-In vLLM, the same requests might be batched differently due to factors such
-as other concurrent requests, changes in batch size, or batch expansion in
-speculative decoding. These batching variations, combined with numerical
-instability of Torch operations, can lead to slightly different
-logit/logprob values at each step. Such differences can accumulate,
-potentially resulting in different tokens being sampled. Once a different
-token is sampled, further divergence is likely.
+In vLLM, the same requests might be batched differently due to factors
+such as other concurrent requests, changes in batch size, or batch
+expansion in speculative decoding. These batching variations, combined
+with numerical instability of Torch operations, can lead to slightly
+different logit/logprob values at each step. Such differences can
+accumulate, potentially resulting in different tokens being sampled.
+Once a different token is sampled, further divergence is likely.
 
 MITIGATION STRATEGIES                  *usage-faq-index-mitigation-strategies*
 
-- For improved stability and reduced variance, use `float32`. Note that this
-  will require more memory.
+- For improved stability and reduced variance, use `float32`. Note that
+  this will require more memory.
 - If using `bfloat16`, switching to `float16` can also help.
 - Using request seeds can aid in achieving more stable generation for
-  temperature > 0, but discrepancies due to precision differences may still
-  occur.
+  temperature > 0, but discrepancies due to precision differences may
+  still occur.
 
 ----------------------------------------------------------------------------
 Using vLLM                                                  *vllm-usage-index*
@@ -68,16 +70,18 @@ chosen device in either a Python or Docker environment.
 
 Then, vLLM supports the following usage patterns:
 
-- |vllm-serving-offline_inference-index|: Run a single instance of a model.
-- |vllm-deployment-docker-index|: Scale up model instances for production.
+- |vllm-serving-offline_inference-index|: Run a single instance of a
+  model.
+- |vllm-deployment-docker-index|: Scale up model instances for
+  production.
 - |vllm-training-rlhf-index|: Train or fine-tune a model.
 
 ----------------------------------------------------------------------------
 Production Metrics                                  *vllm-usage-metrics-index*
 
-vLLM exposes a number of metrics that can be used to monitor the health of
-the system. These metrics are exposed via the `/metrics` endpoint on the
-vLLM OpenAI compatible API server.
+vLLM exposes a number of metrics that can be used to monitor the health
+of the system. These metrics are exposed via the `/metrics` endpoint on
+the vLLM OpenAI compatible API server.
 
 You can start the server using Python, or using
 |vllm-deployment-docker-index|:
@@ -110,194 +114,189 @@ The following metrics are exposed:
 
 GENERAL METRICS                          *usage-metrics-index-general-metrics*
 
-Metric Name                           Type       Description
-------------------------------------  ---------  --------------------------------
-vllm:admission_rejections             Counter    Number of admission attempts
-                                                 rejected by a queue limit, by
-                                                 reason.
-vllm:corrupted_requests               Counter    Corrupted requests, in terms of
-                                                 total number of requests with
-                                                 NaNs in logits.
-vllm:external_prefix_cache_hits       Counter    External prefix cache hits from
-                                                 KV connector cross-instance
-                                                 cache sharing, in terms of
-                                                 number of cached tokens.
-vllm:external_prefix_cache_queries    Counter    External prefix cache queries
-                                                 from KV connector cross-instance
-                                                 cache sharing, in terms of
-                                                 number of queried tokens.
-vllm:generation_tokens                Counter    Number of generation tokens
-                                                 processed.
-vllm:mm_cache_hits                    Counter    Multi-modal cache hits, in terms
-                                                 of number of cached items.
-vllm:mm_cache_queries                 Counter    Multi-modal cache queries, in
-                                                 terms of number of queried
-                                                 items.
-vllm:num_preemptions                  Counter    Cumulative number of preemption
-                                                 from the engine.
-vllm:prefix_cache_hits                Counter    Prefix cache hits, in terms of
-                                                 number of cached tokens.
-vllm:prefix_cache_queries             Counter    Prefix cache queries, in terms
-                                                 of number of queried tokens.
-vllm:prompt_tokens                    Counter    Number of prefill tokens
-                                                 processed.
-vllm:prompt_tokens_by_source          Counter    Number of prompt tokens by
-                                                 source.
-vllm:prompt_tokens_cached             Counter    Number of cached prompt tokens
-                                                 (local + external).
-vllm:prompt_tokens_cached_by_source   Counter    Prefix-cache hit tokens by the
-                                                 cache tier that supplied them:
-                                                 device (local HBM), host
-                                                 (offloaded to DRAM), disk, p2p
-                                                 (transferred from another vLLM
-                                                 instance) or
-                                                 external_unspecified. Counted at
-                                                 admission; sums to
-                                                 vllm:prefix_cache_hits +
-                                                 vllm:external_prefix_cache_hits.
-vllm:request_success                  Counter    Count of successfully processed
-                                                 requests.
-vllm:watermark_requests               Counter    Finished requests by watermark
-                                                 status (only with
-                                                 watermark_config).
-vllm:engine_sleep_state               Gauge      Engine sleep state; awake = 0
-                                                 means engine is sleeping; awake
-                                                 = 1 means engine is awake;
-                                                 weights_offloaded = 1 means
-                                                 sleep level 1; discard_all = 1
-                                                 means sleep level 2.
-vllm:kv_cache_usage_perc              Gauge      KV-cache usage. 1 means 100
-                                                 percent usage.
-vllm:lora_requests_info               Gauge      Running stats on lora requests.
-vllm:num_requests_kv_fetch_by_stage   Gauge      Number of waiting requests by
-                                                 async KV load stage. Stage
-                                                 labels: 'waiting_to_start' =
-                                                 needs an async KV load that has
-                                                 not started; 'in_progress' =
-                                                 load started and not yet
-                                                 reported finished;
-                                                 'completed_waiting' = load
-                                                 finished, request not running
-                                                 yet.
-vllm:num_requests_running             Gauge      Number of requests in model
-                                                 execution batches.
-vllm:num_requests_waiting             Gauge      Number of requests waiting to be
-                                                 processed.
-vllm:num_requests_waiting_by_reason   Gauge      Number of waiting requests by
-                                                 reason. Reason labels:
-                                                 'capacity' = waiting for
-                                                 scheduling capacity; 'deferred'
-                                                 = deferred by transient
-                                                 constraints (LoRA budget, KV
-                                                 transfer, blocked status). Sum
-                                                 of all reasons equals
-                                                 vllm:num_requests_waiting.
-vllm:e2e_request_latency_seconds      Histogram  Histogram of e2e request latency
-                                                 in seconds.
-vllm:inter_token_latency_seconds      Histogram  Histogram of inter-token latency
-                                                 in seconds.
-vllm:iteration_tokens_total           Histogram  Histogram of number of tokens
-                                                 per engine_step.
-vllm:kv_block_idle_before_evict_seconds  Histogram  Histogram of idle time before KV
-                                                 cache block eviction. Sampled
-                                                 metrics (controlled by
-                                                 --kv-cache-metrics-sample).
-vllm:kv_block_lifetime_seconds        Histogram  Histogram of KV cache block
-                                                 lifetime from allocation to
-                                                 eviction. Sampled metrics
-                                                 (controlled by
-                                                 --kv-cache-metrics-sample).
-vllm:kv_block_reuse_gap_seconds       Histogram  Histogram of time gaps between
-                                                 consecutive KV cache block
-                                                 accesses. Only the most recent
-                                                 accesses are recorded (ring
-                                                 buffer). Sampled metrics
-                                                 (controlled by
-                                                 --kv-cache-metrics-sample).
-vllm:request_decode_time_seconds      Histogram  Histogram of time spent in
-                                                 DECODE phase for request.
-vllm:request_generation_tokens        Histogram  Number of generation tokens
-                                                 processed.
-vllm:request_inference_time_seconds   Histogram  Histogram of time spent in
-                                                 RUNNING phase for request.
-vllm:request_max_num_generation_tokens  Histogram  Histogram of maximum number of
-                                                 requested generation tokens.
-vllm:request_num_preemptions          Histogram  Histogram of the number of times
-                                                 a request was preempted.
-vllm:request_params_max_tokens        Histogram  Histogram of the max_tokens
-                                                 request parameter.
-vllm:request_params_n                 Histogram  Histogram of the n request
-                                                 parameter.
-vllm:request_prefill_kv_computed_tokens  Histogram  Histogram of new KV tokens
-                                                 computed during prefill
-                                                 (excluding cached tokens).
-vllm:request_prefill_time_seconds     Histogram  Histogram of time spent in
-                                                 PREFILL phase for request.
-vllm:request_prompt_tokens            Histogram  Number of prefill tokens
-                                                 processed.
-vllm:request_queue_time_seconds       Histogram  Histogram of time spent in
-                                                 WAITING phase for request.
-vllm:request_time_per_output_token_seconds  Histogram  Histogram of
-                                                 time_per_output_token_seconds
-                                                 per request.
-vllm:time_to_first_token_seconds      Histogram  Histogram of time to first token
-                                                 in seconds.
+Metric Name                       Type       Description
+--------------------------------  ---------  ---------------------------------
+vllm:admission_rejections         Counter    Number of admission attempts
+                                             rejected by a queue limit, by
+                                             reason.
+vllm:corrupted_requests           Counter    Corrupted requests, in terms of
+                                             total number of requests with
+                                             NaNs in logits.
+vllm:external_prefix_cache_hits   Counter    External prefix cache hits from
+                                             KV connector cross-instance cache
+                                             sharing, in terms of number of
+                                             cached tokens.
+vllm:external_prefix_cache_       Counter    External prefix cache queries
+queries                                      from KV connector cross-instance
+                                             cache sharing, in terms of number
+                                             of queried tokens.
+vllm:generation_tokens            Counter    Number of generation tokens
+                                             processed.
+vllm:mm_cache_hits                Counter    Multi-modal cache hits, in terms
+                                             of number of cached items.
+vllm:mm_cache_queries             Counter    Multi-modal cache queries, in
+                                             terms of number of queried items.
+vllm:num_preemptions              Counter    Cumulative number of preemption
+                                             from the engine.
+vllm:prefix_cache_hits            Counter    Prefix cache hits, in terms of
+                                             number of cached tokens.
+vllm:prefix_cache_queries         Counter    Prefix cache queries, in terms of
+                                             number of queried tokens.
+vllm:prompt_tokens                Counter    Number of prefill tokens
+                                             processed.
+vllm:prompt_tokens_by_source      Counter    Number of prompt tokens by
+                                             source.
+vllm:prompt_tokens_cached         Counter    Number of cached prompt tokens
+                                             (local + external).
+vllm:prompt_tokens_cached_by_     Counter    Prefix-cache hit tokens by the
+source                                       cache tier that supplied them:
+                                             device (local HBM), host
+                                             (offloaded to DRAM), disk, p2p
+                                             (transferred from another vLLM
+                                             instance) or
+                                             external_unspecified. Counted at
+                                             admission; sums to
+                                             vllm:prefix_cache_hits +
+                                             vllm:external_prefix_cache_hits.
+vllm:request_success              Counter    Count of successfully processed
+                                             requests.
+vllm:watermark_requests           Counter    Finished requests by watermark
+                                             status (only with
+                                             watermark_config).
+vllm:engine_sleep_state           Gauge      Engine sleep state; awake = 0
+                                             means engine is sleeping; awake =
+                                             1 means engine is awake;
+                                             weights_offloaded = 1 means sleep
+                                             level 1; discard_all = 1 means
+                                             sleep level 2.
+vllm:kv_cache_usage_perc          Gauge      KV-cache usage. 1 means 100
+                                             percent usage.
+vllm:lora_requests_info           Gauge      Running stats on lora requests.
+vllm:num_requests_kv_fetch_by_    Gauge      Number of waiting requests by
+stage                                        async KV load stage. Stage
+                                             labels: 'waiting_to_start' =
+                                             needs an async KV load that has
+                                             not started; 'in_progress' = load
+                                             started and not yet reported
+                                             finished; 'completed_waiting' =
+                                             load finished, request not
+                                             running yet.
+vllm:num_requests_running         Gauge      Number of requests in model
+                                             execution batches.
+vllm:num_requests_waiting         Gauge      Number of requests waiting to be
+                                             processed.
+vllm:num_requests_waiting_by_     Gauge      Number of waiting requests by
+reason                                       reason. Reason labels: 'capacity'
+                                             = waiting for scheduling
+                                             capacity; 'deferred' = deferred
+                                             by transient constraints (LoRA
+                                             budget, KV transfer, blocked
+                                             status). Sum of all reasons
+                                             equals vllm:num_requests_waiting.
+vllm:e2e_request_latency_seconds  Histogram  Histogram of e2e request latency
+                                             in seconds.
+vllm:inter_token_latency_seconds  Histogram  Histogram of inter-token latency
+                                             in seconds.
+vllm:iteration_tokens_total       Histogram  Histogram of number of tokens per
+                                             engine_step.
+vllm:kv_block_idle_before_evict_  Histogram  Histogram of idle time before KV
+seconds                                      cache block eviction. Sampled
+                                             metrics (controlled by
+                                             --kv-cache-metrics-sample).
+vllm:kv_block_lifetime_seconds    Histogram  Histogram of KV cache block
+                                             lifetime from allocation to
+                                             eviction. Sampled metrics
+                                             (controlled by
+                                             --kv-cache-metrics-sample).
+vllm:kv_block_reuse_gap_seconds   Histogram  Histogram of time gaps between
+                                             consecutive KV cache block
+                                             accesses. Only the most recent
+                                             accesses are recorded (ring
+                                             buffer). Sampled metrics
+                                             (controlled by
+                                             --kv-cache-metrics-sample).
+vllm:request_decode_time_seconds  Histogram  Histogram of time spent in DECODE
+                                             phase for request.
+vllm:request_generation_tokens    Histogram  Number of generation tokens
+                                             processed.
+vllm:request_inference_time_      Histogram  Histogram of time spent in
+seconds                                      RUNNING phase for request.
+vllm:request_max_num_generation_  Histogram  Histogram of maximum number of
+tokens                                       requested generation tokens.
+vllm:request_num_preemptions      Histogram  Histogram of the number of times
+                                             a request was preempted.
+vllm:request_params_max_tokens    Histogram  Histogram of the max_tokens
+                                             request parameter.
+vllm:request_params_n             Histogram  Histogram of the n request
+                                             parameter.
+vllm:request_prefill_kv_          Histogram  Histogram of new KV tokens
+computed_tokens                              computed during prefill
+                                             (excluding cached tokens).
+vllm:request_prefill_time_        Histogram  Histogram of time spent in
+seconds                                      PREFILL phase for request.
+vllm:request_prompt_tokens        Histogram  Number of prefill tokens
+                                             processed.
+vllm:request_queue_time_seconds   Histogram  Histogram of time spent in
+                                             WAITING phase for request.
+vllm:request_time_per_output_     Histogram  Histogram of
+token_seconds                                time_per_output_token_seconds per
+                                             request.
+vllm:time_to_first_token_seconds  Histogram  Histogram of time to first token
+                                             in seconds.
 
                             *usage-metrics-index-speculative-decoding-metrics*
 SPECULATIVE DECODING METRICS
 
-Metric Name                           Type     Description
-------------------------------------  -------  -------------------------------
-vllm:spec_decode_num_accepted_tokens_per_pos  Counter  Accepted tokens per draft
-                                               position.
-vllm:spec_decode_num_verified_tokens_per_pos  Counter  Verified draft tokens per draft
-                                               position.
+Metric Name                        Type     Description
+---------------------------------  -------  ----------------------------------
+vllm:spec_decode_num_accepted_     Counter  Accepted tokens per draft
+tokens_per_pos                              position.
+vllm:spec_decode_num_verified_     Counter  Verified draft tokens per draft
+tokens_per_pos                              position.
 
 NIXL KV CONNECTOR METRICS      *usage-metrics-index-nixl-kv-connector-metrics*
 
-Metric Name                           Type       Description
-------------------------------------  ---------  -------------------------------
-vllm:nixl_num_declined_expired_reads  Counter    Number of remote KV reads
-                                                 declined because the remote had
-                                                 released the blocks (lease
-                                                 expired) before the read. Each
-                                                 one is a request that follows
-                                                 kv_load_failure_policy. NOTE:
-                                                 This metric is tracked on the
-                                                 reading (consumer) instance.
-vllm:nixl_num_failed_notifications    Counter    Number of failed NIXL KV Cache
-                                                 notifications. Retained for
-                                                 compatibility; these failures
-                                                 are also included in
-                                                 vllm:nixl_num_failed_transfers.
-vllm:nixl_num_failed_transfers        Counter    Number of failed NIXL KV Cache
-                                                 transfers, including handshake
-                                                 and notification failures.
-                                                 NOTE: KV expiry is tracked
-                                                 separately in
-                                                 vllm:nixl_num_kv_expired_reqs.
-vllm:nixl_num_kv_expired_reqs         Counter    Number of requests that had
-                                                 their KV expire. NOTE: This
-                                                 metric is tracked on the P
-                                                 instance.
-vllm:nixl_num_notifications_after_expiry  Counter    Number of completion
-                                                 notifications for requests that
-                                                 were no longer tracked, usually
-                                                 because their KV lease expired.
-                                                 The KV blocks may have been
-                                                 reused before the transfer
-                                                 finished. Counted per
-                                                 notification (one per remote
-                                                 rank), not per request.
-vllm:nixl_bytes_transferred           Histogram  Histogram of bytes transferred
-                                                 per NIXL KV Cache transfers.
-vllm:nixl_num_descriptors             Histogram  Histogram of number of
-                                                 descriptors per NIXL KV Cache
-                                                 transfers.
-vllm:nixl_post_time_seconds           Histogram  Histogram of transfer post time
-                                                 for NIXL KV Cache transfers.
-vllm:nixl_xfer_time_seconds           Histogram  Histogram of transfer duration
-                                                 for NIXL KV Cache transfers.
+Metric Name                       Type       Description
+--------------------------------  ---------  ---------------------------------
+vllm:nixl_num_declined_expired_   Counter    Number of remote KV reads
+reads                                        declined because the remote had
+                                             released the blocks (lease
+                                             expired) before the read. Each
+                                             one is a request that follows
+                                             kv_load_failure_policy. NOTE:
+                                             This metric is tracked on the
+                                             reading (consumer) instance.
+vllm:nixl_num_failed_             Counter    Number of failed NIXL KV Cache
+notifications                                notifications. Retained for
+                                             compatibility; these failures are
+                                             also included in
+                                             vllm:nixl_num_failed_transfers.
+vllm:nixl_num_failed_transfers    Counter    Number of failed NIXL KV Cache
+                                             transfers, including handshake
+                                             and notification failures. NOTE:
+                                             KV expiry is tracked separately
+                                             in vllm:nixl_num_kv_expired_reqs.
+vllm:nixl_num_kv_expired_reqs     Counter    Number of requests that had their
+                                             KV expire. NOTE: This metric is
+                                             tracked on the P instance.
+vllm:nixl_num_notifications_      Counter    Number of completion
+after_expiry                                 notifications for requests that
+                                             were no longer tracked, usually
+                                             because their KV lease expired.
+                                             The KV blocks may have been
+                                             reused before the transfer
+                                             finished. Counted per
+                                             notification (one per remote
+                                             rank), not per request.
+vllm:nixl_bytes_transferred       Histogram  Histogram of bytes transferred
+                                             per NIXL KV Cache transfers.
+vllm:nixl_num_descriptors         Histogram  Histogram of number of
+                                             descriptors per NIXL KV Cache
+                                             transfers.
+vllm:nixl_post_time_seconds       Histogram  Histogram of transfer post time
+                                             for NIXL KV Cache transfers.
+vllm:nixl_xfer_time_seconds       Histogram  Histogram of transfer duration
+                                             for NIXL KV Cache transfers.
 
                            *usage-metrics-index-hisparse-kv-connector-metrics*
 HISPARSE KV CONNECTOR METRICS
@@ -307,43 +306,39 @@ These metrics are exposed when the
 KV connector is configured. The host-pool gauges are reported by the
 scheduler once per engine step, for the host pool shared by all
 tensor-parallel ranks; evictable cached blocks count as free. With
-`--kv-cache-metrics`, the `vllm:hisparse_host_block_*_seconds` histograms
-sample host-pool block residency, like the device `vllm:kv_block_*_seconds`
-histograms, which cover only the GPU pool.
+`--kv-cache-metrics`, the `vllm:hisparse_host_block_*_seconds`
+histograms sample host-pool block residency, like the device
+`vllm:kv_block_*_seconds` histograms, which cover only the GPU pool.
 
-Metric Name                           Type       Description
-------------------------------------  ---------  -----------------------------
-vllm:hisparse_cache_hits              Counter    Number of HiSparse device
-                                                 hot-buffer hits.
-vllm:hisparse_cache_misses            Counter    Number of HiSparse device
-                                                 hot-buffer misses.
-vllm:hisparse_host_to_device_bytes    Counter    Bytes transferred from host
-                                                 KV storage to HiSparse hot
-                                                 buffers.
-vllm:hisparse_host_cache_usage_perc   Gauge      HiSparse host KV-cache usage.
-                                                 1 means 100 percent usage.
-                                                 Evictable cached blocks count
-                                                 as free.
-vllm:hisparse_pending_page_transfers  Gauge      HiSparse page transfers
-                                                 (write-backs and restores)
-                                                 not yet completed.
-vllm:hisparse_host_block_idle_before_evict_seconds  Histogram  Histogram of HiSparse host KV
-                                                 block idle time before
-                                                 eviction. Sampled metrics
-                                                 (controlled by
-                                                 --kv-cache-metrics-sample).
-vllm:hisparse_host_block_lifetime_seconds  Histogram  Histogram of HiSparse host KV
-                                                 block lifetime from
-                                                 allocation to eviction.
-                                                 Sampled metrics (controlled
-                                                 by
-                                                 --kv-cache-metrics-sample).
-vllm:hisparse_host_block_reuse_gap_seconds  Histogram  Histogram of time gaps
-                                                 between consecutive HiSparse
-                                                 host KV block accesses.
-                                                 Sampled metrics (controlled
-                                                 by
-                                                 --kv-cache-metrics-sample).
+Metric Name                       Type       Description
+--------------------------------  ---------  ---------------------------------
+vllm:hisparse_cache_hits          Counter    Number of HiSparse device
+                                             hot-buffer hits.
+vllm:hisparse_cache_misses        Counter    Number of HiSparse device
+                                             hot-buffer misses.
+vllm:hisparse_host_to_device_     Counter    Bytes transferred from host KV
+bytes                                        storage to HiSparse hot buffers.
+vllm:hisparse_host_cache_usage_   Gauge      HiSparse host KV-cache usage. 1
+perc                                         means 100 percent usage.
+                                             Evictable cached blocks count as
+                                             free.
+vllm:hisparse_pending_page_       Gauge      HiSparse page transfers
+transfers                                    (write-backs and restores) not
+                                             yet completed.
+vllm:hisparse_host_block_idle_    Histogram  Histogram of HiSparse host KV
+before_evict_seconds                         block idle time before eviction.
+                                             Sampled metrics (controlled by
+                                             --kv-cache-metrics-sample).
+vllm:hisparse_host_block_         Histogram  Histogram of HiSparse host KV
+lifetime_seconds                             block lifetime from allocation to
+                                             eviction. Sampled metrics
+                                             (controlled by
+                                             --kv-cache-metrics-sample).
+vllm:hisparse_host_block_reuse_   Histogram  Histogram of time gaps between
+gap_seconds                                  consecutive HiSparse host KV
+                                             block accesses. Sampled metrics
+                                             (controlled by
+                                             --kv-cache-metrics-sample).
 
                     *usage-metrics-index-simple-cpu-offload-connector-metrics*
 SIMPLE CPU OFFLOAD CONNECTOR METRICS
@@ -357,80 +352,76 @@ They are updated once per engine step.
 Caveats to keep in mind when interpreting them:
 
 - A "completed" store means the write syscalls returned; it is not
-  fsync-durable, and the disk backend's file is process-lifetime scratch,
-  unlinked at startup and shutdown.
+  fsync-durable, and the disk backend's file is process-lifetime
+  scratch, unlinked at startup and shutdown.
 - `save_outcomes_total` classifies eager-mode boundary hand-off stores;
   lazy-mode stores are not classified.
-- `used_blocks` counts blocks pinned by in-flight transfers or cache hits;
-  warm cached blocks that are evictable are not counted. Use the
-  `capacity_blocks` label of `simple_kv_offload_info` as the denominator.
-- Counters and gauges are quantized to engine steps. They are reported by
-  the scheduler process and reflect engine-wide logical block counts, not
-  values pooled from individual tensor-parallel workers.
+- `used_blocks` counts blocks pinned by in-flight transfers or cache
+  hits; warm cached blocks that are evictable are not counted. Use the
+  `capacity_blocks` label of `simple_kv_offload_info` as the
+  denominator.
+- Counters and gauges are quantized to engine steps. They are reported
+  by the scheduler process and reflect engine-wide logical block counts,
+  not values pooled from individual tensor-parallel workers.
 
-Metric Name                           Type     Description
-------------------------------------  -------  -------------------------------
-vllm:simple_kv_offload_load_blocks_total  Counter  KV blocks restored to GPU from
-                                               the offload pool, counted when
-                                               a load finishes. This is
-                                               prefill work avoided through
-                                               offload cache hits.
-vllm:simple_kv_offload_save_outcomes_total  Counter  Store admission decisions in
-                                               SimpleCPUOffloadConnector, by
-                                               outcome. Outcomes classify
-                                               eager-mode boundary hand-off
-                                               stores; lazy-mode stores are
-                                               not classified.
-vllm:simple_kv_offload_info           Gauge    SimpleCPUOffloadConnector
-                                               deployment facts. Value is
-                                               always 1. backend is cpu or
-                                               disk; page_cache and
-                                               lazy_offload are true/false;
-                                               capacity_blocks is the offload
-                                               pool size.
-vllm:simple_kv_offload_pending_store_blocks  Gauge    Offload blocks in pending
-                                               stores: queued for dispatch,
-                                               issued to workers, or awaiting
-                                               release after a cache reset. A
-                                               persistently growing value
-                                               indicates a stuck transfer.
-vllm:simple_kv_offload_used_blocks    Gauge    Offload-pool blocks currently
-                                               pinned by in-flight transfers
-                                               or cache hits (capacity minus
-                                               free). Evictable cached blocks
-                                               are not counted;
-                                               capacity_blocks is on
-                                               vllm:simple_kv_offload_info.
+Metric Name                        Type     Description
+---------------------------------  -------  ----------------------------------
+vllm:simple_kv_offload_load_       Counter  KV blocks restored to GPU from the
+blocks_total                                offload pool, counted when a load
+                                            finishes. This is prefill work
+                                            avoided through offload cache
+                                            hits.
+vllm:simple_kv_offload_save_       Counter  Store admission decisions in
+outcomes_total                              SimpleCPUOffloadConnector, by
+                                            outcome. Outcomes classify
+                                            eager-mode boundary hand-off
+                                            stores; lazy-mode stores are not
+                                            classified.
+vllm:simple_kv_offload_info        Gauge    SimpleCPUOffloadConnector
+                                            deployment facts. Value is always
+                                            1. backend is cpu or disk;
+                                            page_cache and lazy_offload are
+                                            true/false; capacity_blocks is the
+                                            offload pool size.
+vllm:simple_kv_offload_pending_    Gauge    Offload blocks in pending stores:
+store_blocks                                queued for dispatch, issued to
+                                            workers, or awaiting release after
+                                            a cache reset. A persistently
+                                            growing value indicates a stuck
+                                            transfer.
+vllm:simple_kv_offload_used_       Gauge    Offload-pool blocks currently
+blocks                                      pinned by in-flight transfers or
+                                            cache hits (capacity minus free).
+                                            Evictable cached blocks are not
+                                            counted; capacity_blocks is on
+                                            vllm:simple_kv_offload_info.
 
          *usage-metrics-index-model-flops-utilization-mfu-performance-metrics*
 MODEL FLOPS UTILIZATION (MFU) PERFORMANCE METRICS
 
 These metrics are available via `--enable-mfu-metrics`:
 
-Metric Name                           Type     Description
-------------------------------------  -------  -------------------------------
-vllm:estimated_flops_per_gpu_total    Counter  Estimated number of floating
-                                               point operations per GPU (for
-                                               Model Flops Utilization
-                                               calculations).
-vllm:estimated_read_bytes_per_gpu_total  Counter  Estimated number of bytes read
-                                               from memory per GPU (for Model
-                                               Flops Utilization
-                                               calculations).
-vllm:estimated_write_bytes_per_gpu_total  Counter  Estimated number of bytes
-                                               written to memory per GPU (for
-                                               Model Flops Utilization
-                                               calculations).
+Metric Name                        Type     Description
+---------------------------------  -------  ----------------------------------
+vllm:estimated_flops_per_gpu_      Counter  Estimated number of floating point
+total                                       operations per GPU (for Model
+                                            Flops Utilization calculations).
+vllm:estimated_read_bytes_per_     Counter  Estimated number of bytes read
+gpu_total                                   from memory per GPU (for Model
+                                            Flops Utilization calculations).
+vllm:estimated_write_bytes_per_    Counter  Estimated number of bytes written
+gpu_total                                   to memory per GPU (for Model Flops
+                                            Utilization calculations).
 
 CUSTOM HISTOGRAM BUCKETS        *usage-metrics-index-custom-histogram-buckets*
 
 The core engine histograms ship with default bucket boundaries tuned for
-typical serving workloads. The `--custom-histogram-buckets` option replaces
-the boundaries of one or more bucket families --- exactly the histograms
-listed in the table below --- with your own list; histograms owned by other
-subsystems (for example, the NIXL connector metrics) are not affected. Use
-it, for example, to track sub-300ms latency SLOs with the request-phase
-histograms, whose smallest default boundary is 0.3s:
+typical serving workloads. The `--custom-histogram-buckets` option
+replaces the boundaries of one or more bucket families --- exactly the
+histograms listed in the table below --- with your own list; histograms
+owned by other subsystems (for example, the NIXL connector metrics) are
+not affected. Use it, for example, to track sub-300ms latency SLOs with
+the request-phase histograms, whose smallest default boundary is 0.3s:
 
 >bash
     vllm serve Qwen/Qwen3-0.6B \
@@ -464,34 +455,34 @@ Bucket values must be positive, finite, and strictly increasing; unknown
 family keys are rejected at startup. Families you do not list keep their
 default boundaries. The `request_tokens` defaults normally scale with
 `--max-model-len`; an override replaces that computed list. The
-`kv_cache_residency` family only takes effect when `--kv-cache-metrics` is
-enabled.
+`kv_cache_residency` family only takes effect when `--kv-cache-metrics`
+is enabled.
 
   Bucket cardinality: ~
 
   Every bucket boundary creates one extra time series per metric and per
-  label combination (model and engine index, multiplied under data-parallel
-  deployments). Long bucket lists inflate Prometheus storage, scrape sizes,
-  and query costs. Keep custom lists short, and only override the families
-  you actively monitor.
+  label combination (model and engine index, multiplied under
+  data-parallel deployments). Long bucket lists inflate Prometheus
+  storage, scrape sizes, and query costs. Keep custom lists short, and
+  only override the families you actively monitor.
 
 DEPRECATION POLICY                    *usage-metrics-index-deprecation-policy*
 
 Note: when metrics are deprecated in version `X.Y`, they are hidden in
 version `X.Y+1` but can be re-enabled using the
-`--show-hidden-metrics-for-version=X.Y` escape hatch, and are then removed
-in version `X.Y+2`.
+`--show-hidden-metrics-for-version=X.Y` escape hatch, and are then
+removed in version `X.Y+2`.
 
 ----------------------------------------------------------------------------
 Reproducibility                             *vllm-usage-reproducibility-index*
 
-vLLM does not guarantee the reproducibility of the results by default, for
-the sake of performance. To achieve reproducible results:
+vLLM does not guarantee the reproducibility of the results by default,
+for the sake of performance. To achieve reproducible results:
 
 - In offline mode, you can either set `VLLM_ENABLE_V1_MULTIPROCESSING=0`
   which makes scheduling deterministic, or enable
-  |vllm-features-batch_invariance-index| to make the outputs insensitive to
-  scheduling.
+  |vllm-features-batch_invariance-index| to make the outputs insensitive
+  to scheduling.
 - In online mode, you can only enable
   |vllm-features-batch_invariance-index|.
 
@@ -500,13 +491,13 @@ https://github.com/vllm-project/vllm/blob/main/examples/rl/batch_invariance/repr
 
   Warning: ~
 
-  Setting `VLLM_ENABLE_V1_MULTIPROCESSING=0` will change the random state of
-  user code (i.e. the code that constructs |vllm.LLM| class).
+  Setting `VLLM_ENABLE_V1_MULTIPROCESSING=0` will change the random
+  state of user code (i.e. the code that constructs |vllm.LLM| class).
 
   Note: ~
 
-  Even with the above settings, vLLM only provides reproducibility when it
-  runs on the same hardware and the same vLLM version.
+  Even with the above settings, vLLM only provides reproducibility when
+  it runs on the same hardware and the same vLLM version.
 
 SETTING THE GLOBAL SEED  *usage-reproducibility-index-setting-the-global-seed*
 
@@ -518,24 +509,25 @@ If a specific seed value is provided, the random states for `random`,
 
 Default Behavior                *usage-reproducibility-index-default-behavior*
 
-In V1, the `seed` parameter defaults to `0` which sets the random state for
-each worker, so the results will remain consistent for each vLLM run even if
-`temperature > 0`.
+In V1, the `seed` parameter defaults to `0` which sets the random state
+for each worker, so the results will remain consistent for each vLLM run
+even if `temperature > 0`.
 
-It is impossible to un-specify a seed for V1 because different workers need
-to sample the same outputs for workflows such as speculative decoding. For
-more information, see: Pull Request #17929
+It is impossible to un-specify a seed for V1 because different workers
+need to sample the same outputs for workflows such as speculative
+decoding. For more information, see: Pull Request #17929
 https://github.com/vllm-project/vllm/pull/17929
 
   Note: ~
 
-  The random state in user code (i.e. the code that constructs |vllm.LLM|
-  class) is updated by vLLM only if the workers are run in the same process
-  as user code, i.e.: `VLLM_ENABLE_V1_MULTIPROCESSING=0`.
+  The random state in user code (i.e. the code that constructs
+  |vllm.LLM| class) is updated by vLLM only if the workers are run in
+  the same process as user code, i.e.:
+  `VLLM_ENABLE_V1_MULTIPROCESSING=0`.
 
-  By default, `VLLM_ENABLE_V1_MULTIPROCESSING=1` so you can use vLLM without
-  having to worry about accidentally making deterministic subsequent
-  operations that rely on random state.
+  By default, `VLLM_ENABLE_V1_MULTIPROCESSING=1` so you can use vLLM
+  without having to worry about accidentally making deterministic
+  subsequent operations that rely on random state.
 
 ----------------------------------------------------------------------------
 Security                                           *vllm-usage-security-index*
@@ -557,13 +549,14 @@ The following options control internode communications in vLLM:
 
 1. Environment Variables:       *usage-security-index-1-environment-variables*
 
-- `VLLM_HOST_IP`: Sets the IP address for vLLM processes to communicate on
+- `VLLM_HOST_IP`: Sets the IP address for vLLM processes to communicate
+  on
 
                       *usage-security-index-2-kv-cache-transfer-configuration*
 2. KV Cache Transfer Configuration:
 
-- `--kv-ip`: The IP address for KV cache transfer communications (default:
-  127.0.0.1)
+- `--kv-ip`: The IP address for KV cache transfer communications
+  (default: 127.0.0.1)
 - `--kv-port`: The port for KV cache transfer communications (default:
   14579)
 
@@ -572,20 +565,21 @@ The following options control internode communications in vLLM:
 
 - `data_parallel_master_ip`: IP of the data parallel master (default:
   127.0.0.1)
-- `data_parallel_master_port`: Port of the data parallel master (default:
-  29500)
+- `data_parallel_master_port`: Port of the data parallel master
+  (default: 29500)
 
                            *usage-security-index-notes-on-pytorch-distributed*
 Notes on PyTorch Distributed
 
-vLLM uses PyTorch's distributed features for some internode communication.
-For detailed information about PyTorch Distributed security considerations,
-please refer to the PyTorch Security Guide
+vLLM uses PyTorch's distributed features for some internode
+communication. For detailed information about PyTorch Distributed
+security considerations, please refer to the PyTorch Security Guide
 https://github.com/pytorch/pytorch/security/policy#using-distributed-features.
 
 Key points from the PyTorch security guide:
 
-- PyTorch Distributed features are intended for internal communication only
+- PyTorch Distributed features are intended for internal communication
+  only
 - They are not built for use in untrusted environments or networks
 - No authorization protocol is included for performance reasons
 - Messages are sent unencrypted
@@ -621,165 +615,142 @@ Restrict domains that vLLM can access for media URLs by setting
 attacks. (e.g.
 `--allowed-media-domains upload.wikimedia.org github.com www.bogotobogo.com`)
 
-This protection applies to both the online serving API (multimodal inputs)
-and the batch runner (`vllm run-batch`), where `file_url` values in batch
-transcription/translation requests are validated against the same allowlist.
+This protection applies to both the online serving API (multimodal
+inputs) and the batch runner (`vllm run-batch`), where `file_url` values
+in batch transcription/translation requests are validated against the
+same allowlist.
 
 Without domain restrictions, a malicious user could supply URLs that:
 
 - Target internal services: Access internal network endpoints, cloud
-  metadata services (e.g. `169.254.169.254`), or other services not intended
-  to be publicly reachable (SSRF).
+  metadata services (e.g. `169.254.169.254`), or other services not
+  intended to be publicly reachable (SSRF).
 - Consume excessive resources: Point to extremely large files or slow
-  endpoints, causing the server to download unbounded amounts of data and
-  exhausting memory, disk, or network bandwidth.
+  endpoints, causing the server to download unbounded amounts of data
+  and exhausting memory, disk, or network bandwidth.
 
-By explicitly allowlisting only the domains you expect media to come from,
-you significantly reduce the attack surface for these types of abuse.
+By explicitly allowlisting only the domains you expect media to come
+from, you significantly reduce the attack surface for these types of
+abuse.
 
-Also, consider setting `VLLM_MEDIA_URL_ALLOW_REDIRECTS=0` to prevent HTTP
-redirects from being followed to bypass domain restrictions.
+Also, consider setting `VLLM_MEDIA_URL_ALLOW_REDIRECTS=0` to prevent
+HTTP redirects from being followed to bypass domain restrictions.
 
              *usage-security-index-5-restrict-media-download-and-decode-sizes*
 5. Restrict Media Download and Decode Sizes:
 
-Remote media responses and compressed media files can expand into gigabytes
-of memory. vLLM enforces download and decode-size limits to prevent
-out-of-memory denial of service:
+Remote media responses and compressed media files can expand into
+gigabytes of memory. vLLM enforces download and decode-size limits to
+prevent out-of-memory denial of service:
 
-Environment Variable                  Default              Description
-------------------------------------  -------------------  -------------------
-VLLM_MAX_MEDIA_DOWNLOAD_SIZE_MB       256                  Maximum size in MB
-                                                           for a single remote
-                                                           media response.
-                                                           Oversized responses
-                                                           are rejected while
-                                                           streaming before
-                                                           the full body is
-                                                           materialized in
-                                                           memory.
-VLLM_MAX_MEDIA_REQUEST_DOWNLOAD_SIZE_MB  256                  Maximum total HTTP
-                                                           media bytes
-                                                           downloaded for one
-                                                           request, including
-                                                           concurrent
-                                                           downloads and
-                                                           retried attempts.
-                                                           Enforced while
-                                                           streaming.
-VLLM_MAX_IMAGE_PIXELS                 178956970 (~179M     Maximum decoded
-                                      pixels)              image size in
-                                                           pixels. Images
-                                                           exceeding this are
-                                                           rejected before
-                                                           raster memory is
-                                                           allocated. Default
-                                                           matches PIL's
-                                                           built-in 2x
-                                                           decompression-bomb
-                                                           threshold (~680 MB
-                                                           for RGB).
-VLLM_MAX_MEDIA_REQUEST_DECODE_BYTES   715827880 (~683      Maximum aggregate
-                                      MiB)                 decoded image,
-                                                           video-frame, and
-                                                           audio bytes in one
-                                                           request. Images are
-                                                           charged at four
-                                                           bytes per pixel
-                                                           before decoding;
-                                                           audio is limited
-                                                           before decoding;
-                                                           video frames are
-                                                           charged at three
-                                                           bytes per pixel
-                                                           after frame
-                                                           sampling and before
-                                                           decoding.
-VLLM_MAX_AUDIO_CLIP_FILESIZE_MB       25                   Maximum compressed
-                                                           filesize in MB for
-                                                           a single audio
-                                                           file. Enforced on
-                                                           all audio inputs
-                                                           (multimodal chat
-                                                           URLs,
-                                                           speech-to-text
-                                                           uploads, data:
-                                                           URLs, and local
-                                                           file paths) before
-                                                           decoding begins.
-VLLM_MAX_AUDIO_DECODE_DURATION_S      600                  Maximum decoded
-                                                           audio duration in
-                                                           seconds. Prevents
-                                                           compressed audio
-                                                           from expanding into
-                                                           gigabytes of
-                                                           float32 PCM.
-VLLM_MAX_AUDIO_DECODE_BYTES           268435456 (256 MiB)  Maximum float32 PCM
-                                                           bytes that audio
-                                                           decoding may
-                                                           allocate. Guards
-                                                           against sample-rate
-                                                           forgery where an
-                                                           inflated header
-                                                           sample rate
-                                                           bypasses the
-                                                           duration guard
-                                                           while the actual
-                                                           frame count causes
-                                                           a multi-GiB
-                                                           allocation.
-VLLM_MAX_EMBED_DECODE_BYTES           2147483648 (2 GiB)   Maximum bytes a
-                                                           client-supplied
-                                                           embedding payload
-                                                           (prompt_embeds,
-                                                           image_embeds,
-                                                           audio_embeds,
-                                                           video_embeds) may
-                                                           allocate once
-                                                           densified. A sparse
-                                                           tensor carries its
-                                                           own declared shape,
-                                                           so a payload of a
-                                                           few hundred bytes
-                                                           can expand into
-                                                           hundreds of GiB,
-                                                           and a torch.save
-                                                           archive can
-                                                           deflate-compress
-                                                           its storages. The
-                                                           uncompressed
-                                                           archive size is
-                                                           checked before
-                                                           torch.load and the
-                                                           dense size before
-                                                           to_dense(), so the
-                                                           memory is never
-                                                           allocated. Set to 0
-                                                           to disable.
+Environment Variable       Default                   Description
+-------------------------  ------------------------  -------------------------
+VLLM_MAX_MEDIA_DOWNLOAD_   256                       Maximum size in MB for a
+SIZE_MB                                              single remote media
+                                                     response. Oversized
+                                                     responses are rejected
+                                                     while streaming before
+                                                     the full body is
+                                                     materialized in memory.
+VLLM_MAX_MEDIA_REQUEST_    256                       Maximum total HTTP media
+DOWNLOAD_SIZE_MB                                     bytes downloaded for one
+                                                     request, including
+                                                     concurrent downloads and
+                                                     retried attempts.
+                                                     Enforced while streaming.
+VLLM_MAX_IMAGE_PIXELS      178956970 (~179M pixels)  Maximum decoded image
+                                                     size in pixels. Images
+                                                     exceeding this are
+                                                     rejected before raster
+                                                     memory is allocated.
+                                                     Default matches PIL's
+                                                     built-in 2x
+                                                     decompression-bomb
+                                                     threshold (~680 MB for
+                                                     RGB).
+VLLM_MAX_MEDIA_REQUEST_    715827880 (~683 MiB)      Maximum aggregate decoded
+DECODE_BYTES                                         image, video-frame, and
+                                                     audio bytes in one
+                                                     request. Images are
+                                                     charged at four bytes per
+                                                     pixel before decoding;
+                                                     audio is limited before
+                                                     decoding; video frames
+                                                     are charged at three
+                                                     bytes per pixel after
+                                                     frame sampling and before
+                                                     decoding.
+VLLM_MAX_AUDIO_CLIP_       25                        Maximum compressed
+FILESIZE_MB                                          filesize in MB for a
+                                                     single audio file.
+                                                     Enforced on all audio
+                                                     inputs (multimodal chat
+                                                     URLs, speech-to-text
+                                                     uploads, data: URLs, and
+                                                     local file paths) before
+                                                     decoding begins.
+VLLM_MAX_AUDIO_DECODE_     600                       Maximum decoded audio
+DURATION_S                                           duration in seconds.
+                                                     Prevents compressed audio
+                                                     from expanding into
+                                                     gigabytes of float32 PCM.
+VLLM_MAX_AUDIO_DECODE_     268435456 (256 MiB)       Maximum float32 PCM bytes
+BYTES                                                that audio decoding may
+                                                     allocate. Guards against
+                                                     sample-rate forgery where
+                                                     an inflated header sample
+                                                     rate bypasses the
+                                                     duration guard while the
+                                                     actual frame count causes
+                                                     a multi-GiB allocation.
+VLLM_MAX_EMBED_DECODE_     2147483648 (2 GiB)        Maximum bytes a
+BYTES                                                client-supplied embedding
+                                                     payload (prompt_embeds,
+                                                     image_embeds,
+                                                     audio_embeds,
+                                                     video_embeds) may
+                                                     allocate once densified.
+                                                     A sparse tensor carries
+                                                     its own declared shape,
+                                                     so a payload of a few
+                                                     hundred bytes can expand
+                                                     into hundreds of GiB, and
+                                                     a torch.save archive can
+                                                     deflate-compress its
+                                                     storages. The
+                                                     uncompressed archive size
+                                                     is checked before
+                                                     torch.load and the dense
+                                                     size before to_dense(),
+                                                     so the memory is never
+                                                     allocated. Set to 0 to
+                                                     disable.
 
-The request-wide media download and decode limits cover the entire batch in
-online pooling, scoring, reranking, embedding, and batched chat requests.
+The request-wide media download and decode limits cover the entire batch
+in online pooling, scoring, reranking, embedding, and batched chat
+requests.
 
-Setting any of these to `0` disables the corresponding limit. This is not
-recommended for deployments exposed to untrusted users, as it removes the
-protection against resource-exhaustion attacks.
+Setting any of these to `0` disables the corresponding limit. This is
+not recommended for deployments exposed to untrusted users, as it
+removes the protection against resource-exhaustion attacks.
 
  *usage-security-index-security-and-firewalls-protecting-exposed-vllm-systems*
 SECURITY AND FIREWALLS: PROTECTING EXPOSED VLLM SYSTEMS
 
-While vLLM is designed to allow unsafe network services to be isolated to
-private networks, there are components---such as dependencies and underlying
-frameworks---that may open insecure services listening on all network
-interfaces, sometimes outside of vLLM's direct control.
+While vLLM is designed to allow unsafe network services to be isolated
+to private networks, there are components---such as dependencies and
+underlying frameworks---that may open insecure services listening on all
+network interfaces, sometimes outside of vLLM's direct control.
 
-A major concern is the use of `torch.distributed`, which vLLM leverages for
-distributed communication, including when using vLLM on a single host. When
-vLLM uses TCP initialization (see PyTorch TCP Initialization documentation
+A major concern is the use of `torch.distributed`, which vLLM leverages
+for distributed communication, including when using vLLM on a single
+host. When vLLM uses TCP initialization (see
+PyTorch TCP Initialization documentation
 https://docs.pytorch.org/docs/stable/distributed.html#tcp-initialization),
 PyTorch creates a `TCPStore` that, by default, listens on all network
-interfaces. This means that unless additional protections are put in place,
-these services may be accessible to any host that can reach your machine via
-any network interface.
+interfaces. This means that unless additional protections are put in
+place, these services may be accessible to any host that can reach your
+machine via any network interface.
 
 From a PyTorch perspective, any use of `torch.distributed` should be
 considered insecure by default. This is a known and intentional behavior
@@ -789,11 +760,11 @@ from the PyTorch team.
 Firewall Configuration Guidance
 
 The best way to protect your vLLM system is to carefully configure a
-firewall to expose only the minimum network surface area necessary. In most
-cases, this means:
+firewall to expose only the minimum network surface area necessary. In
+most cases, this means:
 
-- Block all incoming connections except to the TCP port the API server is
-  listening on.
+- Block all incoming connections except to the TCP port the API server
+  is listening on.
 - Ensure that ports used for internal communication (such as those for
   `torch.distributed` and KV cache transfer) are only accessible from
   trusted hosts or networks.
@@ -815,57 +786,58 @@ sensitive endpoints are exposed on the same HTTP server without any
 authentication enforcement.
 
 Important: Do not rely exclusively on `--api-key` for securing access to
-vLLM. Additional security measures are required for production deployments.
+vLLM. Additional security measures are required for production
+deployments.
 
                     *usage-security-index-protected-endpoints-require-api-key*
 Protected Endpoints (Require API Key)
 
-When `--api-key` is configured, the following endpoints require Bearer token
-authentication:
+When `--api-key` is configured, the following endpoints require Bearer
+token authentication:
 
 - `/v1/models` - List available models
 - `/v1/chat/completions` - Chat completions
 - `/v1/chat/completions/batch` - Batch chat completions
-- `/v1/chat/completions/render` - Render chat completion requests (available
-  on `vllm serve` only when `--enable-scale-out` is set, or on
-  `vllm launch render`)
+- `/v1/chat/completions/render` - Render chat completion requests
+  (available on `vllm serve` only when `--enable-scale-out` is set, or
+  on `vllm launch render`)
 - `/v1/chat/completions/derender` - Derender chat completion requests
-  (available on `vllm serve` only when `--enable-scale-out` is set, or on
-  `vllm launch render`)
+  (available on `vllm serve` only when `--enable-scale-out` is set, or
+  on `vllm launch render`)
 - `/v1/completions` - Text completions
 - `/v1/completions/render` - Render completion requests (available on
   `vllm serve` only when `--enable-scale-out` is set, or on
   `vllm launch render`)
-- `/v1/completions/derender` - Derender completion requests (available on
-  `vllm serve` only when `--enable-scale-out` is set, or on
+- `/v1/completions/derender` - Derender completion requests (available
+  on `vllm serve` only when `--enable-scale-out` is set, or on
   `vllm launch render`)
 - `/v1/embeddings` - Generate embeddings
 - `/v1/audio/transcriptions` - Audio transcription
 - `/v1/audio/translations` - Audio translation
 - `/v1/messages` - Anthropic-compatible messages API
-- `/v1/messages/render` - Render Anthropic-compatible messages (available on
-  `vllm serve` only when `--enable-scale-out` is set, or on
-  `vllm launch render`)
+- `/v1/messages/render` - Render Anthropic-compatible messages
+  (available on `vllm serve` only when `--enable-scale-out` is set, or
+  on `vllm launch render`)
 - `/v1/messages/count_tokens` - Count tokens for Anthropic messages
 - `/v1/responses` - Create a response
 - `/v1/responses/render` - Render a self-contained response request
-  (available on `vllm serve` only when `--enable-scale-out` is set, or on
-  `vllm launch render` unless explicitly disabled)
+  (available on `vllm serve` only when `--enable-scale-out` is set, or
+  on `vllm launch render` unless explicitly disabled)
 - `/v1/responses/{response_id}` - Retrieve a response
 - `/v1/responses/{response_id}/cancel` - Cancel a response
 - `/v1/decisions` - Text decisions API
 - `/v1/score` - Scoring API
 - `/v1/rerank` - Reranking API
 - `/v1/systemone` - Structured decisions API
-- `/v1/load_lora_adapter` - Load a LoRA adapter (can alter model behavior;
-  only available when `--enable-lora` is set and
+- `/v1/load_lora_adapter` - Load a LoRA adapter (can alter model
+  behavior; only available when `--enable-lora` is set and
   `VLLM_ALLOW_RUNTIME_LORA_UPDATING=True`)
 - `/v1/unload_lora_adapter` - Unload a LoRA adapter (can alter model
   behavior; only available when `--enable-lora` is set and
   `VLLM_ALLOW_RUNTIME_LORA_UPDATING=True`)
 - `/inference/v1/generate` - Generate completions (available when
-  `--enable-scale-out` is set, or with `--tokens-only`; otherwise returns
-  HTTP 403 with instructions to enable it)
+  `--enable-scale-out` is set, or with `--tokens-only`; otherwise
+  returns HTTP 403 with instructions to enable it)
 - `/cohere/v2/chat/render` - Render Cohere Chat v2 requests (requires
   `VLLM_ENABLE_COHERE_API=1` and either `--enable-scale-out` or
   `--tokens-only`)
@@ -875,8 +847,8 @@ authentication:
               *usage-security-index-unprotected-endpoints-no-api-key-required*
 Unprotected Endpoints (No API Key Required)
 
-The following endpoints do not require authentication even when `--api-key`
-is configured:
+The following endpoints do not require authentication even when
+`--api-key` is configured:
 
 Inference endpoints:
 
@@ -888,7 +860,8 @@ Inference endpoints:
 - `/score` - Scoring API (non-`/v1` variant)
 - `/rerank` - Reranking API (non-`/v1` variant)
 
-Operational control endpoints (only when `"generate"` task is supported):
+Operational control endpoints (only when `"generate"` task is
+supported):
 
 - `/pause` - Pause generation (causes denial of service)
 - `/resume` - Resume generation
@@ -897,12 +870,12 @@ Operational control endpoints (only when `"generate"` task is supported):
   work)
 - `/scale_elastic_ep` - Trigger scaling operations
 - `/is_scaling_elastic_ep` - Check if scaling is in progress
-- `/checkpoint/prepare` - Prepare for a process checkpoint (stops serving,
-  needs `--enable-sleep-mode`)
+- `/checkpoint/prepare` - Prepare for a process checkpoint (stops
+  serving, needs `--enable-sleep-mode`)
 - `/checkpoint/restore` - Restore after a process checkpoint (needs
   `--enable-sleep-mode`)
-- `/checkpoint/status` - Check if the server is prepared for a checkpoint
-  (needs `--enable-sleep-mode`)
+- `/checkpoint/status` - Check if the server is prepared for a
+  checkpoint (needs `--enable-sleep-mode`)
 - `/init_weight_transfer_engine` - Initialize weight transfer engine for
   RLHF
 - `/update_weights` - Update model weights (can alter model behavior)
@@ -910,18 +883,18 @@ Operational control endpoints (only when `"generate"` task is supported):
 - `/abort_requests` - Abort in-flight requests (available with
   `--tokens-only`. Use the authenticated `/inference/v1/abort_requests`
   otherwise)
-- `/fault_tolerance/apply` - Trigger fault-recovery operations across ranks
-  (available when fault tolerance is enabled)
-- `/fault_tolerance/status` - Query fault-recovery status (available when
-  fault tolerance is enabled)
+- `/fault_tolerance/apply` - Trigger fault-recovery operations across
+  ranks (available when fault tolerance is enabled)
+- `/fault_tolerance/status` - Query fault-recovery status (available
+  when fault tolerance is enabled)
 
 Utility endpoints:
 
-- `/metrics` - Prometheus metrics, including model, throughput, queue, and
-  KV-cache statistics
+- `/metrics` - Prometheus metrics, including model, throughput, queue,
+  and KV-cache statistics
 - `/kv_event_sources` - KV-event publisher configuration for each
-  data-parallel rank, which may reveal internal transport endpoints (when KV
-  events are configured)
+  data-parallel rank, which may reveal internal transport endpoints
+  (when KV events are configured)
 - `/tokenize` - Tokenize text (not gated by `--enable-scale-out`)
 - `/detokenize` - Detokenize tokens
 - `/health` - Health check
@@ -929,21 +902,21 @@ Utility endpoints:
 - `/version` - Version information
 - `/load` - Server load metrics
 
-Tokenizer information endpoint (only when `--enable-tokenizer-info-endpoint`
-is set):
+Tokenizer information endpoint (only when
+`--enable-tokenizer-info-endpoint` is set):
 
-This endpoint is only available when the `--enable-tokenizer-info-endpoint`
-flag is set. It may expose sensitive information such as chat templates and
-tokenizer configuration:
+This endpoint is only available when the
+`--enable-tokenizer-info-endpoint` flag is set. It may expose sensitive
+information such as chat templates and tokenizer configuration:
 
-- `/tokenizer_info` - Get comprehensive tokenizer information including chat
-  templates and configuration
+- `/tokenizer_info` - Get comprehensive tokenizer information including
+  chat templates and configuration
 
 Development endpoints (only when `VLLM_SERVER_DEV_MODE=1`):
 
 These endpoints are only available when the environment variable
-`VLLM_SERVER_DEV_MODE` is set to `1`. They are intended for development and
-debugging purposes and should never be enabled in production:
+`VLLM_SERVER_DEV_MODE` is set to `1`. They are intended for development
+and debugging purposes and should never be enabled in production:
 
 - `/server_info` - Get detailed server configuration
 - `/reset_prefix_cache` - Reset prefix cache (can disrupt service)
@@ -952,20 +925,21 @@ debugging purposes and should never be enabled in production:
 - `/sleep` - Put engine to sleep (causes denial of service)
 - `/wake_up` - Wake engine from sleep
 - `/is_sleeping` - Check if engine is sleeping
-- `/collective_rpc` - Execute arbitrary RPC methods on the engine (extremely
-  dangerous)
+- `/collective_rpc` - Execute arbitrary RPC methods on the engine
+  (extremely dangerous)
 
-Profiler endpoints (only when profiling is enabled via `--profiler-config`):
+Profiler endpoints (only when profiling is enabled via
+`--profiler-config`):
 
-These endpoints are only available when profiling is enabled and should only
-be used for local development:
+These endpoints are only available when profiling is enabled and should
+only be used for local development:
 
 - `/start_profile` - Start PyTorch profiler
 - `/stop_profile` - Stop PyTorch profiler
 
-Note: The `/invocations` endpoint is particularly concerning as it provides
-unauthenticated access to the same inference capabilities as the protected
-`/v1` endpoints.
+Note: The `/invocations` endpoint is particularly concerning as it
+provides unauthenticated access to the same inference capabilities as
+the protected `/v1` endpoints.
 
 Security Implications             *usage-security-index-security-implications*
 
@@ -973,18 +947,18 @@ An attacker who can reach the vLLM HTTP server can:
 
 1. Bypass authentication by using endpoints outside the protected path
    prefixes, such as `/invocations`, `/generative_scoring`, `/pooling`,
-   `/classify`, `/score`, or `/rerank`, to run arbitrary inference without
-   credentials
+   `/classify`, `/score`, or `/rerank`, to run arbitrary inference
+   without credentials
 2. Cause denial of service by calling `/pause`, `/scale_elastic_ep`, or
    `/abort_requests` without a token
 3. Access operational controls to manipulate server state (e.g., pausing
    generation, updating model weights via `/update_weights`)
-4. If `--enable-tokenizer-info-endpoint` is set: Access sensitive tokenizer
-   configuration including chat templates, which may reveal prompt
-   engineering strategies or other implementation details
-5. If `VLLM_SERVER_DEV_MODE=1` is set: Execute arbitrary RPC commands via
-   `/collective_rpc`, reset caches, put the engine to sleep, and access
-   detailed server configuration
+4. If `--enable-tokenizer-info-endpoint` is set: Access sensitive
+   tokenizer configuration including chat templates, which may reveal
+   prompt engineering strategies or other implementation details
+5. If `VLLM_SERVER_DEV_MODE=1` is set: Execute arbitrary RPC commands
+   via `/collective_rpc`, reset caches, put the engine to sleep, and
+   access detailed server configuration
 
                          *usage-security-index-recommended-security-practices*
 Recommended Security Practices
@@ -993,7 +967,8 @@ Recommended Security Practices
 1. Minimize Exposed Endpoints
 
 CRITICAL: Never set `VLLM_SERVER_DEV_MODE=1` in production environments.
-Development endpoints expose extremely dangerous functionality including:
+Development endpoints expose extremely dangerous functionality
+including:
 
 - Arbitrary RPC execution via `/collective_rpc`
 - Cache manipulation that can disrupt service
@@ -1010,25 +985,27 @@ strategies.
                         *usage-security-index-2-deploy-behind-a-reverse-proxy*
 2. Deploy Behind a Reverse Proxy
 
-The most effective approach is to deploy vLLM behind a reverse proxy (such
-as nginx, Envoy, or a Kubernetes Gateway) that:
+The most effective approach is to deploy vLLM behind a reverse proxy
+(such as nginx, Envoy, or a Kubernetes Gateway) that:
 
-- Explicitly allowlists only the endpoints you want to expose to end users
-- Blocks all other endpoints, including the unauthenticated inference and
-  operational control endpoints
-- Implements additional authentication, rate limiting, and logging at the
-  proxy layer
+- Explicitly allowlists only the endpoints you want to expose to end
+  users
+- Blocks all other endpoints, including the unauthenticated inference
+  and operational control endpoints
+- Implements additional authentication, rate limiting, and logging at
+  the proxy layer
 
                       *usage-security-index-request-parameter-resource-limits*
 REQUEST PARAMETER RESOURCE LIMITS
 
 Certain API request parameters can have a large impact on resource
-consumption and may be abused to exhaust server resources. The `n` parameter
-in the `/v1/completions` and `/v1/chat/completions` endpoints controls how
-many independent output sequences are generated per request. A very large
-value causes the engine to allocate memory, CPU, and GPU time proportional
-to `n`, which can lead to out-of-memory conditions on the host and block the
-server from processing other requests.
+consumption and may be abused to exhaust server resources. The `n`
+parameter in the `/v1/completions` and `/v1/chat/completions` endpoints
+controls how many independent output sequences are generated per
+request. A very large value causes the engine to allocate memory, CPU,
+and GPU time proportional to `n`, which can lead to out-of-memory
+conditions on the host and block the server from processing other
+requests.
 
 To mitigate this, vLLM enforces a configurable upper bound on the `n`
 parameter via the `VLLM_MAX_N_SEQUENCES` environment variable (default:
@@ -1036,53 +1013,53 @@ parameter via the `VLLM_MAX_N_SEQUENCES` environment variable (default:
 engine.
 
 On the Python frontend, `/v1/responses` and `/v1/responses/render` stop
-validating the `input` list at the first invalid item and return HTTP 400.
-The error may include several details for that item.
+validating the `input` list at the first invalid item and return HTTP
+400. The error may include several details for that item.
 
 Generation requests also enforce `VLLM_MAX_STOP_STRINGS` (4),
 `VLLM_MAX_STOP_TOKEN_IDS` (128), and `VLLM_MAX_NUM_BAD_WORDS` (128).
-`VLLM_MAX_BAD_WORDS_TOTAL_TOKENS` (1024) bounds the combined length of the
-tokenized bad-word sequences.
+`VLLM_MAX_BAD_WORDS_TOTAL_TOKENS` (1024) bounds the combined length of
+the tokenized bad-word sequences.
 
 Recommendations                         *usage-security-index-recommendations*
 
-- Public-facing deployments: Consider setting `VLLM_MAX_N_SEQUENCES` to a
-  value appropriate for your workload (e.g., `64` or `128`) to limit the
-  blast radius of a single request.
+- Public-facing deployments: Consider setting `VLLM_MAX_N_SEQUENCES` to
+  a value appropriate for your workload (e.g., `64` or `128`) to limit
+  the blast radius of a single request.
 - Reverse proxy layer: In addition to vLLM's built-in limit, consider
-  enforcing request body validation and rate limiting at your reverse proxy
-  to further constrain abusive payloads.
-- Monitoring: Monitor per-request resource consumption to detect anomalous
-  patterns that may indicate abuse.
+  enforcing request body validation and rate limiting at your reverse
+  proxy to further constrain abusive payloads.
+- Monitoring: Monitor per-request resource consumption to detect
+  anomalous patterns that may indicate abuse.
 
                        *usage-security-index-per-request-multimodal-arguments*
 Per-request multimodal arguments
 
-API server endpoints reject non-empty per-request `mm_processor_kwargs` and
-`media_io_kwargs` by default. These arguments can change image, video, or
-audio loading, sizing, sampling, and preprocessing behavior, causing
-excessive CPU, GPU, or memory use when controlled by an untrusted client.
-Server-level `--mm-processor-kwargs` and `--media-io-kwargs` remain
-available for deployment configuration.
+API server endpoints reject non-empty per-request `mm_processor_kwargs`
+and `media_io_kwargs` by default. These arguments can change image,
+video, or audio loading, sizing, sampling, and preprocessing behavior,
+causing excessive CPU, GPU, or memory use when controlled by an
+untrusted client. Server-level `--mm-processor-kwargs` and
+`--media-io-kwargs` remain available for deployment configuration.
 
-Only deployments whose API clients are trusted should start the server with
-`--trust-request-mm-kwargs` to restore per-request overrides. Do not enable
-this option on an endpoint exposed to untrusted clients.
+Only deployments whose API clients are trusted should start the server
+with `--trust-request-mm-kwargs` to restore per-request overrides. Do
+not enable this option on an endpoint exposed to untrusted clients.
 
-The Rust frontend's gRPC `GenerateRequest` accepts `media_io_kwargs` without
-this option, because the |usage-security-index-grpc-interface| serves only
-trusted callers. It supports only `video.fps`, and the per-video frame cap
-still applies.
+The Rust frontend's gRPC `GenerateRequest` accepts `media_io_kwargs`
+without this option, because the |usage-security-index-grpc-interface|
+serves only trusted callers. It supports only `video.fps`, and the
+per-video frame cap still applies.
 
                      *usage-security-index-p2p-kv-offload-peer-session-limits*
 P2P KV-Offload Peer Session Limits
 
-Deployments that enable the P2P secondary tier (`OffloadingConnector` with
-|vllm.v1.kv_offload.tiering.spec.TieringOffloadingSpec| and a `p2p`
+Deployments that enable the P2P secondary tier (`OffloadingConnector`
+with |vllm.v1.kv_offload.tiering.spec.TieringOffloadingSpec| and a `p2p`
 secondary tier) accept peer addresses from `kv_transfer_params` in API
 requests. Without limits, an attacker with API access could submit many
-unique non-listening peer addresses, each consuming ZeroMQ sockets until the
-context quota is exhausted, crashing the EngineCore.
+unique non-listening peer addresses, each consuming ZeroMQ sockets until
+the context quota is exhausted, crashing the EngineCore.
 
 vLLM enforces several configurable limits to prevent this:
 
@@ -1112,14 +1089,14 @@ VLLM_P2P_TRANSFER_STALL_TIMEOUT_S  20       Seconds a P2P WRITE may stay in
                                             memory stays held until it stops.
                                             Set to 0 to disable.
 
-Connections that fail (ZMQ socket errors, handshake failures) are handled
-gracefully --- the request falls back to local prefill instead of crashing
-the engine.
+Connections that fail (ZMQ socket errors, handshake failures) are
+handled gracefully --- the request falls back to local prefill instead
+of crashing the engine.
 
 Recommendations:
 
-- Public-facing deployments with P2P enabled: Lower `VLLM_P2P_MAX_PEERS` to
-  the expected number of legitimate peers (e.g., `16` or `32`).
+- Public-facing deployments with P2P enabled: Lower `VLLM_P2P_MAX_PEERS`
+  to the expected number of legitimate peers (e.g., `16` or `32`).
 - Sensitive deployments: Consider deploying behind a reverse proxy that
   strips or validates `kv_transfer_params` from API requests to prevent
   client-supplied peer addresses entirely.
@@ -1127,149 +1104,157 @@ Recommendations:
                            *usage-security-index-tool-server-and-mcp-security*
 TOOL SERVER AND MCP SECURITY
 
-vLLM supports connecting to external tool servers via the `--tool-server`
-argument. This enables models to call tools through the Responses API
-(`/v1/responses`). Tool server support works with all models --- it is not
-limited to specific model architectures.
+vLLM supports connecting to external tool servers via the
+`--tool-server` argument. This enables models to call tools through the
+Responses API (`/v1/responses`). Tool server support works with all
+models --- it is not limited to specific model architectures.
 
-Important: No tool servers are enabled by default. They must be explicitly
-opted into via configuration.
+Important: No tool servers are enabled by default. They must be
+explicitly opted into via configuration.
 
                             *usage-security-index-built-in-demo-tools-gpt-oss*
 Built-in Demo Tools (GPT-OSS)
 
-Passing `--tool-server demo` enables built-in demo tools that work with any
-model that supports tool calling. The tool implementations are not part of
-vLLM --- they are provided by the separately installed `gpt-oss`
-https://github.com/openai/gpt-oss package. vLLM provides thin wrappers that
-delegate to `gpt-oss`.
+Passing `--tool-server demo` enables built-in demo tools that work with
+any model that supports tool calling. The tool implementations are not
+part of vLLM --- they are provided by the separately installed `gpt-oss`
+https://github.com/openai/gpt-oss package. vLLM provides thin wrappers
+that delegate to `gpt-oss`.
 
 - Code interpreter (`python`): Python execution via Docker (via
   `gpt_oss.tools.python_docker`)
-- Web browser (`browser`): Search via Exa API, requires `EXA_API_KEY` (via
-  `gpt_oss.tools.simple_browser`)
+- Web browser (`browser`): Search via Exa API, requires `EXA_API_KEY`
+  (via `gpt_oss.tools.simple_browser`)
 
             *usage-security-index-code-interpreter-python-tool-security-risks*
 Code Interpreter (Python Tool) Security Risks
 
 The code interpreter executes model-generated code inside a Docker
-container. However, the container is not configured with network isolation
-by default. It inherits the host's Docker networking configuration (e.g.,
-default bridge network or `--network=host`), which means:
+container. However, the container is not configured with network
+isolation by default. It inherits the host's Docker networking
+configuration (e.g., default bridge network or `--network=host`), which
+means:
 
 - The container may be able to access the host network and LAN.
-- Internal services reachable from the container may be exploited via SSRF
-  (Server-Side Request Forgery).
+- Internal services reachable from the container may be exploited via
+  SSRF (Server-Side Request Forgery).
 - Cloud metadata services (e.g., `169.254.169.254`) may be accessible.
-- If vulnerable internal services (such as `torch.distributed` endpoints)
-  are reachable from the container, this could be used to attack them.
+- If vulnerable internal services (such as `torch.distributed`
+  endpoints) are reachable from the container, this could be used to
+  attack them.
 
-This is particularly concerning because the code being executed is generated
-by the model, which may be influenced by adversarial inputs (prompt
-injection).
+This is particularly concerning because the code being executed is
+generated by the model, which may be influenced by adversarial inputs
+(prompt injection).
 
                  *usage-security-index-controlling-built-in-tool-availability*
 Controlling Built-in Tool Availability
 
 Built-in demo tools are controlled by two settings:
 
-1. `--tool-server demo`: Enables the built-in demo tools (browser and Python
-   code interpreter).
-2. `VLLM_GPT_OSS_SYSTEM_TOOL_MCP_LABELS`: When built-in tools are requested
-   via the `mcp` tool type in the Responses API, this comma-separated
-   allowlist controls which tool labels are permitted. Valid values are:
+1. `--tool-server demo`: Enables the built-in demo tools (browser and
+   Python code interpreter).
+2. `VLLM_GPT_OSS_SYSTEM_TOOL_MCP_LABELS`: When built-in tools are
+   requested via the `mcp` tool type in the Responses API, this
+   comma-separated allowlist controls which tool labels are permitted.
+   Valid values are:
 3. `container` - Container tool
 4. `code_interpreter` - Python code execution tool
 5. `web_search_preview` - Web search/browser tool
 
-If this variable is not set or is empty, no built-in tools requested via MCP
-tool type will be enabled.
+If this variable is not set or is empty, no built-in tools requested via
+MCP tool type will be enabled.
 
-To disable the Python code interpreter specifically, omit `code_interpreter`
-from `VLLM_GPT_OSS_SYSTEM_TOOL_MCP_LABELS`.
+To disable the Python code interpreter specifically, omit
+`code_interpreter` from `VLLM_GPT_OSS_SYSTEM_TOOL_MCP_LABELS`.
 
 Consider a custom implementation: The GPT-OSS Python tool is a reference
-implementation. For production deployments, consider implementing a custom
-code execution sandbox with stricter isolation guarantees. See the
-GPT-OSS documentation
-https://github.com/openai/gpt-oss?tab=readme-ov-file#python for guidance.
+implementation. For production deployments, consider implementing a
+custom code execution sandbox with stricter isolation guarantees. See
+the GPT-OSS documentation
+https://github.com/openai/gpt-oss?tab=readme-ov-file#python for
+guidance.
 
 DYNAMIC LORA LOADING               *usage-security-index-dynamic-lora-loading*
 
-vLLM supports dynamically loading and unloading LoRA adapters at runtime via
-the `/v1/load_lora_adapter` and `/v1/unload_lora_adapter` API endpoints.
-This functionality is not enabled by default --- it requires both
-`--enable-lora` and the environment variable
+vLLM supports dynamically loading and unloading LoRA adapters at runtime
+via the `/v1/load_lora_adapter` and `/v1/unload_lora_adapter` API
+endpoints. This functionality is not enabled by default --- it requires
+both `--enable-lora` and the environment variable
 `VLLM_ALLOW_RUNTIME_LORA_UPDATING=True` to be set.
 
-Warning: Dynamic LoRA loading is not a secure operation and should not be
-enabled in deployments exposed to untrusted clients. If you must enable
-dynamic LoRA loading, restrict access to the `/v1/load_lora_adapter` and
-`/v1/unload_lora_adapter` endpoints to trusted administrators only, using a
-reverse proxy or network-level access controls. Do not expose these
-endpoints to end users. For details on configuring LoRA adapters, see the
-|vllm-features-lora-index-2|.
+Warning: Dynamic LoRA loading is not a secure operation and should not
+be enabled in deployments exposed to untrusted clients. If you must
+enable dynamic LoRA loading, restrict access to the
+`/v1/load_lora_adapter` and `/v1/unload_lora_adapter` endpoints to
+trusted administrators only, using a reverse proxy or network-level
+access controls. Do not expose these endpoints to end users. For details
+on configuring LoRA adapters, see the |vllm-features-lora-index-2|.
 
 ENDPOINT PLUGINS                       *usage-security-index-endpoint-plugins*
 
 vLLM supports loading out-of-tree HTTP routes via the
 `vllm.endpoint_plugins` entry point group (see
 |vllm-design-endpoint_plugins-index| for how to write one). An endpoint
-plugin can register arbitrary FastAPI routes, including routes that reach
-the engine via `EngineClient.collective_rpc`, so it must be treated as part
-of the server's trusted code base and not as sandboxed or reviewed input.
+plugin can register arbitrary FastAPI routes, including routes that
+reach the engine via `EngineClient.collective_rpc`, so it must be
+treated as part of the server's trusted code base and not as sandboxed
+or reviewed input.
 
-Endpoint plugins are not loaded by default. Unlike other vLLM plugin groups
-(`vllm.general_plugins`, `vllm.platform_plugins`, etc.), which load every
-discovered plugin unless `VLLM_PLUGINS` narrows the set, endpoint plugins
-load none unless `VLLM_PLUGINS` is set and explicitly names them. This
-mirrors the "off by default in production" posture used for development
-endpoints gated behind `VLLM_SERVER_DEV_MODE`. Both surfaces are only
-present when an operator has explicitly opted in.
+Endpoint plugins are not loaded by default. Unlike other vLLM plugin
+groups (`vllm.general_plugins`, `vllm.platform_plugins`, etc.), which
+load every discovered plugin unless `VLLM_PLUGINS` narrows the set,
+endpoint plugins load none unless `VLLM_PLUGINS` is set and explicitly
+names them. This mirrors the "off by default in production" posture used
+for development endpoints gated behind `VLLM_SERVER_DEV_MODE`. Both
+surfaces are only present when an operator has explicitly opted in.
 
                        *usage-security-index-recommended-security-practices_1*
 Recommended Security Practices
 
-1. Only allowlist plugins you trust. Set `VLLM_PLUGINS` to the exact plugin
-   names you intend to run and never wildcard or copy an allowlist between
-   deployments without reviewing what each named plugin does.
-2. Audit routes before deploying. A plugin's `attach_router` can add routes
-   under any path, including ones that duplicate existing `/v1/*` paths.
-   There is currently no route conflict enforcement (tracked as a follow-up
-   to RFC #46565 https://github.com/vllm-project/vllm/issues/46565), so a
-   malicious or buggy plugin can shadow a core route and silently replace
-   its behavior. Prefer plugins that namespace their routes under a distinct
-   prefix (e.g. `/plugins/<plugin-name>/...`) instead of reusing `/v1/...`
-   and review `app.routes` after startup if you need certainty about what is
-   actually being served.
-3. Treat plugin routes like any other unauthenticated by default surface.
-   `--api-key` only protects the `/v1`, `/v2`, `/inference`, and `/cohere`
-   path prefixes (see
+1. Only allowlist plugins you trust. Set `VLLM_PLUGINS` to the exact
+   plugin names you intend to run and never wildcard or copy an
+   allowlist between deployments without reviewing what each named
+   plugin does.
+2. Audit routes before deploying. A plugin's `attach_router` can add
+   routes under any path, including ones that duplicate existing `/v1/*`
+   paths. There is currently no route conflict enforcement (tracked as a
+   follow-up to RFC #46565
+   https://github.com/vllm-project/vllm/issues/46565), so a malicious or
+   buggy plugin can shadow a core route and silently replace its
+   behavior. Prefer plugins that namespace their routes under a distinct
+   prefix (e.g. `/plugins/<plugin-name>/...`) instead of reusing
+   `/v1/...` and review `app.routes` after startup if you need certainty
+   about what is actually being served.
+3. Treat plugin routes like any other unauthenticated by default
+   surface. `--api-key` only protects the `/v1`, `/v2`, `/inference`,
+   and `/cohere` path prefixes (see
    |usage-security-index-api-key-authentication-limitations|). A plugin
    route outside those prefixes is unauthenticated unless the plugin
    implements its own authentication. Deploy behind a reverse proxy that
    allowlists only the plugin routes you intend to expose externally.
-4. Remember the `vllm.general_plugins` pairing. A plugin that also needs new
-   engine side behavior ships that half separately via
+4. Remember the `vllm.general_plugins` pairing. A plugin that also needs
+   new engine side behavior ships that half separately via
    `vllm.general_plugins` which loads in every worker process under the
-   default (load all unless restricted) posture. Allowlisting the endpoint
-   plugin does not by itself restrict its paired engine side plugin. Need to
-   review both.
+   default (load all unless restricted) posture. Allowlisting the
+   endpoint plugin does not by itself restrict its paired engine side
+   plugin. Need to review both.
 
 GRPC INTERFACE                           *usage-security-index-grpc-interface*
 
-vLLM provides optional gRPC `Inference`, `Control`, and `Render` services on
-a separate TCP port, enabled via the `--grpc-port` flag. When not specified,
-no gRPC server is started. The gRPC listener binds to the same host address
-as the HTTP server.
+vLLM provides optional gRPC `Inference`, `Control`, and `Render`
+services on a separate TCP port, enabled via the `--grpc-port` flag.
+When not specified, no gRPC server is started. The gRPC listener binds
+to the same host address as the HTTP server.
 
-Warning: The gRPC interface is insecure by default --- it does not implement
-authentication, authorization, or encryption. It should be considered a
-private, internal interface intended for use only between co-located
-services within a trusted network. Do not expose the gRPC port to the public
-internet or untrusted clients. If you enable the gRPC interface, protect it
-via network-level access controls such as firewall rules, network
-segmentation, or deployment on an isolated private network.
+Warning: The gRPC interface is insecure by default --- it does not
+implement authentication, authorization, or encryption. It should be
+considered a private, internal interface intended for use only between
+co-located services within a trusted network. Do not expose the gRPC
+port to the public internet or untrusted clients. If you enable the gRPC
+interface, protect it via network-level access controls such as firewall
+rules, network segmentation, or deployment on an isolated private
+network.
 
 Security Implications           *usage-security-index-security-implications_1*
 
@@ -1296,82 +1281,94 @@ Recommendations                       *usage-security-index-recommendations_1*
 CACHE DIRECTORY SECURITY       *usage-security-index-cache-directory-security*
 
 vLLM assumes that its cache directories are private and trusted. Cache
-contents are loaded without cryptographic integrity verification, including
-formats that support arbitrary code execution. If an untrusted user or
-process can write to vLLM's cache directories, they may be able to crash
-vLLM or cause it to execute arbitrary code.
+contents are loaded without cryptographic integrity verification,
+including formats that support arbitrary code execution. If an untrusted
+user or process can write to vLLM's cache directories, they may be able
+to crash vLLM or cause it to execute arbitrary code.
 
-Do not share vLLM cache directories with untrusted users or mount them from
-untrusted storage. Treat the cache directory with the same care as the vLLM
-installation itself.
+Do not share vLLM cache directories with untrusted users or mount them
+from untrusted storage. Treat the cache directory with the same care as
+the vLLM installation itself.
 
                           *usage-security-index-cache-directory-configuration*
 Cache Directory Configuration
 
 Most cache paths default to subdirectories under a single root. Changing
-`VLLM_CACHE_ROOT` changes the default location for all features that inherit
-from it. When `torch.compile` caching is enabled (the default), vLLM also
-redirects `TRITON_CACHE_DIR` into this tree. If compile caching is disabled,
-Triton falls back to its own default location (`~/.triton/cache`).
+`VLLM_CACHE_ROOT` changes the default location for all features that
+inherit from it. When `torch.compile` caching is enabled (the default),
+vLLM also redirects `TRITON_CACHE_DIR` into this tree. If compile
+caching is disabled, Triton falls back to its own default location
+(`~/.triton/cache`).
 
-Environment Variable                Default                               Description
-----------------------------------  ------------------------------------  --------------------------
-VLLM_CACHE_ROOT                     ~/.cache/vllm                         Base directory for
-                                                                          vLLM-owned caches.
-                                                                          Respects XDG_CACHE_HOME if
-                                                                          set.
-(torch.compile)                     $VLLM_CACHE_ROOT/torch_compile_cache/  Compilation cache for
-                                                                          AOT-compiled models,
-                                                                          Inductor graphs, and
-                                                                          Triton kernels. Controlled
-                                                                          by
-                                                                          VLLM_DISABLE_COMPILE_CACHE
-                                                                          (set to 1 to disable).
-VLLM_FLASHINFER_AUTOTUNE_CACHE_DIR  Managed:                              Overrides cache placement
-                                    ~/.cache/flashinfer/autotune/;        for both FlashInfer
-                                    legacy:                               autotune cache APIs.
-                                    $VLLM_CACHE_ROOT/flashinfer_autotune_cache/<flashinfer-version>/<arch>/<cache-hash>/
-VLLM_ASSETS_CACHE                   $VLLM_CACHE_ROOT/assets/              Downloaded assets (e.g.,
-                                                                          tokenizer files).
-VLLM_XLA_CACHE_PATH                 $VLLM_CACHE_ROOT/xla_cache/           XLA/TPU compilation cache.
-VLLM_MEDIA_CACHE                    (disabled)                            Optional cache for
-                                                                          downloaded media (images,
-                                                                          video, audio). Not enabled
-                                                                          unless explicitly set.
+Environment Variable      Default                    Description
+------------------------  -------------------------  -------------------------
+VLLM_CACHE_ROOT           ~/.cache/vllm              Base directory for
+                                                     vLLM-owned caches.
+                                                     Respects XDG_CACHE_HOME
+                                                     if set.
+(torch.compile)           $VLLM_CACHE_ROOT/torch_    Compilation cache for
+                          compile_cache/             AOT-compiled models,
+                                                     Inductor graphs, and
+                                                     Triton kernels.
+                                                     Controlled by
+                                                     VLLM_DISABLE_COMPILE_
+                                                     CACHE
+                                                     (set to 1 to disable).
+VLLM_FLASHINFER_          Managed:                   Overrides cache placement
+AUTOTUNE_CACHE_DIR        ~/.cache/flashinfer/       for both FlashInfer
+                          autotune/;                 autotune cache APIs.
+                          legacy:
+                          $VLLM_CACHE_ROOT/
+                          flashinfer_autotune_
+                          cache/<flashinfer-
+                          version>/<arch>/<cache-
+                          hash>/
+VLLM_ASSETS_CACHE         $VLLM_CACHE_ROOT/assets/   Downloaded assets (e.g.,
+                                                     tokenizer files).
+VLLM_XLA_CACHE_PATH       $VLLM_CACHE_ROOT/xla_      XLA/TPU compilation
+                          cache/                     cache.
+VLLM_MEDIA_CACHE          (disabled)                 Optional cache for
+                                                     downloaded media (images,
+                                                     video, audio). Not
+                                                     enabled unless explicitly
+                                                     set.
 
 Recommendations                       *usage-security-index-recommendations_2*
 
 - Restrict file permissions on `VLLM_CACHE_ROOT` (and any other cache
-  directories used by dependencies, such as `~/.triton` if compile caching
-  is disabled) so that only the vLLM process owner can read and write to
-  them.
-- Do not copy cache contents from untrusted sources. If you distribute cache
-  artifacts between environments, ensure they originate from a trusted build
-  pipeline.
+  directories used by dependencies, such as `~/.triton` if compile
+  caching is disabled) so that only the vLLM process owner can read and
+  write to them.
+- Do not copy cache contents from untrusted sources. If you distribute
+  cache artifacts between environments, ensure they originate from a
+  trusted build pipeline.
 - Container deployments: If mounting cache directories into containers,
   ensure the volume source is trusted.
 
 FIPS COMPATIBILITY                   *usage-security-index-fips-compatibility*
 
 FIPS compliance depends on many factors, so a vLLM deployment is not
-automatically FIPS compliant. Recent changes have improved vLLM's tolerance
-of FIPS-enabled hosts --- that is, avoiding crashes when non-approved
-algorithms are blocked --- but tolerance is not the same as compliance.
-Whether a deployment satisfies FIPS requirements depends on the host
-operating system, the OpenSSL provider backing Python's `hashlib` and `ssl`
-modules, and which optional dependencies are installed.
+automatically FIPS compliant. Recent changes have improved vLLM's
+tolerance of FIPS-enabled hosts --- that is, avoiding crashes when
+non-approved algorithms are blocked --- but tolerance is not the same as
+compliance. Whether a deployment satisfies FIPS requirements depends on
+the host operating system, the OpenSSL provider backing Python's
+`hashlib` and `ssl` modules, and which optional dependencies are
+installed.
 
-FIPS-relevant configuration *usage-security-index-fips-relevant-configuration*
+                            *usage-security-index-fips-relevant-configuration*
+FIPS-relevant configuration
 
 Operators running vLLM on FIPS-enabled hosts should select FIPS-approved
 algorithms via the following knobs:
 
 - Multimodal input hashing --- `--mm-hasher-algorithm` (config field
-  `mm_hasher_algorithm`) defaults to `blake3`, which is not FIPS-approved.
-  Set it to `sha256` or `sha512` in FIPS-enabled environments.
-- Prefix-cache hashing --- set `--prefix-caching-hash-algo` (config field
-  `prefix_caching_hash_algo`) to `sha256` or `sha256_cbor`. The `xxhash` and
-  `xxhash_cbor` options are not FIPS-approved.
+  `mm_hasher_algorithm`) defaults to `blake3`, which is not
+  FIPS-approved. Set it to `sha256` or `sha512` in FIPS-enabled
+  environments.
+- Prefix-cache hashing --- set `--prefix-caching-hash-algo` (config
+  field `prefix_caching_hash_algo`) to `sha256` or `sha256_cbor`. The
+  `xxhash` and `xxhash_cbor` options are not FIPS-approved.
 - TLS ciphers --- use `--ssl-ciphers` to restrict the API server's TLS
   handshake to FIPS-approved cipher suites that match your environment's
   policy.
@@ -1390,14 +1387,14 @@ references and understand their purpose.
 *usage-security-index-dependencies-that-provide-non-fips-hash-implementations*
 Dependencies that provide non-FIPS hash implementations
 
-Some dependencies expose hash implementations that are not FIPS-approved.
-vLLM only invokes them when the corresponding algorithm is selected, but
-operators with strict cryptographic controls may want to ensure the code
-paths are not exercised --- and, where policy requires, that the packages
-themselves are absent:
+Some dependencies expose hash implementations that are not
+FIPS-approved. vLLM only invokes them when the corresponding algorithm
+is selected, but operators with strict cryptographic controls may want
+to ensure the code paths are not exercised --- and, where policy
+requires, that the packages themselves are absent:
 
-- `blake3` --- currently listed in `requirements/common.txt`, so a standard
-  install pulls it in. It is imported lazily and only used when
+- `blake3` --- currently listed in `requirements/common.txt`, so a
+  standard install pulls it in. It is imported lazily and only used when
   `mm_hasher_algorithm=blake3` (the default). Setting
   `--mm-hasher-algorithm sha256` or `--mm-hasher-algorithm sha512` is
   sufficient to keep the non-FIPS code path dormant. If your policy
@@ -1413,86 +1410,88 @@ themselves are absent:
 Beyond hashing: other FIPS considerations
 
 Hashing is the area where vLLM has explicit FIPS-aware code, but a
-FIPS-compliant deployment depends on several factors that sit outside vLLM
-itself. Operators should evaluate the following with their platform and
-security teams:
+FIPS-compliant deployment depends on several factors that sit outside
+vLLM itself. Operators should evaluate the following with their platform
+and security teams:
 
-- Host crypto provider. Python's `hashlib` and `ssl` modules are FIPS-aware
-  only when Python is linked against a FIPS-validated OpenSSL (or
-  equivalent) provider supplied by the host OS. vLLM inherits whatever
-  provider the host configures --- it does not bundle one.
-- API server TLS. TLS termination for the OpenAI-compatible API server uses
-  the host's OpenSSL via Python's `ssl` module. Restrict the cipher suite
-  with `--ssl-ciphers` to match your environment's FIPS policy, and ensure
-  server certificates are issued with FIPS-approved algorithms and key
-  sizes.
+- Host crypto provider. Python's `hashlib` and `ssl` modules are
+  FIPS-aware only when Python is linked against a FIPS-validated OpenSSL
+  (or equivalent) provider supplied by the host OS. vLLM inherits
+  whatever provider the host configures --- it does not bundle one.
+- API server TLS. TLS termination for the OpenAI-compatible API server
+  uses the host's OpenSSL via Python's `ssl` module. Restrict the cipher
+  suite with `--ssl-ciphers` to match your environment's FIPS policy,
+  and ensure server certificates are issued with FIPS-approved
+  algorithms and key sizes.
 - Outbound HTTPS. Model and asset downloads (for example, via
-  `huggingface_hub`) use the same host TLS stack. The same provider/cipher
-  considerations apply.
+  `huggingface_hub`) use the same host TLS stack. The same
+  provider/cipher considerations apply.
 - Inter-node communication is unencrypted by default. As described in
   |usage-security-index-inter-node-communication|, PyTorch Distributed,
-  KV-cache transfer, and data-parallel channels do not encrypt traffic. FIPS
-  environments that require FIPS-approved cryptography for data in transit
-  must provide that protection externally --- for example, via an mTLS
-  sidecar or IPsec terminated by a FIPS-validated module --- since vLLM's
-  internal channels cannot satisfy the requirement on their own. Network
-  isolation alone is not cryptography and does not meet a "FIPS-approved
-  cryptography for data in transit" requirement, though it remains a useful
-  defense-in-depth measure.
-- Dependencies that bundle their own OpenSSL. Some Python wheels statically
-  link OpenSSL builds that fail the kernel FIPS self-test on FIPS-enabled
-  hosts (`FATAL FIPS SELFTEST FAILURE`). `opencv-python-headless` is a known
-  example; other manylinux wheels may behave similarly. Audit your installed
-  wheels for bundled crypto libraries when troubleshooting FIPS startup
-  failures.
+  KV-cache transfer, and data-parallel channels do not encrypt traffic.
+  FIPS environments that require FIPS-approved cryptography for data in
+  transit must provide that protection externally --- for example, via
+  an mTLS sidecar or IPsec terminated by a FIPS-validated module ---
+  since vLLM's internal channels cannot satisfy the requirement on their
+  own. Network isolation alone is not cryptography and does not meet a
+  "FIPS-approved cryptography for data in transit" requirement, though
+  it remains a useful defense-in-depth measure.
+- Dependencies that bundle their own OpenSSL. Some Python wheels
+  statically link OpenSSL builds that fail the kernel FIPS self-test on
+  FIPS-enabled hosts (`FATAL FIPS SELFTEST FAILURE`).
+  `opencv-python-headless` is a known example; other manylinux wheels
+  may behave similarly. Audit your installed wheels for bundled crypto
+  libraries when troubleshooting FIPS startup failures.
 - Accelerator and ML libraries. PyTorch, CUDA, cuDNN, NCCL, and similar
   components have their own crypto and FIPS posture independent of vLLM.
-  NVIDIA publishes FIPS-validated builds for some libraries; vLLM does not
-  pin to those builds, so selecting and validating them is the operator's
-  responsibility.
+  NVIDIA publishes FIPS-validated builds for some libraries; vLLM does
+  not pin to those builds, so selecting and validating them is the
+  operator's responsibility.
 - What is not a FIPS concern in vLLM. Random number generation used for
-  token sampling (Python/NumPy/PyTorch RNGs) is not a cryptographic use and
-  is out of scope for FIPS. Pickled cache artifacts are a separate security
-  concern covered under |usage-security-index-cache-directory-security|.
+  token sampling (Python/NumPy/PyTorch RNGs) is not a cryptographic use
+  and is out of scope for FIPS. Pickled cache artifacts are a separate
+  security concern covered under
+  |usage-security-index-cache-directory-security|.
 
 In short: the configuration knobs above let vLLM avoid non-approved
 algorithms, and the automatic fallbacks let it run without crashing on
-FIPS-enabled hosts. End-to-end FIPS compliance, however, is a property of
-the full deployment --- host OS, crypto provider, transitive dependencies,
-and network architecture --- not of vLLM alone.
+FIPS-enabled hosts. End-to-end FIPS compliance, however, is a property
+of the full deployment --- host OS, crypto provider, transitive
+dependencies, and network architecture --- not of vLLM alone.
 
 *usage-security-index-ray-cluster-trust-model-and-environment-variable-propagation*
 RAY CLUSTER TRUST MODEL AND ENVIRONMENT VARIABLE PROPAGATION
 
 Trust Assumption                       *usage-security-index-trust-assumption*
 
-vLLM treats the entire Ray cluster as a single trust domain. Any principal
-with the ability to execute code within the Ray cluster (e.g. submit actors
-or tasks) is considered to have the same level of trust as the driver/API
-server process. This means that vLLM does not attempt to isolate driver-side
-credentials from worker-side processes within the same Ray cluster.
+vLLM treats the entire Ray cluster as a single trust domain. Any
+principal with the ability to execute code within the Ray cluster (e.g.
+submit actors or tasks) is considered to have the same level of trust as
+the driver/API server process. This means that vLLM does not attempt to
+isolate driver-side credentials from worker-side processes within the
+same Ray cluster.
 
 This assumption is consistent with Ray's own security model
-https://docs.ray.io/en/latest/ray-security/index.html, which states that any
-user who can connect to a Ray cluster can run arbitrary code on any node in
-that cluster. In other words, Ray cluster access already implies full code
-execution on worker nodes, so restricting environment variable propagation
-alone would not constitute a meaningful security boundary.
+https://docs.ray.io/en/latest/ray-security/index.html, which states that
+any user who can connect to a Ray cluster can run arbitrary code on any
+node in that cluster. In other words, Ray cluster access already implies
+full code execution on worker nodes, so restricting environment variable
+propagation alone would not constitute a meaningful security boundary.
 
       *usage-security-index-driver-to-worker-environment-variable-propagation*
 Driver-to-Worker Environment Variable Propagation
 
-When using |vllm.v1.executor.ray_executor_v2.RayExecutorV2| in multi-node
-deployments, vLLM propagates environment variables from the driver process
-to remote Ray workers so that workers have the configuration they need to
-function correctly (e.g. vLLM settings, NCCL tuning, Hugging Face tokens for
-gated model downloads).
+When using |vllm.v1.executor.ray_executor_v2.RayExecutorV2| in
+multi-node deployments, vLLM propagates environment variables from the
+driver process to remote Ray workers so that workers have the
+configuration they need to function correctly (e.g. vLLM settings, NCCL
+tuning, Hugging Face tokens for gated model downloads).
 
 The propagation uses a copy-all-except-denylist policy via
 `get_driver_env_vars()` in `vllm/v1/executor/ray_env_utils.py`: every
 environment variable present in the driver's `os.environ` is sent to
-workers, except for a small set of worker-specific variables and any names
-the operator has explicitly excluded.
+workers, except for a small set of worker-specific variables and any
+names the operator has explicitly excluded.
 
 On the worker side, propagated variables are applied with `setdefault`
 semantics --- they fill in missing variables but never overwrite values
@@ -1501,27 +1500,29 @@ already present in the worker's environment.
 When This Matters                     *usage-security-index-when-this-matters*
 
 In deployments where operators intentionally scope credentials (such as
-`HF_TOKEN`, cloud storage keys, registry tokens, or internal service tokens)
-to the driver/API server alone --- for example, when GPU workers run in a
-different node, pod, or trust domain --- the default propagation behavior
-will copy those credentials into worker environments. A process running on a
-worker node under the same OS user may then be able to read those
-credentials (e.g. via `/proc/<pid>/environ` on Linux).
+`HF_TOKEN`, cloud storage keys, registry tokens, or internal service
+tokens) to the driver/API server alone --- for example, when GPU workers
+run in a different node, pod, or trust domain --- the default
+propagation behavior will copy those credentials into worker
+environments. A process running on a worker node under the same OS user
+may then be able to read those credentials (e.g. via
+`/proc/<pid>/environ` on Linux).
 
-If your deployment treats Ray workers as less trusted than the driver, be
-aware that environment-variable isolation is not enforced by default.
+If your deployment treats Ray workers as less trusted than the driver,
+be aware that environment-variable isolation is not enforced by default.
 
 Hardening Recommendations     *usage-security-index-hardening-recommendations*
 
-Operators who want to limit which environment variables are propagated to
-Ray workers can use the following mechanisms:
+Operators who want to limit which environment variables are propagated
+to Ray workers can use the following mechanisms:
 
                       *usage-security-index-1-denylist-via-configuration-file*
 1. Denylist via Configuration File
 
-Create a JSON file at `$VLLM_CONFIG_ROOT/ray_non_carry_over_env_vars.json`
-(default: `~/.config/vllm/ray_non_carry_over_env_vars.json`) containing an
-array of environment variable names to exclude from propagation:
+Create a JSON file at
+`$VLLM_CONFIG_ROOT/ray_non_carry_over_env_vars.json` (default:
+`~/.config/vllm/ray_non_carry_over_env_vars.json`) containing an array
+of environment variable names to exclude from propagation:
 
 >json
     [
@@ -1539,23 +1540,25 @@ Any variable listed here will not be copied from the driver to workers.
                           *usage-security-index-2-minimize-driver-environment*
 2. Minimize Driver Environment
 
-Rather than setting credentials in the driver's shell environment, inject
-them through a secrets manager, a mounted file, or a short-lived subprocess
-so that they are not present in `os.environ` when vLLM starts.
+Rather than setting credentials in the driver's shell environment,
+inject them through a secrets manager, a mounted file, or a short-lived
+subprocess so that they are not present in `os.environ` when vLLM
+starts.
 
                         *usage-security-index-3-network-and-process-isolation*
 3. Network and Process Isolation
 
 - Restrict `procfs` visibility on worker nodes (e.g. mount `/proc` with
-  `hidepid=2` or use a container runtime that isolates `/proc` between pods)
-  so that same-UID processes cannot read each other's `/proc/<pid>/environ`.
+  `hidepid=2` or use a container runtime that isolates `/proc` between
+  pods) so that same-UID processes cannot read each other's
+  `/proc/<pid>/environ`.
 - Run the driver and workers under different OS users or in separate
   containers with non-overlapping UIDs.
 
 4. Limit Ray Cluster Access  *usage-security-index-4-limit-ray-cluster-access*
 
-Because Ray cluster access is equivalent to arbitrary code execution, ensure
-that only trusted principals can submit work to the cluster:
+Because Ray cluster access is equivalent to arbitrary code execution,
+ensure that only trusted principals can submit work to the cluster:
 
 - Use Ray's TLS authentication to restrict cluster membership.
 - Place the Ray cluster on an isolated network segment.
@@ -1563,13 +1566,13 @@ that only trusted principals can submit work to the cluster:
 
 MULTI-TENANT DEPLOYMENTS       *usage-security-index-multi-tenant-deployments*
 
-vLLM does not provide isolation between tenants that share the same server
-process. Requests from different callers are scheduled together and share
-the same caches. Options such as `cache_salt` reduce specific cross-tenant
-risks, but they are not an isolation boundary.
+vLLM does not provide isolation between tenants that share the same
+server process. Requests from different callers are scheduled together
+and share the same caches. Options such as `cache_salt` reduce specific
+cross-tenant risks, but they are not an isolation boundary.
 
-If tenants must be isolated from each other, enforce it in the deployment
-architecture:
+If tenants must be isolated from each other, enforce it in the
+deployment architecture:
 
 - Run a dedicated vLLM instance per tenant.
 - Place a gateway in front of vLLM that authenticates callers and scopes
@@ -1581,31 +1584,31 @@ PREFIX CACHE TIMING SIDE-CHANNEL MITIGATION (CACHE SALTING)
 
 Background                                   *usage-security-index-background*
 
-Prefix caching reuses KV cache blocks across requests that share a common
-prompt prefix. In multi-tenant deployments, that reuse is a timing side
-channel (CVE-2025-46570
+Prefix caching reuses KV cache blocks across requests that share a
+common prompt prefix. In multi-tenant deployments, that reuse is a
+timing side channel (CVE-2025-46570
 https://github.com/vllm-project/vllm/security/advisories/GHSA-4qjh-9fv9-r85r).
 
 An attacker sharing the same backend can measure differences in Time to
-First Token (TTFT) to infer whether a guessed prompt prefix matches another
-user's cached prompt: when the prefix is already cached, prefill is faster.
-Research has shown this signal is nearly perfectly distinguishable (ROC AUC
-of 0.99) at prefix lengths of just 8 tokens. See
-Leaking Secrets from Prefix Caches https://arxiv.org/html/2411.18191v1 for
-details.
+First Token (TTFT) to infer whether a guessed prompt prefix matches
+another user's cached prompt: when the prefix is already cached, prefill
+is faster. Research has shown this signal is nearly perfectly
+distinguishable (ROC AUC of 0.99) at prefix lengths of just 8 tokens.
+See Leaking Secrets from Prefix Caches
+https://arxiv.org/html/2411.18191v1 for details.
 
 Cache Salting                             *usage-security-index-cache-salting*
 
 vLLM accepts an optional `cache_salt` parameter on requests. The salt is
-mixed into the hash of the first KV cache block, so only requests carrying
-the same salt can share cached prefix blocks. See
+mixed into the hash of the first KV cache block, so only requests
+carrying the same salt can share cached prefix blocks. See
 |vllm-design-prefix_caching-index| for the implementation details.
 
 `cache_salt` is accepted by the OpenAI-compatible chat completions,
-completions, responses, and pooling (embeddings, classification, scoring)
-endpoints, the Anthropic `/v1/messages` endpoint, the structured decisions
-`/v1/systemone` endpoint, and the generative scoring `/generative_scoring`
-endpoint.
+completions, responses, and pooling (embeddings, classification,
+scoring) endpoints, the Anthropic `/v1/messages` endpoint, the
+structured decisions `/v1/systemone` endpoint, and the generative
+scoring `/generative_scoring` endpoint.
 
                     *usage-security-index-usage-with-the-openai-python-client*
 Usage with the OpenAI Python client
@@ -1636,30 +1639,30 @@ How to choose a salt value   *usage-security-index-how-to-choose-a-salt-value*
 
 Treat the salt as a secret. An attacker who can guess or obtain the salt
 used by another tenant can still mount the timing attack against that
-tenant, so use random values that are long enough to be unpredictable (e.g.
-43 base64 characters, 256 bits) rather than predictable identifiers such as
-a user name or account ID.
+tenant, so use random values that are long enough to be unpredictable
+(e.g. 43 base64 characters, 256 bits) rather than predictable
+identifiers such as a user name or account ID.
 
 Scope the salt to the isolation boundary you need:
 
-- Per-user isolation: A unique random salt per user prevents any cross-user
-  cache inference.
+- Per-user isolation: A unique random salt per user prevents any
+  cross-user cache inference.
 - Per-group sharing: A shared random salt for users who are allowed to
-  benefit from each other's cached prefixes, such as users within the same
-  organization.
-- No salt: Omitting `cache_salt` preserves the default behavior where all
-  requests can share cached prefixes. This is appropriate for single-tenant
-  deployments or when prefix privacy is not a concern.
+  benefit from each other's cached prefixes, such as users within the
+  same organization.
+- No salt: Omitting `cache_salt` preserves the default behavior where
+  all requests can share cached prefixes. This is appropriate for
+  single-tenant deployments or when prefix privacy is not a concern.
 
 Recommendations                       *usage-security-index-recommendations_3*
 
 - Multi-tenant deployments: Set `cache_salt` on every request, using a
   secret scoped to the tenant boundary you want to enforce.
-- Single-tenant deployments: Cache salting is unnecessary and can be omitted
-  to maximize cache hit rates.
-- Salting reduces cache efficiency, since cached blocks are only reusable by
-  requests with the same salt. Choose the granularity of your salt values to
-  balance privacy against performance.
+- Single-tenant deployments: Cache salting is unnecessary and can be
+  omitted to maximize cache hit rates.
+- Salting reduces cache efficiency, since cached blocks are only
+  reusable by requests with the same salt. Choose the granularity of
+  your salt values to balance privacy against performance.
 
                          *usage-security-index-multimodal-media-uuid-security*
 MULTIMODAL MEDIA UUID SECURITY
@@ -1667,93 +1670,96 @@ MULTIMODAL MEDIA UUID SECURITY
 Background                                 *usage-security-index-background_1*
 
 Multimodal content parts (`image_url`, `input_audio`, `video`,
-`image_embeds`, `audio_embeds`, `vision_chunk`) accept an optional `uuid`
-field. When provided, vLLM uses this value as the cache identity for the
-media item instead of hashing the raw media bytes. This avoids re-hashing
-large media payloads on repeated requests and is the primary mechanism for
-client-side cache control of multimodal inputs.
+`image_embeds`, `audio_embeds`, `vision_chunk`) accept an optional
+`uuid` field. When provided, vLLM uses this value as the cache identity
+for the media item instead of hashing the raw media bytes. This avoids
+re-hashing large media payloads on repeated requests and is the primary
+mechanism for client-side cache control of multimodal inputs.
 
 Client Responsibility             *usage-security-index-client-responsibility*
 
-It is the client's responsibility to generate UUIDs that cannot be guessed
-by others. Use cryptographically random values --- for example, UUIDv4 via
-Python's `uuid.uuid4()` --- rather than sequential counters, short strings,
-or predictable identifiers such as filenames or user IDs.
+It is the client's responsibility to generate UUIDs that cannot be
+guessed by others. Use cryptographically random values --- for example,
+UUIDv4 via Python's `uuid.uuid4()` --- rather than sequential counters,
+short strings, or predictable identifiers such as filenames or user IDs.
 
 Multi-Tenant Risk                     *usage-security-index-multi-tenant-risk*
 
 In multi-tenant deployments where multiple callers share the same vLLM
 server, two callers who present the same `uuid` for different media will
-share a single cache entry. The media from whichever request arrives first
-is served to both, which means:
+share a single cache entry. The media from whichever request arrives
+first is served to both, which means:
 
-- Integrity: A later caller's media is silently discarded and replaced by
-  the earlier caller's cached output.
-- Confidentiality: A caller who deliberately reuses another caller's UUID
-  receives output derived from that caller's media.
+- Integrity: A later caller's media is silently discarded and replaced
+  by the earlier caller's cached output.
+- Confidentiality: A caller who deliberately reuses another caller's
+  UUID receives output derived from that caller's media.
 
-This applies to the multimodal processor cache, the encoder output cache,
-and the prefix cache block hashes. Clients must ensure UUID uniqueness
-across all callers on the same server.
+This applies to the multimodal processor cache, the encoder output
+cache, and the prefix cache block hashes. Clients must ensure UUID
+uniqueness across all callers on the same server.
 
                        *usage-security-index-extra-protection-with-cache_salt*
 Extra Protection with `cache_salt`
 
-For additional cross-tenant isolation, set `cache_salt` on each request (see
+For additional cross-tenant isolation, set `cache_salt` on each request
+(see
 |usage-security-index-prefix-cache-timing-side-channel-mitigation-cache-salting|
-above). The salt is mixed into the prefix cache block hashes, so requests
-with different salts cannot share cached prefix blocks even if UUIDs
-collide.
+above). The salt is mixed into the prefix cache block hashes, so
+requests with different salts cannot share cached prefix blocks even if
+UUIDs collide.
 
 `cache_salt` is opt-in and not passed by default.
 
 Recommendations                       *usage-security-index-recommendations_4*
 
-- Multi-tenant deployments: Always generate cryptographically random UUIDs
-  per media item. Additionally, set `cache_salt` to a per-tenant secret for
-  defense in depth.
+- Multi-tenant deployments: Always generate cryptographically random
+  UUIDs per media item. Additionally, set `cache_salt` to a per-tenant
+  secret for defense in depth.
 - Single-tenant deployments: Ensure UUIDs are unique per distinct media
-  content. `cache_salt` is unnecessary when there is no cross-tenant threat.
-- Default behavior: Omitting `uuid` uses a hash of the media bytes as the
-  cache identity, which requires hashing the media on every request. This
-  avoids accidental collisions between callers, but it does not isolate
-  tenants from each other. See
+  content. `cache_salt` is unnecessary when there is no cross-tenant
+  threat.
+- Default behavior: Omitting `uuid` uses a hash of the media bytes as
+  the cache identity, which requires hashing the media on every request.
+  This avoids accidental collisions between callers, but it does not
+  isolate tenants from each other. See
   |usage-security-index-multi-tenant-deployments|.
 
                      *usage-security-index-reporting-security-vulnerabilities*
 REPORTING SECURITY VULNERABILITIES
 
 If you believe you have found a security vulnerability in vLLM, please
-report it following the project's security policy. For more information on
-how to report security issues and the project's security policy, please see
-the vLLM Security Policy
+report it following the project's security policy. For more information
+on how to report security issues and the project's security policy,
+please see the vLLM Security Policy
 https://github.com/vllm-project/vllm/blob/main/SECURITY.md.
 
 ----------------------------------------------------------------------------
 Troubleshooting                             *vllm-usage-troubleshooting-index*
 
-This document outlines some troubleshooting strategies you can consider. If
-you think you've discovered a bug, please search existing issues
-https://github.com/vllm-project/vllm/issues?q=is%3Aissue first to see if it
-has already been reported. If not, please file a new issue
-https://github.com/vllm-project/vllm/issues/new/choose, providing as much
-relevant information as possible.
+This document outlines some troubleshooting strategies you can consider.
+If you think you've discovered a bug, please search existing issues
+https://github.com/vllm-project/vllm/issues?q=is%3Aissue first to see if
+it has already been reported. If not, please file a new issue
+https://github.com/vllm-project/vllm/issues/new/choose, providing as
+much relevant information as possible.
 
   Note: ~
 
   Once you've debugged a problem, remember to turn off any debugging
-  environment variables defined, or simply start a new shell to avoid being
-  affected by lingering debugging settings. Otherwise, the system might be
-  slow with debugging functionalities left activated.
+  environment variables defined, or simply start a new shell to avoid
+  being affected by lingering debugging settings. Otherwise, the system
+  might be slow with debugging functionalities left activated.
 
                        *usage-troubleshooting-index-hangs-downloading-a-model*
 HANGS DOWNLOADING A MODEL
 
-If the model isn't already downloaded to disk, vLLM will download it from
-the internet which can take time and depend on your internet connection.
-It's recommended to download the model first using the `hf` CLI
-https://huggingface.co/docs/huggingface_hub/en/guides/cli and passing the
-local path to the model to vLLM. This way, you can isolate the issue.
+If the model isn't already downloaded to disk, vLLM will download it
+from the internet which can take time and depend on your internet
+connection. It's recommended to download the model first using the
+`hf` CLI https://huggingface.co/docs/huggingface_hub/en/guides/cli and
+passing the local path to the model to vLLM. This way, you can isolate
+the issue.
 
                  *usage-troubleshooting-index-hangs-loading-a-model-from-disk*
 HANGS LOADING A MODEL FROM DISK
@@ -1761,16 +1767,18 @@ HANGS LOADING A MODEL FROM DISK
 If the model is large, it can take a long time to load it from disk. Pay
 attention to where you store the model. Some clusters have shared
 filesystems across nodes, e.g. a distributed filesystem or a network
-filesystem, which can be slow. It'd be better to store the model in a local
-disk. Additionally, have a look at the CPU memory usage, when the model is
-too large it might take a lot of CPU memory, slowing down the operating
-system because it needs to frequently swap between disk and memory.
+filesystem, which can be slow. It'd be better to store the model in a
+local disk. Additionally, have a look at the CPU memory usage, when the
+model is too large it might take a lot of CPU memory, slowing down the
+operating system because it needs to frequently swap between disk and
+memory.
 
   Note: ~
 
   To isolate the model downloading and loading issue, you can use the
   `--load-format dummy` argument to skip loading the model weights. This
-  way, you can check if the model downloading and loading is the bottleneck.
+  way, you can check if the model downloading and loading is the
+  bottleneck.
 
 OUT OF MEMORY                      *usage-troubleshooting-index-out-of-memory*
 
@@ -1783,29 +1791,29 @@ consumption.
 GENERATION QUALITY CHANGED
 
 In v0.8.0, the source of default sampling parameters was changed in
-Pull Request #12622 https://github.com/vllm-project/vllm/pull/12622. Prior
-to v0.8.0, the default sampling parameters came from vLLM's set of neutral
-defaults. From v0.8.0 onwards, the default sampling parameters come from the
-`generation_config.json` provided by the model creator.
+Pull Request #12622 https://github.com/vllm-project/vllm/pull/12622.
+Prior to v0.8.0, the default sampling parameters came from vLLM's set of
+neutral defaults. From v0.8.0 onwards, the default sampling parameters
+come from the `generation_config.json` provided by the model creator.
 
 In most cases, this should lead to higher quality responses, because the
-model creator is likely to know which sampling parameters are best for their
-model. However, in some cases the defaults provided by the model creator can
-lead to degraded performance.
+model creator is likely to know which sampling parameters are best for
+their model. However, in some cases the defaults provided by the model
+creator can lead to degraded performance.
 
 You can check if this is happening by trying the old defaults with
 `--generation-config vllm` for online and `generation_config="vllm"` for
-offline. If, after trying this, your generation quality improves we would
-recommend continuing to use the vLLM defaults and petition the model creator
-on https://huggingface.co to update their default `generation_config.json`
-so that it produces better quality generations.
+offline. If, after trying this, your generation quality improves we
+would recommend continuing to use the vLLM defaults and petition the
+model creator on https://huggingface.co to update their default
+`generation_config.json` so that it produces better quality generations.
 
             *usage-troubleshooting-index-check-which-backends-a-model-runs-on*
 CHECK WHICH BACKENDS A MODEL RUNS ON
 
-After loading a model, vLLM logs a table of the attention backend and the
-linear and MoE kernels its layers selected, with the layers that run each.
-It is on by default and logged once per model:
+After loading a model, vLLM logs a table of the attention backend and
+the linear and MoE kernels its layers selected, with the layers that run
+each. It is on by default and logged once per model:
 
 >text
     Backends selected for Qwen3MoeForCausalLM (Qwen/Qwen3-30B-A3B-FP8):
@@ -1816,61 +1824,62 @@ It is on by default and logged once per model:
       moe       |    48 | TrtLlmFp8ExpertsMonolithic [w=float8_e4m3fn, a=float8_e4m3fn] | model.layers.[0-47].mlp.experts.routed_experts
 <
 Each row is one backend: the kind of layer, how many layers run it, the
-kernel or attention backend selected, and the layer names with index ranges
-collapsed. Unquantized linear layers show their weight dtype instead of a
-kernel. MoE rows also show the weight and activation precision the kernel
-runs, so `a=none` means activations are not quantized. Shared experts that
-are not fused into the routed experts are linear layers and appear in the
-`linear` rows.
+kernel or attention backend selected, and the layer names with index
+ranges collapsed. Unquantized linear layers show their weight dtype
+instead of a kernel. MoE rows also show the weight and activation
+precision the kernel runs, so `a=none` means activations are not
+quantized. Shared experts that are not fused into the routed experts are
+linear layers and appear in the `linear` rows.
 
 The table replaces the individual `Using <backend> ...` and
-`Selected <kernel> for ...` lines, which are now logged at DEBUG where each
-selection is made, along with the candidates that were considered: set
-`VLLM_LOGGING_LEVEL=DEBUG` to see them. Selections that explain a fallback
-or an override are still logged at INFO or WARNING.
+`Selected <kernel> for ...` lines, which are now logged at DEBUG where
+each selection is made, along with the candidates that were considered:
+set `VLLM_LOGGING_LEVEL=DEBUG` to see them. Selections that explain a
+fallback or an override are still logged at INFO or WARNING.
 
-If loading the weights fails, the table is logged before the error with the
-selections made up to that point (its first line ends in
-`before loading failed`); MoE rows then show the experts class without the
-precision.
+If loading the weights fails, the table is logged before the error with
+the selections made up to that point (its first line ends in
+`before loading failed`); MoE rows then show the experts class without
+the precision.
 
-For the full module tree instead, set `VLLM_LOG_MODEL_INSPECTION=1` or call
-`LLM.get_model_inspection()`.
+For the full module tree instead, set `VLLM_LOG_MODEL_INSPECTION=1` or
+call `LLM.get_model_inspection()`.
 
 ENABLE MORE LOGGING          *usage-troubleshooting-index-enable-more-logging*
 
 If other strategies don't solve the problem, it's likely that the vLLM
-instance is stuck somewhere. You can use the following environment variables
-to help debug the issue:
+instance is stuck somewhere. You can use the following environment
+variables to help debug the issue:
 
 - `export VLLM_LOGGING_LEVEL=DEBUG` to turn on more logging.
-- `export VLLM_LOG_STATS_INTERVAL=1.` to get log statistics more frequently
-  for tracking running queue, waiting queue and cache hit states.
-- `export CUDA_LAUNCH_BLOCKING=1` to identify which CUDA kernel is causing
-  the problem.
+- `export VLLM_LOG_STATS_INTERVAL=1.` to get log statistics more
+  frequently for tracking running queue, waiting queue and cache hit
+  states.
+- `export CUDA_LAUNCH_BLOCKING=1` to identify which CUDA kernel is
+  causing the problem.
 - `export NCCL_DEBUG=TRACE` to turn on more logging for NCCL.
-- `export VLLM_TRACE_FUNCTION=1` to record all function calls for inspection
-  in the log files to tell which function crashes or hangs. (WARNING: This
-  flag will slow down the token generation by over 100x. Do not use unless
-  absolutely needed.)
+- `export VLLM_TRACE_FUNCTION=1` to record all function calls for
+  inspection in the log files to tell which function crashes or hangs.
+  (WARNING: This flag will slow down the token generation by over 100x.
+  Do not use unless absolutely needed.)
 
-The DP coordinator's `Received stats for out-of-order step` diagnostic is
-logged at DEBUG level. Statistics from different engines can arrive in a
-different step order; this message alone does not indicate a failed request.
-Set `VLLM_LOGGING_LEVEL=DEBUG` to inspect these reports.
+The DP coordinator's `Received stats for out-of-order step` diagnostic
+is logged at DEBUG level. Statistics from different engines can arrive
+in a different step order; this message alone does not indicate a failed
+request. Set `VLLM_LOGGING_LEVEL=DEBUG` to inspect these reports.
 
                   *usage-troubleshooting-index-gpu-cpu-synchronization-errors*
 GPU-CPU SYNCHRONIZATION ERRORS
 
-Set `VLLM_GPU_SYNC_CHECK=error` before starting vLLM to check for unexpected
-GPU-CPU synchronizations during inference. The check starts after model
-warmup and reports an error such as:
+Set `VLLM_GPU_SYNC_CHECK=error` before starting vLLM to check for
+unexpected GPU-CPU synchronizations during inference. The check starts
+after model warmup and reports an error such as:
 
 >text
     RuntimeError: GPU<->CPU sync detected - avoid it or wrap with gpu_sync_allowed()
 <
-For dots.ocr, you can check image inference at TP=1 or TP=2. For example,
-start a two-GPU server with:
+For dots.ocr, you can check image inference at TP=1 or TP=2. For
+example, start a two-GPU server with:
 
 >bash
     VLLM_GPU_SYNC_CHECK=error vllm serve rednote-hilab/dots.ocr \
@@ -1879,20 +1888,22 @@ start a two-GPU server with:
         --max-model-len 4096 \
         --limit-mm-per-prompt '{"image": 1}'
 <
-Send an image request after the server is ready so that the check exercises
-the vision encoder. A text-only request does not run this part of the model.
-See |features-multimodal_inputs-index-online-serving| for image request
-examples. Set the request's `model` to `rednote-hilab/dots.ocr` when using
-this server. Use `--tensor-parallel-size 1` to check a single-GPU setup.
+Send an image request after the server is ready so that the check
+exercises the vision encoder. A text-only request does not run this part
+of the model. See |features-multimodal_inputs-index-online-serving| for
+image request examples. Set the request's `model` to
+`rednote-hilab/dots.ocr` when using this server. Use
+`--tensor-parallel-size 1` to check a single-GPU setup.
 
 If a request fails with this error, include the full traceback, model
 revision, GPU type, and encoder attention backend in the bug report. The
-backend is shown in the startup log as `Using ... for MMEncoderAttention`.
+backend is shown in the startup log as
+`Using ... for MMEncoderAttention`.
 
 BREAKPOINTS                          *usage-troubleshooting-index-breakpoints*
 
-Setting normal `pdb` breakpoints may not work in vLLM's codebase if they are
-executed in a subprocess. You will experience something like:
+Setting normal `pdb` breakpoints may not work in vLLM's codebase if they
+are executed in a subprocess. You will experience something like:
 
 >text
       File "/usr/local/uv/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/bdb.py", line 100, in trace_dispatch
@@ -1903,8 +1914,9 @@ executed in a subprocess. You will experience something like:
                           ^^^^^^^^^^^^^
     bdb.BdbQuit
 <
-One solution is using forked-pdb https://github.com/Lightning-AI/forked-pdb.
-Install with `pip install fpdb` and set a breakpoint with something like:
+One solution is using forked-pdb
+https://github.com/Lightning-AI/forked-pdb. Install with
+`pip install fpdb` and set a breakpoint with something like:
 
 >python
     __import__('fpdb').ForkedPdb().set_trace()
@@ -1923,31 +1935,31 @@ INCORRECT NETWORK SETUP  *usage-troubleshooting-index-incorrect-network-setup*
 The vLLM instance cannot get the correct IP address if you have a
 complicated network config. You can find a log such as
 `DEBUG 06-10 21:32:17 parallel_state.py:88] world_size=8 rank=0 local_rank=0 distributed_init_method=tcp://xxx.xxx.xxx.xxx:54641 backend=nccl`
-and the IP address should be the correct one. If it's not, override the IP
-address using the environment variable
+and the IP address should be the correct one. If it's not, override the
+IP address using the environment variable
 `export VLLM_HOST_IP=<your_ip_address>`.
 
 You might also need to set
 `export NCCL_SOCKET_IFNAME=<your_network_interface>` and
-`export GLOO_SOCKET_IFNAME=<your_network_interface>` to specify the network
-interface for the IP address.
+`export GLOO_SOCKET_IFNAME=<your_network_interface>` to specify the
+network interface for the IP address.
 
                       *usage-troubleshooting-index-error-near-selfgraphreplay*
 ERROR NEAR `self.graph.replay()`
 
 If vLLM crashes and the error trace captures it somewhere around
-`self.graph.replay()` in `vllm/worker/model_runner.py`, it is a CUDA error
-inside CUDAGraph. To identify the particular CUDA operation that causes the
-error, you can add `--enforce-eager` to the command line, or
+`self.graph.replay()` in `vllm/worker/model_runner.py`, it is a CUDA
+error inside CUDAGraph. To identify the particular CUDA operation that
+causes the error, you can add `--enforce-eager` to the command line, or
 `enforce_eager=True` to the |vllm.LLM| class to disable the CUDAGraph
 optimization and isolate the exact CUDA operation that causes the error.
 
                         *usage-troubleshooting-index-incorrect-hardwaredriver*
 INCORRECT HARDWARE/DRIVER
 
-If GPU/CPU communication cannot be established, you can use the following
-Python script and follow the instructions below to confirm whether the
-GPU/CPU communication is working correctly.
+If GPU/CPU communication cannot be established, you can use the
+following Python script and follow the instructions below to confirm
+whether the GPU/CPU communication is working correctly.
 
   Code: ~
 
@@ -2021,9 +2033,9 @@ number of GPUs you want to use:
     NCCL_DEBUG=TRACE torchrun --nproc-per-node=<number-of-GPUs> test.py
 <
 If you are testing with multi-nodes, adjust `--nproc-per-node` and
-`--nnodes` according to your setup and set `MASTER_ADDR` to the correct IP
-address and port of the master node (e.g., `10.0.0.1:29400`), reachable from
-all nodes. Then, run:
+`--nnodes` according to your setup and set `MASTER_ADDR` to the correct
+IP address and port of the master node (e.g., `10.0.0.1:29400`),
+reachable from all nodes. Then, run:
 
 >bash
     NCCL_DEBUG=TRACE torchrun --nnodes 2 \
@@ -2033,9 +2045,9 @@ all nodes. Then, run:
         --node-rank $NODE_RANK test.py
 <
 Set `MASTER_ADDR` to the IP address and port of the master node (e.g.,
-`10.0.0.1:29400`), reachable from all nodes. Set `NODE_RANK` to `0` on the
-master node and `1`, `2`, ... on the workers. Adjust `--nproc-per-node` and
-`--nnodes` according to your setup.
+`10.0.0.1:29400`), reachable from all nodes. Set `NODE_RANK` to `0` on
+the master node and `1`, `2`, ... on the workers. Adjust
+`--nproc-per-node` and `--nnodes` according to your setup.
 
   Note: ~
 
@@ -2048,17 +2060,17 @@ master node and `1`, `2`, ... on the workers. Adjust `--nproc-per-node` and
 If the script runs successfully, you should see the message
 `sanity check is successful!`.
 
-If the test script hangs or crashes, usually it means the hardware/drivers
-are broken in some sense. You should try to contact your system
-administrator or hardware vendor for further assistance. As a common
-workaround, you can try to tune some NCCL environment variables, such as
-`export NCCL_P2P_DISABLE=1` to see if it helps. Please check
-their documentation
-https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html for more
-information. Please only use these environment variables as a temporary
-workaround, as they might affect the performance of the system. The best
-solution is still to fix the hardware/drivers so that the test script can
-run successfully.
+If the test script hangs or crashes, usually it means the
+hardware/drivers are broken in some sense. You should try to contact
+your system administrator or hardware vendor for further assistance. As
+a common workaround, you can try to tune some NCCL environment
+variables, such as `export NCCL_P2P_DISABLE=1` to see if it helps.
+Please check their documentation
+https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html for
+more information. Please only use these environment variables as a
+temporary workaround, as they might affect the performance of the
+system. The best solution is still to fix the hardware/drivers so that
+the test script can run successfully.
 
 PYTHON MULTIPROCESSING    *usage-troubleshooting-index-python-multiprocessing*
 
@@ -2118,10 +2130,11 @@ try this instead:
 
 vLLM heavily depends on `torch.compile` to optimize the model for better
 performance, which introduces the dependency on the `torch.compile`
-functionality and the `triton` library. By default, we use `torch.compile`
-to optimize some functions https://github.com/vllm-project/vllm/pull/10406
-in the model. Before running vLLM, you can check if `torch.compile` is
-working as expected by running the following script:
+functionality and the `triton` library. By default, we use
+`torch.compile` to optimize some functions
+https://github.com/vllm-project/vllm/pull/10406 in the model. Before
+running vLLM, you can check if `torch.compile` is working as expected by
+running the following script:
 
   Code: ~
 
@@ -2140,9 +2153,9 @@ working as expected by running the following script:
       print(f(x))
 <
 
-If it raises errors from `torch/_inductor` directory, usually it means you
-have a custom `triton` library that is not compatible with the version of
-PyTorch you are using. See Issue #12219
+If it raises errors from `torch/_inductor` directory, usually it means
+you have a custom `triton` library that is not compatible with the
+version of PyTorch you are using. See Issue #12219
 https://github.com/vllm-project/vllm/issues/12219 for example.
 
                     *usage-troubleshooting-index-model-failed-to-be-inspected*
@@ -2155,9 +2168,9 @@ If you see an error like:
         raise ValueError(
     ValueError: Model architectures ['<arch>'] failed to be inspected. Please check the logs for more details.
 <
-It means that vLLM failed to import the model file. Usually, it is related
-to missing dependencies or outdated binaries in the vLLM build. Please read
-the logs carefully to determine the root cause of the error.
+It means that vLLM failed to import the model file. Usually, it is
+related to missing dependencies or outdated binaries in the vLLM build.
+Please read the logs carefully to determine the root cause of the error.
 
 MODEL NOT SUPPORTED          *usage-troubleshooting-index-model-not-supported*
 
@@ -2178,30 +2191,30 @@ or:
     ValueError: Model architectures ['<arch>'] are not supported for now. Supported architectures: [...]
 <
 But you are sure that the model is in the
-|vllm-models-supported_models-index|, there may be some issue with vLLM's
-model resolution. In that case, please follow
-|vllm-configuration-model_resolution-index| to explicitly specify the vLLM
-implementation for the model.
+|vllm-models-supported_models-index|, there may be some issue with
+vLLM's model resolution. In that case, please follow
+|vllm-configuration-model_resolution-index| to explicitly specify the
+vLLM implementation for the model.
 
                      *usage-troubleshooting-index-failed-to-infer-device-type*
 FAILED TO INFER DEVICE TYPE
 
 If you see an error like `RuntimeError: Failed to infer device type`, it
-means that vLLM failed to infer the device type of the runtime environment.
-You can check the code
-https://github.com/vllm-project/vllm/blob/main/vllm/platforms/__init__.py to
-see how vLLM infers the device type and why it is not working as expected.
-After this PR https://github.com/vllm-project/vllm/pull/14195, you can also
-set the environment variable `VLLM_LOGGING_LEVEL=DEBUG` to see more detailed
-logs to help debug the issue.
+means that vLLM failed to infer the device type of the runtime
+environment. You can check the code
+https://github.com/vllm-project/vllm/blob/main/vllm/platforms/__init__.py
+to see how vLLM infers the device type and why it is not working as
+expected. After this PR https://github.com/vllm-project/vllm/pull/14195,
+you can also set the environment variable `VLLM_LOGGING_LEVEL=DEBUG` to
+see more detailed logs to help debug the issue.
 
 *usage-troubleshooting-index-nccl-error-unhandled-system-error-during-ncclcomminitrank*
 NCCL ERROR: UNHANDLED SYSTEM ERROR DURING `ncclCommInitRank`
 
-If your serving workload uses GPUDirect RDMA for distributed serving across
-multiple nodes and encounters an error during `ncclCommInitRank`, with no
-clear error message even with `NCCL_DEBUG=INFO` set, it might look like
-this:
+If your serving workload uses GPUDirect RDMA for distributed serving
+across multiple nodes and encounters an error during `ncclCommInitRank`,
+with no clear error message even with `NCCL_DEBUG=INFO` set, it might
+look like this:
 
 >python
     Error executing method 'init_device'. This might cause deadlock in distributed execution.
@@ -2217,44 +2230,48 @@ this:
      RuntimeError: NCCL error: unhandled system error (run with NCCL_DEBUG=INFO for details)
     ...
 <
-This indicates vLLM failed to initialize the NCCL communicator, possibly due
-to a missing `IPC_LOCK` linux capability or an unmounted `/dev/shm`. Refer
-to |serving-parallelism_scaling-index-enabling-gpudirect-rdma| for guidance
-on properly configuring the environment for GPUDirect RDMA.
+This indicates vLLM failed to initialize the NCCL communicator, possibly
+due to a missing `IPC_LOCK` linux capability or an unmounted `/dev/shm`.
+Refer to |serving-parallelism_scaling-index-enabling-gpudirect-rdma| for
+guidance on properly configuring the environment for GPUDirect RDMA.
 
 *usage-troubleshooting-index-cuda-error-the-provided-ptx-was-compiled-with-an-unsupported-toolchain*
 CUDA ERROR: THE PROVIDED PTX WAS COMPILED WITH AN UNSUPPORTED TOOLCHAIN
 
 If you see an error like
 `RuntimeError: CUDA error: the provided PTX was compiled with an unsupported toolchain`,
-it means that the CUDA PTX in vLLM's wheels was compiled with a toolchain
-unsupported by your system. This section also applies if you get the error
+it means that the CUDA PTX in vLLM's wheels was compiled with a
+toolchain unsupported by your system. This section also applies if you
+get the error
 `RuntimeError: The NVIDIA driver on your system is too old`.
 
 The released vLLM wheels are compiled with a specific version of CUDA
-toolkit, and the compiled code might fail to run on lower versions of CUDA
-drivers. Read CUDA compatibility
-https://docs.nvidia.com/deploy/cuda-compatibility/ for more details. This is
-only supported on select professional and datacenter NVIDIA GPUs.
+toolkit, and the compiled code might fail to run on lower versions of
+CUDA drivers. Read CUDA compatibility
+https://docs.nvidia.com/deploy/cuda-compatibility/ for more details.
+This is only supported on select professional and datacenter NVIDIA
+GPUs.
 
 If you are using the vLLM official Docker image, you can solve this by
-adding `-e VLLM_ENABLE_CUDA_COMPATIBILITY=1` to your `docker run` command.
-This will enable the pre-installed CUDA forward compatibility libraries.
+adding `-e VLLM_ENABLE_CUDA_COMPATIBILITY=1` to your `docker run`
+command. This will enable the pre-installed CUDA forward compatibility
+libraries.
 
-If you are running vLLM outside of Docker, the solution is to install the
-`cuda-compat` package from your package manager with the CUDA repository
+If you are running vLLM outside of Docker, the solution is to install
+the `cuda-compat` package from your package manager with the
+CUDA repository
 https://docs.nvidia.com/cuda/cuda-installation-guide-linux/ enabled. For
-example, on Ubuntu, you can run `sudo apt-get install cuda-compat-12-9`, and
-then set `export VLLM_ENABLE_CUDA_COMPATIBILITY=1` and
+example, on Ubuntu, you can run `sudo apt-get install cuda-compat-12-9`,
+and then set `export VLLM_ENABLE_CUDA_COMPATIBILITY=1` and
 `export VLLM_CUDA_COMPATIBILITY_PATH="/usr/local/cuda-12.9/compat"`.
 
 On Conda, you can install the `conda-forge::cuda-compat` package (e.g.,
-`conda install -c conda-forge cuda-compat=12.9`), then after activating the
-environment, set `export VLLM_ENABLE_CUDA_COMPATIBILITY=1` and
+`conda install -c conda-forge cuda-compat=12.9`), then after activating
+the environment, set `export VLLM_ENABLE_CUDA_COMPATIBILITY=1` and
 `export VLLM_CUDA_COMPATIBILITY_PATH="${CONDA_PREFIX}/cuda-compat"`.
 
-You can verify the configuration works by running a minimal Python script
-that initializes CUDA via vLLM:
+You can verify the configuration works by running a minimal Python
+script that initializes CUDA via vLLM:
 
 >bash
     export VLLM_ENABLE_CUDA_COMPATIBILITY=1
@@ -2268,9 +2285,9 @@ that initializes CUDA via vLLM:
     print(f"CUDA device count: {torch.accelerator.device_count()}")
     EOF
 <
-Note that we use CUDA 12.9 as an example here, and you may want to install a
-higher version of cuda-compat package in case vLLM's default CUDA version
-goes higher.
+Note that we use CUDA 12.9 as an example here, and you may want to
+install a higher version of cuda-compat package in case vLLM's default
+CUDA version goes higher.
 
 *usage-troubleshooting-index-ptxas-fatal-value-sm_110a-is-not-defined-for-option-gpu-name*
 PTXAS FATAL: VALUE 'SM_110A' IS NOT DEFINED FOR OPTION 'GPU-NAME'
@@ -2282,9 +2299,9 @@ If you use triton kernels with cuda 13, you might see an error like
     (EngineCore_0 pid=9492) triton.runtime.errors.PTXASError: PTXAS error: Internal Triton PTX codegen error
     (EngineCore_0 pid=9492) `ptxas` stderr:
     (EngineCore_0 pid=9492) ptxas fatal   : Value 'sm_110a' is not defined for option 'gpu-name'
-    (EngineCore_0 pid=9492) 
+    (EngineCore_0 pid=9492)
     (EngineCore_0 pid=9492) Repro command: /home/jetson/.venv/lib/python3.12/site-packages/triton/backends/nvidia/bin/ptxas -lineinfo -v --gpu-name=sm_110a /tmp/tmp95oy_b9d.ptx -o /tmp/tmp95oy_b9d.ptx.o
-    (EngineCore_0 pid=9492) 
+    (EngineCore_0 pid=9492)
         outputs = self.engine_core.get_output()
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
       File "/home/jetson/.venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 668, in get_output
@@ -2292,8 +2309,8 @@ If you use triton kernels with cuda 13, you might see an error like
     vllm.v1.engine.exceptions.EngineDeadError: EngineCore encountered an issue. See stack trace (above) for the root cause.
 <
 It means that the ptxas in the triton bundle is not compatible with your
-device. You need to set `TRITON_PTXAS_PATH` environment variable to use cuda
-toolkit's ptxas manually instead:
+device. You need to set `TRITON_PTXAS_PATH` environment variable to use
+cuda toolkit's ptxas manually instead:
 
 >bash
     export CUDA_HOME=/usr/local/cuda
@@ -2303,34 +2320,36 @@ toolkit's ptxas manually instead:
 
 KNOWN ISSUES                        *usage-troubleshooting-index-known-issues*
 
-- In `v0.5.2`, `v0.5.3`, and `v0.5.3.post1`, there is a bug caused by zmq
-  https://github.com/zeromq/pyzmq/issues/2000 , which can occasionally cause
-  vLLM to hang depending on the machine configuration. The solution is to
-  upgrade to the latest version of `vllm` to include the fix
+- In `v0.5.2`, `v0.5.3`, and `v0.5.3.post1`, there is a bug caused by
+  zmq https://github.com/zeromq/pyzmq/issues/2000 , which can
+  occasionally cause vLLM to hang depending on the machine
+  configuration. The solution is to upgrade to the latest version of
+  `vllm` to include the fix
   https://github.com/vllm-project/vllm/pull/6759.
 - To address a memory overhead issue in older NCCL versions (see bug
   https://github.com/NVIDIA/nccl/issues/1234), vLLM versions
   `>= 0.4.3, <= 0.10.1.1` would set the environment variable
-  `NCCL_CUMEM_ENABLE=0`. External processes connecting to vLLM also needed
-  to set this variable to prevent hangs or crashes. Since the underlying
-  NCCL bug was fixed in NCCL 2.22.3, this override was removed in newer vLLM
-  versions to allow for NCCL performance optimizations.
-- In some PCIe machines (e.g. machines without NVLink), if you see an error
-  like
+  `NCCL_CUMEM_ENABLE=0`. External processes connecting to vLLM also
+  needed to set this variable to prevent hangs or crashes. Since the
+  underlying NCCL bug was fixed in NCCL 2.22.3, this override was
+  removed in newer vLLM versions to allow for NCCL performance
+  optimizations.
+- In some PCIe machines (e.g. machines without NVLink), if you see an
+  error like
   `transport/shm.cc:590 NCCL WARN Cuda failure 217 'peer access is not supported between these two devices'`,
   it's likely caused by a driver bug. See this issue
-  https://github.com/NVIDIA/nccl/issues/1838 for more details. In that case,
-  you can try to set `NCCL_CUMEM_HOST_ENABLE=0` to disable the feature, or
-  upgrade your driver to the latest version.
+  https://github.com/NVIDIA/nccl/issues/1838 for more details. In that
+  case, you can try to set `NCCL_CUMEM_HOST_ENABLE=0` to disable the
+  feature, or upgrade your driver to the latest version.
 
 ----------------------------------------------------------------------------
 Usage Stats Collection                          *vllm-usage-usage_stats-index*
 
-vLLM collects anonymous usage data by default to help the engineering team
-better understand which hardware and model configurations are widely used.
-This data allows them to prioritize their efforts on the most common
-workloads. The collected data is transparent, does not contain any sensitive
-information.
+vLLM collects anonymous usage data by default to help the engineering
+team better understand which hardware and model configurations are
+widely used. This data allows them to prioritize their efforts on the
+most common workloads. The collected data is transparent, does not
+contain any sensitive information.
 
 A subset of the data, after cleaning and aggregation, will be publicly
 released for the community's benefit. For example, you can see the 2024
@@ -2338,8 +2357,8 @@ usage report here https://2024.vllm.ai.
 
 WHAT DATA IS COLLECTED?       *usage-usage_stats-index-what-data-is-collected*
 
-The list of data collected by the latest version of vLLM can be found here:
-vllm/usage/usage_lib.py
+The list of data collected by the latest version of vLLM can be found
+here: vllm/usage/usage_lib.py
 https://github.com/vllm-project/vllm/blob/main/vllm/usage/usage_lib.py
 
 Here is an example as of v0.4.0:
@@ -2386,8 +2405,8 @@ You can preview the collected data by running the following command:
 OPTING OUT                                *usage-usage_stats-index-opting-out*
 
 You can opt out of usage stats collection by setting the
-`VLLM_NO_USAGE_STATS` or `DO_NOT_TRACK` environment variable, or by creating
-a `~/.config/vllm/do_not_track` file:
+`VLLM_NO_USAGE_STATS` or `DO_NOT_TRACK` environment variable, or by
+creating a `~/.config/vllm/do_not_track` file:
 
 >bash
     # Any of the following methods can disable usage stats collection
@@ -2404,22 +2423,22 @@ vLLM V1                                            *vllm-usage-v1_guide-index*
   We have fully deprecated V0. Please read RFC #18571
   https://github.com/vllm-project/vllm/issues/18571 for more details.
 
-  If you have a use case that works on V0 Engine but not V1, please share it
-  on GitHub https://github.com/vllm-project/vllm or in the vLLM Slack
-  https://inviter.co/vllm-slack.
+  If you have a use case that works on V0 Engine but not V1, please
+  share it on GitHub https://github.com/vllm-project/vllm or in the
+  vLLM Slack https://inviter.co/vllm-slack.
 
-vLLM V0 successfully supported a wide range of models and hardware, but as
-new features were developed independently, the system grew increasingly
-complex. This complexity made it harder to integrate new capabilities and
-introduced technical debt, revealing the need for a more streamlined and
-unified design.
+vLLM V0 successfully supported a wide range of models and hardware, but
+as new features were developed independently, the system grew
+increasingly complex. This complexity made it harder to integrate new
+capabilities and introduced technical debt, revealing the need for a
+more streamlined and unified design.
 
-Building on V0's success, vLLM V1 retains the stable and proven components
-from V0 (such as the models, GPU kernels, and utilities). At the same time,
-it significantly re-architects the core systems, covering the scheduler, KV
-cache manager, worker, sampler, and API server, to provide a cohesive,
-maintainable framework that better accommodates continued growth and
-innovation.
+Building on V0's success, vLLM V1 retains the stable and proven
+components from V0 (such as the models, GPU kernels, and utilities). At
+the same time, it significantly re-architects the core systems, covering
+the scheduler, KV cache manager, worker, sampler, and API server, to
+provide a cohesive, maintainable framework that better accommodates
+continued growth and innovation.
 
 Specifically, V1 aims to:
 
@@ -2448,8 +2467,8 @@ This section lists some differences in behavior between V0 and V1.
 
 Chunked Prefill                         *usage-v1_guide-index-chunked-prefill*
 
-Chunked prefill is enabled by default whenever possible, unlike in V0 where
-it was conditionally enabled based on model characteristics.
+Chunked prefill is enabled by default whenever possible, unlike in V0
+where it was conditionally enabled based on model characteristics.
 
 CUDA Graphs                                 *usage-v1_guide-index-cuda-graphs*
 
@@ -2460,25 +2479,25 @@ Semantic Changes to Logprobs
 
 Logprobs Calculation               *usage-v1_guide-index-logprobs-calculation*
 
-By default, logprobs in V1 are now returned immediately once computed from
-the model's raw output (i.e. before applying any logits post-processing such
-as temperature scaling or penalty adjustments). As a result, the returned
-logprobs do not reflect the final adjusted probabilities used during
-sampling.
+By default, logprobs in V1 are now returned immediately once computed
+from the model's raw output (i.e. before applying any logits
+post-processing such as temperature scaling or penalty adjustments). As
+a result, the returned logprobs do not reflect the final adjusted
+probabilities used during sampling.
 
 You can adjust this behavior by setting the `--logprobs-mode` flag. Four
 modes are supported: `raw_logprobs` (default), `processed_logprobs`,
-`raw_logits`, `processed_logits`. Raw means the values before applying any
-logit processors, like bad words. Processed means the values after applying
-all processors, including temperature and top_k/top_p.
+`raw_logits`, `processed_logits`. Raw means the values before applying
+any logit processors, like bad words. Processed means the values after
+applying all processors, including temperature and top_k/top_p.
 
                     *usage-v1_guide-index-prompt-logprobs-with-prefix-caching*
 Prompt Logprobs with Prefix Caching
 
-While V1 supports passing prompt logprobs with prefix caching enabled, it no
-longer caches the logprobs. For a request requiring prompt logprobs, the
-engine will ignore the prefix cache and recompute the prefill of full prompt
-to generate the logprobs.
+While V1 supports passing prompt logprobs with prefix caching enabled,
+it no longer caches the logprobs. For a request requiring prompt
+logprobs, the engine will ignore the prefix cache and recompute the
+prefill of full prompt to generate the logprobs.
 
 FEATURE SUPPORT                         *usage-v1_guide-index-feature-support*
 
@@ -2493,11 +2512,12 @@ states:
 
   Note: ~
 
-  vLLM V1's unified scheduler treats both prompt and output tokens the same
-  way by using a simple dictionary (e.g., `{request_id: num_tokens}`) to
-  dynamically allocate a fixed token budget per request, enabling features
-  like chunked prefills, prefix caching, and speculative decoding without a
-  strict separation between prefill and decode phases.
+  vLLM V1's unified scheduler treats both prompt and output tokens the
+  same way by using a simple dictionary (e.g.,
+  `{request_id: num_tokens}`) to dynamically allocate a fixed token
+  budget per request, enabling features like chunked prefills, prefix
+  caching, and speculative decoding without a strict separation between
+  prefill and decode phases.
 
 The V1 scheduler supports multiple scheduling policies, including
 First-Come, First-Served (FCFS) and priority-based scheduling (where
@@ -2527,21 +2547,21 @@ CPU                                             🟢
 
 Models                                           *usage-v1_guide-index-models*
 
-Model Type                             Status
--------------------------------------  ---------------------------------------
-Decoder-only Models                    🟢
-Encoder-Decoder Models                 🟢 (Whisper), 🔴 (Others)
-Pooling Models                         🟢
-Mamba Models                           🟢
-Multimodal Models                      🟢
+Model Type                           Status
+-----------------------------------  -----------------------------------------
+Decoder-only Models                  🟢
+Encoder-Decoder Models               🟢 (Whisper), 🔴 (Others)
+Pooling Models                       🟢
+Mamba Models                         🟢
+Multimodal Models                    🟢
 
-See below for the status of models that are not yet supported or have more
-features planned in V1.
+See below for the status of models that are not yet supported or have
+more features planned in V1.
 
 Pooling Models                           *usage-v1_guide-index-pooling-models*
 
-Now fully supported, with prefix caching and chunked prefill newly available
-for last-pooling models.
+Now fully supported, with prefix caching and chunked prefill newly
+available for last-pooling models.
 
 We are working on enabling prefix caching and chunked prefill for more
 categories of pooling models.
@@ -2559,16 +2579,16 @@ attention layers are also supported (e.g.,
 `NemotronHForCausalLM`, `FalconH1ForCausalLM` and
 `GraniteMoeHybridForCausalLM`, `JambaForCausalLM`).
 
-Hybrid models with mechanisms different to Mamba are also supported (e.g,
-`Lfm2ForCausalLM`).
+Hybrid models with mechanisms different to Mamba are also supported
+(e.g, `Lfm2ForCausalLM`).
 
-Please note that prefix caching is not yet supported for any of the above
-models.
+Please note that prefix caching is not yet supported for any of the
+above models.
 
 Encoder-Decoder Models           *usage-v1_guide-index-encoder-decoder-models*
 
-Whisper is supported natively. Other encoder-decoder models are supported
-via the plugin system:
+Whisper is supported natively. Other encoder-decoder models are
+supported via the plugin system:
 
 - BART: `BartForConditionalGeneration` is supported via the official
   bart-plugin https://github.com/vllm-project/bart-plugin.
@@ -2580,35 +2600,37 @@ via the plugin system:
 - Parakeet TDT: `ParakeetForTDT` is supported via vllm-parakeet-plugin
   https://github.com/Alex-Wengg/vllm-parakeet-plugin.
 
-For other encoder-decoder models (e.g., `MllamaForConditionalGeneration`),
-we recommend following a similar pattern by implementing support through the
+For other encoder-decoder models (e.g.,
+`MllamaForConditionalGeneration`), we recommend following a similar
+pattern by implementing support through the
 |vllm-design-plugin_system-index|.
 
 Features                                       *usage-v1_guide-index-features*
 
-Feature                                                  Status
--------------------------------------------------------  ---------------------
-Prefix Caching                                           🟢 Functional
-Chunked Prefill                                          🟢 Functional
-LoRA                                                     🟢 Functional
-Logprobs Calculation                                     🟢 Functional
-FP8 KV Cache                                             🟢 Functional
-Spec Decode                                              🟢 Functional
-Prompt Logprobs with Prefix Caching                      🟢 Functional
-Structured Output Alternative Backends                   🟢 Functional
-Concurrent Partial Prefills                              🟡 In Progress
-best_of                                                  🔴 Removed
-Per-Request Logits Processors                            🔴 Removed
-GPU <> CPU KV Cache Swapping                             🔴 Removed
-Request-level Structured Output Backend                  🔴 Removed
+Feature                                                 Status
+------------------------------------------------------  ----------------------
+Prefix Caching                                          🟢 Functional
+Chunked Prefill                                         🟢 Functional
+LoRA                                                    🟢 Functional
+Logprobs Calculation                                    🟢 Functional
+FP8 KV Cache                                            🟢 Functional
+Spec Decode                                             🟢 Functional
+Prompt Logprobs with Prefix Caching                     🟢 Functional
+Structured Output Alternative Backends                  🟢 Functional
+Concurrent Partial Prefills                             🟡 In Progress
+best_of                                                 🔴 Removed
+Per-Request Logits Processors                           🔴 Removed
+GPU <> CPU KV Cache Swapping                            🔴 Removed
+Request-level Structured Output Backend                 🔴 Removed
 
   Note: ~
 
-  vLLM V1's unified scheduler treats both prompt and output tokens the same
-  way by using a simple dictionary (e.g., `{request_id: num_tokens}`) to
-  dynamically allocate a fixed token budget per request, enabling features
-  like chunked prefills, prefix caching, and speculative decoding without a
-  strict separation between prefill and decode phases.
+  vLLM V1's unified scheduler treats both prompt and output tokens the
+  same way by using a simple dictionary (e.g.,
+  `{request_id: num_tokens}`) to dynamically allocate a fixed token
+  budget per request, enabling features like chunked prefills, prefix
+  caching, and speculative decoding without a strict separation between
+  prefill and decode phases.
 
 Removed Features                       *usage-v1_guide-index-removed-features*
 
@@ -2617,19 +2639,20 @@ features have been removed.
 
 Sampling features                     *usage-v1_guide-index-sampling-features*
 
-- best_of: This feature has been removed due to limited usage. See details
-  at RFC #13361 https://github.com/vllm-project/vllm/issues/13361.
-- Per-Request Logits Processors: In V0, users could pass custom processing
-  functions to adjust logits on a per-request basis. In vLLM V1, this
-  feature has been removed. Instead, we now support global logits processors
-  which are set at startup time, see RFC #17799
+- best_of: This feature has been removed due to limited usage. See
+  details at RFC #13361
+  https://github.com/vllm-project/vllm/issues/13361.
+- Per-Request Logits Processors: In V0, users could pass custom
+  processing functions to adjust logits on a per-request basis. In vLLM
+  V1, this feature has been removed. Instead, we now support global
+  logits processors which are set at startup time, see RFC #17799
   https://github.com/vllm-project/vllm/issues/17799.
 
 KV Cache features                     *usage-v1_guide-index-kv-cache-features*
 
-- GPU <> CPU KV Cache Swapping: with the new simplified core architecture,
-  vLLM V1 no longer requires KV cache swapping to handle request
-  preemptions.
+- GPU <> CPU KV Cache Swapping: with the new simplified core
+  architecture, vLLM V1 no longer requires KV cache swapping to handle
+  request preemptions.
 
 Structured Output features   *usage-v1_guide-index-structured-output-features*
 

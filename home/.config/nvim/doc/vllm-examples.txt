@@ -303,23 +303,23 @@ Offline Inference                         *vllm-basic-offline_inference-index*
 Source
 https://github.com/vllm-project/vllm/tree/main/examples/basic/offline_inference.
 
-The |vllm.entrypoints.llm.LLM| class provides the primary Python interface
-for doing offline inference, which is interacting with a model without using
-a separate model inference server.
+The |vllm.entrypoints.llm.LLM| class provides the primary Python
+interface for doing offline inference, which is interacting with a model
+without using a separate model inference server.
 
 USAGE                                    *basic-offline_inference-index-usage*
 
-The first script in this example shows the most basic usage of vLLM. If you
-are new to Python and vLLM, you should start here.
+The first script in this example shows the most basic usage of vLLM. If
+you are new to Python and vLLM, you should start here.
 
 >bash
     python examples/basic/offline_inference/basic.py
 <
 The rest of the scripts include an argument parser
-https://docs.python.org/3/library/argparse.html, which you can use to pass
-any arguments that are compatible with `LLM`
-https://docs.vllm.ai/en/latest/api/offline_inference/llm.html. Try running
-the script with `--help` for a list of all available arguments.
+https://docs.python.org/3/library/argparse.html, which you can use to
+pass any arguments that are compatible with `LLM`
+https://docs.vllm.ai/en/latest/api/offline_inference/llm.html. Try
+running the script with `--help` for a list of all available arguments.
 
 >bash
     python examples/basic/offline_inference/classify.py
@@ -343,17 +343,18 @@ https://docs.vllm.ai/en/latest/api/inference_params.html#sampling-parameters:
 
 FEATURES                              *basic-offline_inference-index-features*
 
-In the scripts that support passing arguments, you can experiment with the
-following features.
+In the scripts that support passing arguments, you can experiment with
+the following features.
 
                      *basic-offline_inference-index-default-generation-config*
 Default generation config
 
 The `--generation-config` argument specifies where the generation config
-will be loaded from when calling `LLM.get_default_sampling_params()`. If set
-to ‘auto', the generation config will be loaded from model path. If set to a
-folder path, the generation config will be loaded from the specified folder
-path. If it is not provided, vLLM defaults will be used.
+will be loaded from when calling `LLM.get_default_sampling_params()`. If
+set to ‘auto', the generation config will be loaded from model path. If
+set to a folder path, the generation config will be loaded from the
+specified folder path. If it is not provided, vLLM defaults will be
+used.
 
   If max_new_tokens is specified in generation config, then it sets a
   server-wide limit on the number of output tokens for all requests.
@@ -370,8 +371,8 @@ GGUF                                      *basic-offline_inference-index-gguf*
 
 vLLM supports models that are quantized using GGUF.
 
-Try one yourself using the `repo_id:quant_type` format to load directly from
-HuggingFace:
+Try one yourself using the `repo_id:quant_type` format to load directly
+from HuggingFace:
 
 >bash
     --model unsloth/Qwen3-0.6B-GGUF:Q4_K_M --tokenizer Qwen/Qwen3-0.6B
@@ -379,12 +380,13 @@ HuggingFace:
 
 CPU offload                        *basic-offline_inference-index-cpu-offload*
 
-The `--cpu-offload-gb` argument can be seen as a virtual way to increase the
-GPU memory size. For example, if you have one 24 GB GPU and set this to 10,
-virtually you can think of it as a 34 GB GPU. Then you can load a 13B model
-with BF16 weight, which requires at least 26GB GPU memory. Note that this
-requires fast CPU-GPU interconnect, as part of the model is loaded from CPU
-memory to GPU memory on the fly in each model forward pass.
+The `--cpu-offload-gb` argument can be seen as a virtual way to increase
+the GPU memory size. For example, if you have one 24 GB GPU and set this
+to 10, virtually you can think of it as a 34 GB GPU. Then you can load a
+13B model with BF16 weight, which requires at least 26GB GPU memory.
+Note that this requires fast CPU-GPU interconnect, as part of the model
+is loaded from CPU memory to GPU memory on the fly in each model forward
+pass.
 
 Try it yourself with the following arguments:
 
@@ -851,7 +853,8 @@ OPENAI CHAT COMPLETION CLIENT
         main(args)
 <
 
-OPENAI COMPLETION CLIENT *basic-online_serving-index-openai-completion-client*
+                         *basic-online_serving-index-openai-completion-client*
+OPENAI COMPLETION CLIENT
 
 >python
     # SPDX-License-Identifier: Apache-2.0
@@ -1109,8 +1112,8 @@ Helm Charts                                 *vllm-deployment-chart-helm-index*
 Source
 https://github.com/vllm-project/vllm/tree/main/examples/deployment/chart-helm.
 
-This directory contains a Helm chart for deploying the vllm application. The
-chart includes configurations for deployment, autoscaling, resource
+This directory contains a Helm chart for deploying the vllm application.
+The chart includes configurations for deployment, autoscaling, resource
 management, and more.
 
 FILES                                      *deployment-chart-helm-index-files*
@@ -1128,7 +1131,8 @@ FILES                                      *deployment-chart-helm-index-files*
 - templates/deployment.yaml: Template for creating Deployments.
 - templates/hpa.yaml: Template for Horizontal Pod Autoscaler.
 - templates/job.yaml: Template for Kubernetes Jobs.
-- templates/poddisruptionbudget.yaml: Template for Pod Disruption Budget.
+- templates/poddisruptionbudget.yaml: Template for Pod Disruption
+  Budget.
 - templates/pvc.yaml: Template for Persistent Volume Claims.
 - templates/secrets.yaml: Template for Kubernetes Secrets.
 - templates/service.yaml: Template for creating Services.
@@ -1136,8 +1140,8 @@ FILES                                      *deployment-chart-helm-index-files*
 RUNNING TESTS                      *deployment-chart-helm-index-running-tests*
 
 This chart includes unit tests using helm-unittest
-https://github.com/helm-unittest/helm-unittest. Install the plugin and run
-tests:
+https://github.com/helm-unittest/helm-unittest. Install the plugin and
+run tests:
 
 >bash
     # Install plugin
@@ -1369,7 +1373,7 @@ EXAMPLE MATERIALS              *deployment-chart-helm-index-example-materials*
       */}}
       {{- define "chart.user" }}
       {{-   if .Values.image.runAsUser  }}
-      runAsUser: 
+      runAsUser:
       {{-     with .Values.runAsUser }}
       {{-       toYaml . | nindent 2 }}
       {{-     end }}
@@ -1505,7 +1509,7 @@ EXAMPLE MATERIALS              *deployment-chart-helm-index-example-materials*
                       name: "{{ .Release.Name }}-secrets"
                   {{- end }}
                   {{- include "chart.externalConfigs" . | nindent 12 }}
-                {{- end }}          
+                {{- end }}
                 ports:
                   - name: {{ include "chart.container-port-name" . }}
                     containerPort: {{ include "chart.container-port" . }}
@@ -1553,7 +1557,7 @@ EXAMPLE MATERIALS              *deployment-chart-helm-index-example-materials*
             volumes:
               - name: {{ .Release.Name }}-storage
                 persistentVolumeClaim:
-                  claimName: {{ .Release.Name }}-storage-claim     
+                  claimName: {{ .Release.Name }}-storage-claim
 
             {{- with .Values.nodeSelector }}
             nodeSelector:
@@ -2641,7 +2645,7 @@ Sagemaker-Entrypoint              *vllm-deployment-sagemaker-entrypoint-index*
 Source
 https://github.com/vllm-project/vllm/blob/main/examples/deployment/sagemaker-entrypoint.sh.
 
->sh
+>bash
     #!/bin/bash
 
     # Define the prefix for environment variables to look for
@@ -2683,13 +2687,15 @@ https://github.com/vllm-project/vllm/tree/main/docs/features/disagg_encoder.md.
 
 FILES                        *disaggregated-disaggregated_encoder-index-files*
 
-- `disagg_epd_proxy.py` - Proxy script that demonstrates the XeYpZd setup (X
-  encode instances, Y prefill instances, Z decode instances). Currently
-  stable for the 1e1p1d configuration.
-- `disagg_1e1p1d_example.sh` - Sets up the 1e1p1d configuration, runs the
-  VisionArena benchmark, and processes a single request with a local image.
+- `disagg_epd_proxy.py` - Proxy script that demonstrates the XeYpZd
+  setup (X encode instances, Y prefill instances, Z decode instances).
+  Currently stable for the 1e1p1d configuration.
+- `disagg_1e1p1d_example.sh` - Sets up the 1e1p1d configuration, runs
+  the VisionArena benchmark, and processes a single request with a local
+  image.
 - `disagg_1e1pd_example.sh` - Sets up the 1e1pd configuration, runs the
-  VisionArena benchmark, and processes a single request with a local image.
+  VisionArena benchmark, and processes a single request with a local
+  image.
 
               *disaggregated-disaggregated_encoder-index-custom-configuration*
 Custom Configuration
@@ -2710,9 +2716,10 @@ Custom Configuration
     # Run on XPU; scripts switch from CUDA_VISIBLE_DEVICES to ZE_AFFINITY_MASK
     DEVICE_PLATFORM=xpu GPU_E=0 GPU_PD=1 bash disagg_1e1pd_example.sh
 <
-`DEVICE_PLATFORM` defaults to `cuda`. Set `DEVICE_PLATFORM=xpu` when running
-these examples on Intel GPUs so the scripts use `ZE_AFFINITY_MASK` instead
-of `CUDA_VISIBLE_DEVICES` for device selection.
+`DEVICE_PLATFORM` defaults to `cuda`. Set `DEVICE_PLATFORM=xpu` when
+running these examples on Intel GPUs so the scripts use
+`ZE_AFFINITY_MASK` instead of `CUDA_VISIBLE_DEVICES` for device
+selection.
 
                  *disaggregated-disaggregated_encoder-index-encoder-instances*
 ENCODER INSTANCES
@@ -2721,30 +2728,30 @@ Encoder engines should be launched with the following flags:
 
 - `--enforce-eager` (required) -- The current EPD implementation is only
   compatible with encoder instances running in this mode.
-- `--disable-prefix-caching` (required) -- Encoder instances do not consume
-  KV cache; prefix caching is disabled to avoid conflicts with other
-  features.
+- `--disable-prefix-caching` (required) -- Encoder instances do not
+  consume KV cache; prefix caching is disabled to avoid conflicts with
+  other features.
 - `--max-num-batched-tokens=<large value>` (default: 2048) -- This flag
-  controls the token scheduling budget per decoding step and is irrelevant
-  to encoder-only instances. Set it to a very high value (effectively
-  unlimited) to bypass scheduler limitations. The actual token budget is
-  managed by the encoder cache manager.
+  controls the token scheduling budget per decoding step and is
+  irrelevant to encoder-only instances. Set it to a very high value
+  (effectively unlimited) to bypass scheduler limitations. The actual
+  token budget is managed by the encoder cache manager.
 - `--mm-encoder-only` (Optional) - If possible, skips the language model
   during initialization to reduce device memory usage.
 
                 *disaggregated-disaggregated_encoder-index-local-media-inputs*
 LOCAL MEDIA INPUTS
 
-To support local image inputs (from your `MEDIA_PATH` directory), add the
-following flag to the encoder instance:
+To support local image inputs (from your `MEDIA_PATH` directory), add
+the following flag to the encoder instance:
 
 >bash
     --allowed-local-media-path $MEDIA_PATH
 <
 The vllm instances and `disagg_encoder_proxy` supports local URIs with
-`{"url": "file://'"$MEDIA_PATH_FILENAME"'}` as multimodal inputs. Each URI
-is passed unchanged from the `disagg_encoder_proxy` to the encoder instance
-so that the encoder can load the media locally.
+`{"url": "file://'"$MEDIA_PATH_FILENAME"'}` as multimodal inputs. Each
+URI is passed unchanged from the `disagg_encoder_proxy` to the encoder
+instance so that the encoder can load the media locally.
 
       *disaggregated-disaggregated_encoder-index-ec-connector-and-kv-transfer*
 EC CONNECTOR AND KV TRANSFER
@@ -2758,45 +2765,45 @@ https://github.com/vllm-project/vllm/tree/main/docs/features/mooncake_ec_connect
 To enable filesystem encoder disaggregation, add:
 
 >bash
-    # Add to encoder instance: 
+    # Add to encoder instance:
     --ec-transfer-config '{
         "ec_connector": "ECExampleConnector",
         "ec_role": "ec_producer",
         "ec_connector_extra_config": {
             "shared_storage_path": "'"$EC_SHARED_STORAGE_PATH"'"
         }
-    }' 
+    }'
 
-    # Add to prefill/prefill+decode instance: 
+    # Add to prefill/prefill+decode instance:
     --ec-transfer-config '{
         "ec_connector": "ECExampleConnector",
         "ec_role": "ec_consumer",
         "ec_connector_extra_config": {
             "shared_storage_path": "'"$EC_SHARED_STORAGE_PATH"'"
         }
-    }' 
+    }'
 <
 `$EC_SHARED_STORAGE_PATH` is the path where the EC connector temporarily
 stores the cache.
 
-If you enable prefill instance (`--prefill-servers-urls` not disabled), you
-will need --kv-transfer-config to facilitate the PD disaggregation.
+If you enable prefill instance (`--prefill-servers-urls` not disabled),
+you will need --kv-transfer-config to facilitate the PD disaggregation.
 Currently, we use the `NixlConnector` for this purpose. Refer to
 `tests/v1/kv_connector/nixl_integration` for more example codes on PD
 disaggregation with Nixl.
 
 >bash
-    # Add to prefill instance:    
+    # Add to prefill instance:
     --kv-transfer-config '{
         "kv_connector": "NixlConnector",
         "kv_role": "kv_producer"
-    }' 
+    }'
 
     # Add to decode instance:
     --kv-transfer-config '{
         "kv_connector": "NixlConnector",
         "kv_role": "kv_consumer"
-    }' 
+    }'
 <
 
 *disaggregated-disaggregated_encoder-index-proxy-instance-flags-disagg_epd_proxypy*
@@ -2824,26 +2831,27 @@ Flag                     Description
               *disaggregated-disaggregated_encoder-index-dynamic-registration*
 Dynamic registration
 
-Alternatively, let the external launcher register ready instances over HTTP.
-No vLLM configuration changes or worker registration threads are required.
-Set `ADMIN_API_KEY` on the proxy and supply it as `X-API-Key` for
-registration and removal. These are trusted control-plane APIs; do not
-expose them publicly.
+Alternatively, let the external launcher register ready instances over
+HTTP. No vLLM configuration changes or worker registration threads are
+required. Set `ADMIN_API_KEY` on the proxy and supply it as `X-API-Key`
+for registration and removal. These are trusted control-plane APIs; do
+not expose them publicly.
 
 >bash
     export ADMIN_API_KEY="your-admin-key"
     python disagg_epd_proxy.py --port 8000 --dynamic-registration
 <
 Omit the static server URL flags and register every stage. The roles
-determine the topology: `encode` + `prefill_decode` gives E+PD; `encode` +
-`prefill` + `decode` gives E+P+D. Standalone `decode` always requires an
-available `prefill`, even when D registers first or all P instances go
-offline; otherwise requests return `503`. The proxy rejects mixing combined
-PD with standalone P/D, including unhealthy instances still in the registry.
-Explicitly remove the old topology's P/D or PD registrations before
-switching topologies.
+determine the topology: `encode` + `prefill_decode` gives E+PD; `encode`
++ `prefill` + `decode` gives E+P+D. Standalone `decode` always requires
+an available `prefill`, even when D registers first or all P instances
+go offline; otherwise requests return `503`. The proxy rejects mixing
+combined PD with standalone P/D, including unhealthy instances still in
+the registry. Explicitly remove the old topology's P/D or PD
+registrations before switching topologies.
 
-After each instance is ready, the launcher registers its reachable HTTP URL:
+After each instance is ready, the launcher registers its reachable HTTP
+URL:
 
 >bash
     curl --fail-with-body http://proxy-host:8000/instances \
@@ -2853,14 +2861,14 @@ After each instance is ready, the launcher registers its reachable HTTP URL:
         -H "X-API-Key: $ADMIN_API_KEY" -H 'Content-Type: application/json' \
         -d '{"role":"prefill_decode","url":"http://pd-host:8002"}'
 <
-For E+P+D, register P with `role: "prefill"` and D with `role: "decode"`.
-Example and NIXL EC connectors need no additional registration fields. For
-Mooncake, register `ec_zmq_addrs` on the EC consumer (`prefill_decode` or
-`prefill`), using its configured `ec_ip` and `ec_port`. Keep the fixed-port
-layout: supply the TP-rank-0 address for each DP replica, in DP-rank order;
-replica `r` uses `ec_port + r * tensor_parallel_size`. The connector
-discovers the remaining TP ranks itself. For example, DP=2, TP=2,
-`ec_port=19019`:
+For E+P+D, register P with `role: "prefill"` and D with
+`role: "decode"`. Example and NIXL EC connectors need no additional
+registration fields. For Mooncake, register `ec_zmq_addrs` on the EC
+consumer (`prefill_decode` or `prefill`), using its configured `ec_ip`
+and `ec_port`. Keep the fixed-port layout: supply the TP-rank-0 address
+for each DP replica, in DP-rank order; replica `r` uses
+`ec_port + r * tensor_parallel_size`. The connector discovers the
+remaining TP ranks itself. For example, DP=2, TP=2, `ec_port=19019`:
 
 >json
     {
@@ -2870,10 +2878,10 @@ discovers the remaining TP ranks itself. For example, DP=2, TP=2,
       "ec_zmq_addrs": ["tcp://pd-host:19019", "tcp://pd-host:19021"]
     }
 <
-The proxy selects one consumer replica and uses it for both the encoder push
-and the consumer HTTP request. Standalone D does not need EC control
-addresses. Port allocation and avoiding collisions remain the launcher's
-responsibility.
+The proxy selects one consumer replica and uses it for both the encoder
+push and the consumer HTTP request. Standalone D does not need EC
+control addresses. Port allocation and avoiding collisions remain the
+launcher's responsibility.
 
 Inspect or remove instances without restarting the proxy:
 
@@ -2884,18 +2892,19 @@ Inspect or remove instances without restarting the proxy:
         -H "X-API-Key: $ADMIN_API_KEY"
 <
 Registration is idempotent. The proxy probes registered instances every
-`--probe-interval` seconds (default 5), with `--probe-timeout` seconds per
-probe (default 2). After `--fail-threshold` consecutive failures (default
-3), it stops sending new requests to that instance. Healthy instances rejoin
-automatically; unreachable ones are forgotten after `--evicted-ttl` seconds
-(default 900; `0` retains them indefinitely). Removal stops new routing;
-already routed requests retain their selected endpoints, so drain requests
-before stopping the instance. The launcher must re-register instances after
-a proxy restart.
+`--probe-interval` seconds (default 5), with `--probe-timeout` seconds
+per probe (default 2). After `--fail-threshold` consecutive failures
+(default 3), it stops sending new requests to that instance. Healthy
+instances rejoin automatically; unreachable ones are forgotten after
+`--evicted-ttl` seconds (default 900; `0` retains them indefinitely).
+Removal stops new routing; already routed requests retain their selected
+endpoints, so drain requests before stopping the instance. The launcher
+must re-register instances after a proxy restart.
 
-The example launch scripts also support this flow: export `ADMIN_API_KEY`
-and set `DYNAMIC_REGISTRATION=1` when running `disagg_1e1pd_example.sh` or
-`disagg_1e1p1d_example.sh`. Their default remains static routing.
+The example launch scripts also support this flow: export
+`ADMIN_API_KEY` and set `DYNAMIC_REGISTRATION=1` when running
+`disagg_1e1pd_example.sh` or `disagg_1e1p1d_example.sh`. Their default
+remains static routing.
 
               *disaggregated-disaggregated_encoder-index-static-configuration*
 Static configuration
@@ -2906,9 +2915,9 @@ limit the number of images per encoder subrequest. It defaults to `0`
 (unlimited); `1` sends each image separately. Audio and video remain
 separate subrequests.
 
-For encoders with a smaller `--limit-mm-per-prompt` image limit than P/PD,
-set `ENCODER_MAX_BATCH_SIZE` no higher than the smallest encoder image
-limit. For example, for encoders configured with
+For encoders with a smaller `--limit-mm-per-prompt` image limit than
+P/PD, set `ENCODER_MAX_BATCH_SIZE` no higher than the smallest encoder
+image limit. For example, for encoders configured with
 `--limit-mm-per-prompt '{"image": 2}'`:
 
 >bash
@@ -2939,7 +2948,7 @@ EXAMPLE MATERIALS
 
   disagg_1e1p1d_example.sh: ~
 
-  >sh
+  >bash
       #!/bin/bash
       set -euo pipefail
 
@@ -3202,7 +3211,7 @@ EXAMPLE MATERIALS
 
   disagg_1e1pd_example.sh: ~
 
-  >sh
+  >bash
       #!/bin/bash
       set -euo pipefail
 
@@ -5098,8 +5107,8 @@ features of vLLM.
 
 FILES                        *disaggregated-disaggregated_serving-index-files*
 
-- `disagg_proxy_demo.py` - Demonstrates XpYd (X prefill instances, Y decode
-  instances).
+- `disagg_proxy_demo.py` - Demonstrates XpYd (X prefill instances, Y
+  decode instances).
 - `kv_events.sh` - Demonstrates KV cache event publishing.
 - `mooncake_connector` - A proxy demo for MooncakeConnector.
 
@@ -6614,7 +6623,7 @@ EXAMPLE MATERIALS
 
   kv_events.sh: ~
 
-  >sh
+  >bash
       #!/bin/bash
       # This file demonstrates the KV cache event publishing
       # We will launch a vllm instances configured to publish KV cache
@@ -7224,7 +7233,7 @@ https://github.com/vllm-project/vllm/tree/main/examples/disaggregated/ec_both_en
 
 EC BOTH ENCODER        *disaggregated-ec_both_encoder-index-ec-both-encoder_1*
 
->sh
+>bash
     #!/bin/bash
     set -euo pipefail
 
@@ -7306,8 +7315,8 @@ Disaggregated Prefill V1          *vllm-disaggregated-example_connector-index*
 Source
 https://github.com/vllm-project/vllm/tree/main/examples/disaggregated/example_connector.
 
-This example contains scripts that demonstrate disaggregated prefill in the
-offline setting of vLLM.
+This example contains scripts that demonstrate disaggregated prefill in
+the offline setting of vLLM.
 
 FILES                            *disaggregated-example_connector-index-files*
 
@@ -7315,10 +7324,11 @@ FILES                            *disaggregated-example_connector-index-files*
   `decode_example.py` sequentially.
   - Make sure you are in the `examples/disaggregated/example_connector`
     directory before running `run.sh`.
-- `prefill_example.py` - A script which performs prefill only, saving the KV
-  state to the `local_storage` directory and the prompts to `output.txt`.
-- `decode_example.py` - A script which performs decode only, loading the KV
-  state from the `local_storage` directory and the prompts from
+- `prefill_example.py` - A script which performs prefill only, saving
+  the KV state to the `local_storage` directory and the prompts to
+  `output.txt`.
+- `decode_example.py` - A script which performs decode only, loading the
+  KV state from the `local_storage` directory and the prompts from
   `output.txt`.
 
 EXAMPLE MATERIALS    *disaggregated-example_connector-index-example-materials*
@@ -7442,7 +7452,7 @@ EXAMPLE MATERIALS    *disaggregated-example_connector-index-example-materials*
 
   run.sh: ~
 
-  >sh
+  >bash
       rm -rf local_storage/
 
       if [ -f "output.txt" ]; then
@@ -7699,14 +7709,14 @@ This example builds upon the `example_connector` example in
 `examples/disaggregated`.
 
 It demonstrates vLLM's ability to recover from KV load failures in both
-synchronous and asynchronous loading modes. The goal is to verify that vLLM
-correctly identifies invalid KV blocks, reschedules the affected requests,
-and ensures successful and consistent output.
+synchronous and asynchronous loading modes. The goal is to verify that
+vLLM correctly identifies invalid KV blocks, reschedules the affected
+requests, and ensures successful and consistent output.
 
 FILES             *disaggregated-kv_load_failure_recovery_offline-index-files*
 
-- `prefill_example.py` -- performs the prefill stage and saves KV data (same
-  as in `example_connector`).
+- `prefill_example.py` -- performs the prefill stage and saves KV data
+  (same as in `example_connector`).
 - `decode_example.py` -- performs the decode stage. Accepts:
   - `--simulate-failure`: simulates KV load failure using a custom
     connector.
@@ -7723,8 +7733,8 @@ FILES             *disaggregated-kv_load_failure_recovery_offline-index-files*
   2. Decode with simulated sync KV load failure.
   3. Decode with simulated async KV load failure.
 
-  Finally, it compares the output of the baseline with the recovered outputs
-  to verify correctness.
+  Finally, it compares the output of the baseline with the recovered
+  outputs to verify correctness.
 
            *disaggregated-kv_load_failure_recovery_offline-index-how-it-works*
 HOW IT WORKS
@@ -7732,10 +7742,11 @@ HOW IT WORKS
 - The test dynamically loads `LoadRecoveryExampleConnector` via
   `KVTransferConfig.kv_connector_module_path`, enabling controlled
   simulation of load failures without modifying the original connector.
-- The decode stages that simulate failure are expected to trigger recovery
-  logic in vLLM, resulting in the same output as the baseline decode.
-- If recovery fails, the script prints a unified diff of the output mismatch
-  and exits with error.
+- The decode stages that simulate failure are expected to trigger
+  recovery logic in vLLM, resulting in the same output as the baseline
+  decode.
+- If recovery fails, the script prints a unified diff of the output
+  mismatch and exits with error.
 
 USAGE             *disaggregated-kv_load_failure_recovery_offline-index-usage*
 
@@ -8060,7 +8071,7 @@ EXAMPLE MATERIALS
 
   run.sh: ~
 
-  >sh
+  >bash
       #!/bin/bash
 
       # Constants
@@ -8110,61 +8121,62 @@ INTEGRATION MODES              *disaggregated-lmcache-index-integration-modes*
 LMCache integrates with vLLM v1 in two ways:
 
 - In-process mode (`LMCacheConnectorV1`): LMCache runs inside the vLLM
-  process and is configured through environment variables or a YAML config
-  file (`LMCACHE_CONFIG_FILE`). This is the simplest way to add single-node
-  CPU/disk offloading.
+  process and is configured through environment variables or a YAML
+  config file (`LMCACHE_CONFIG_FILE`). This is the simplest way to add
+  single-node CPU/disk offloading.
 - Multi-process (MP) mode (`LMCacheMPConnector`): LMCache runs as a
-  standalone server (`lmcache server`) that owns the KV cache storage; one
-  or more vLLM instances connect to it. This is the recommended mode for
-  distributed KV storage and for sharing KV cache across instances. See the
-  LMCache docs https://docs.lmcache.ai for the full MP setup.
+  standalone server (`lmcache server`) that owns the KV cache storage;
+  one or more vLLM instances connect to it. This is the recommended mode
+  for distributed KV storage and for sharing KV cache across instances.
+  See the LMCache docs https://docs.lmcache.ai for the full MP setup.
 
             *disaggregated-lmcache-index-mp-mode-with-the-extensible-kv-cache*
 MP mode with the extensible KV cache
 
-vLLM's extensible KV cache (`--enable-extensible-kv-cache`) allocates the KV
-cache through the CUDA VMM API, which legacy CUDA IPC cannot share.
-`LMCacheMPConnector` declares legacy CUDA IPC by default, which keeps the
-extensible KV cache off. With `"lmcache.mp.use_vmm_api": true` in its
-`kv_connector_extra_config`, also as a
+vLLM's extensible KV cache (`--enable-extensible-kv-cache`) allocates
+the KV cache through the CUDA VMM API, which legacy CUDA IPC cannot
+share. `LMCacheMPConnector` declares legacy CUDA IPC by default, which
+keeps the extensible KV cache off. With `"lmcache.mp.use_vmm_api": true`
+in its `kv_connector_extra_config`, also as a
 |vllm.distributed.kv_transfer.kv_connector.v1.multi_connector.MultiConnector|
-child, it declares POSIX file descriptor export instead: vLLM allocates the
-KV cache exportable, and the LMCache server imports each layer through a
-file descriptor. vLLM refuses to start if the extensible KV cache is then
-off, e.g. with `kv_cache_memory_bytes`.
+child, it declares POSIX file descriptor export instead: vLLM allocates
+the KV cache exportable, and the LMCache server imports each layer
+through a file descriptor. vLLM refuses to start if the extensible KV
+cache is then off, e.g. with `kv_cache_memory_bytes`.
 
 Next to `NixlConnector` in a
 |vllm.distributed.kv_transfer.kv_connector.v1.multi_connector.MultiConnector|,
 on a host with an IMEX channel (e.g., GB200/GB300) the KV cache gets a
 FABRIC handle only, and the LMCache server imports it through FABRIC
-instead; this is not yet verified, and the server needs an IMEX channel too.
-Without an IMEX channel, NIXL's transfers within a host fall back to TCP.
+instead; this is not yet verified, and the server needs an IMEX channel
+too. Without an IMEX channel, NIXL's transfers within a host fall back
+to TCP.
 
 It requires:
 
 - an LMCache release that includes the file descriptor channel
-  (LMCache/LMCache#6266 https://github.com/LMCache/LMCache/pull/6266) and
-  declares `kv_cache_access` (LMCache/LMCache#6487
+  (LMCache/LMCache#6266 https://github.com/LMCache/LMCache/pull/6266)
+  and declares `kv_cache_access` (LMCache/LMCache#6487
   https://github.com/LMCache/LMCache/pull/6487),
-- a CUDA GPU, with vLLM and the LMCache server on the same host, running as
-  the same user and sharing `/dev/shm` (`--ipc host` for containers),
+- a CUDA GPU, with vLLM and the LMCache server on the same host, running
+  as the same user and sharing `/dev/shm` (`--ipc host` for containers),
 - a TCP server URL (`"lmcache.mp.host": "tcp://..."` and
-  `"lmcache.mp.port"`), from whose port the file descriptor socket path is
-  derived.
+  `"lmcache.mp.port"`), from whose port the file descriptor socket path
+  is derived.
 
                         *disaggregated-lmcache-index-1-cpu-offload-in-process*
 1. CPU OFFLOAD (IN-PROCESS)
 
-- `python cpu_offload_lmcache.py` - CPU offloading with `LMCacheConnectorV1`
-  for vLLM v1.
+- `python cpu_offload_lmcache.py` - CPU offloading with
+  `LMCacheConnectorV1` for vLLM v1.
 
                      *disaggregated-lmcache-index-2-cpu-offload-multi-process*
 2. CPU OFFLOAD (MULTI-PROCESS)
 
 - `bash cpu_offload_lmcache_mp.sh` - CPU offloading with
-  `LMCacheMPConnector`, using a standalone `lmcache server`. vLLM provides a
-  built-in shortcut for this setup via `--kv-offloading-backend lmcache` and
-  `--kv-offloading-size <GiB>`.
+  `LMCacheMPConnector`, using a standalone `lmcache server`. vLLM
+  provides a built-in shortcut for this setup via
+  `--kv-offloading-backend lmcache` and `--kv-offloading-size <GiB>`.
 
               *disaggregated-lmcache-index-3-disaggregated-prefill-in-vllm-v1*
 3. DISAGGREGATED PREFILL IN VLLM V1
@@ -8182,8 +8194,8 @@ Prerequisites                      *disaggregated-lmcache-index-prerequisites*
 
 Usage                                      *disaggregated-lmcache-index-usage*
 
-Run `cd disagg_prefill_lmcache_v1` to get into `disagg_prefill_lmcache_v1`
-folder, and then run
+Run `cd disagg_prefill_lmcache_v1` to get into
+`disagg_prefill_lmcache_v1` folder, and then run
 
 >bash
     bash disagg_example_nixl.sh
@@ -8194,12 +8206,13 @@ Components                            *disaggregated-lmcache-index-components*
 
 Server Scripts                    *disaggregated-lmcache-index-server-scripts*
 
-- `disagg_prefill_lmcache_v1/disagg_vllm_launcher.sh` - Launches individual
-  vLLM servers for prefill/decode, and also launches the proxy server.
-- `disagg_prefill_lmcache_v1/disagg_proxy_server.py` - FastAPI proxy server
-  that coordinates between prefiller and decoder
-- `disagg_prefill_lmcache_v1/disagg_example_nixl.sh` - Main script to run
-  the example
+- `disagg_prefill_lmcache_v1/disagg_vllm_launcher.sh` - Launches
+  individual vLLM servers for prefill/decode, and also launches the
+  proxy server.
+- `disagg_prefill_lmcache_v1/disagg_proxy_server.py` - FastAPI proxy
+  server that coordinates between prefiller and decoder
+- `disagg_prefill_lmcache_v1/disagg_example_nixl.sh` - Main script to
+  run the example
 
 Configuration                      *disaggregated-lmcache-index-configuration*
 
@@ -8218,8 +8231,9 @@ The main script generates several log files:
 
 4. KV CACHE SHARING           *disaggregated-lmcache-index-4-kv-cache-sharing*
 
-The `kv_cache_sharing_lmcache_v1.py` example demonstrates how to share KV
-caches between vLLM v1 instances through a centralized LMCache server.
+The `kv_cache_sharing_lmcache_v1.py` example demonstrates how to share
+KV caches between vLLM v1 instances through a centralized LMCache
+server.
 
 EXAMPLE MATERIALS              *disaggregated-lmcache-index-example-materials*
 
@@ -8334,7 +8348,7 @@ EXAMPLE MATERIALS              *disaggregated-lmcache-index-example-materials*
 
   cpu_offload_lmcache_mp.sh: ~
 
-  >sh
+  >bash
       #!/bin/bash
       # SPDX-License-Identifier: Apache-2.0
       # SPDX-FileCopyrightText: Copyright contributors to the vLLM project
@@ -8385,7 +8399,7 @@ EXAMPLE MATERIALS              *disaggregated-lmcache-index-example-materials*
   >yaml
       local_cpu: False
       max_local_cpu_size: 0
-      #local_disk: 
+      #local_disk:
       max_local_disk_size: 0
       remote_serde: NULL
 
@@ -8403,7 +8417,7 @@ EXAMPLE MATERIALS              *disaggregated-lmcache-index-example-materials*
   >yaml
       local_cpu: False
       max_local_cpu_size: 0
-      #local_disk: 
+      #local_disk:
       max_local_disk_size: 0
       remote_serde: NULL
 
@@ -8418,7 +8432,7 @@ EXAMPLE MATERIALS              *disaggregated-lmcache-index-example-materials*
 
   disagg_prefill_lmcache_v1/disagg_example_nixl.sh: ~
 
-  >sh
+  >bash
       #!/bin/bash
 
       echo "Warning: LMCache disaggregated prefill support for vLLM v1 is experimental and subject to change."
@@ -8787,7 +8801,7 @@ EXAMPLE MATERIALS              *disaggregated-lmcache-index-example-materials*
 
   disagg_prefill_lmcache_v1/disagg_vllm_launcher.sh: ~
 
-  >sh
+  >bash
       #!/bin/bash
 
       SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -9372,7 +9386,7 @@ MOONCAKE CONNECTOR PROXY
                *disaggregated-mooncake_connector-index-run-mooncake-connector*
 RUN MOONCAKE CONNECTOR
 
->sh
+>bash
     #!/bin/bash
 
     # =============================================================================
@@ -10447,8 +10461,9 @@ Logging Configuration              *vllm-features-logging_configuration-index*
 Source
 https://github.com/vllm-project/vllm/blob/main/examples/features/logging_configuration.md.
 
-vLLM leverages Python's `logging.config.dictConfig` functionality to enable
-robust and flexible configuration of the various loggers used by vLLM.
+vLLM leverages Python's `logging.config.dictConfig` functionality to
+enable robust and flexible configuration of the various loggers used by
+vLLM.
 
 For `vllm serve`, configure logging with CLI arguments:
 
@@ -10463,7 +10478,8 @@ For `vllm serve`, configure logging with CLI arguments:
 CLI LOGGING CONFIGURATION
 
 `--logging-config` accepts a JSON object. Its fields are `log_level`,
-`formatter`, `configure_logging`, and `pylogging_config_file`. For example:
+`formatter`, `configure_logging`, and `pylogging_config_file`. For
+example:
 
 >bash
     vllm serve mistralai/Mistral-7B-v0.1 \
@@ -10484,24 +10500,24 @@ formatter:
         --logging-config.formatter json
 <
 The built-in JSON output includes `asctime`, `levelname`, `name`,
-`processName`, `process`, `message`, and `vllm_process_name`. `processName`
-is Python's process name, `vllm_process_name` identifies vLLM's logical
-process (including worker ranks where applicable), and `process` is the
-operating-system PID.
+`processName`, `process`, `message`, and `vllm_process_name`.
+`processName` is Python's process name, `vllm_process_name` identifies
+vLLM's logical process (including worker ranks where applicable), and
+`process` is the operating-system PID.
 
-The built-in profile formats records emitted through vLLM's Python loggers
-and Uvicorn's server and access loggers when using `vllm serve`. It does not
-convert direct writes to `stdout` or `stderr`. Use a custom configuration to
-format other loggers.
+The built-in profile formats records emitted through vLLM's Python
+loggers and Uvicorn's server and access loggers when using `vllm serve`.
+It does not convert direct writes to `stdout` or `stderr`. Use a custom
+configuration to format other loggers.
 
 `--log-level` is a shortcut for `--logging-config.log_level` and takes
 precedence if both are supplied. It sets the level of vLLM's built-in
-logging configuration. The former `--log-config-file` flag was removed in
-v0.35.0; use `--logging-config.pylogging_config_file` instead.
+logging configuration. The former `--log-config-file` flag was removed
+in v0.35.0; use `--logging-config.pylogging_config_file` instead.
 
 If `configure_logging` is `false`, vLLM does not apply a logging
-configuration. It cannot be combined with `pylogging_config_file`. This has
-the same effect as the legacy `VLLM_CONFIGURE_LOGGING=0` setting.
+configuration. It cannot be combined with `pylogging_config_file`. This
+has the same effect as the legacy `VLLM_CONFIGURE_LOGGING=0` setting.
 
 The custom logging configuration file must be JSON following Python's
 logging configuration dictionary schema
@@ -10510,10 +10526,11 @@ https://docs.python.org/3/library/logging.config.html#dictionary-schema-details.
   Custom configurations override built-in formatter settings: ~
 
   When `pylogging_config_file` is set, vLLM loads that JSON file and
-  replaces its built-in `dictConfig`; it does not merge the two. Therefore,
-  `log_level` and `formatter` apply only when no custom configuration file
-  is provided. Set levels and formatters in the custom file itself. vLLM
-  applies the resolved configuration in its child processes as well.
+  replaces its built-in `dictConfig`; it does not merge the two.
+  Therefore, `log_level` and `formatter` apply only when no custom
+  configuration file is provided. Set levels and formatters in the
+  custom file itself. vLLM applies the resolved configuration in its
+  child processes as well.
 
                   *features-logging_configuration-index-environment-variables*
 ENVIRONMENT VARIABLES
@@ -10521,9 +10538,9 @@ ENVIRONMENT VARIABLES
 The CLI configuration is recommended for `vllm serve`. The legacy
 `VLLM_CONFIGURE_LOGGING`, `VLLM_LOGGING_LEVEL`, and
 `VLLM_LOGGING_CONFIG_PATH` variables remain supported as defaults. The
-default handler's stream, prefix, and color are currently controlled only
-through environment variables. Values from a YAML `--config` file or the
-command line override those defaults. See
+default handler's stream, prefix, and color are currently controlled
+only through environment variables. Values from a YAML `--config` file
+or the command line override those defaults. See
 |vllm-configuration-env_vars-index| for those settings.
 
 EXAMPLES                       *features-logging_configuration-index-examples*
@@ -10531,10 +10548,10 @@ EXAMPLES                       *features-logging_configuration-index-examples*
    *features-logging_configuration-index-example-1-customize-vllm-root-logger*
 Example 1: Customize vLLM root logger
 
-For more control over fields and handlers, configure the vLLM root logger
-and Uvicorn's server and access loggers with `python-json-logger`
-https://github.com/nhairs/python-json-logger (which is part of the container
-image) to log to STDOUT in JSON format at `INFO` level.
+For more control over fields and handlers, configure the vLLM root
+logger and Uvicorn's server and access loggers with `python-json-logger`
+https://github.com/nhairs/python-json-logger (which is part of the
+container image) to log to STDOUT in JSON format at `INFO` level.
 
 To begin, first, create an appropriate JSON logging configuration file:
 
@@ -10589,37 +10606,37 @@ Finally, run vLLM with the custom logging configuration JSON file:
     vllm serve mistralai/Mistral-7B-v0.1 --max-model-len 2048 \
         --logging-config.pylogging_config_file /path/to/logging_config.json
 <
-With this custom configuration, each vLLM and Uvicorn log record is one JSON
-object. The example selects `vllm_process_name` and `process` explicitly;
-both fields are also present in the built-in JSON output described above.
-vLLM avoids altering `stdout` or `stderr`, so no text is prepended to JSON
-log records.
+With this custom configuration, each vLLM and Uvicorn log record is one
+JSON object. The example selects `vllm_process_name` and `process`
+explicitly; both fields are also present in the built-in JSON output
+described above. vLLM avoids altering `stdout` or `stderr`, so no text
+is prepended to JSON log records.
 
 This applies to records emitted through the configured Python loggers. A
 JSON formatter cannot convert unrelated output into JSON, such as a
-third-party library writing directly to `stdout` or `stderr`; configure or
-route such output separately when a consumer requires every collected line
-to be JSON.
+third-party library writing directly to `stdout` or `stderr`; configure
+or route such output separately when a consumer requires every collected
+line to be JSON.
 
 When serving, vLLM also passes this file to Uvicorn as its logging
-configuration. The `uvicorn`, `uvicorn.error`, and `uvicorn.access` entries
-format its server and access logs as JSON.
+configuration. The `uvicorn`, `uvicorn.error`, and `uvicorn.access`
+entries format its server and access logs as JSON.
 
 *features-logging_configuration-index-example-2-silence-a-particular-vllm-logger*
 Example 2: Silence a particular vLLM logger
 
 To silence a particular vLLM logger, it is necessary to provide custom
-logging configuration for the target logger that configures the logger so
-that it won't propagate its log messages to the root vLLM logger.
+logging configuration for the target logger that configures the logger
+so that it won't propagate its log messages to the root vLLM logger.
 
-When custom configuration is provided for any logger, it is also necessary
-to provide configuration for the root vLLM logger since any custom logger
-configuration overrides the built-in default logging configuration used by
-vLLM.
+When custom configuration is provided for any logger, it is also
+necessary to provide configuration for the root vLLM logger since any
+custom logger configuration overrides the built-in default logging
+configuration used by vLLM.
 
-First, create an appropriate JSON logging configuration file that includes
-configuration for the root vLLM logger and for the logger you wish to
-silence:
+First, create an appropriate JSON logging configuration file that
+includes configuration for the root vLLM logger and for the logger you
+wish to silence:
 
   /path/to/logging_config.json: ~
 
@@ -10664,25 +10681,26 @@ Finally, run vLLM with the custom logging configuration JSON file:
 *features-logging_configuration-index-example-3-disable-vllm-default-logging-configuration*
 Example 3: Disable vLLM default logging configuration
 
-To disable vLLM's default logging configuration and silence vLLM log output,
-set `--logging-config.configure_logging false` when running vLLM. This
-prevents vLLM from configuring the root vLLM logger, which in turn silences
-other vLLM loggers unless the application or Python root logger configures a
-handler.
+To disable vLLM's default logging configuration and silence vLLM log
+output, set `--logging-config.configure_logging false` when running
+vLLM. This prevents vLLM from configuring the root vLLM logger, which in
+turn silences other vLLM loggers unless the application or Python root
+logger configures a handler.
 
 >bash
     vllm serve mistralai/Mistral-7B-v0.1 --max-model-len 2048 \
         --logging-config.configure_logging false
 <
-For legacy launch scripts, `VLLM_CONFIGURE_LOGGING=0` has the same effect.
+For legacy launch scripts, `VLLM_CONFIGURE_LOGGING=0` has the same
+effect.
 
 *features-logging_configuration-index-example-4-disable-access-logs-for-health-check-endpoints*
 Example 4: Disable access logs for health check endpoints
 
 In production environments, health check endpoints like `/health`,
 `/metrics`, and `/ping` are frequently called by load balancers and
-monitoring systems, generating a large volume of repetitive access logs. To
-reduce log noise while keeping logs for other endpoints, use the
+monitoring systems, generating a large volume of repetitive access logs.
+To reduce log noise while keeping logs for other endpoints, use the
 `--disable-access-log-for-endpoints` option.
 
 Disable access logs for health and metrics endpoints:
@@ -10701,12 +10719,13 @@ Endpoint  Description             Typical Caller
 /ping     SageMaker health check  SageMaker infrastructure
 /load     Server load metrics     Custom monitoring
 
-Notes:
+Notes: ~
 
-- This option only affects uvicorn access logs, not vLLM application logs
+- This option only affects uvicorn access logs, not vLLM application
+  logs
 - Specify multiple endpoints by separating them with commas (no spaces)
-- The filter uses exact path matching, query parameters are ignored (e.g.,
-  `/health?verbose=true` matches `/health`)
+- The filter uses exact path matching, query parameters are ignored
+  (e.g., `/health?verbose=true` matches `/health`)
 - If you need to completely disable all access logs, use
   `--disable-uvicorn-access-log` instead
 
@@ -10723,22 +10742,22 @@ Source
 https://github.com/vllm-project/vllm/tree/main/examples/features/logits_processor.
 
 This directory contains examples demonstrating how to use custom logits
-processors with vLLM's offline inference API. Logits processors allow you to
-modify the model's output distribution before sampling, enabling controlled
-generation behaviors like token masking, constrained decoding, and custom
-sampling strategies.
+processors with vLLM's offline inference API. Logits processors allow
+you to modify the model's output distribution before sampling, enabling
+controlled generation behaviors like token masking, constrained
+decoding, and custom sampling strategies.
 
 SCRIPTS                              *features-logits_processor-index-scripts*
 
                 *features-logits_processor-index-drypy-dry-repetition-penalty*
 `dry.py` --- DRY repetition penalty
 
-Implements the DRY (Don't Repeat Yourself) repetition penalty, ported from
-llama.cpp, as `DryState`, a custom logits processor. Requests turn it on
-through `SamplingParams.extra_args`, for example `{"dry_multiplier": 0.8}`.
-The example sends one prompt twice in one batch, once without DRY and once
-with it, and prints both outputs. `tests/v1/sample/test_dry.py` imports the
-processor from this file.
+Implements the DRY (Don't Repeat Yourself) repetition penalty, ported
+from llama.cpp, as `DryState`, a custom logits processor. Requests turn
+it on through `SamplingParams.extra_args`, for example
+`{"dry_multiplier": 0.8}`. The example sends one prompt twice in one
+batch, once without DRY and once with it, and prints both outputs.
+`tests/v1/sample/test_dry.py` imports the processor from this file.
 
 >bash
     python examples/features/logits_processor/dry.py
@@ -10750,14 +10769,16 @@ KEY CONCEPTS                    *features-logits_processor-index-key-concepts*
   efficiency; see the custom logits processors guide
   https://github.com/vllm-project/vllm/tree/main/docs/features/custom_logitsprocs.md
   for the interface.
-- `SamplingParams.extra_args`: Use this to pass custom keyword arguments to
-  your logits processor on a per-request basis (e.g., `target_token`).
+- `SamplingParams.extra_args`: Use this to pass custom keyword arguments
+  to your logits processor on a per-request basis (e.g.,
+  `target_token`).
 
 FURTHER READING              *features-logits_processor-index-further-reading*
 
 - vLLM Sampling Parameters
   https://docs.vllm.ai/en/latest/api/inference_params.html#sampling-parameters
-- vLLM LLM API https://docs.vllm.ai/en/latest/api/offline_inference/llm.html
+- vLLM LLM API
+  https://docs.vllm.ai/en/latest/api/offline_inference/llm.html
 
 EXAMPLE MATERIALS          *features-logits_processor-index-example-materials*
 
@@ -11859,9 +11880,10 @@ lines.
 See here for an example file.
 https://github.com/vllm-project/vllm/blob/main/examples/features/openai_batch/openai_example_batch.jsonl
 
-Each line represents a separate request. See the OpenAI package reference
-https://platform.openai.com/docs/api-reference/batch/requestInput for more
-details.
+Each line represents a separate request. See the
+OpenAI package reference
+https://platform.openai.com/docs/api-reference/batch/requestInput for
+more details.
 
 >text
     We currently support `/v1/chat/completions`, `/v1/completions`, `/v1/embeddings`,
@@ -11872,13 +11894,14 @@ details.
 
 PRE-REQUISITES                    *features-openai_batch-index-pre-requisites*
 
-- The examples in this document use `meta-llama/Meta-Llama-3-8B-Instruct`.
+- The examples in this document use
+  `meta-llama/Meta-Llama-3-8B-Instruct`.
   - Create a user access token
     https://huggingface.co/docs/hub/en/security-tokens
   - Install the token on your machine (Run `hf auth login`).
   - Get access to the gated model by visiting the model card
-    https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct and agreeing
-    to the terms and conditions.
+    https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct and
+    agreeing to the terms and conditions.
 
              *features-openai_batch-index-example-1-running-with-a-local-file*
 EXAMPLE 1: RUNNING WITH A LOCAL FILE
@@ -11886,8 +11909,8 @@ EXAMPLE 1: RUNNING WITH A LOCAL FILE
                    *features-openai_batch-index-step-1-create-your-batch-file*
 Step 1: Create your batch file
 
-To follow along with this example, you can download the example batch, or
-create your own batch file in your working directory.
+To follow along with this example, you can download the example batch,
+or create your own batch file in your working directory.
 
 >bash
     wget https://raw.githubusercontent.com/vllm-project/vllm/main/examples/features/openai_batch/openai_example_batch.jsonl
@@ -11928,12 +11951,13 @@ Step 3: Check your results
 You should now have your results at `results.jsonl`. You can check your
 results by running `cat results.jsonl`
 
-Responses are written in input order as the batch runs. The output file is
-truncated when the run starts; if the run fails partway, it holds the
-responses for the first lines of the input, so check the exit code before
-treating it as complete. To resume, rerun the input lines past the last one
-written; if the process was killed, drop a final line that is incomplete
-first. An output URL is uploaded only when the run succeeds.
+Responses are written in input order as the batch runs. The output file
+is truncated when the run starts; if the run fails partway, it holds the
+responses for the first lines of the input, so check the exit code
+before treating it as complete. To resume, rerun the input lines past
+the last one written; if the process was killed, drop a final line that
+is incomplete first. An output URL is uploaded only when the run
+succeeds.
 
 >bash
     cat results.jsonl
@@ -11944,8 +11968,8 @@ first. An output URL is uploaded only when the run succeeds.
                     *features-openai_batch-index-example-2-using-remote-files*
 EXAMPLE 2: USING REMOTE FILES
 
-The batch runner supports remote input and output urls that are accessible
-via http/https.
+The batch runner supports remote input and output urls that are
+accessible via http/https.
 
 For example, to run against our example input file located at
 `https://raw.githubusercontent.com/vllm-project/vllm/main/examples/features/openai_batch/openai_example_batch.jsonl`,
@@ -11982,14 +12006,14 @@ Additional prerequisites
   credentials and interactively use s3.
   - Configure your credentials
     https://docs.aws.amazon.com/cli/latest/userguide/getting-started-quickstart.html.
-- The `boto3` python package (Run `pip install boto3`) to generate presigned
-  urls.
+- The `boto3` python package (Run `pip install boto3`) to generate
+  presigned urls.
 
                  *features-openai_batch-index-step-1-upload-your-input-script*
 Step 1: Upload your input script
 
-To follow along with this example, you can download the example batch, or
-create your own batch file in your working directory.
+To follow along with this example, you can download the example batch,
+or create your own batch file in your working directory.
 
 >bash
     wget https://raw.githubusercontent.com/vllm-project/vllm/main/examples/features/openai_batch/openai_example_batch.jsonl
@@ -12010,10 +12034,10 @@ Now upload your batch file to your S3 bucket.
              *features-openai_batch-index-step-2-generate-your-presigned-urls*
 Step 2: Generate your presigned urls
 
-Presigned urls can only be generated via the SDK. You can run the following
-python script to generate your presigned urls. Be sure to replace the
-`MY_BUCKET`, `MY_INPUT_FILE.jsonl`, and `MY_OUTPUT_FILE.jsonl` placeholders
-with your bucket and file names.
+Presigned urls can only be generated via the SDK. You can run the
+following python script to generate your presigned urls. Be sure to
+replace the `MY_BUCKET`, `MY_INPUT_FILE.jsonl`, and
+`MY_OUTPUT_FILE.jsonl` placeholders with your bucket and file names.
 
 (The script is adapted from
 https://github.com/awsdocs/aws-doc-sdk-examples/blob/main/python/example_code/s3/s3_basics/presigned_url.py)
@@ -12069,8 +12093,8 @@ This script should output
 *features-openai_batch-index-step-3-run-the-batch-runner-using-your-presigned-urls*
 Step 3: Run the batch runner using your presigned urls
 
-You can now run the batch runner, using the urls generated in the previous
-section.
+You can now run the batch runner, using the urls generated in the
+previous section.
 
 >bash
     python -m vllm.entrypoints.launchers.run_batch \
@@ -12090,7 +12114,8 @@ or use command-line:
                         *features-openai_batch-index-step-4-view-your-results*
 Step 4: View your results
 
-Your results are now on S3. You can view them in your terminal by running
+Your results are now on S3. You can view them in your terminal by
+running
 
 >bash
     aws s3 cp s3://MY_BUCKET/MY_OUTPUT_FILE.jsonl -
@@ -12113,9 +12138,9 @@ Add embedding requests to your batch file. The following is an example:
     {"custom_id": "request-1", "method": "POST", "url": "/v1/embeddings", "body": {"model": "intfloat/e5-mistral-7b-instruct", "input": "You are a helpful assistant."}}
     {"custom_id": "request-2", "method": "POST", "url": "/v1/embeddings", "body": {"model": "intfloat/e5-mistral-7b-instruct", "input": "You are an unhelpful assistant."}}
 <
-You can even mix chat completion and embedding requests in the batch file,
-as long as the model you are using supports both chat completion and
-embeddings (note that all requests must use the same model).
+You can even mix chat completion and embedding requests in the batch
+file, as long as the model you are using supports both chat completion
+and embeddings (note that all requests must use the same model).
 
 Step 2: Run the batch     *features-openai_batch-index-step-2-run-the-batch_1*
 
@@ -12150,8 +12175,8 @@ Add score requests to your batch file. The following is an example:
     {"custom_id": "request-2", "method": "POST", "url": "/v1/score", "body": {"model": "BAAI/bge-reranker-v2-m3", "queries": "What is the capital of France?", "documents": ["The capital of Brazil is Brasilia.", "The capital of France is Paris."]}}
 <
 You can mix chat completion, embedding, and score requests in the batch
-file, as long as the model you are using supports them all (note that all
-requests must use the same model).
+file, as long as the model you are using supports them all (note that
+all requests must use the same model).
 
 Step 2: Run the batch     *features-openai_batch-index-step-2-run-the-batch_2*
 
@@ -12389,7 +12414,7 @@ PROMPT EMBED INFERENCE WITH OPENAI CLIENT
 
     - Completions API: the server does NOT apply a chat template to
       `prompt_embeds`. The caller is responsible for producing embeddings for
-      the full, already-templated prompt (i.e. apply the chat template first, 
+      the full, already-templated prompt (i.e. apply the chat template first,
       then embed the resulting token IDs). Anything the model would normally
       need (system prompt, role markers, generation prompt, etc.) must already
       be baked into the embedded tokens.
@@ -13365,10 +13390,11 @@ Structured reads on DiffusionGemma  *vllm-features-structured_diffusion-index*
 Source
 https://github.com/vllm-project/vllm/tree/main/examples/features/structured_diffusion.
 
-A discrete diffusion model denoises a whole canvas per forward pass. If the
-canvas is seeded with the answer's fixed text and only the answer slots are
-left as noise, one denoise step gives a distribution over each slot. These
-`extra_args` fields (`vllm_xargs` on the OpenAI server) expose that:
+A discrete diffusion model denoises a whole canvas per forward pass. If
+the canvas is seeded with the answer's fixed text and only the answer
+slots are left as noise, one denoise step gives a distribution over each
+slot. These `extra_args` fields (`vllm_xargs` on the OpenAI server)
+expose that:
 
 field                  type                        meaning
 ---------------------  --------------------------  ---------------------------
@@ -13396,10 +13422,10 @@ diffusion_constrained  bool                        run the unembedding,
                                                    same set
 
 `structured_server.py` turns a question schema into those fields, with
-`diffusion_constrained` on for every read (`--no-constrained` turns it off).
-It serves `/v1/chat/completions`: the system message is the schema, the user
-message is the state JSON, and the reply content is one distribution per
-question with a standard error over a few noise draws.
+`diffusion_constrained` on for every read (`--no-constrained` turns it
+off). It serves `/v1/chat/completions`: the system message is the
+schema, the user message is the state JSON, and the reply content is one
+distribution per question with a standard error over a few noise draws.
 
 >bash
     vllm serve google/diffusiongemma-26B-A4B-it \
@@ -13412,29 +13438,31 @@ question with a standard error over a few noise draws.
         {"role": "user", "content": "{\"ticket\": \"Everything is down and we have a demo at noon.\"}"}
       ]}'
 <
-The attention backend is picked as for Gemma 4: FlashAttention 4 on every
-layer when available, otherwise Triton. FlashInfer cannot serve this model
-(a batch mixes causal prefill with bidirectional denoising), and
-`--attention-backend FLASHINFER` is rejected.
+The attention backend is picked as for Gemma 4: FlashAttention 4 on
+every layer when available, otherwise Triton. FlashInfer cannot serve
+this model (a batch mixes causal prefill with bidirectional denoising),
+and `--attention-backend FLASHINFER` is rejected.
 
-Per-request canvas widths may be smaller than the served canvas with either
-synchronous or asynchronous scheduling. Omit `diffusion_canvas_length` to
-use the served canvas width.
+Per-request canvas widths may be smaller than the served canvas with
+either synchronous or asynchronous scheduling. Omit
+`diffusion_canvas_length` to use the served canvas width.
 
 Question types: `noul` (yes/no), `choice` with `options`, `score` with
-ordered `levels`. Each label must be a single token in the answer template,
-which the server checks with the tokenizer when a request uses the schema.
+ordered `levels`. Each label must be a single token in the answer
+template, which the server checks with the tokenizer when a request uses
+the schema.
 
 `POST /v1/systemone` implements the Jev decision API. The body holds
-`state`, `questions` (a map of id to `type`, `instructions` and `criteria`)
-and `model`. Answers come back in that API's shapes: a `noul` probability, a
-`choice` with `probabilities` and `confidence`, or a `score` with a
-0-indexed `legend`. The schema options above go in the same body as
-extensions.
+`state`, `questions` (a map of id to `type`, `instructions` and
+`criteria`) and `model`. Answers come back in that API's shapes: a
+`noul` probability, a `choice` with `probabilities` and `confidence`, or
+a `score` with a 0-indexed `legend`. The schema options above go in the
+same body as extensions.
 
 A question may declare `depends_on` (read in a later stage with those
-answers in its prompt), `ask_if` (asked only when a named question's answer
-is among the listed ones, otherwise null) and `alone` (a read of its own).
+answers in its prompt), `ask_if` (asked only when a named question's
+answer is among the listed ones, otherwise null) and `alone` (a read of
+its own).
 
 Images attach as `multipart/form-data`, with the JSON in a part named
 `request` and each image as a file part, or as an `images` array of data
@@ -13447,12 +13475,12 @@ URLs.
       "questions": {"urgent": {"type": "noul", "instructions": "Does the customer need a reply within the hour?"}}}'
 <
 `"think": N` in the schema lets the model write up to N tokens in its
-thought channel before the read. The thought is an ordinary generation with
-the chat template's thinking marker on, and the read then runs with the
-thought in its prompt, so the answer slots condition on it. The noise draws
-of a decision share one thought. `diagnostics.thought` returns the text, its
-length in tokens, whether the model closed the channel itself and the
-generation time.
+thought channel before the read. The thought is an ordinary generation
+with the chat template's thinking marker on, and the read then runs with
+the thought in its prompt, so the answer slots condition on it. The
+noise draws of a decision share one thought. `diagnostics.thought`
+returns the text, its length in tokens, whether the model closed the
+channel itself and the generation time.
 
 EXAMPLE MATERIALS      *features-structured_diffusion-index-example-materials*
 
@@ -15012,13 +15040,13 @@ Structured Outputs                    *vllm-features-structured_outputs-index*
 Source
 https://github.com/vllm-project/vllm/tree/main/examples/features/structured_outputs.
 
-This script demonstrates various structured output capabilities of vLLM's
-OpenAI-compatible server. It can run individual constraint type or all of
-them. It supports both streaming responses and concurrent non-streaming
-requests.
+This script demonstrates various structured output capabilities of
+vLLM's OpenAI-compatible server. It can run individual constraint type
+or all of them. It supports both streaming responses and concurrent
+non-streaming requests.
 
-To use this example, you must start an vLLM server with any model of your
-choice.
+To use this example, you must start an vLLM server with any model of
+your choice.
 
 >bash
     vllm serve Qwen/Qwen2.5-3B-Instruct
@@ -15503,15 +15531,15 @@ https://github.com/vllm-project/vllm/blob/main/examples/features/tensorize_vllm_
 
 
     r"""
-    tensorize_vllm_model.py is a script that can be used to serialize and 
-    deserialize vLLM models. These models can be loaded using tensorizer 
+    tensorize_vllm_model.py is a script that can be used to serialize and
+    deserialize vLLM models. These models can be loaded using tensorizer
     to the GPU extremely quickly over an HTTP/HTTPS endpoint, an S3 endpoint,
-    or locally. Tensor encryption and decryption is also supported, although 
-    libsodium must be installed to use it. Install vllm with tensorizer support 
+    or locally. Tensor encryption and decryption is also supported, although
+    libsodium must be installed to use it. Install vllm with tensorizer support
     using `pip install vllm[tensorizer]`. To learn more about tensorizer, visit
     https://github.com/coreweave/tensorizer
 
-    To serialize a model, install vLLM from source, then run something 
+    To serialize a model, install vLLM from source, then run something
     like this from the root level of this repository:
 
     python examples/features/tensorize_vllm_model.py \
@@ -15523,15 +15551,15 @@ https://github.com/vllm-project/vllm/blob/main/examples/features/tensorize_vllm_
     Which downloads the model from HuggingFace, loads it into vLLM, serializes it,
     and saves it to your S3 bucket. A local directory can also be used. This
     assumes your S3 credentials are specified as environment variables
-    in the form of `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, and 
-    `S3_ENDPOINT_URL`. To provide S3 credentials directly, you can provide 
-    `--s3-access-key-id` and `--s3-secret-access-key`, as well as `--s3-endpoint` 
+    in the form of `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, and
+    `S3_ENDPOINT_URL`. To provide S3 credentials directly, you can provide
+    `--s3-access-key-id` and `--s3-secret-access-key`, as well as `--s3-endpoint`
     as CLI args to this script.
 
-    You can also encrypt the model weights with a randomly-generated key by 
+    You can also encrypt the model weights with a randomly-generated key by
     providing a `--keyfile` argument.
 
-    To deserialize a model, you can run something like this from the root 
+    To deserialize a model, you can run something like this from the root
     level of this repository:
 
     python examples/features/tensorize_vllm_model.py \
@@ -15542,7 +15570,7 @@ https://github.com/vllm-project/vllm/blob/main/examples/features/tensorize_vllm_
 
     Which downloads the model tensors from your S3 bucket and deserializes them.
 
-    You can also provide a `--keyfile` argument to decrypt the model weights if 
+    You can also provide a `--keyfile` argument to decrypt the model weights if
     they were serialized with encryption.
 
     To support distributed tensor-parallel models, each model shard will be
@@ -15551,20 +15579,20 @@ https://github.com/vllm-project/vllm/blob/main/examples/features/tensorize_vllm_
     shard's rank. Sharded models serialized with this script will be named as
     model-rank-%03d.tensors
 
-    For more information on the available arguments for serializing, run 
+    For more information on the available arguments for serializing, run
     `python -m examples.features.tensorize_vllm_model serialize --help`.
 
     Or for deserializing:
 
     `python examples/features/tensorize_vllm_model.py deserialize --help`.
 
-    Once a model is serialized, tensorizer can be invoked with the `LLM` class 
+    Once a model is serialized, tensorizer can be invoked with the `LLM` class
     directly to load models:
 
     ```python
     from vllm import LLM
     llm = LLM(
-        "s3://my-bucket/vllm/facebook/opt-125m/v1", 
+        "s3://my-bucket/vllm/facebook/opt-125m/v1",
         load_format="tensorizer",
     )
     ```
@@ -15578,7 +15606,7 @@ https://github.com/vllm-project/vllm/blob/main/examples/features/tensorize_vllm_
         --load-format tensorizer
     ```
 
-    In order to see all of the available arguments usable to configure 
+    In order to see all of the available arguments usable to configure
     loading with tensorizer that are given to `TensorizerConfig`, run:
 
     `python examples/features/tensorize_vllm_model.py deserialize --help`
@@ -22598,16 +22626,17 @@ Examples                                                 *vllm-examples-index*
 
 vLLM's examples are organized into the following categories:
 
-- `basic/` https://github.com/vllm-project/vllm/tree/main/examples/basic --
-  Minimal examples for offline inference and online serving.
+- `basic/` https://github.com/vllm-project/vllm/tree/main/examples/basic
+  -- Minimal examples for offline inference and online serving.
 - `generate/`
-  https://github.com/vllm-project/vllm/tree/main/examples/generate -- Text
-  generation examples, including multimodal models.
-- `pooling/` https://github.com/vllm-project/vllm/tree/main/examples/pooling
-  -- Examples for embedding, classification, scoring, reward, etc.
+  https://github.com/vllm-project/vllm/tree/main/examples/generate --
+  Text generation examples, including multimodal models.
+- `pooling/`
+  https://github.com/vllm-project/vllm/tree/main/examples/pooling --
+  Examples for embedding, classification, scoring, reward, etc.
 - `speech_to_text/`
-  https://github.com/vllm-project/vllm/tree/main/examples/speech_to_text --
-  Speech transcription, translation and real-time audio examples.
+  https://github.com/vllm-project/vllm/tree/main/examples/speech_to_text
+  -- Speech transcription, translation and real-time audio examples.
 - `features/`
   https://github.com/vllm-project/vllm/tree/main/examples/features --
   Demonstrations of individual vLLM features: automatic prefix caching,
@@ -22617,11 +22646,11 @@ vLLM's examples are organized into the following categories:
   https://github.com/vllm-project/vllm/tree/main/examples/reasoning --
   Examples for reasoning with vLLM.
 - `tool_calling/`
-  https://github.com/vllm-project/vllm/tree/main/examples/tool_calling --
-  Examples for function/tool calling with vLLM.
+  https://github.com/vllm-project/vllm/tree/main/examples/tool_calling
+  -- Examples for function/tool calling with vLLM.
 - `applications/`
-  https://github.com/vllm-project/vllm/tree/main/examples/applications --
-  Application examples such as simpler api server, chatbots and RAG
+  https://github.com/vllm-project/vllm/tree/main/examples/applications
+  -- Application examples such as simpler api server, chatbots and RAG
   (Retrieval-Augmented Generation).
 - `rl/` https://github.com/vllm-project/vllm/tree/main/examples/rl --
   Reinforcement learning examples.
@@ -22632,16 +22661,16 @@ vLLM's examples are organized into the following categories:
   https://github.com/vllm-project/vllm/tree/main/examples/ray_serving --
   Scalable serving using Ray.
 - `disaggregated/`
-  https://github.com/vllm-project/vllm/tree/main/examples/disaggregated --
-  Examples for Disaggregated P/D (Prefill/Decoding) inference, including
-  various kv cache connectors (LMCache, Mooncake, FlexKV, P2P NCCL) and
-  failure recovery.
+  https://github.com/vllm-project/vllm/tree/main/examples/disaggregated
+  -- Examples for Disaggregated P/D (Prefill/Decoding) inference,
+  including various kv cache connectors (LMCache, Mooncake, FlexKV, P2P
+  NCCL) and failure recovery.
 - `scale_out/`
   https://github.com/vllm-project/vllm/tree/main/examples/scale_out --
   Examples for Token In <> Token Out API Server.
 - `observability/`
-  https://github.com/vllm-project/vllm/tree/main/examples/observability --
-  Metrics, logging, tracing (OpenTelemetry), and dashboards (Grafana,
+  https://github.com/vllm-project/vllm/tree/main/examples/observability
+  -- Metrics, logging, tracing (OpenTelemetry), and dashboards (Grafana,
   Perses).
 
 ----------------------------------------------------------------------------
@@ -22762,17 +22791,17 @@ https://github.com/vllm-project/vllm/tree/main/examples/observability/openteleme
 
 4. Open Jaeger webui: http://localhost:16686/
 
-   In the search pane, select `vllm-server` service and hit `Find Traces`.
-   You should get a list of traces, one for each request.
+   In the search pane, select `vllm-server` service and hit
+   `Find Traces`. You should get a list of traces, one for each request.
 5. Clicking on a trace will show its spans and their tags. In this demo,
-   each trace has 2 spans. One from the dummy client containing the prompt
-   text and one from vLLM containing metadata about the request.
+   each trace has 2 spans. One from the dummy client containing the
+   prompt text and one from vLLM containing metadata about the request.
 
 EXPORTER PROTOCOL        *observability-opentelemetry-index-exporter-protocol*
 
 OpenTelemetry supports either `grpc` or `http/protobuf` as the transport
-protocol for trace data in the exporter. By default, `grpc` is used. To set
-`http/protobuf` as the protocol, configure the
+protocol for trace data in the exporter. By default, `grpc` is used. To
+set `http/protobuf` as the protocol, configure the
 `OTEL_EXPORTER_OTLP_TRACES_PROTOCOL` environment variable as follows:
 
 >bash
@@ -22798,8 +22827,8 @@ OpenTelemetry allows automatic instrumentation of FastAPI.
        opentelemetry-instrument vllm serve facebook/opt-125m
 <
 
-3. Send a request to vLLM and find its trace in Jaeger. It should contain
-   spans from FastAPI.
+3. Send a request to vLLM and find its trace in Jaeger. It should
+   contain spans from FastAPI.
 
 EXAMPLE MATERIALS        *observability-opentelemetry-index-example-materials*
 
@@ -22848,10 +22877,11 @@ Prometheus and Grafana           *vllm-observability-prometheus_grafana-index*
 Source
 https://github.com/vllm-project/vllm/tree/main/examples/observability/prometheus_grafana.
 
-This is a simple example that shows you how to connect vLLM metric logging
-to the Prometheus/Grafana stack. For this example, we launch Prometheus and
-Grafana via Docker. You can checkout other methods through Prometheus
-https://prometheus.io/ and Grafana https://grafana.com/ websites.
+This is a simple example that shows you how to connect vLLM metric
+logging to the Prometheus/Grafana stack. For this example, we launch
+Prometheus and Grafana via Docker. You can checkout other methods
+through Prometheus https://prometheus.io/ and Grafana
+https://grafana.com/ websites.
 
 Install:
 
@@ -22886,13 +22916,14 @@ Submit some sample requests to the server:
         --dataset-path ShareGPT_V3_unfiltered_cleaned_split.json \
         --request-rate 3.0
 <
-Navigating to `http://localhost:8000/metrics` http://localhost:8000/metrics
-will show the raw Prometheus metrics being exposed by vLLM.
+Navigating to `http://localhost:8000/metrics`
+http://localhost:8000/metrics will show the raw Prometheus metrics being
+exposed by vLLM.
 
 GRAFANA DASHBOARD   *observability-prometheus_grafana-index-grafana-dashboard*
 
-Navigate to `http://localhost:3000` http://localhost:3000. Log in with the
-default username (`admin`) and password (`admin`).
+Navigate to `http://localhost:3000` http://localhost:3000. Log in with
+the default username (`admin`) and password (`admin`).
 
            *observability-prometheus_grafana-index-add-prometheus-data-source*
 Add Prometheus Data Source
@@ -22900,10 +22931,10 @@ Add Prometheus Data Source
 Navigate to `http://localhost:3000/connections/datasources/new`
 http://localhost:3000/connections/datasources/new and select Prometheus.
 
-On Prometheus configuration page, we need to add the `Prometheus Server URL`
-in `Connection`. For this setup, Grafana and Prometheus are running in
-separate containers, but Docker creates DNS name for each container. You can
-just use `http://prometheus:9090`.
+On Prometheus configuration page, we need to add the
+`Prometheus Server URL` in `Connection`. For this setup, Grafana and
+Prometheus are running in separate containers, but Docker creates DNS
+name for each container. You can just use `http://prometheus:9090`.
 
 Click `Save & Test`. You should get a green check saying "Successfully
 queried the Prometheus API.".
@@ -22911,9 +22942,9 @@ queried the Prometheus API.".
 Import Dashboard     *observability-prometheus_grafana-index-import-dashboard*
 
 Navigate to `http://localhost:3000/dashboard/import`
-http://localhost:3000/dashboard/import, upload `grafana.json`, and select
-the `prometheus` datasource. You should see a screen that looks like the
-following:
+http://localhost:3000/dashboard/import, upload `grafana.json`, and
+select the `prometheus` datasource. You should see a screen that looks
+like the following:
 
 EXAMPLE MATERIALS   *observability-prometheus_grafana-index-example-materials*
 
@@ -25346,7 +25377,7 @@ OPENAI EMBEDDING LONG TEXT - README
     With `MAX_EMBED_LEN=3072000`, you can process:
 
     - **Academic papers**: Full research papers with references
-    - **Legal documents**: Complete contracts and legal texts  
+    - **Legal documents**: Complete contracts and legal texts
     - **Books**: Entire chapters or small books
     - **Code repositories**: Large codebases and documentation
 
@@ -25809,7 +25840,7 @@ OPENAI EMBEDDING LONG TEXT - CLIENT
                     *pooling-embed-index-2-openai-embedding-long-text-service*
 OPENAI EMBEDDING LONG TEXT - SERVICE
 
->sh
+>bash
     #!/bin/bash
 
     # SPDX-License-Identifier: Apache-2.0
@@ -25943,7 +25974,7 @@ OPENAI EMBEDDING LONG TEXT - SERVICE
     echo "🔧 Advanced usage:"
     echo "   - Set POOLING_TYPE=MEAN|CLS|LAST to override auto-detection"
     echo "   - Set MAX_EMBED_LEN to adjust maximum input length"
-    echo "   - All pooling types use MEAN aggregation across chunks" 
+    echo "   - All pooling types use MEAN aggregation across chunks"
 <
 
                  *pooling-embed-index-2-openai-embedding-matryoshka-fy-client*
@@ -28958,7 +28989,7 @@ TEMPLATE - MXBAI RERANK V2      *pooling-score-index-template-mxbai-rerank-v2*
 TEMPLATE - NEMOTRON-RERANK      *pooling-score-index-template-nemotron-rerank*
 
 >jinja
-    question:{{ (messages | selectattr("role", "eq", "query") | first).content }} 
+    question:{{ (messages | selectattr("role", "eq", "query") | first).content }}
 
      passage:{{ (messages | selectattr("role", "eq", "document") | first).content }}
 <
@@ -29862,7 +29893,8 @@ FORCED ALIGNMENT OFFLINE
         main(args)
 <
 
-FORCED ALIGNMENT ONLINE *pooling-token_classify-index-forced-alignment-online*
+                        *pooling-token_classify-index-forced-alignment-online*
+FORCED ALIGNMENT ONLINE
 
 >python
     # SPDX-License-Identifier: Apache-2.0
@@ -31068,7 +31100,7 @@ https://github.com/vllm-project/vllm/tree/main/examples/ray_serving/elastic_ep.
 
 BENCH                                     *ray_serving-elastic_ep-index-bench*
 
->sh
+>bash
     #!/bin/bash
 
     MODEL_NAME="deepseek-ai/DeepSeek-V2-Lite"
@@ -31188,7 +31220,7 @@ SCALE                                     *ray_serving-elastic_ep-index-scale*
 
 SERVE DEEPSEEK V2             *ray_serving-elastic_ep-index-serve-deepseek-v2*
 
->sh
+>bash
     #!/bin/bash
 
     HOST="0.0.0.0"
@@ -31267,7 +31299,7 @@ Multi-Node-Serving                 *vllm-ray_serving-multi-node-serving-index*
 Source
 https://github.com/vllm-project/vllm/blob/main/examples/ray_serving/multi-node-serving.sh.
 
->sh
+>bash
     #!/bin/bash
     #
     # Helper script to manually start or join a Ray cluster for online serving of vLLM models.
@@ -31282,7 +31314,7 @@ https://github.com/vllm-project/vllm/blob/main/examples/ray_serving/multi-node-s
     # On the head node machine, start the Ray head node process and run a vLLM server.
     #   ./multi-node-serving.sh leader --ray_port=6379 --ray_cluster_size=<SIZE> [<extra ray args>]  && \
     #   vllm serve meta-llama/Meta-Llama-3.1-405B-Instruct --port 8080 --tensor-parallel-size 8 --pipeline-parallel-size 2 --distributed-executor-backend ray
-    # 
+    #
     # On each worker node, start the Ray worker node process.
     #   ./multi-node-serving.sh worker --ray_address=<HEAD_NODE_IP> --ray_port=6379 [<extra ray args>]
     #
@@ -31455,7 +31487,7 @@ Run Cluster                               *vllm-ray_serving-run_cluster-index*
 Source
 https://github.com/vllm-project/vllm/blob/main/examples/ray_serving/run_cluster.sh.
 
->sh
+>bash
     #!/bin/bash
     #
     # Launch a Ray cluster inside Docker for vLLM inference.
@@ -31600,10 +31632,10 @@ https://github.com/vllm-project/vllm/blob/main/examples/reasoning/openai_chat_co
     # SPDX-License-Identifier: Apache-2.0
     # SPDX-FileCopyrightText: Copyright contributors to the vLLM project
     r"""An example demonstrates how to use tool calling with reasoning models
-    like QwQ-32B. The reasoning will not be parsed by the tool 
+    like QwQ-32B. The reasoning will not be parsed by the tool
     calling process; only the final output will be parsed.
 
-    To run this example, you need to start the vLLM server with both 
+    To run this example, you need to start the vLLM server with both
     the reasoning parser and tool calling enabled.
 
     ```bash

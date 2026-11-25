@@ -345,7 +345,7 @@ CONFIGURATION                          *low_precision-mxfp4_qat-configuration*
       enable: True
       mode: mxfp4        # mxfp4_mxfp8 also trains the dense layers with MXFP8 QAT (vLLM: linear: MXFP8)
 <
-Notes:
+Notes: ~
 
 - `lm_head`, the token embedding, MoE routers and every dense layer stay in
   BF16 on the rollout and in training.
@@ -480,7 +480,7 @@ CONFIGURATION                              *low_precision-mxfp8-configuration*
       linear: MXFP8
       moe: MXFP8
 <
-Notes:
+Notes: ~
 
 - Weights stay in BF16 (`fp8_param` is not supported); only the GEMM inputs
   are cast to MXFP8, so checkpoints are unchanged.
@@ -796,36 +796,40 @@ HuggingFace checkpoints come in two flavors:
    linear layers (attention, dense MLP, shared experts) and MoE (routed
    experts).
 
-Model                            Architecture  quant_method        Linear               MoE (routed     Not quantized
-                                                                                        experts)
--------------------------------  ------------  ------------------  -------------------  --------------  ------------------------
-Qwen/Qwen3.8-2.4T-A95B           92 layers,    none                BF16                 BF16            -
-                                 512 experts,
-                                 top-10
-zai-org/GLM-5.2                  78 layers,    none                BF16                 BF16            -
-                                 256 experts,
-                                 top-8, first
-                                 3 dense
-zai-org/GLM-5.3                  same as       fp8                 FP8 E4M3, 128x128    same as linear  router mlp.gate,
-                                 GLM-5.2                           block, FP32 scale                    indexers_proj,
-                                                                   (weight_scale_inv),                  embed_tokens, lm_head,
-                                                                   dynamic activation                   MTP eh_proj, norms
-                                                                                                        (modules_to_not_convert)
-moonshotai/Kimi-K3               93 layers,    compressed-tensors  BF16                 MXFP4 W4A16:    self_attn,
-                                 896 experts,                                           FP4 E2M1, 1x32  shared_experts, dense
-                                 first layer                                            group,          mlp, lm_head,
-                                 dense                                                  standard MX     vision_tower,
-                                                                                        E8M0 scale      mm_projector (ignore
-                                                                                        (weight_packed  regex)
-                                                                                        +
-                                                                                        weight_scale)
-deepseek-ai/DeepSeek-V4.1-Flash  40 layers,    fp8                 FP8 E4M3, 32x32      FP4 E2M1, 1x32  router ffn.gate, indexer
-                                 384 experts,                      block (wo_a may be   group, UE8M0    wk/weights_proj,
-                                 top-6                             128x128), UE8M0      scale           compressor
-                                                                   scale (scale_fmt:    (expert_dtype:
-                                                                   ue8m0)               fp4), same
-                                                                                        layout as
-                                                                                        MXFP4
+Model               Architecture  quant_method        Linear       MoE (routed     Not quantized
+                                                                   experts)
+------------------  ------------  ------------------  -----------  --------------  ----------------
+Qwen/Qwen3.8-2.4T-  92 layers,    none                BF16         BF16            -
+A95B                512 experts,
+                    top-10
+zai-org/GLM-5.2     78 layers,    none                BF16         BF16            -
+                    256 experts,
+                    top-8, first
+                    3 dense
+zai-org/GLM-5.3     same as       fp8                 FP8 E4M3,    same as linear  router mlp.gate,
+                    GLM-5.2                           128x128                      indexers_proj,
+                                                      block, FP32                  embed_tokens,
+                                                      scale                        lm_head, MTP
+                                                      (weight_                     eh_proj, norms
+                                                      scale_inv),                  (modules_to_not_
+                                                      dynamic                      convert)
+                                                      activation
+moonshotai/Kimi-K3  93 layers,    compressed-tensors  BF16         MXFP4 W4A16:    self_attn,
+                    896 experts,                                   FP4 E2M1, 1x32  shared_experts,
+                    first layer                                    group,          dense mlp,
+                    dense                                          standard MX     lm_head,
+                                                                   E8M0 scale      vision_tower,
+                                                                   (weight_packed  mm_projector
+                                                                   +               (ignore regex)
+                                                                   weight_scale)
+deepseek-ai/        40 layers,    fp8                 FP8 E4M3,    FP4 E2M1, 1x32  router ffn.gate,
+DeepSeek-V4.1-      384 experts,                      32x32 block  group, UE8M0    indexer
+Flash               top-6                             (wo_a may    scale           wk/weights_proj,
+                                                      be           (expert_dtype:  compressor
+                                                      128x128),    fp4), same
+                                                      UE8M0 scale  layout as
+                                                      (scale_fmt:  MXFP4
+                                                      ue8m0)
 
 - GLM-5.3 uses the standard HF FineGrainedFP8 format (same as DeepSeek-V3),
   which both vLLM and SGLang parse.
@@ -894,28 +898,31 @@ Linear and MoE backends independently. The exceptions are vLLM MXFP8 Linear,
 for which vLLM 0.29 has no DeepGEMM kernel, and NVFP4, for which neither
 engine provides a DeepGEMM implementation.
 
-Precision     Preset     QAT mode     GPU        vLLM Linear                       vLLM MoE                             SGLang Linear                         SGLang MoE                            vLLM        SGLang
-                                                                                                                                                                                                    status in   status in
-                                                                                                                                                                                                    verl        verl
-------------  ---------  -----------  ---------  --------------------------------  -----------------------------------  ------------------------------------  ------------------------------------  ----------  ---------
-FP8 block     FP8_BLOCK  fp8          Hopper /   W8A8Fp8linear_backend=deep_gemm²  W8A8Fp8MoEmoe_backend=deep_gemm      W8A8Fp8fp8_gemm_runner_backend=deep_gemm  W8A8Fp8MoEmoe_runner_backend=deep_gemm  ✅ Hopper /  ✅ Hopper
-(E4M3,                                Blackwell                                                                                                                                                     Blackwell²
-128x128
-weight
+Precision     Preset     QAT mode     GPU        vLLM        vLLM MoE      SGLang Linear       SGLang MoE          vLLM        SGLang
+                                                 Linear                                                            status in   status in
+                                                                                                                   verl        verl
+------------  ---------  -----------  ---------  ----------  ------------  ------------------  ------------------  ----------  ---------
+FP8 block     FP8_BLOCK  fp8          Hopper /   W8A8Fp8     W8A8Fp8MoE    W8A8Fp8             W8A8Fp8MoE          ✅ Hopper   ✅ Hopper
+(E4M3,                                Blackwell  linear_     moe_backend=  fp8_gemm_runner_    moe_runner_         /
+128x128                                          backend=    deep_gemm     backend=deep_gemm   backend=deep_gemm   Blackwell²
+weight                                           deep_gemm²
 blocks,
 dynamic
 1x128
 activations)
-MXFP8         MXFP8      mxfp8        Blackwell  W8A8Mxfp8FlashInfer CuteDSL¹      W8A8Mxfp8MoEmoe_backend=deep_gemm    native                                native                                ✅           ✅
-                                                                                                                        quant_method=mxfp8fp8_gemm_runner_backend=deep_gemm  quant_method=mxfp8moe_runner_backend=deep_gemm  Blackwell   Blackwell
-MXFP4 (MoE    MXFP4      mxfp4 /      Blackwell  ❌ (BF16 dense)                    MXFP4×FP8moe_backend=deep_gemm       ❌ (BF16 dense)                        MXFP4×FP8moe_runner_backend=deep_gemm  ✅           ✅
-only)                    mxfp4_mxfp8                                                                                                                                                                Blackwell   Blackwell
-                                                                                                                                                                                                    (MoE only)  (MoE
-                                                                                                                                                                                                                only)
-NVFP4 (MoE    NVFP4      nvfp4        Blackwell  ❌                                 W4A4(moe_backend=flashinfer_trtllm)  ❌                                     ❌                                     ✅           ❌
-only,                                                                                                                                                                                               Blackwell
-per-token                                                                                                                                                                                           (MoE only)
-activations)
+MXFP8         MXFP8      mxfp8        Blackwell  W8A8Mxfp8   W8A8Mxfp8MoE  native              native              ✅          ✅
+                                                 FlashInfer  moe_backend=  quant_method=mxfp8  quant_method=mxfp8  Blackwell   Blackwell
+                                                 CuteDSL¹    deep_gemm     fp8_gemm_runner_    moe_runner_
+                                                                           backend=deep_gemm   backend=deep_gemm
+MXFP4 (MoE    MXFP4      mxfp4 /      Blackwell  ❌ (BF16    MXFP4×FP8     ❌ (BF16 dense)     MXFP4×FP8           ✅          ✅
+only)                    mxfp4_mxfp8             dense)      moe_backend=                      moe_runner_         Blackwell   Blackwell
+                                                             deep_gemm                         backend=deep_gemm   (MoE only)  (MoE
+                                                                                                                               only)
+NVFP4 (MoE    NVFP4      nvfp4        Blackwell  ❌          W4A4          ❌                  ❌                  ✅          ❌
+only,                                                        (moe_                                                 Blackwell
+per-token                                                    backend=                                              (MoE only)
+activations)                                                 flashinfer_
+                                                             trtllm)
 
 MXFP8, MXFP4 and NVFP4 need Blackwell (SM100) for the validated paths above.
 On Hopper, vLLM may fall back to Marlin weight-only kernels, whose numerics
@@ -1133,31 +1140,31 @@ configuration):
 
 GPU        Engine  R3  Rollout                 Backend                 k3_kl
 ---------  ------  --  ----------------------  ----------------------  -------
-Hopper     vLLM    ✅   BF16                    -                       0.00031
-Hopper     SGLang  ✅   BF16                    -                       0.00031
-Hopper     vLLM    ✅   FP8_BLOCK               DeepGEMM                0.00225
-Hopper     SGLang  ✅   FP8_BLOCK               DeepGEMM                0.00231
-Hopper     vLLM    ✅   FP8_BLOCK + FP8 QAT     DeepGEMM                0.00187
-Hopper     SGLang  ✅   FP8_BLOCK + FP8 QAT     DeepGEMM                0.00188
-Blackwell  vLLM    ❌   MXFP8 linear + MoE      FlashInfer CuteDSL /    0.00387
+Hopper     vLLM    ✅  BF16                    -                       0.00031
+Hopper     SGLang  ✅  BF16                    -                       0.00031
+Hopper     vLLM    ✅  FP8_BLOCK               DeepGEMM                0.00225
+Hopper     SGLang  ✅  FP8_BLOCK               DeepGEMM                0.00231
+Hopper     vLLM    ✅  FP8_BLOCK + FP8 QAT     DeepGEMM                0.00187
+Hopper     SGLang  ✅  FP8_BLOCK + FP8 QAT     DeepGEMM                0.00188
+Blackwell  vLLM    ❌  MXFP8 linear + MoE      FlashInfer CuteDSL /    0.00387
                                                DeepGEMM
-Blackwell  vLLM    ❌   MXFP8 linear + MoE +    FlashInfer CuteDSL /    0.00325
+Blackwell  vLLM    ❌  MXFP8 linear + MoE +    FlashInfer CuteDSL /    0.00325
                        MXFP8 QAT               DeepGEMM
-Blackwell  SGLang  ❌   MXFP8 linear + MoE      DeepGEMM (Linear +      0.00324
+Blackwell  SGLang  ❌  MXFP8 linear + MoE      DeepGEMM (Linear +      0.00324
                                                MoE)
-Blackwell  SGLang  ❌   MXFP8 linear + MoE +    DeepGEMM (Linear +      0.00327
+Blackwell  SGLang  ❌  MXFP8 linear + MoE +    DeepGEMM (Linear +      0.00327
                        MXFP8 QAT               MoE)
-Blackwell  vLLM    ❌   MXFP4 MoE               DeepGEMM (MoE; BF16     0.00790
+Blackwell  vLLM    ❌  MXFP4 MoE               DeepGEMM (MoE; BF16     0.00790
                                                Linear)
-Blackwell  vLLM    ❌   MXFP4 MoE + MXFP4 QAT   DeepGEMM (MoE; BF16     0.00140
+Blackwell  vLLM    ❌  MXFP4 MoE + MXFP4 QAT   DeepGEMM (MoE; BF16     0.00140
                                                Linear)
-Blackwell  SGLang  ❌   MXFP4 MoE               DeepGEMM (MoE; BF16     0.00571
+Blackwell  SGLang  ❌  MXFP4 MoE               DeepGEMM (MoE; BF16     0.00571
                                                Linear)
-Blackwell  SGLang  ❌   MXFP4 MoE + MXFP4 QAT   DeepGEMM (MoE; BF16     0.00200
+Blackwell  SGLang  ❌  MXFP4 MoE + MXFP4 QAT   DeepGEMM (MoE; BF16     0.00200
                                                Linear)
-Blackwell  vLLM    ❌   NVFP4 MoE               FlashInfer TRT-LLM      0.00966
+Blackwell  vLLM    ❌  NVFP4 MoE               FlashInfer TRT-LLM      0.00966
                                                (MoE; BF16 Linear)
-Blackwell  vLLM    ❌   NVFP4 MoE + NVFP4 QAT   FlashInfer TRT-LLM      0.00766
+Blackwell  vLLM    ❌  NVFP4 MoE + NVFP4 QAT   FlashInfer TRT-LLM      0.00766
                                                (MoE; BF16 Linear)
 
 LIMITATIONS                                    *low_precision-qat-limitations*
