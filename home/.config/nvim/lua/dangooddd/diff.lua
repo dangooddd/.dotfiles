@@ -38,12 +38,12 @@ function M.open(left, right, client)
     end
 end
 
-if ... == "diff" then
+if ... then
     return M
 end
 
 local channel = vim.fn.sockconnect("pipe", vim.env.NVIM, { rpc = true })
-vim.rpcrequest(channel, "nvim_exec_lua", "require('diff').open(...)", {
+vim.rpcrequest(channel, "nvim_exec_lua", "require('dangooddd.diff').open(...)", {
     vim.fs.abspath(arg[1]),
     vim.fs.abspath(arg[2]),
     vim.rpcrequest(channel, "nvim_get_api_info")[1],

@@ -10,7 +10,7 @@
 ---@field render fun(dir: string): preview.Image
 
 local M = {}
-local images = require("placeholders")
+local images = require("dangooddd.placeholders")
 
 local rendering = false
 local cache_size = 32
@@ -210,7 +210,7 @@ function M.setup()
         end,
     })
 
-    require("preview.markdown").setup()
+    require("dangooddd.preview.markdown").setup()
 end
 
 return M

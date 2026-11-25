@@ -1,8 +1,8 @@
 local M = {}
 
-local lazygit = require("terminal").new({
+local lazygit = require("dangooddd.terminal").new({
     cmd = "lazygit",
-    open_win = require("utils").open_float_win,
+    open_win = require("dangooddd.utils").open_float_win,
     on_exit = function(self, _, _)
         self:close()
     end,

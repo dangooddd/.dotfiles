@@ -100,6 +100,8 @@ vim.pack.add({
     "https://github.com/nvim-treesitter/nvim-treesitter",
     "https://github.com/MeanderingProgrammer/render-markdown.nvim",
     "https://github.com/jmbuhr/otter.nvim",
+    "https://github.com/mfussenegger/nvim-dap",
+    "https://github.com/igorlfs/nvim-dap-view",
 }, {
     confirm = false,
     load = true,
@@ -108,13 +110,31 @@ vim.pack.add({
 vim.cmd("packadd nvim.difftool")
 vim.cmd("packadd nvim.undotree")
 
-require("pandoc").setup()
-require("placeholders").setup()
-require("preview").setup()
-require("mini.icons").setup()
-require("nvim-treesitter").setup()
+local icons = require("mini.icons")
+local treesitter = require("nvim-treesitter")
+local render = require("render-markdown")
+local otter = require("otter")
+local fzf = require("fzf-lua")
+local oil = require("oil")
+local dap = require("dap")
+local dapview = require("dap-view")
 
-require("render-markdown").setup({
+local pandoc = require("dangooddd.pandoc")
+local placeholders = require("dangooddd.placeholders")
+local preview = require("dangooddd.preview")
+local utils = require("dangooddd.utils")
+local floaterm = require("dangooddd.terminal.floaterm")
+local lazygit = require("dangooddd.terminal.lazygit")
+local ipython = require("dangooddd.terminal.ipython")
+local opencode = require("dangooddd.terminal.opencode")
+
+pandoc.setup()
+placeholders.setup()
+preview.setup()
+icons.setup()
+treesitter.setup()
+
+render.setup({
     preset = "obsidian",
     sign = { enabled = false },
     latex = { block = false },
@@ -123,12 +143,12 @@ require("render-markdown").setup({
     custom_handlers = {
         markdown = {
             extends = true,
-            parse = require("pandoc").parse
+            parse = pandoc.parse
         },
     },
 })
 
-require("otter").setup({
+otter.setup({
     lsp = {
         diagnostic_update_events = {
             "BufWritePost",
@@ -137,7 +157,7 @@ require("otter").setup({
     },
 })
 
-require("fzf-lua").setup({
+fzf.setup({
     winopts = {
         backdrop = 100,
         title_flags = false,
@@ -150,7 +170,7 @@ require("fzf-lua").setup({
     },
 })
 
-require("oil").setup({
+oil.setup({
     default_file_explorer = true,
     watch_for_changes = true,
     columns = { { "icon", add_padding = false } },
@@ -163,15 +183,42 @@ require("oil").setup({
     },
 })
 
+dapview.setup({
+    auto_toggle = true,
+    follow_tab = true,
+    winbar = { controls = { enabled = true } },
+    windows = { position = "below", size = 0.3 },
+    icons = { collapsed = "◇ ", expanded = "◆ " },
+})
+
+dap.adapters = {
+    debugpy = {
+        type = "executable",
+        command = "python3",
+        args = { "-m", "debugpy.adapter" },
+    },
+}
+
+dap.configurations = {
+    python = {
+        {
+            type = "debugpy",
+            request = "launch",
+            name = "Launch file",
+            program = "${file}",
+        },
+    },
+}
+
 --------------------------------------------------------------------------------
 -- Keybinds / Commands
 --------------------------------------------------------------------------------
 vim.api.nvim_create_user_command("Venv", function(opts)
-    require("utils").venv(opts.fargs[1])
+    utils.venv(opts.fargs[1])
 end, { nargs = 1, complete = "dir" })
 
 vim.api.nvim_create_user_command("Update", function()
-    require("nvim-treesitter").update()
+    treesitter.update()
     vim.pack.update()
 end, {})
 
@@ -203,44 +250,48 @@ vim.keymap.set("n", "<leader>th", function()
 end)
 
 vim.keymap.set("n", "<leader>jm", function()
-    require("utils").insert({ "::: {.cell .markdown}", ":::" }, 1)
+    utils.insert({ "::: {.cell .markdown}", ":::" }, 1)
 end)
 
 vim.keymap.set("n", "<leader>jy", function()
-    require("utils").insert({ "::: {.cell .code}", "```python", "```", ":::" }, 2)
+    utils.insert({ "::: {.cell .code}", "```python", "```", ":::" }, 2)
 end)
 
-vim.keymap.set("n", [[<leader>\]], require("oil").toggle_float)
-vim.keymap.set("n", "<leader>je", require("pandoc").export)
+vim.keymap.set("n", [[<leader>\]], oil.toggle_float)
+vim.keymap.set("n", "<leader>je", pandoc.export)
 
-vim.keymap.set("n", "<leader>ff", require("fzf-lua").files)
-vim.keymap.set("n", "<leader>fh", require("fzf-lua").helptags)
-vim.keymap.set("n", "<leader>fb", require("fzf-lua").buffers)
-vim.keymap.set("n", "<leader>fg", require("fzf-lua").git_files)
-vim.keymap.set("n", "<leader>fd", require("fzf-lua").diagnostics_workspace)
-vim.keymap.set("n", "<leader>fl", require("fzf-lua").live_grep)
-vim.keymap.set("n", "<leader>fz", require("fzf-lua").builtin)
-vim.keymap.set("n", "<leader>fr", require("fzf-lua").resume)
+vim.keymap.set("n", "<leader>ff", fzf.files)
+vim.keymap.set("n", "<leader>fh", fzf.helptags)
+vim.keymap.set("n", "<leader>fb", fzf.buffers)
+vim.keymap.set("n", "<leader>fg", fzf.git_files)
+vim.keymap.set("n", "<leader>fd", fzf.diagnostics_workspace)
+vim.keymap.set("n", "<leader>fl", fzf.live_grep)
+vim.keymap.set("n", "<leader>fz", fzf.builtin)
+vim.keymap.set("n", "<leader>fr", fzf.resume)
 
-vim.keymap.set({ "n", "t" }, "<C-e>", require("terminal.floaterm").toggle)
-vim.keymap.set({ "n", "t" }, "<C-g>", require("terminal.lazygit").toggle)
-vim.keymap.set("n", "<leader>gc", require("terminal.lazygit").close)
+vim.keymap.set("n", "<leader>dc", dap.continue)
+vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint)
+vim.keymap.set("n", "<leader>do", dapview.toggle)
 
-vim.keymap.set("n", "<leader>jo", require("terminal.ipython").toggle)
-vim.keymap.set("n", "<leader>jc", require("terminal.ipython").close)
-vim.keymap.set("v", "<leader>jv", require("terminal.ipython").send)
-vim.keymap.set("n", "<leader>js", require("terminal.ipython").install)
-vim.keymap.set({ "n", "t" }, "<C-j>", require("terminal.ipython").focus)
+vim.keymap.set({ "n", "t" }, "<C-e>", floaterm.toggle)
+vim.keymap.set({ "n", "t" }, "<C-g>", lazygit.toggle)
+vim.keymap.set("n", "<leader>gc", lazygit.close)
+
+vim.keymap.set("n", "<leader>jo", ipython.toggle)
+vim.keymap.set("n", "<leader>jc", ipython.close)
+vim.keymap.set("v", "<leader>jv", ipython.send)
+vim.keymap.set("n", "<leader>js", ipython.install)
+vim.keymap.set({ "n", "t" }, "<C-j>", ipython.focus)
 vim.keymap.set("n", "<C-x>", "vij<leader>jv", { remap = true })
 vim.keymap.set("n", "<C-s>", "<C-x>]j", { remap = true })
 
-vim.keymap.set("n", "<leader>ko", require("terminal.opencode").toggle)
-vim.keymap.set("n", "<leader>kc", require("terminal.opencode").close)
-vim.keymap.set({ "n", "t" }, "<C-k>", require("terminal.opencode").focus)
+vim.keymap.set("n", "<leader>ko", opencode.toggle)
+vim.keymap.set("n", "<leader>kc", opencode.close)
+vim.keymap.set({ "n", "t" }, "<C-k>", opencode.focus)
 
 vim.keymap.set({ "n", "v" }, "<leader>kk", function()
-    require("terminal.opencode").send()
-    require("terminal.opencode").focus()
+    opencode.send()
+    opencode.focus()
 end)
 
 --------------------------------------------------------------------------------
@@ -262,7 +313,7 @@ vim.api.nvim_create_autocmd("FileType", {
             and vim.api.nvim_buf_get_name(event.buf) ~= ""
         then
             vim.api.nvim_buf_call(event.buf, function()
-                require("otter").activate()
+                otter.activate()
             end)
         end
     end),
@@ -288,7 +339,7 @@ vim.api.nvim_create_autocmd("FileType", {
         end
 
         if not start() then
-            require("nvim-treesitter").install(lang):await(function(err, done)
+            treesitter.install(lang):await(function(err, done)
                 if not err and done and vim.api.nvim_buf_is_valid(buf) then
                     start()
                 end

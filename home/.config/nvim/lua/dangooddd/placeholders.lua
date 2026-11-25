@@ -12,7 +12,7 @@
 ---@field zindex? integer
 
 local M = {}
-local utils = require("utils")
+local utils = require("dangooddd.utils")
 
 local images = {}
 local ns = vim.api.nvim_create_namespace("Placeholders")

@@ -1,7 +1,7 @@
 local M = {}
 
-local utils = require("utils")
-local opencode = require("terminal").new({ cmd = "opencode" })
+local utils = require("dangooddd.utils")
+local opencode = require("dangooddd.terminal").new({ cmd = "opencode" })
 
 function M.close()
     opencode:close()

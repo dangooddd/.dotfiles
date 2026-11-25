@@ -1,6 +1,6 @@
 local M = {}
-local preview = require("preview")
-local utils = require("utils")
+local preview = require("dangooddd.preview")
+local utils = require("dangooddd.utils")
 
 local dpi = 576
 local scale = 1.5

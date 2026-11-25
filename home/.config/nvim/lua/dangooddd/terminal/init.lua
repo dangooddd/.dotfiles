@@ -58,7 +58,7 @@ function Terminal.new(opts)
         cmd = opts.cmd,
         env = opts.env,
         cwd = opts.cwd,
-        open_win = wrap_open_win(opts.open_win or require("utils").open_split_win),
+        open_win = wrap_open_win(opts.open_win or require("dangooddd.utils").open_split_win),
         on_exit = opts.on_exit or default_on_exit,
         chan = nil,
         buf = nil,

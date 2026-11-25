@@ -1,5 +1,5 @@
 local M = {}
-local utils = require("utils")
+local utils = require("dangooddd.utils")
 
 local pip
 local python
@@ -20,7 +20,7 @@ local args = {
     vim.api.nvim_get_runtime_file("runtime/ipython.py", false)[1],
 }
 
-local ipython = require("terminal").new({
+local ipython = require("dangooddd.terminal").new({
     cmd = vim.list_extend(python, args),
     env = { PYDEVD_DISABLE_FILE_VALIDATION = 1 },
 })

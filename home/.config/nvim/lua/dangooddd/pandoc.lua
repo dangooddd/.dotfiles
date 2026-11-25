@@ -178,7 +178,7 @@ function M.setup()
                     M._repeat = function()
                         jump_cell(backward)
                     end
-                    vim.go.operatorfunc = "v:lua.require'pandoc'._repeat"
+                    vim.go.operatorfunc = "v:lua.require'dangooddd.pandoc'._repeat"
                     return "g@l"
                 end, { buffer = o.buf, expr = true })
 
