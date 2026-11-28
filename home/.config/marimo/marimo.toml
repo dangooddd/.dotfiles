@@ -1,0 +1,5 @@
+[display]
+theme = "dark"
+
+[keymap]
+preset = "vim"
